@@ -184,6 +184,7 @@
 
   function calculateStructuralTrajectory(profile) {
     const defaults = D.structural.demographics;
+    const workforce = D.structural.workforce;
     const values = state.structural;
     const rows = [];
     let baselinePopulation = defaults.population;
@@ -192,6 +193,30 @@
     const scenarioCohorts = [];
     const baselineBirthCohorts = [];
     const scenarioBirthCohorts = [];
+    const publicCohorts = [];
+    const trainingCohorts = [];
+    const rawCategoryA = values.publicCategoryA / 100;
+    const rawCategoryB = values.publicCategoryB / 100;
+    const categoryScale = rawCategoryA + rawCategoryB > 0.95 ? 0.95 / (rawCategoryA + rawCategoryB) : 1;
+    const publicCategoryMix = {
+      a: rawCategoryA * categoryScale,
+      b: rawCategoryB * categoryScale
+    };
+    publicCategoryMix.c = Math.max(0.05, 1 - publicCategoryMix.a - publicCategoryMix.b);
+    const baselineCategoryCost = Object.values(workforce.publicCategories)
+      .reduce((sum, item) => sum + item.share / 100 * item.costWeight, 0);
+    const categoryCostMultiplier = (publicCategoryMix.a * workforce.publicCategories.a.costWeight
+      + publicCategoryMix.b * workforce.publicCategories.b.costWeight
+      + publicCategoryMix.c * workforce.publicCategories.c.costWeight) / baselineCategoryCost;
+
+    const publicCohortPosition = (cohort, index) => {
+      const yearsPresent = index - cohort.start;
+      const permanentRetention = 0.985 ** yearsPresent;
+      const contractRetention = 0.82 ** yearsPresent;
+      const permanent = cohort.jobs * cohort.permanentShare * permanentRetention;
+      const contract = cohort.jobs * (1 - cohort.permanentShare) * contractRetention;
+      return { permanent, contract, total: permanent + contract };
+    };
 
     for (let index = 0; index < D.metadata.projectionYears; index += 1) {
       const age = index + 1;
@@ -229,6 +254,54 @@
       const employedDelta = scenarioMigration.employed - baseMigration.employed + youthWorkerDelta;
       const laborGdp = employedDelta * 0.085 * profile.supplyScale;
 
+      publicCohorts.push({
+        start: index,
+        permanentShare: values.publicPermanentShare / 100,
+        fpe: values.publicFpeNet,
+        fpt: values.publicFptNet,
+        fph: values.publicFphNet + (index === 0 ? Number(state.engines.healthWorkforce || 0) : 0)
+      });
+      trainingCohorts.push({ start: index, training: values.trainingEntries, activation: values.activationPlaces });
+      const publicByVersant = { fpe: 0, fpt: 0, fph: 0 };
+      let publicPermanentDelta = 0;
+      let publicContractDelta = 0;
+      let lifetimeCommitment = 0;
+      publicCohorts.forEach((cohort) => {
+        const yearsPresent = index - cohort.start;
+        Object.keys(publicByVersant).forEach((key) => {
+          const position = publicCohortPosition({
+            start: cohort.start,
+            jobs: cohort[key],
+            permanentShare: cohort.permanentShare
+          }, index);
+          publicByVersant[key] += position.total;
+          publicPermanentDelta += position.permanent;
+          publicContractDelta += position.contract;
+          const annualEmployerCost = position.total * workforce.publicService[key].employerCost * categoryCostMultiplier;
+          const remainingCareer = Math.max(0, workforce.pension.averageRemainingCareer - yearsPresent);
+          const rate = workforce.pension.discountRate;
+          const careerFactor = remainingCareer ? (1 - (1 + rate) ** -remainingCareer) / rate : 0;
+          const pensionFactor = workforce.pension.pensionAccrualRate * 18 / ((1 + rate) ** Math.max(1, remainingCareer));
+          lifetimeCommitment += annualEmployerCost * (careerFactor + pensionFactor);
+        });
+      });
+      const publicEmploymentDelta = Object.values(publicByVersant).reduce((sum, value) => sum + value, 0);
+      const publicPayrollCost = Object.entries(publicByVersant).reduce((sum, [key, jobs]) => sum + jobs * workforce.publicService[key].employerCost * categoryCostMultiplier, 0);
+
+      let trainingEmploymentDelta = 0;
+      let trainingPipeline = 0;
+      trainingCohorts.forEach((cohort) => {
+        const yearsPresent = index - cohort.start + 1;
+        const graduationRamp = 1 - Math.exp(-yearsPresent / 1.25);
+        const employmentRetention = 0.965 ** Math.max(0, yearsPresent - 1);
+        const trainingMatches = cohort.training * (values.trainingMatch / 100) * graduationRamp * employmentRetention;
+        const activationMatches = cohort.activation * 0.28 * graduationRamp * employmentRetention;
+        trainingEmploymentDelta += trainingMatches + activationMatches;
+        if (yearsPresent <= 2) trainingPipeline += cohort.training * (1 - graduationRamp * 0.72);
+      });
+      const trainingFiscalCost = values.trainingEntries * 0.012 + values.activationPlaces * 0.008;
+      const workforceGdp = (publicEmploymentDelta * 0.076 + trainingEmploymentDelta * 0.071) * profile.supplyScale;
+
       const ramp = Math.min(1, age / 10);
       const publicEnergyInvestment = values.efficiency + values.nuclear * 0.45 + values.renewables * 0.10;
       const carbonRevenue = values.carbonTax * 0.30;
@@ -259,6 +332,18 @@
         demographyFiscalCost,
         employedDelta,
         laborGdp,
+        publicByVersant,
+        publicEmploymentDelta,
+        publicPermanentDelta,
+        publicContractDelta,
+        publicCategoryMix,
+        categoryCostMultiplier,
+        publicPayrollCost,
+        lifetimeCommitment,
+        trainingEmploymentDelta,
+        trainingPipeline,
+        trainingFiscalCost,
+        workforceGdp,
         publicEnergyInvestment,
         carbonRevenue,
         energyFiscalCost: publicEnergyInvestment - carbonRevenue,
@@ -267,10 +352,53 @@
         energySupply,
         energyInflation,
         emissionsChange,
-        gdpImpact: laborGdp + energyDemand + energySupply
+        gdpImpact: laborGdp + workforceGdp + energyDemand + energySupply
       });
     }
     return rows;
+  }
+
+  function allocateLaborMarket(structure, engine, index) {
+    const pools = D.structural.workforce.pools;
+    const healthWorkforce = engine.contributions.healthWorkforce || { jobs: 0 };
+    const publicJobs = structure.publicEmploymentDelta;
+    const trainedJobs = structure.trainingEmploymentDelta;
+    const marketDemand = engine.jobs - healthWorkforce.jobs;
+    const recruitablePool = pools.unemployedBIT + pools.halo * 0.34 + pools.underemployment * 0.28
+      + Math.max(0, structure.trainingPipeline) + Math.max(0, structure.employedDelta) * 0.35;
+    const positiveDemand = Math.max(0, publicJobs + trainedJobs + marketDemand);
+    const pressureRatio = positiveDemand / Math.max(1, recruitablePool);
+    const realizationRate = positiveDemand > 0 ? clamp(1.04 - pressureRatio * 0.24, 0.55, 1) : 1;
+    const realizedMarketJobs = marketDemand >= 0 ? marketDemand * realizationRate : marketDemand;
+    const netEmployment = publicJobs + trainedJobs + realizedMarketJobs;
+    const hires = Math.max(0, netEmployment);
+    const fromTraining = Math.min(hires, Math.max(0, trainedJobs));
+    const afterTraining = Math.max(0, hires - fromTraining);
+    const fromUnemployment = Math.min(pools.unemployedBIT, afterTraining * clamp(0.58 - pressureRatio * 0.16, 0.34, 0.58));
+    const fromHalo = Math.min(pools.halo * 0.45, afterTraining * clamp(0.13 + pressureRatio * 0.06, 0.13, 0.22));
+    const fromUnderemployment = Math.min(pools.underemployment * 0.55, afterTraining * 0.11);
+    const fromMigration = Math.min(Math.max(0, structure.employedDelta), afterTraining * 0.10);
+    const jobToJob = Math.max(0, hires - fromTraining - fromUnemployment - fromHalo - fromUnderemployment - fromMigration);
+    const unemploymentChangeK = netEmployment >= 0 ? -fromUnemployment : Math.abs(netEmployment) * 0.72;
+    const laborTension = Math.max(0, pressureRatio - 0.62);
+    return {
+      publicJobs,
+      trainedJobs,
+      marketDemand,
+      realizedMarketJobs,
+      realizationRate,
+      netEmployment,
+      recruitablePool,
+      fromUnemployment,
+      fromTraining,
+      fromHalo,
+      fromUnderemployment,
+      fromMigration,
+      jobToJob,
+      unemploymentChangeK,
+      laborTension,
+      year: D.metadata.projectionStart + index
+    };
   }
 
   function calculatePolicyEngineTrajectory(profile) {
@@ -293,7 +421,11 @@
         const delta = Number(state.engines[id]) - control.value;
         if (Math.abs(delta) < 0.0001) return;
         const effect = control.effects;
-        const ramp = Math.min(1, (effect.lag ?? 0.6) + index * 0.16);
+        let ramp = Math.min(1, (effect.lag ?? 0.6) + index * 0.16);
+        const cohortRetention = id === "healthWorkforce"
+          ? valuesForPublicRetention(state.structural.publicPermanentShare, index)
+          : 1;
+        if (id === "healthWorkforce") ramp = cohortRetention;
         const demandPersistence = 0.58 + 0.42 * profile.decay ** index;
         const supplyMaturity = 1 - Math.exp(-age / 3.2);
         const cumulativeScale = id === "productivity" ? 0.55 + age * 0.24 : 1;
@@ -310,7 +442,7 @@
           uncertainty += delta * 0.025 * age;
         }
         const contribution = {
-          fiscalCost: delta * (effect.fiscal || 0),
+          fiscalCost: delta * (effect.fiscal || 0) * (id === "healthWorkforce" ? ramp : 1),
           demand,
           supply,
           jobs: delta * (effect.jobs || 0) * ramp,
@@ -331,6 +463,11 @@
       rows.push(totals);
     }
     return rows;
+  }
+
+  function valuesForPublicRetention(permanentShare, yearsPresent) {
+    const share = Number(permanentShare) / 100;
+    return share * 0.985 ** yearsPresent + (1 - share) * 0.82 ** yearsPresent;
   }
 
   function calculateProjection(modelKey = state.model) {
@@ -360,6 +497,8 @@
       let supplyContribution = 0;
       const structure = structural[index];
       const engine = engines[index];
+      const labor = allocateLaborMarket(structure, engine, index);
+      const cohortizedHealth = engine.contributions.healthWorkforce || { fiscalCost: 0, demand: 0, supply: 0, gdpImpact: 0, jobs: 0 };
 
       Object.entries(state.changes).forEach(([id, deltaValue]) => {
         const delta = Number(deltaValue);
@@ -377,16 +516,22 @@
 
       policyGdp += structure.gdpImpact;
       demandContribution += structure.energyDemand;
-      supplyContribution += structure.energySupply + structure.laborGdp;
-      spendingChange += structure.publicEnergyInvestment + structure.demographyFiscalCost;
+      supplyContribution += structure.energySupply + structure.laborGdp + structure.workforceGdp;
+      spendingChange += structure.publicEnergyInvestment + structure.demographyFiscalCost
+        + structure.publicPayrollCost + structure.trainingFiscalCost;
       revenueChange += structure.carbonRevenue + structure.migrationFiscalDelta;
-      policyGdp += engine.gdpImpact;
-      demandContribution += engine.demand;
-      supplyContribution += engine.supply;
-      if (engine.fiscalCost >= 0) spendingChange += engine.fiscalCost;
-      else revenueChange += -engine.fiscalCost;
+      const engineGdp = engine.gdpImpact - cohortizedHealth.gdpImpact;
+      const engineDemand = engine.demand - cohortizedHealth.demand;
+      const engineSupply = engine.supply - cohortizedHealth.supply;
+      const engineFiscalCost = engine.fiscalCost - cohortizedHealth.fiscalCost;
+      policyGdp += engineGdp;
+      demandContribution += engineDemand;
+      supplyContribution += engineSupply;
+      if (engineFiscalCost >= 0) spendingChange += engineFiscalCost;
+      else revenueChange += -engineFiscalCost;
 
-      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation + engine.inflation, -4.5, 6.5);
+      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation
+        + engine.inflation + labor.laborTension * 0.18, -4.5, 6.5);
       institutionPriceFactor *= 1 + ((eu.inflationShock[index] || 0) + extraInflation) / 100;
       const scenarioGdp = Math.max(
         baseline[index].gdp * institutionRealFactor * institutionPriceFactor + policyGdp,
@@ -396,7 +541,7 @@
       const growth = D.baseline.realGrowth[index] + outputGap - previousOutputGap;
       previousOutputGap = outputGap;
       const inflation = D.baseline.inflation[index] + (eu.inflationShock[index] || 0) + extraInflation;
-      const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap - engine.jobs / 310, 3.2, 18);
+      const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap + labor.unemploymentChangeK / 310, 3.2, 18);
       const revenueFeedback = (scenarioGdp - baseline[index].gdp) * 0.48;
       const cyclicalSpending = (unemployment - D.baseline.unemployment[index]) * 3.1;
 
@@ -441,6 +586,7 @@
         riskPremium,
         structural: structure,
         engines: engine,
+        labor,
         bands: {
           gdp: gdpBand,
           deficitRatio: deficitBand,
@@ -798,6 +944,7 @@
     return {
       demography: ["fertility", "lifeExpectancy"],
       migration: ["economicMigration", "otherMigration", "integration"],
+      employment: ["publicFpeNet", "publicFptNet", "publicFphNet", "publicPermanentShare", "publicCategoryA", "publicCategoryB", "trainingEntries", "trainingMatch", "activationPlaces"],
       energy: ["nuclear", "renewables", "efficiency", "fossilPrice", "carbonTax"]
     }[tab];
   }
@@ -816,6 +963,7 @@
     const notes = {
       demography: "La fécondité modifie immédiatement les naissances et les dépenses familiales. Son effet sur la population active ne commence qu’après 18 ans ; à 20–30 ans, il devient visible mais reste très incertain.",
       migration: "Les deux flux sont des hypothèses de solde net, pas des nombres de titres de séjour. « Autres motifs » regroupe ici famille, études et humanitaire. Le résultat dépend de l’emploi, pas d’une valeur attribuée aux personnes.",
+      employment: "Les recrutements publics sont des flux annuels supplémentaires suivis par cohorte. Une valeur négative signifie des recrutements évités ou des non-remplacements, pas des licenciements. La catégorie C est le solde des parts A et B, normalisées si leur somme dépasse 95 %. L’engagement à 40 ans est informatif et n’est pas compté immédiatement dans le déficit.",
       energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. Le coût public, le calendrier industriel et la baisse des importations sont des ordres de grandeur sensibles aux technologies."
     };
     $("#structural-disclaimer").textContent = notes[state.activeStructuralTab];
@@ -828,7 +976,8 @@
     const baseline = state.projection.baseline[index];
     const popDelta = structure.population - structure.baselinePopulation;
     const birthDelta = structure.births - structure.baselineBirths;
-    const netBudget = structure.migrationFiscalDelta - structure.energyFiscalCost - structure.demographyFiscalCost;
+    const netBudget = structure.migrationFiscalDelta - structure.energyFiscalCost - structure.demographyFiscalCost
+      - structure.publicPayrollCost - structure.trainingFiscalCost;
     const gdpDelta = point.gdp - baseline.gdp;
     const unchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
 
@@ -841,23 +990,53 @@
       ? `La natalité reste proche de la référence. La population atteint ${fmt1.format(structure.population)} millions.`
       : `${signed(birthDelta, " k")} naissances par an par rapport à la référence ; la population atteint ${fmt1.format(structure.population)} millions (${signed(popDelta, " M")}). Les services liés aux âges changent de ${signed(structure.demographyFiscalCost, " Md€/an")}.`;
     const migrationText = `Les cohortes simulées génèrent ${money(structure.migrationRevenue)} de prélèvements et ${money(structure.migrationCost)} de services, transferts et intégration cette année, soit un solde de ${signed(structure.migrationNet, " Md€")}.`;
+    const publicText = Math.abs(structure.publicEmploymentDelta) < 0.1
+      ? "Les effectifs publics suivent la référence : les départs et recrutements ordinaires sont implicitement remplacés."
+      : `${signed(structure.publicEmploymentDelta, " k")} agents présents par rapport à la référence : ${signed(structure.publicPermanentDelta, " k")} titulaires et ${signed(structure.publicContractDelta, " k")} contractuels. Coût employeur annuel : ${signed(structure.publicPayrollCost, " Md€")}.`;
     const energyDirection = structure.importBillChange > 0.05 ? "alourdit" : structure.importBillChange < -0.05 ? "allège" : "laisse presque inchangée";
     const energyText = `Le scénario ${energyDirection} la facture énergétique de ${money(Math.abs(structure.importBillChange))} et modifie les émissions de ${signed(structure.emissionsChange, " MtCO₂e")}.`;
     $("#story-reasons").innerHTML = `
       <div class="story-reason"><i>POP</i><div><strong>Population et âges</strong><span>${populationText}</span></div></div>
-      <div class="story-reason"><i>EMP</i><div><strong>Emploi et finances publiques</strong><span>${migrationText}</span></div></div>
+      <div class="story-reason"><i>PUB</i><div><strong>Fonction publique par cohorte</strong><span>${publicText}</span></div></div>
+      <div class="story-reason"><i>EMP</i><div><strong>Emploi, formation et migration</strong><span>${migrationText} Le vivier permet de réaliser ${fmt0.format(point.labor.realizationRate * 100)} % des créations d’emploi privées simulées.</span></div></div>
       <div class="story-reason"><i>ENE</i><div><strong>Énergie, prix et importations</strong><span>${energyText}</span></div></div>`;
-    $("#story-caveat").textContent = "Les comportements familiaux, la composition des arrivées, les salaires, les délais de construction et les prix mondiaux peuvent déplacer fortement ces résultats. Les montants migratoires sont une comptabilité de scénario, pas une mesure causale par origine ou statut.";
+    $("#story-caveat").textContent = "Les viviers BIT, France Travail, halo, sous-emploi et formation se recouvrent : ils ne sont jamais additionnés comme des personnes immédiatement interchangeables. Les compétences, la localisation, les conditions de travail, les salaires et les mobilités emploi-emploi limitent la réalisation des recrutements.";
 
     const outcomes = [
       ["Population", `${fmt1.format(structure.population)} M`, `${signed(popDelta, " M")} vs réf.`],
-      ["Naissances annuelles", `${fmt0.format(structure.births)} k`, `${signed(birthDelta, " k")} vs réf.`],
-      ["Part des 65 ans +", percent(structure.age65Share), "projection simplifiée"],
-      ["Solde fiscal des cohortes", signed(structure.migrationNet, " Md€"), `${money(structure.migrationRevenue)} recettes`],
+      ["Agents publics", signed(structure.publicEmploymentDelta, " k"), "écart vs référence"],
+      ["Coût public annuel", signed(structure.publicPayrollCost, " Md€"), "rémunérations + employeur"],
+      ["Emploi net mobilisé", signed(point.labor.netEmployment, " k"), `${fmt0.format(point.labor.realizationRate * 100)} % réalisé`],
       ["Facture énergétique", signed(structure.importBillChange, " Md€"), "variation vs réf."],
       ["Émissions", signed(structure.emissionsChange, " Mt"), "CO₂e vs réf."]
     ];
     $("#structural-outcomes").innerHTML = outcomes.map(([label, value, note]) => `<div class="structural-outcome"><small>${label}</small><strong>${value}</strong><span>${note}</span></div>`).join("");
+
+    const workforce = D.structural.workforce;
+    const classFor = (value) => value > 0.01 ? "positive" : value < -0.01 ? "negative" : "";
+    const publicRows = Object.entries(workforce.publicService).map(([key, item]) => {
+      const delta = structure.publicByVersant[key];
+      return `<div class="workforce-row"><span><strong>${item.short} · ${item.label}</strong><small>${fmt1.format(item.headcount / 1000)} M observés · coût calibré ${fmt0.format(item.employerCost * 1000)} k€/emploi</small></span><strong class="${classFor(delta)}">${signed(delta, " k")}</strong></div>`;
+    }).join("");
+    const employmentRows = workforce.employmentTypes.map((item) => `<div class="workforce-row"><span><strong>${item.label}</strong><small>${item.note}</small></span><strong>${fmt1.format(item.value)} M</strong></div>`).join("");
+    const categoryRows = [
+      ["Catégorie A · conception/direction", structure.publicCategoryMix.a],
+      ["Catégorie B · application", structure.publicCategoryMix.b],
+      ["Catégorie C · exécution", structure.publicCategoryMix.c]
+    ].map(([label, share]) => `<div class="workforce-row"><span><strong>${label}</strong><small>composition des nouveaux flux</small></span><strong>${fmt0.format(share * 100)} %</strong></div>`).join("");
+    const pools = workforce.pools;
+    const allocationRows = [
+      ["Chômage BIT", `${fmt1.format(pools.unemployedBIT / 1000)} M`, `dont ${fmt0.format(point.labor.fromUnemployment)} k mobilisés`],
+      ["Halo autour du chômage", `${fmt1.format(pools.halo / 1000)} M`, `dont ${fmt0.format(point.labor.fromHalo)} k mobilisés`],
+      ["Sous-emploi", `${fmt1.format(pools.underemployment / 1000)} M`, `dont ${fmt0.format(point.labor.fromUnderemployment)} k mobilisés`],
+      ["Formation · catégorie D", `${fmt0.format(pools.franceTravailTraining)} k`, `${fmt0.format(point.labor.fromTraining)} k vers l’emploi`],
+      ["Mobilités emploi-emploi", `${fmt0.format(point.labor.jobToJob)} k`, "ne réduisent pas directement le chômage"],
+      ["Emploi issu des migrations", `${fmt0.format(point.labor.fromMigration)} k`, "part des cohortes employées"]
+    ].map(([label, value, note]) => `<div class="workforce-row"><span><strong>${label}</strong><small>${note}</small></span><strong>${value}</strong></div>`).join("");
+    $("#workforce-detail").innerHTML = `
+      <article class="workforce-panel"><h3>Trois fonctions publiques</h3><p>Effectifs observés fin 2024. Le chiffre à droite est l’écart simulé au ${point.year}, y compris les soignants réglés dans le moteur Santé.</p>${publicRows}${categoryRows}<div class="workforce-commitment"><small>Engagement actualisé à 40 ans</small><strong>${signed(structure.lifetimeCommitment, " Md€")}</strong><span>Rémunérations et droits futurs des cohortes ajoutées ou évitées. Indicateur patrimonial, non dépense immédiate.</span></div></article>
+      <article class="workforce-panel"><h3>Types d’emploi</h3><p>Photographie 2025 reconstituée. Les catégories publiques sont séparées des contrats privés.</p>${employmentRows}</article>
+      <article class="workforce-panel"><h3>Viviers et transitions</h3><p>Les sources ne sont pas additives : le modèle applique des taux de disponibilité et d’appariement.</p>${allocationRows}</article>`;
   }
 
   function engineControlText(id, value) {
@@ -1353,6 +1532,23 @@
       dette_pct_pib: round(item.debtRatio, 2),
       population_millions: round(item.structural.population, 3),
       naissances_milliers: round(item.structural.births, 1),
+      agents_publics_ecart_milliers: round(item.structural.publicEmploymentDelta, 1),
+      agents_etat_ecart_milliers: round(item.structural.publicByVersant.fpe, 1),
+      agents_territoriaux_ecart_milliers: round(item.structural.publicByVersant.fpt, 1),
+      agents_hospitaliers_ecart_milliers: round(item.structural.publicByVersant.fph, 1),
+      titulaires_publics_ecart_milliers: round(item.structural.publicPermanentDelta, 1),
+      contractuels_publics_ecart_milliers: round(item.structural.publicContractDelta, 1),
+      recrutements_publics_categorie_a_pct: round(item.structural.publicCategoryMix.a * 100, 1),
+      recrutements_publics_categorie_b_pct: round(item.structural.publicCategoryMix.b * 100, 1),
+      recrutements_publics_categorie_c_pct: round(item.structural.publicCategoryMix.c * 100, 1),
+      cout_annuel_emploi_public_milliards: round(item.structural.publicPayrollCost, 2),
+      engagement_public_40_ans_milliards: round(item.structural.lifetimeCommitment, 2),
+      formation_vers_emploi_milliers: round(item.structural.trainingEmploymentDelta, 1),
+      emploi_net_mobilise_milliers: round(item.labor.netEmployment, 1),
+      emploi_depuis_chomage_milliers: round(item.labor.fromUnemployment, 1),
+      emploi_depuis_halo_milliers: round(item.labor.fromHalo, 1),
+      mobilite_emploi_emploi_milliers: round(item.labor.jobToJob, 1),
+      taux_realisation_emploi_pct: round(item.labor.realizationRate * 100, 1),
       solde_fiscal_cohortes_milliards: round(item.structural.migrationNet, 2),
       facture_energetique_ecart_milliards: round(item.structural.importBillChange, 2),
       emissions_ecart_mtco2e: round(item.structural.emissionsChange, 2),

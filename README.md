@@ -21,6 +21,8 @@ Puis ouvrir `http://localhost:4173`.
 - Ancrage 2026–2028 : projections macroéconomiques de la Banque de France de septembre 2026.
 - Trajectoire européenne : procédure concernant les déficits excessifs et recommandation du Conseil.
 - Population, natalité et vieillissement : bilan démographique 2025 de l’Insee.
+- Emploi public : Siasp 2024 Insee-DGAFP, ventilé entre État, territoriale, hospitalière, titulaires, contractuels et autres statuts.
+- Marché du travail : enquête Emploi 2025 de l’Insee, chômage BIT, halo, sous-emploi, statuts d’emploi et statistiques Dares-France Travail.
 - Emploi des immigrés : enquête Emploi 2025 de l’Insee ; motifs de séjour 2025 du ministère de l’Intérieur.
 - Énergie : bilan énergétique 2024 du SDES et bilan électrique 2025 de RTE.
 
@@ -35,6 +37,7 @@ Le moteur est semi-structurel et déterministe. Il combine :
 - effets d’offre retardés ;
 - rétroaction du PIB sur les recettes ;
 - réponse du chômage à l’écart d’activité ;
+- allocation des créations d’emploi entre chômage, formation, halo, sous-emploi, migrations et mobilités emploi-emploi ;
 - stabilisateurs automatiques ;
 - stock de dette, charge d’intérêts et prime de risque ;
 - scénarios institutionnels européens.
@@ -56,6 +59,8 @@ La version 4.0 comprend :
 
 La version 4.2 simplifie l’utilisation avec un parcours en quatre étapes, une lecture automatique en langage courant, des réglages mobiles repliables, un budget compact par défaut et un filtre des seuls postes modifiés.
 
+La version 4.3 ajoute un moteur d’emploi par cohortes : recrutements des trois fonctions publiques, titulaires et contractuels, coût employeur annuel, engagement actualisé à quarante ans, formation, accompagnement et viviers de main-d’œuvre. Les populations BIT, France Travail, halo et sous-emploi restent séparées pour éviter les doubles comptes.
+
 ## Structure
 
 ```text
@@ -66,6 +71,8 @@ dist/
   app.js       moteur de projection et interactions
 .openai/
   hosting.json configuration de déploiement Sites
+tests/
+  model-smoke.mjs tests des trajectoires, cohortes et scénarios politiques
 ```
 
 ## Limites

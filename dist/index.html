@@ -249,7 +249,7 @@
         <div class="section-intro">
           <div>
             <span class="section-number">03</span>
-            <h2 id="structural-title">Population, immigration & énergie</h2>
+            <h2 id="structural-title">Population, emploi & énergie</h2>
           </div>
           <p>Réglez les transformations lentes. Chaque curseur modifie la trajectoire budgétaire, le PIB et les indicateurs physiques.</p>
         </div>
@@ -258,6 +258,9 @@
           <div><small>Population 2026</small><strong>69,1 M</strong><span>Insee</span></div>
           <div><small>Fécondité 2025</small><strong>1,56</strong><span>645 000 naissances</span></div>
           <div><small>65 ans ou plus</small><strong>22 %</strong><span>presque autant que les −20 ans</span></div>
+          <div><small>Agents publics</small><strong>5,88 M</strong><span>fin 2024 · 3 versants</span></div>
+          <div><small>Chômage BIT</small><strong>2,4 M</strong><span>moyenne 2025</span></div>
+          <div><small>Halo + sous-emploi</small><strong>3,1 M</strong><span>viviers non additionnables</span></div>
           <div><small>Indépendance énergétique</small><strong>61 %</strong><span>2024 · SDES</span></div>
           <div><small>Facture énergétique</small><strong>57,7 Md€</strong><span>solde extérieur 2024</span></div>
         </div>
@@ -267,6 +270,7 @@
             <div class="lab-tabs" role="tablist" aria-label="Thèmes structurels">
               <button class="is-active" data-structural-tab="demography">Démographie</button>
               <button data-structural-tab="migration">Immigration</button>
+              <button data-structural-tab="employment">Emploi</button>
               <button data-structural-tab="energy">Énergie</button>
             </div>
             <div id="structural-control-list"></div>
@@ -285,6 +289,7 @@
         </div>
 
         <div class="structural-outcomes" id="structural-outcomes"></div>
+        <div class="workforce-detail" id="workforce-detail" aria-label="Détail des emplois et viviers de main-d’œuvre"></div>
       </section>
 
       <section class="engine-room" id="engines" aria-labelledby="engine-title">
@@ -465,7 +470,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 4.2 · octobre 2026</span>
+      <span>Version 4.3 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -489,13 +494,15 @@
           <p>La bande affichée combine incertitude sur les multiplicateurs, horizon de projection et risque institutionnel. Elle ne constitue pas un intervalle de confiance statistique au sens strict ; c’est une plage de sensibilité destinée à empêcher une fausse précision.</p>
           <h3>6. Lecture des résultats</h3>
           <p>Les résultats sont des écarts par rapport à une trajectoire de référence compatible avec les dernières projections macroéconomiques et avec une correction budgétaire graduelle. Une mesure « favorable au PIB » peut rester défavorable à la dette, et inversement.</p>
-          <h3>7. Démographie, immigration et énergie</h3>
-          <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Les motifs ne déterminent pas une contribution intrinsèque. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
-          <h3>8. Moteurs de politiques publiques</h3>
+          <h3>7. Démographie, emploi, immigration et énergie</h3>
+          <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Le module d’emploi distingue les trois versants publics, titulaires et contractuels, salariés privés, indépendants, chômage BIT, halo, sous-emploi et formation. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
+          <h3>8. Emploi public et engagements longs</h3>
+          <p>Chaque flux supplémentaire de recrutement public crée une cohorte suivie séparément. Sa présence, son coût employeur et son engagement actualisé de rémunération et de retraite évoluent selon le versant, le statut et la catégorie A, B ou C. Un titulaire bénéficie de la permanence de son statut, pas de la garantie absolue de conserver le même poste ; les contractuels ne sont pas titulaires. L’engagement à quarante ans est affiché mais n’est pas passé en dépense immédiate : les comptes publics enregistrent les rémunérations et cotisations au fil du temps. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
+          <h3>9. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
-          <h3>9. Programmes politiques</h3>
+          <h3>10. Programmes politiques</h3>
           <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Sources, date, conventions et niveau de confiance sont affichés. Le module ne prédit ni les coalitions, ni la capacité parlementaire à voter les mesures, ni leur conformité juridique exacte. Le « gouvernement technique » est une convention de continuité, pas l’absence de valeurs.</p>
-          <h3>10. Horizons 20 et 30 ans</h3>
+          <h3>11. Horizons 20 et 30 ans</h3>
           <p>Après 2035, la trajectoire n’est plus une prévision conjoncturelle : elle prolonge des hypothèses structurelles de productivité, inflation, chômage, vieillissement, migrations et coût de la dette. Les nouvelles générations n’affectent l’offre de travail qu’après 18 ans. L’incertitude augmente volontairement plus vite au-delà de dix ans.</p>
         </div>
         <div class="modal-footer"><button class="button button-dark" value="close">J’ai compris</button></div>

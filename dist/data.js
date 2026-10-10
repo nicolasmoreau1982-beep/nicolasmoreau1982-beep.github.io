@@ -104,6 +104,46 @@ window.ECOSIM_DATA = (() => {
       note: "Effectifs, rémunérations, temps de travail, mobilité et santé des trois versants."
     },
     {
+      id: "insee-public-employment-2024",
+      publisher: "Insee · DGAFP",
+      title: "L’emploi dans la fonction publique en 2024",
+      date: "10 février 2026",
+      url: "https://www.insee.fr/fr/statistiques/8732435",
+      note: "5,877 millions d’agents : 2,587 M dans l’État, 2,039 M dans la territoriale et 1,250 M dans l’hospitalière ; 24 % de contractuels."
+    },
+    {
+      id: "insee-labour-market-2025",
+      publisher: "Insee",
+      title: "Une photographie du marché du travail en 2025",
+      date: "mars 2026",
+      url: "https://www.insee.fr/fr/statistiques/8901327",
+      note: "Taux d’emploi de 69,3 % ; 72,8 % des emplois en CDI ou de fonctionnaire, 9,4 % en CDD ou intérim et 13,5 % d’indépendants."
+    },
+    {
+      id: "insee-labour-constraints-2025",
+      publisher: "Insee",
+      title: "Situations contraintes sur le marché du travail",
+      date: "2 juillet 2026",
+      url: "https://www.insee.fr/fr/statistiques/8733069",
+      note: "En moyenne en 2025 : 2,4 millions de chômeurs BIT, 1,8 million dans le halo et 1,3 million en sous-emploi."
+    },
+    {
+      id: "dares-jobseekers-2026",
+      publisher: "Dares · France Travail",
+      title: "Inscrits à France Travail par catégorie",
+      date: "2e trimestre 2026",
+      url: "https://dares.travail-emploi.gouv.fr/donnees/les-inscrits-france-travail-consultez-la-datavisualisation",
+      note: "5,802 millions en catégories A, B, C et 343 800 en catégorie D ; rupture de série liée à l’inscription automatique de nouveaux publics."
+    },
+    {
+      id: "dares-training-2025",
+      publisher: "Dares",
+      title: "Formations des personnes en recherche d’emploi",
+      date: "7 octobre 2026",
+      url: "https://dares.travail-emploi.gouv.fr/donnees/les-formations-des-personnes-en-recherche-demploi-brest",
+      note: "918 900 entrées en formation en 2025 ; une entrée est un flux annuel et non un stock de personnes disponibles."
+    },
+    {
       id: "poverty-2024",
       publisher: "Insee",
       title: "Pauvreté et redistribution",
@@ -691,6 +731,45 @@ window.ECOSIM_DATA = (() => {
       electricityCarbonIntensity: 19.6,
       lifecycleElectricityEmissions: 15.7
     },
+    workforce: {
+      employment: 31.4,
+      publicEmployment: 5.8767,
+      publicService: {
+        fpe: { label: "Fonction publique de l’État", short: "FPE", headcount: 2587.4, permanent: 1815.7, contractors: 600.5, other: 171.2, employerCost: 0.073, annualExit: 0.078 },
+        fpt: { label: "Fonction publique territoriale", short: "FPT", headcount: 2039.4, permanent: 1417.6, contractors: 539.0, other: 82.8, employerCost: 0.055, annualExit: 0.091 },
+        fph: { label: "Fonction publique hospitalière", short: "FPH", headcount: 1249.9, permanent: 827.0, contractors: 270.8, other: 152.2, employerCost: 0.064, annualExit: 0.086 }
+      },
+      publicCategories: {
+        a: { label: "Catégorie A · conception et direction", share: 38.4, costWeight: 1.35 },
+        b: { label: "Catégorie B · application", share: 22.1, costWeight: 1.0 },
+        c: { label: "Catégorie C · exécution", share: 37.4, costWeight: 0.78 },
+        unknown: { label: "Catégorie indéterminée", share: 2.0, costWeight: 1.0 }
+      },
+      employmentTypes: [
+        { id: "privatePermanent", label: "Salariés privés en CDI", value: 17.0, note: "estimation cohérente avec l’enquête Emploi" },
+        { id: "privateLimited", label: "CDD et intérim privés", value: 2.8, note: "emplois à durée limitée" },
+        { id: "apprentices", label: "Alternance et stages", value: 1.1, note: "principalement les 15–24 ans" },
+        { id: "independent", label: "Indépendants", value: 4.24, note: "13,5 % de l’emploi" },
+        { id: "publicPermanent", label: "Fonctionnaires et militaires", value: 4.06, note: "trois versants" },
+        { id: "publicOther", label: "Contractuels et autres agents publics", value: 1.82, note: "contrats, aidés et autres statuts" },
+        { id: "otherEmployment", label: "Autres emplois et arrondis", value: 0.38, note: "sans contrat connu et écarts de champ" }
+      ],
+      pools: {
+        unemployedBIT: 2400,
+        halo: 1800,
+        underemployment: 1300,
+        franceTravailABC: 5801.5,
+        franceTravailTraining: 343.8,
+        annualTrainingEntries: 918.9,
+        trainingEmploymentRate: 60.6
+      },
+      pension: {
+        careerHorizon: 40,
+        averageRemainingCareer: 22,
+        pensionAccrualRate: 0.28,
+        discountRate: 0.025
+      }
+    },
     controls: {
       fertility: { label: "Fécondité", min: 1.0, max: 2.4, step: 0.01, value: 1.56, unit: " enfant/femme" },
       lifeExpectancy: { label: "Écart d’espérance de vie", min: -3, max: 5, step: 0.5, value: 0, unit: " an" },
@@ -701,7 +780,16 @@ window.ECOSIM_DATA = (() => {
       renewables: { label: "Renouvelables supplémentaires en 2035", min: -20, max: 80, step: 2, value: 0, unit: " GW" },
       efficiency: { label: "Rénovation et efficacité publiques", min: 0, max: 30, step: 1, value: 0, unit: " Md€/an" },
       fossilPrice: { label: "Choc sur les prix fossiles importés", min: -40, max: 100, step: 5, value: 0, unit: " %" },
-      carbonTax: { label: "Signal-prix carbone supplémentaire", min: -30, max: 100, step: 5, value: 0, unit: " €/t" }
+      carbonTax: { label: "Signal-prix carbone supplémentaire", min: -30, max: 100, step: 5, value: 0, unit: " €/t" },
+      publicFpeNet: { label: "Recrutements supplémentaires — État", min: -100, max: 100, step: 5, value: 0, unit: " k/an" },
+      publicFptNet: { label: "Recrutements supplémentaires — collectivités", min: -100, max: 100, step: 5, value: 0, unit: " k/an" },
+      publicFphNet: { label: "Recrutements supplémentaires — hôpitaux", min: -50, max: 100, step: 5, value: 0, unit: " k/an" },
+      publicPermanentShare: { label: "Part de titulaires dans les flux", min: 20, max: 100, step: 5, value: 69, unit: " %" },
+      publicCategoryA: { label: "Part de catégorie A dans les flux", min: 5, max: 75, step: 1, value: 38, unit: " %" },
+      publicCategoryB: { label: "Part de catégorie B dans les flux", min: 5, max: 50, step: 1, value: 22, unit: " %" },
+      trainingEntries: { label: "Entrées en formation supplémentaires", min: -400, max: 600, step: 25, value: 0, unit: " k/an" },
+      trainingMatch: { label: "Accès à l’emploi après formation", min: 35, max: 80, step: 1, value: 61, unit: " %" },
+      activationPlaces: { label: "Accompagnement intensif supplémentaire", min: -300, max: 600, step: 25, value: 0, unit: " k/an" }
     }
   };
 
@@ -731,7 +819,7 @@ window.ECOSIM_DATA = (() => {
 
       prevention: { group: "health", label: "Prévention supplémentaire", min: 0, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.78, supply: 0.22, jobs: 7, poverty: -0.015, lag: 0.45 } },
       careEfficiency: { group: "health", label: "Efficience des soins", min: -10, max: 15, step: 1, value: 0, unit: " %", effects: { fiscal: -1.25, demand: -0.18, supply: 0.22, jobs: -1.5, lag: 0.35, uncertainty: 0.12 } },
-      healthWorkforce: { group: "health", label: "Soignants supplémentaires", min: -30, max: 80, step: 5, value: 0, unit: " k", effects: { fiscal: 0.055, demand: 0.048, supply: 0.016, jobs: 1, lag: 0.70 } },
+      healthWorkforce: { group: "health", label: "Soignants publics supplémentaires", min: -30, max: 80, step: 5, value: 0, unit: " k", effects: { fiscal: 0.055, demand: 0.048, supply: 0.016, jobs: 1, lag: 0.70 } },
 
       teacherResources: { group: "education", label: "Moyens scolaires", min: -15, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.86, supply: 0.24, jobs: 10, poverty: -0.02, lag: 0.55 } },
       vocationalTraining: { group: "education", label: "Formation professionnelle", min: -5, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.72, supply: 0.42, jobs: 13, poverty: -0.03, lag: 0.42 } },
@@ -1073,7 +1161,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.2.0"
+      version: "4.3.0"
     }
   };
 })();
