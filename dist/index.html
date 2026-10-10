@@ -40,6 +40,17 @@
       </div>
     </header>
 
+    <div class="journey-bar" aria-label="Parcours rapide">
+      <div class="journey-inner">
+        <span class="journey-label">Votre parcours</span>
+        <button data-scroll="workspace"><i>1</i><span>Choisir</span></button>
+        <button data-scroll="structural"><i>2</i><span>Affiner</span></button>
+        <button data-scroll="politics"><i>3</i><span>Comparer</span></button>
+        <button data-scroll="budget"><i>4</i><span>Détailler</span></button>
+        <span class="journey-status" id="journey-status">Mon scénario · 3 ans</span>
+      </div>
+    </div>
+
     <main id="main">
       <section class="hero" id="simulator">
         <div class="eyebrow"><span class="live-dot"></span>Données arrêtées au 10 octobre 2026</div>
@@ -50,6 +61,10 @@
               Modifiez le budget, la démographie, l’immigration et l’énergie. Observez les effets estimés sur le déficit,
               la dette, la croissance, l’emploi et les émissions — sans cacher les hypothèses ni l’incertitude.
             </p>
+            <div class="hero-actions">
+              <button class="button button-dark" data-scroll="workspace">Commencer la simulation</button>
+              <button class="button button-ghost" data-scroll="politics">Comparer les programmes</button>
+            </div>
           </div>
           <div class="hero-stamp" aria-label="Périmètre de la simulation">
             <span>Périmètre</span>
@@ -67,14 +82,17 @@
         </div>
       </section>
 
-      <section class="workspace" aria-label="Espace de simulation">
+      <section class="workspace" id="workspace" aria-label="Espace de simulation">
         <aside class="control-panel">
           <div class="panel-heading">
             <div>
               <span class="section-number">01</span>
               <h2>Votre scénario</h2>
             </div>
-            <button class="text-button" id="reset-button">Tout réinitialiser</button>
+            <div class="panel-heading-actions">
+              <button class="mobile-controls-toggle" id="mobile-controls-toggle" aria-expanded="false">Ouvrir les réglages</button>
+              <button class="text-button" id="reset-button">Tout réinitialiser</button>
+            </div>
           </div>
 
           <label class="field-label" for="scenario-name">Nom du scénario</label>
@@ -178,6 +196,12 @@
               <small id="sub-unemployment">—</small>
             </article>
           </div>
+
+          <article class="plain-summary" id="plain-summary" aria-live="polite">
+            <span>Lecture en 20 secondes</span>
+            <h3 id="plain-summary-title">Votre scénario suit la référence.</h3>
+            <p id="plain-summary-text"></p>
+          </article>
 
           <article class="chart-card">
             <div class="chart-toolbar">
@@ -341,7 +365,7 @@
         </div>
       </section>
 
-      <section class="budget-editor" aria-labelledby="budget-title">
+      <section class="budget-editor" id="budget" aria-labelledby="budget-title">
         <div class="section-intro">
           <div>
             <span class="section-number">06</span>
@@ -350,6 +374,7 @@
           </div>
           <div class="editor-summary">
             <span id="changed-count">0 poste modifié</span>
+            <label class="modified-toggle"><input type="checkbox" id="modified-only" /> Modifiés seulement</label>
             <button class="button button-ghost small" id="undo-button" disabled>Annuler</button>
           </div>
         </div>
@@ -440,7 +465,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 4.1 · octobre 2026</span>
+      <span>Version 4.2 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

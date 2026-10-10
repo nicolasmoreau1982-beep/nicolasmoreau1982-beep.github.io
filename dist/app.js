@@ -25,8 +25,9 @@
     activeBudget: "spending",
     chartMetric: "deficitRatio",
     search: "",
+    modifiedOnly: false,
     name: "Mon scénario",
-    collapsed: new Set(),
+    collapsed: new Set([...D.spendingGroups, ...D.revenueGroups].map((group) => group.id)),
     undoStack: [],
     editSnapshot: null,
     projection: null
@@ -966,6 +967,49 @@
     $("#metric-unemployment").textContent = percent(item.unemployment);
     updateMetricDelta($("#delta-unemployment"), item.unemployment - baseline.unemployment, true, " pt");
     $("#sub-unemployment").textContent = `Estimation annuelle ${item.year}`;
+    updatePlainSummary(item, baseline);
+    $("#journey-status").textContent = `${state.name || "Mon scénario"} · ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
+  }
+
+  function updatePlainSummary(item, baseline) {
+    const deficitDelta = item.deficitRatio - baseline.deficitRatio;
+    const debtDelta = item.debtRatio - baseline.debtRatio;
+    const growthDelta = item.growth - baseline.growth;
+    const unemploymentDelta = item.unemployment - baseline.unemployment;
+    const fiscal = item.directBalanceCost;
+    const demand = item.demandContribution;
+    const supply = item.supplyContribution;
+    const isReference = Math.abs(deficitDelta) < 0.03 && Math.abs(growthDelta) < 0.03 && Math.abs(debtDelta) < 0.05;
+
+    if (isReference) {
+      $("#plain-summary-title").textContent = "Votre scénario suit la trajectoire de référence.";
+      $("#plain-summary-text").textContent = `À ${state.horizon} an${state.horizon > 1 ? "s" : ""}, aucune modification ne déplace sensiblement le déficit, la dette ou l’activité. Choisissez un préréglage ou modifiez un levier pour comparer.`;
+      return;
+    }
+
+    const budgetPhrase = deficitDelta < -0.15
+      ? "le déficit public se réduit"
+      : deficitDelta > 0.15
+        ? "le déficit public augmente"
+        : "le déficit reste proche de la référence";
+    const activityPhrase = growthDelta > 0.12
+      ? "l’activité accélère"
+      : growthDelta < -0.12
+        ? "l’activité ralentit"
+        : "la croissance annuelle change peu";
+    $("#plain-summary-title").textContent = `${budgetPhrase[0].toUpperCase()}${budgetPhrase.slice(1)} et ${activityPhrase}.`;
+
+    const reasons = [];
+    if (Math.abs(fiscal) > 2) reasons.push(fiscal > 0
+      ? `les mesures coûtent directement environ ${money(fiscal)} par an avant retours économiques`
+      : `les économies et recettes améliorent directement le solde d’environ ${money(-fiscal)} par an`);
+    if (Math.abs(supply) > Math.abs(demand) * 0.65 && Math.abs(supply) > 2) reasons.push("les effets sur l’offre, le travail et la productivité deviennent déterminants");
+    else if (Math.abs(demand) > 2) reasons.push("la demande intérieure explique l’essentiel de l’écart d’activité");
+    if (Math.abs(unemploymentDelta) > 0.1) reasons.push(`le chômage est simulé ${unemploymentDelta < 0 ? "plus bas" : "plus haut"} de ${fmt1.format(Math.abs(unemploymentDelta))} point`);
+    if (Math.abs(item.extraInterest) > 2) reasons.push("la charge d’intérêts amplifie progressivement le résultat");
+    if (!reasons.length) reasons.push("plusieurs effets de faible ampleur se compensent");
+    const caveat = state.horizon > 10 ? " À cet horizon, retenez surtout la direction et la fourchette, pas la décimale." : "";
+    $("#plain-summary-text").textContent = `Pourquoi : ${reasons.slice(0, 3).join(" ; ")}.${caveat}`;
   }
 
   function metricConfig(metric) {
@@ -1155,7 +1199,11 @@
     const categories = isSpending ? D.spending : D.revenue;
     const groups = isSpending ? D.spendingGroups : D.revenueGroups;
     const query = state.search.trim().toLocaleLowerCase("fr");
-    const matching = categories.filter((category) => !query || category.label.toLocaleLowerCase("fr").includes(query) || category.id.toLowerCase().includes(query));
+    const matching = categories.filter((category) => {
+      const matchesQuery = !query || category.label.toLocaleLowerCase("fr").includes(query) || category.id.toLowerCase().includes(query);
+      const matchesModified = !state.modifiedOnly || Math.abs(changeFor(category.id)) > 0.01;
+      return matchesQuery && matchesModified;
+    });
     const html = groups.map((group) => {
       const children = matching.filter((category) => category.group === group.id);
       if (!children.length) return "";
@@ -1185,7 +1233,13 @@
         </section>
       `;
     }).join("");
-    $("#category-list").innerHTML = html || `<div class="empty-state">Aucun poste ne correspond à « ${escapeHtml(state.search)} ».</div>`;
+    const emptyMessage = state.modifiedOnly
+      ? "Aucun poste modifié dans cet onglet. Désactivez « Modifiés seulement » pour retrouver tout le budget."
+      : `Aucun poste ne correspond à « ${escapeHtml(state.search)} ».`;
+    $("#category-list").innerHTML = html || `<div class="empty-state">${emptyMessage}</div>`;
+    const visibleGroups = groups.filter((group) => matching.some((category) => category.group === group.id));
+    const allCollapsed = visibleGroups.length > 0 && visibleGroups.every((group) => state.collapsed.has(group.id));
+    $("#expand-all").textContent = allCollapsed && !query ? "Tout déplier" : "Tout replier";
     $("#editor-footnote").textContent = isSpending
       ? "Détail COFOG 2024 provisoire, recalé proportionnellement sur le total Insee 2025. La charge de la dette est calculée par le moteur."
       : "Recettes observées en 2025 dans les comptes nationaux Insee. Certains sous-postes sont des regroupements pour éviter les doubles comptes.";
@@ -1369,12 +1423,21 @@
         refreshAll(true);
       });
     });
-    $("#scenario-name").addEventListener("input", (event) => { state.name = event.target.value; });
+    $("#scenario-name").addEventListener("input", (event) => {
+      state.name = event.target.value;
+      $("#journey-status").textContent = `${state.name || "Mon scénario"} · ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
+    });
     $("#preset-list").addEventListener("click", (event) => {
       const preset = event.target.closest("[data-preset]");
       if (preset) applyPreset(preset.dataset.preset);
     });
     $("#reset-button").addEventListener("click", resetScenario);
+    $("#mobile-controls-toggle").addEventListener("click", () => {
+      const panel = $(".control-panel");
+      const collapsed = panel.classList.toggle("is-mobile-collapsed");
+      $("#mobile-controls-toggle").setAttribute("aria-expanded", collapsed ? "false" : "true");
+      $("#mobile-controls-toggle").textContent = collapsed ? "Ouvrir les réglages" : "Fermer les réglages";
+    });
     $("#undo-button").addEventListener("click", undo);
     $("#save-button").addEventListener("click", saveScenario);
     $$("[data-horizon]").forEach((button) => button.addEventListener("click", () => {
@@ -1481,6 +1544,14 @@
       state.search = event.target.value;
       renderCategories();
     });
+    $("#modified-only").addEventListener("change", (event) => {
+      state.modifiedOnly = event.target.checked;
+      if (state.modifiedOnly) {
+        const categories = state.activeBudget === "spending" ? D.spending : D.revenue;
+        categories.filter((category) => Math.abs(changeFor(category.id)) > 0.01).forEach((category) => state.collapsed.delete(category.group));
+      }
+      renderCategories();
+    });
     $("#category-list").addEventListener("click", (event) => {
       const toggle = event.target.closest("[data-toggle-group]");
       if (!toggle) return;
@@ -1518,7 +1589,12 @@
       setCategoryChange(id, event.target.value, true);
     });
     $("#expand-all").addEventListener("click", () => {
-      state.collapsed.clear();
+      const groups = state.activeBudget === "spending" ? D.spendingGroups : D.revenueGroups;
+      const allCollapsed = groups.every((group) => state.collapsed.has(group.id));
+      groups.forEach((group) => {
+        if (allCollapsed) state.collapsed.delete(group.id);
+        else state.collapsed.add(group.id);
+      });
       renderCategories();
     });
     $("#method-modal-button").addEventListener("click", () => $("#method-dialog").showModal());
@@ -1546,10 +1622,41 @@
     if (saved) document.documentElement.dataset.theme = saved;
   }
 
+  function initResponsiveUX() {
+    const mobile = window.matchMedia("(max-width: 760px)");
+    const apply = (isMobile) => {
+      const panel = $(".control-panel");
+      const button = $("#mobile-controls-toggle");
+      if (isMobile) {
+        panel.classList.add("is-mobile-collapsed");
+        button.setAttribute("aria-expanded", "false");
+        button.textContent = "Ouvrir les réglages";
+      } else {
+        panel.classList.remove("is-mobile-collapsed");
+        button.setAttribute("aria-expanded", "true");
+      }
+    };
+    apply(mobile.matches);
+    mobile.addEventListener?.("change", (event) => apply(event.matches));
+  }
+
+  function initJourneyObserver() {
+    if (!("IntersectionObserver" in window)) return;
+    const ids = ["workspace", "structural", "politics", "budget"];
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      $$(".journey-inner [data-scroll]").forEach((button) => button.classList.toggle("is-active", button.dataset.scroll === visible.target.id));
+    }, { rootMargin: "-25% 0px -60%", threshold: [0, 0.1, 0.35] });
+    ids.forEach((id) => { const section = $(`#${id}`); if (section) observer.observe(section); });
+  }
+
   loadInitialState();
   initTheme();
   initializeControls();
+  initResponsiveUX();
   bindEvents();
   renderCategories();
   refreshAll(false);
+  initJourneyObserver();
 })();

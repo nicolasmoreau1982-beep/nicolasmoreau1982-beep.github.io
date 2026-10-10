@@ -54,6 +54,8 @@ La version 4.0 comprend :
 - une comparaison à 1, 3, 5, 10, 20 et 30 ans avec sources et confiance de traduction séparée des hypothèses économiques ;
 - une extrapolation 2036–2055 explicitement structurelle, fondée sur les projections démographiques Insee/COR et assortie d’une incertitude accélérée.
 
+La version 4.2 simplifie l’utilisation avec un parcours en quatre étapes, une lecture automatique en langage courant, des réglages mobiles repliables, un budget compact par défaut et un filtre des seuls postes modifiés.
+
 ## Structure
 
 ```text
