@@ -27,6 +27,7 @@
       </a>
       <nav aria-label="Navigation principale">
         <button class="nav-link is-active" data-scroll="simulator">Simulateur</button>
+        <button class="nav-link" data-scroll="politics">Programmes</button>
         <button class="nav-link" data-scroll="methodology">Méthode</button>
         <button class="nav-link" data-scroll="sources">Sources</button>
       </nav>
@@ -294,10 +295,51 @@
         <p class="engine-footnote">Les moteurs sont additionnels aux variations détaillées du budget. Évitez de saisir deux fois la même mesure. Les effets sont graduels, interdépendants et assortis d’une incertitude accrue quand plusieurs systèmes sont modifiés ensemble.</p>
       </section>
 
-      <section class="budget-editor" aria-labelledby="budget-title">
+      <section class="politics-lab" id="politics" aria-labelledby="politics-title">
         <div class="section-intro">
           <div>
             <span class="section-number">05</span>
+            <h2 id="politics-title">Le banc d’essai des programmes</h2>
+          </div>
+          <p>Mêmes données, mêmes équations, même horizon. Ce sont les traductions chiffrées d’EcoSim — ni des prévisions électorales, ni des chiffrages officiels.</p>
+        </div>
+        <div class="politics-toolbar">
+          <div class="politics-tabs" role="tablist" aria-label="Période des programmes">
+            <button class="is-active" data-politics-view="current" role="tab" aria-selected="true">Groupes actuels</button>
+            <button data-politics-view="historical" role="tab" aria-selected="false">Noyaux récurrents sur 20 ans</button>
+          </div>
+          <div class="politics-horizon" role="group" aria-label="Horizon de comparaison politique">
+            <span>Comparer à</span>
+            <button data-politics-horizon="1">1 an</button>
+            <button data-politics-horizon="3" class="is-active">3 ans</button>
+            <button data-politics-horizon="5">5 ans</button>
+            <button data-politics-horizon="10">10 ans</button>
+          </div>
+        </div>
+        <div class="politics-grid">
+          <div>
+            <div class="politics-list" id="politics-list"></div>
+            <p class="politics-list-note" id="politics-list-note"></p>
+          </div>
+          <article class="politics-detail" id="politics-detail" aria-live="polite"></article>
+        </div>
+        <article class="politics-comparison-card">
+          <div class="politics-comparison-head">
+            <div><small>Résultats du moteur EcoSim</small><h3 id="politics-comparison-title">Comparaison à 3 ans</h3></div>
+            <span>écarts et niveaux simulés</span>
+          </div>
+          <div class="politics-comparison-scroll"><div id="politics-comparison"></div></div>
+        </article>
+        <div class="politics-warning">
+          <strong>Règle de lecture</strong>
+          <p>Un programme incomplet ou contradictoire n’est pas « complété » silencieusement : la convention EcoSim est affichée et la confiance abaissée. Sur vingt ans, les promesses incompatibles entre deux élections sont exclues au lieu d’être additionnées.</p>
+        </div>
+      </section>
+
+      <section class="budget-editor" aria-labelledby="budget-title">
+        <div class="section-intro">
+          <div>
+            <span class="section-number">06</span>
             <h2 id="budget-title">Réglez le budget</h2>
             <p>Chaque variation est permanente à partir de 2026, en euros constants 2025. Les effets indirects sont calculés séparément.</p>
           </div>
@@ -332,7 +374,7 @@
       <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">06</span>
+            <span class="section-number">07</span>
             <h2 id="sectors-title">Qui porte les comptes publics&nbsp;?</h2>
           </div>
           <p>Le budget de l’État n’est qu’une partie des finances publiques. Voici les quatre sous-secteurs comptables observés en 2025.</p>
@@ -347,7 +389,7 @@
       <section class="methodology" id="methodology" aria-labelledby="method-title">
         <div class="method-heading">
           <div>
-            <span class="section-number light">07</span>
+            <span class="section-number light">08</span>
             <h2 id="method-title">Un modèle qui montre ses coutures.</h2>
           </div>
           <p>Nous ne choisissons pas une école économique à votre place. Cinq lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
@@ -383,7 +425,7 @@
 
       <section class="sources-section" id="sources" aria-labelledby="sources-title">
         <div class="section-intro">
-          <div><span class="section-number">08</span><h2 id="sources-title">Données & sources</h2></div>
+          <div><span class="section-number">09</span><h2 id="sources-title">Données & sources</h2></div>
           <p>Chaque chiffre a un millésime. Les observations, calibrages et hypothèses sont distingués.</p>
         </div>
         <div class="source-grid" id="source-grid"></div>
@@ -393,7 +435,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 3.0 · octobre 2026</span>
+      <span>Version 4.0 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -421,6 +463,8 @@
           <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Les motifs ne déterminent pas une contribution intrinsèque. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
           <h3>8. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
+          <h3>9. Programmes politiques</h3>
+          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Sources, date, conventions et niveau de confiance sont affichés. Le module ne prédit ni les coalitions, ni la capacité parlementaire à voter les mesures, ni leur conformité juridique exacte. Le « gouvernement technique » est une convention de continuité, pas l’absence de valeurs.</p>
         </div>
         <div class="modal-footer"><button class="button button-dark" value="close">J’ai compris</button></div>
       </form>

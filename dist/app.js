@@ -18,6 +18,9 @@
     activeStructuralTab: "demography",
     engines: Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value])),
     activeEngine: "work",
+    politicsView: "current",
+    politicsHorizon: 3,
+    selectedPolitics: "technical",
     horizon: 3,
     activeBudget: "spending",
     chartMetric: "deficitRatio",
@@ -466,6 +469,7 @@
     renderStructuralControls();
     renderEngineSelector();
     renderEngineControls();
+    renderPolitics();
     updateModelDescription();
     updateAssumptionDescription();
   }
@@ -489,6 +493,166 @@
         <time>${source.date}</time>
       </a>
     `).join("");
+  }
+
+  const politicalProjectionCache = new Map();
+
+  function politicalScenarioList() {
+    return D.politicalScenarios[state.politicsView] || [];
+  }
+
+  function politicalScenarioById(id = state.selectedPolitics) {
+    return politicalScenarioList().find((item) => item.id === id) || politicalScenarioList()[0];
+  }
+
+  function calculatePoliticalProjection(scenario) {
+    const cached = politicalProjectionCache.get(scenario.id);
+    if (cached) return cached;
+    const snapshot = {
+      changes: state.changes,
+      model: state.model,
+      euMode: state.euMode,
+      cycle: state.cycle,
+      monetary: state.monetary,
+      confidence: state.confidence,
+      structural: state.structural,
+      engines: state.engines
+    };
+    state.changes = { ...scenario.changes };
+    state.model = "consensus";
+    state.euMode = scenario.euMode;
+    state.cycle = "normal";
+    state.monetary = "neutral";
+    state.confidence = "stable";
+    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, scenario.structural[id] ?? control.value]));
+    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, scenario.engines[id] ?? control.value]));
+    const projection = calculateProjection();
+    Object.assign(state, snapshot);
+    politicalProjectionCache.set(scenario.id, projection);
+    return projection;
+  }
+
+  function politicalPoint(scenario) {
+    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.politicsHorizon];
+    const projection = calculatePoliticalProjection(scenario);
+    return { point: projection.scenario[index], baseline: projection.baseline[index] };
+  }
+
+  function politicalTranslationRows(scenario) {
+    const rows = [];
+    Object.entries(scenario.changes).forEach(([id, value]) => {
+      const category = byId.get(id);
+      if (!category) return;
+      const direction = value > 0 ? "+" : "−";
+      const kind = category.type === "spending" ? "Dépense" : "Recette";
+      rows.push(`${kind} · ${category.label} : ${direction}${fmt1.format(Math.abs(value))} Md€/an`);
+    });
+    Object.entries(scenario.structural).forEach(([id, value]) => {
+      const control = D.structural.controls[id];
+      if (control) rows.push(`${control.label} : ${controlText(id, value)}`);
+    });
+    Object.entries(scenario.engines).forEach(([id, value]) => {
+      const control = D.policyEngines.controls[id];
+      if (control) rows.push(`${control.label} : ${engineControlText(id, value)}`);
+    });
+    return rows;
+  }
+
+  function renderPoliticsList() {
+    const scenarios = politicalScenarioList();
+    if (!scenarios.some((item) => item.id === state.selectedPolitics)) state.selectedPolitics = scenarios[0]?.id;
+    $("#politics-list").innerHTML = scenarios.map((scenario) => `
+      <button class="politics-card ${scenario.id === state.selectedPolitics ? "is-active" : ""}" data-politics-id="${scenario.id}" style="--party-color:${scenario.color}">
+        <span class="party-mark">${scenario.short}</span>
+        <span class="party-copy"><strong>${scenario.name}</strong><small>${scenario.date}</small></span>
+        <span class="confidence confidence-${scenario.confidenceKey}">${scenario.confidence}</span>
+        ${scenario.seats ? `<b>${scenario.seats}<small> sièges</small></b>` : ""}
+      </button>`).join("");
+    $("#politics-list-note").textContent = state.politicsView === "current"
+      ? "Effectifs officiels de l’Assemblée au 10 octobre 2026. Les non-inscrits sont exclus : ils n’ont pas de programme collectif."
+      : "Une famille historique n’est pas un parti continu. Le noyau récurrent agrège seulement les engagements compatibles retrouvés depuis 2007.";
+  }
+
+  function renderPoliticsDetail() {
+    const scenario = politicalScenarioById();
+    if (!scenario) return;
+    const { point, baseline } = politicalPoint(scenario);
+    const emissions = point.structural.emissionsChange + point.engines.emissions;
+    const poverty = 15.4 + point.engines.poverty;
+    const translationUncertainty = { high: 1, medium: 1.25, low: 1.6 }[scenario.confidenceKey] || 1;
+    const rows = politicalTranslationRows(scenario);
+    $("#politics-detail").innerHTML = `
+      <div class="politics-detail-head" style="--party-color:${scenario.color}">
+        <span class="party-mark large">${scenario.short}</span>
+        <div><small>${scenario.date}</small><h3>${scenario.name}</h3></div>
+        <span class="confidence confidence-${scenario.confidenceKey}">confiance ${scenario.confidence}</span>
+      </div>
+      <p class="politics-summary">${scenario.summary}</p>
+      <div class="politics-measures">${scenario.measures.map((item, index) => `<div><i>0${index + 1}</i><span>${item}</span></div>`).join("")}</div>
+      <div class="politics-results">
+        <div><small>Déficit</small><strong>${percent(point.deficitRatio)}</strong><span>${signed(point.deficitRatio - baseline.deficitRatio, " pt vs réf.")}</span></div>
+        <div><small>Dette</small><strong>${percent(point.debtRatio)}</strong><span>± ${fmt1.format(point.bands.debtRatio * translationUncertainty)} pt</span></div>
+        <div><small>Croissance</small><strong>${percent(point.growth)}</strong><span>${signed(point.growth - baseline.growth, " pt")}</span></div>
+        <div><small>Chômage</small><strong>${percent(point.unemployment)}</strong><span>${signed(point.unemployment - baseline.unemployment, " pt")}</span></div>
+        <div><small>Émissions</small><strong>${signed(emissions, " Mt")}</strong><span>écart CO₂e</span></div>
+        <div><small>Pauvreté</small><strong>${percent(poverty)}</strong><span>${signed(point.engines.poverty, " pt")}</span></div>
+      </div>
+      <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}</p></div>
+      <details class="politics-mapping"><summary>Voir la traduction exacte (${rows.length} réglages)</summary><div>${rows.length ? rows.map((row) => `<span>${row}</span>`).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
+      <div class="politics-actions">
+        <button class="button button-dark" data-apply-politics="${scenario.id}">Appliquer au simulateur</button>
+        <span>${scenario.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label} ↗</a>`).join("")}</span>
+      </div>`;
+  }
+
+  function renderPoliticsComparison() {
+    const scenarios = politicalScenarioList();
+    $("#politics-comparison-title").textContent = `Comparaison à ${state.politicsHorizon} an${state.politicsHorizon > 1 ? "s" : ""}`;
+    const header = `<div class="politics-compare-row is-head"><span>Scénario</span><span>Déficit</span><span>Dette</span><span>PIB vs réf.</span><span>Chômage</span><span>CO₂e</span></div>`;
+    const body = scenarios.map((scenario) => {
+      const { point, baseline } = politicalPoint(scenario);
+      const gdpDelta = (point.gdp / baseline.gdp - 1) * 100;
+      const emissions = point.structural.emissionsChange + point.engines.emissions;
+      return `<button class="politics-compare-row ${scenario.id === state.selectedPolitics ? "is-selected" : ""}" data-politics-id="${scenario.id}" style="--party-color:${scenario.color}">
+        <span><i></i><b>${scenario.short}</b><small>${scenario.confidence}</small></span>
+        <span>${percent(point.deficitRatio)}</span><span>${percent(point.debtRatio)}</span><span>${signed(gdpDelta, " %")}</span><span>${percent(point.unemployment)}</span><span>${signed(emissions, " Mt")}</span>
+      </button>`;
+    }).join("");
+    $("#politics-comparison").innerHTML = header + body;
+  }
+
+  function renderPolitics() {
+    renderPoliticsList();
+    renderPoliticsDetail();
+    renderPoliticsComparison();
+  }
+
+  function applyPoliticalScenario(id) {
+    const scenario = politicalScenarioById(id);
+    if (!scenario) return;
+    pushUndo();
+    state.changes = { ...scenario.changes };
+    state.model = "consensus";
+    state.euMode = scenario.euMode;
+    state.cycle = "normal";
+    state.monetary = "neutral";
+    state.confidence = "stable";
+    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([key, control]) => [key, scenario.structural[key] ?? control.value]));
+    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([key, control]) => [key, scenario.engines[key] ?? control.value]));
+    state.name = scenario.name;
+    $("#scenario-name").value = state.name;
+    $("#model-select").value = state.model;
+    $("#eu-select").value = state.euMode;
+    $("#cycle-select").value = state.cycle;
+    $("#monetary-select").value = state.monetary;
+    $("#confidence-select").value = state.confidence;
+    updateModelDescription();
+    updateAssumptionDescription();
+    renderStructuralControls();
+    renderEngineControls();
+    refreshAll(true);
+    showToast(`Scénario « ${scenario.name} » appliqué et modifiable`);
+    $("#simulator").scrollIntoView({ behavior: "smooth" });
   }
 
   function updateModelDescription() {
@@ -1250,6 +1414,34 @@
       commitEditSnapshot();
     });
     $("#reset-engines").addEventListener("click", resetPolicyEngines);
+    $(".politics-tabs").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-politics-view]");
+      if (!button) return;
+      state.politicsView = button.dataset.politicsView;
+      state.selectedPolitics = state.politicsView === "current" ? "technical" : D.politicalScenarios.historical[0].id;
+      $$('[data-politics-view]').forEach((item) => {
+        item.classList.toggle("is-active", item === button);
+        item.setAttribute("aria-selected", item === button ? "true" : "false");
+      });
+      renderPolitics();
+    });
+    $$('[data-politics-horizon]').forEach((button) => button.addEventListener("click", () => {
+      state.politicsHorizon = Number(button.dataset.politicsHorizon);
+      $$('[data-politics-horizon]').forEach((item) => item.classList.toggle("is-active", item === button));
+      renderPoliticsDetail();
+      renderPoliticsComparison();
+    }));
+    $("#politics").addEventListener("click", (event) => {
+      const apply = event.target.closest("[data-apply-politics]");
+      if (apply) {
+        applyPoliticalScenario(apply.dataset.applyPolitics);
+        return;
+      }
+      const choice = event.target.closest("[data-politics-id]");
+      if (!choice) return;
+      state.selectedPolitics = choice.dataset.politicsId;
+      renderPolitics();
+    });
     $("#metric-switch").addEventListener("click", (event) => {
       const button = event.target.closest("[data-chart]");
       if (!button) return;

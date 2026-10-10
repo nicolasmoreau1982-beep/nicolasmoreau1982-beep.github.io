@@ -222,6 +222,46 @@ window.ECOSIM_DATA = (() => {
       date: "2009",
       url: "https://www.elibrary.imf.org/view/journals/002/2009/233/article-A003-en.xml",
       note: "Ordres de grandeur pour investissement, transferts ciblés et baisses d’impôts en France."
+    },
+    {
+      id: "assembly-groups-2026",
+      publisher: "Assemblée nationale",
+      title: "Groupes politiques de la XVIIe législature",
+      date: "consulté le 10 octobre 2026",
+      url: "https://www.assemblee-nationale.fr/dyn/les-groupes-politiques",
+      note: "Noms et effectifs officiels des groupes. Les non-inscrits ne forment pas un programme collectif."
+    },
+    {
+      id: "rn-programme-2024",
+      publisher: "Rassemblement National",
+      title: "Programme des législatives 2024",
+      date: "juin 2024",
+      url: "https://rassemblementnational.fr/documents/202406-programme.pdf",
+      note: "Source primaire utilisée pour traduire les principales mesures du scénario RN."
+    },
+    {
+      id: "nfp-programme-2024",
+      publisher: "Nouveau Front populaire",
+      title: "Programme et proposition macroéconomique",
+      date: "juin 2024",
+      url: "https://lafranceinsoumise.fr/wp-content/uploads/2024/06/RECIT-MACRO-FRONT-POPULAIRE-VF.pdf",
+      note: "Source primaire commune aux groupes LFI, socialiste, écologiste et GDR, modulée par leurs déclarations propres."
+    },
+    {
+      id: "horizons-manifesto",
+      publisher: "Horizons",
+      title: "Le manifeste",
+      date: "version consultée en 2026",
+      url: "https://horizonsleparti.fr/le-manifeste/",
+      note: "Compétitivité, maîtrise des comptes, éducation, ordre et décarbonation."
+    },
+    {
+      id: "political-archives-2007",
+      publisher: "Vie publique",
+      title: "Archives des programmes et discours électoraux",
+      date: "2007–2022",
+      url: "https://www.vie-publique.fr/discours/166209-programme-electoral-de-jean-marie-le-pen-president-du-front-national-et",
+      note: "Point d’entrée documentaire pour reconstruire les lignes récurrentes sur vingt ans, sans fusionner les promesses contradictoires."
     }
   ];
 
@@ -752,6 +792,197 @@ window.ECOSIM_DATA = (() => {
     }
   ];
 
+  /* Scénarios politiques : traductions EcoSim, jamais des chiffrages officiels. */
+  const politicalScenarios = {
+    current: [
+      {
+        id: "technical", name: "Gouvernement technique", short: "TECH", seats: null, color: "#667085",
+        confidence: "élevée", confidenceKey: "high", date: "Convention 2026",
+        summary: "Continuité des lois votées, indexations, entretien des services et respect du cadre européen, sans mesure discrétionnaire nouvelle.",
+        why: "Ce scénario sert de témoin. Il ne prétend pas être apolitique au sens philosophique : il fige seulement les choix nouveaux.",
+        model: "consensus", euMode: "current", changes: {}, structural: {}, engines: {},
+        measures: ["Lois et barèmes déjà en vigueur", "Indexations et renouvellement courant", "Trajectoire européenne de référence"],
+        sources: [{ label: "Budget de l’État 2026", url: "https://www.budget.gouv.fr/reperes/loi_de_finances/articles/chiffres-cles-budget-etat-2026" }]
+      },
+      {
+        id: "rn", name: "Rassemblement National", short: "RN", seats: 121, color: "#253b73",
+        confidence: "moyenne", confidenceKey: "medium", date: "Programme 2024 + contre-budget 2026",
+        summary: "Baisse de fiscalité sur l’énergie, priorité aux fonctions régaliennes, restriction migratoire, nucléaire et protection économique.",
+        why: "Les économies annoncées et les effets juridiques de la préférence nationale sont très incertains ; la fourchette doit donc compter davantage que le point central.",
+        model: "industrial", euMode: "renegotiation",
+        changes: { R_TVA: -10, R_PRODUCTS: -5, GF0201: 5, GF0301: 4, GF0303: 2, GF0102: -3, GF0505: -1, GF1004: 3 },
+        structural: { economicMigration: 20, otherMigration: 25, nuclear: 8, renewables: -6 },
+        engines: { tradeProtection: 5, fraudRecovery: 7, publicSafety: 5, defenseCapacity: 5, domesticDefense: 18, pensionIndex: 0.5 },
+        measures: ["TVA/accises énergie en baisse", "Immigration et prestations plus restrictives", "Sécurité, défense, nucléaire et contenu national"],
+        sources: [{ label: "Programme législatif 2024", url: "https://rassemblementnational.fr/documents/202406-programme.pdf" }, { label: "Contre-budget 2026", url: "https://francaisdeletranger.rassemblementnational.fr/documents/GRN-CONTRE-BUDGET-2026.pdf" }]
+      },
+      {
+        id: "epr", name: "Ensemble pour la République", short: "EPR", seats: 90, color: "#e7a72d",
+        confidence: "moyenne", confidenceKey: "medium", date: "Continuité 2022–2026",
+        summary: "Prolongement pro-européen des réformes d’offre, avec industrie, innovation, emploi, défense et modernisation administrative.",
+        why: "Le groupe n’a pas publié un nouveau programme exhaustif homogène en 2026 ; la traduction prolonge les mesures et budgets défendus depuis 2022.",
+        model: "supply", euMode: "current",
+        changes: { R_OTHERPROD: -4, R_IS: -3, GF0201: 4, GF0404: 3, GF0408: 5, GF0904: 2 },
+        structural: { nuclear: 5, renewables: 12, efficiency: 3, economicMigration: 70, integration: 66 },
+        engines: { laborParticipation: 1, productivity: 0.3, industrialInvestment: 7, publicResearch: 4, digitalAdministration: 5, fraudRecovery: 4, defenseCapacity: 4 },
+        measures: ["Fiscalité productive et emploi", "Réindustrialisation, nucléaire et innovation", "Défense et numérisation de l’État"],
+        sources: [{ label: "Renaissance — conventions et propositions", url: "https://parti-renaissance.fr/" }]
+      },
+      {
+        id: "lfi", name: "La France insoumise – NFP", short: "LFI", seats: 70, color: "#b52355",
+        confidence: "moyenne", confidenceKey: "medium", date: "NFP 2024 + programme LFI",
+        summary: "Relance sociale et écologique, hausse des services publics et des salaires, retraite plus précoce et fiscalité fortement progressive.",
+        why: "Le programme chiffre un volume macroéconomique élevé, mais son calendrier, le rendement fiscal et la réaction européenne restent très sensibles.",
+        model: "keynesian", euMode: "renegotiation",
+        changes: { GF0703: 10, GF0901: 7, GF0902: 7, GF0904: 5, GF0601: 8, GF0405: 10, GF1007: 10, R_IR: 18, R_IS: 15, R_CAPITALLEVY: 8, R_HIGHINC: 6, R_EXCEPTIONAL: 8 },
+        structural: { renewables: 35, efficiency: 12, carbonTax: 15, economicMigration: 70, otherMigration: 140, integration: 70 },
+        engines: { minimumWage: 14, retirementAge: -2, pensionIndex: 1.5, teacherResources: 12, healthWorkforce: 55, socialHousing: 90, targetedTransfers: 12, publicResearch: 10, transportInfrastructure: 12, bankLevy: 6, fraudRecovery: 9 },
+        measures: ["SMIC, retraites et transferts revalorisés", "Services publics et planification écologique", "Impôts progressifs, capital et grandes entreprises"],
+        sources: [{ label: "Proposition macroéconomique NFP", url: "https://lafranceinsoumise.fr/wp-content/uploads/2024/06/RECIT-MACRO-FRONT-POPULAIRE-VF.pdf" }, { label: "L’Avenir en commun", url: "https://programme.lafranceinsoumise.fr/category/programme/laec/" }]
+      },
+      {
+        id: "soc", name: "Socialistes et apparentés", short: "SOC", seats: 68, color: "#d94b70",
+        confidence: "moyenne", confidenceKey: "medium", date: "NFP + déclaration de groupe 2024",
+        summary: "Pouvoir d’achat, services publics, logement et transition écologique, financés par une fiscalité plus progressive.",
+        why: "La base NFP est commune, mais le scénario retient une intensité et une renégociation européenne plus graduelles.",
+        model: "consensus", euMode: "renegotiation",
+        changes: { GF0703: 7, GF0901: 5, GF0902: 5, GF0601: 7, GF0405: 7, GF1006: 5, GF1007: 6, R_IR: 11, R_IS: 8, R_CAPITALLEVY: 5, R_HIGHINC: 3 },
+        structural: { renewables: 28, efficiency: 10, carbonTax: 10, integration: 68 },
+        engines: { minimumWage: 7, retirementAge: -1, pensionIndex: 0.5, teacherResources: 8, healthWorkforce: 35, socialHousing: 65, targetedTransfers: 8, publicResearch: 6, transportInfrastructure: 8 },
+        measures: ["Pouvoir d’achat et retraite révisée", "École, santé, logement et rail", "Fiscalité progressive et transition juste"],
+        sources: [{ label: "Déclaration politique du groupe", url: "https://parti-socialiste.fr/vie-parlementaire/notre-declaration-politique-17eme-legislature/" }]
+      },
+      {
+        id: "dr", name: "Droite Républicaine", short: "DR", seats: 47, color: "#3776b6",
+        confidence: "faible", confidenceKey: "low", date: "Orientations LR 2024–2026",
+        summary: "Réduction de la dépense, baisse des prélèvements productifs, travail et retraite plus tardive, sécurité, défense et nucléaire.",
+        why: "Les économies sont ventilées par EcoSim faute de programme national actuel entièrement chiffré et consolidé.",
+        model: "liberal", euMode: "current",
+        changes: { GF0103: -6, GF0401: -3, GF1007: -4, R_IS: -7, R_OTHERPROD: -6, R_SOCIAL: -5, GF0201: 4, GF0301: 4, GF0303: 2 },
+        structural: { economicMigration: 45, otherMigration: 60, nuclear: 8, renewables: 6 },
+        engines: { retirementAge: 1, laborParticipation: 1.5, careEfficiency: 7, digitalAdministration: 7, fraudRecovery: 6, publicSafety: 5, defenseCapacity: 5, productivity: 0.3 },
+        measures: ["Économies de fonctionnement", "Charges et impôts productifs en baisse", "Travail, sécurité, défense et nucléaire"],
+        sources: [{ label: "Les Républicains", url: "https://republicains.fr/" }]
+      },
+      {
+        id: "eco", name: "Écologiste et Social", short: "EcoS", seats: 38, color: "#2d9b67",
+        confidence: "moyenne", confidenceKey: "medium", date: "NFP 2024 + programme écologiste",
+        summary: "Investissements climatiques, rénovation, rail et services publics, avec fiscalité progressive et sortie graduelle du nucléaire.",
+        why: "Les gains climatiques sont mieux identifiés que les délais industriels et les besoins d’appoint du système électrique.",
+        model: "keynesian", euMode: "renegotiation",
+        changes: { GF0405: 12, GF0503: 8, GF0504: 4, GF0601: 8, GF0704: 4, GF0901: 4, GF1007: 5, R_IR: 9, R_CAPITALLEVY: 6, R_HIGHINC: 3, R_PRODUCTS: 5 },
+        structural: { nuclear: -6, renewables: 52, efficiency: 18, carbonTax: 35 },
+        engines: { adaptation: 8, agricultureTransition: 8, carbonSinks: 5, transportInfrastructure: 14, socialHousing: 65, targetedTransfers: 7, publicResearch: 6 },
+        measures: ["Rénovation, renouvelables et rail", "Biodiversité et adaptation", "Compensation sociale et impôts progressifs"],
+        sources: [{ label: "Programme du Nouveau Front populaire", url: "https://lesecologistes.fr/posts/1Otm5ILXmpHTs3IQtYEcHC/le-programme-du-nouveau-front-populaire" }]
+      },
+      {
+        id: "dem", name: "Les Démocrates", short: "DEM", seats: 37, color: "#e18a28",
+        confidence: "faible", confidenceKey: "low", date: "Orientation sociale-libérale pro-UE",
+        summary: "Équilibre des comptes, soutien aux PME, éducation, transition énergétique et intégration européenne.",
+        why: "Le groupe rassemble des sensibilités différentes et ne dispose pas d’un programme budgétaire collectif exhaustif pour 2026.",
+        model: "consensus", euMode: "current",
+        changes: { GF0901: 3, GF0904: 2, GF0408: 3, GF0103: -2, R_OTHERPROD: -2 },
+        structural: { renewables: 18, nuclear: 3, efficiency: 5, integration: 68 },
+        engines: { vocationalTraining: 4, childcarePlaces: 50, publicResearch: 4, digitalAdministration: 4, fraudRecovery: 3, industrialInvestment: 3 },
+        measures: ["Éducation et formation", "PME, innovation et simplification", "Transition compatible avec l’UE"],
+        sources: [{ label: "Mouvement Démocrate", url: "https://www.mouvementdemocrate.fr/" }]
+      },
+      {
+        id: "hor", name: "Horizons & Indépendants", short: "HOR", seats: 35, color: "#345d79",
+        confidence: "moyenne", confidenceKey: "medium", date: "Manifeste Horizons",
+        summary: "État recentré, comptes maîtrisés, compétitivité, travail, éducation, ordre public et décarbonation technologique.",
+        why: "Le manifeste fixe une direction plus qu’un budget détaillé ; EcoSim propose donc une traduction modérée.",
+        model: "supply", euMode: "current",
+        changes: { GF0103: -4, GF0401: -2, R_OTHERPROD: -4, GF0201: 3, GF0301: 3, GF0904: 3, GF0408: 4 },
+        structural: { nuclear: 6, renewables: 14, efficiency: 4 },
+        engines: { retirementAge: 0.5, laborParticipation: 1, productivity: 0.3, digitalAdministration: 7, careEfficiency: 5, publicSafety: 4, industrialInvestment: 5, publicResearch: 4 },
+        measures: ["État moins dispendieux", "Travail, compétitivité et innovation", "Ordre, éducation et décarbonation"],
+        sources: [{ label: "Manifeste Horizons", url: "https://horizonsleparti.fr/le-manifeste/" }]
+      },
+      {
+        id: "liot", name: "Libertés, Indépendants, Outre-mer et Territoires", short: "LIOT", seats: 23, color: "#78a6aa",
+        confidence: "faible", confidenceKey: "low", date: "Déclaration et positions de groupe",
+        summary: "Services de proximité, territoires, collectivités, logement et infrastructures, avec une ligne budgétaire volontairement pluraliste.",
+        why: "LIOT est un groupe composite : ce scénario est une moyenne de positions territoriales, pas un programme commun détaillé.",
+        model: "consensus", euMode: "current",
+        changes: { GF0602: 5, GF0405: 5, GF0703: 4, GF0901: 3, GF0103: 2, GF1006: 2 },
+        structural: { renewables: 10, efficiency: 4 },
+        engines: { transportInfrastructure: 6, healthWorkforce: 20, housingBuild: 35, digitalAdministration: 2 },
+        measures: ["Services publics de proximité", "Collectivités et outre-mer", "Transport, santé et logement"],
+        sources: [{ label: "Groupe LIOT", url: "https://liot.assemblee-nationale.fr/" }]
+      },
+      {
+        id: "gdr", name: "Gauche Démocrate et Républicaine", short: "GDR", seats: 17, color: "#b6323a",
+        confidence: "moyenne", confidenceKey: "medium", date: "NFP + positions GDR/PCF",
+        summary: "Hausse des salaires et des services publics, retraite plus précoce, investissements industriels publics et taxation du capital.",
+        why: "Le groupe comprend une composante ultramarine autonome ; le scénario représente le noyau économique commun et non chaque député.",
+        model: "keynesian", euMode: "renegotiation",
+        changes: { GF0703: 9, GF0901: 6, GF0902: 6, GF0404: 8, GF0405: 7, GF1007: 8, R_IR: 13, R_IS: 12, R_CAPITALLEVY: 7, R_HIGHINC: 4 },
+        structural: { nuclear: 3, renewables: 24, efficiency: 10, integration: 68 },
+        engines: { minimumWage: 15, retirementAge: -2, pensionIndex: 1, publicPayroll: 5, industrialInvestment: 12, developmentBank: 15, bankLevy: 7, healthWorkforce: 45, teacherResources: 10 },
+        measures: ["Salaires, pensions et services publics", "Plan industriel et financement public", "Capital, banques et hauts revenus davantage taxés"],
+        sources: [{ label: "Groupe GDR", url: "https://groupe-communiste.assemblee-nationale.fr/" }]
+      },
+      {
+        id: "udr", name: "Union des droites pour la République", short: "UDR", seats: 17, color: "#253253",
+        confidence: "faible", confidenceKey: "low", date: "Orientation UDR 2024–2026",
+        summary: "Baisse d’impôts et de dépenses, immigration réduite, sécurité, défense, nucléaire et préférence économique nationale.",
+        why: "Le groupe est récent et son programme budgétaire consolidé reste incomplet ; l’incertitude de traduction est élevée.",
+        model: "liberal", euMode: "renegotiation",
+        changes: { GF0103: -6, GF0102: -3, GF1007: -5, R_IR: -6, R_IS: -6, R_OTHERPROD: -5, GF0201: 4, GF0301: 4 },
+        structural: { economicMigration: 15, otherMigration: 20, nuclear: 9, renewables: -2 },
+        engines: { retirementAge: 0.5, laborParticipation: 1, digitalAdministration: 8, fraudRecovery: 7, publicSafety: 6, defenseCapacity: 5, tradeProtection: 3 },
+        measures: ["Impôts et fonctionnement en baisse", "Immigration fortement réduite", "Régalien, nucléaire et souveraineté"],
+        sources: [{ label: "Groupe UDR à l’Assemblée", url: "https://www2.assemblee-nationale.fr/instances/fiche/OMC_PO872880" }]
+      }
+    ],
+    historical: [
+      {
+        id: "rn20", name: "Famille nationale-souverainiste", short: "RN · 20 ans", color: "#253b73", confidence: "faible", confidenceKey: "low", date: "Noyau récurrent 2007–2026",
+        summary: "Préférence nationale, immigration basse, sécurité, protection commerciale, fiscalité énergie et souveraineté européenne.", why: "Les positions sur l’euro et certaines dépenses ont changé. Seul le noyau récurrent est cumulé.", model: "industrial", euMode: "renegotiation",
+        changes: { R_TVA: -9, R_PRODUCTS: -5, GF0201: 5, GF0301: 5, GF0303: 2, GF0102: -3, GF1004: 4 }, structural: { economicMigration: 5, otherMigration: 10, nuclear: 8, renewables: -5 }, engines: { tradeProtection: 7, publicSafety: 6, defenseCapacity: 5, domesticDefense: 22, fraudRecovery: 6 },
+        measures: ["Noyau commun de cinq cycles électoraux", "Contradictions historiques exclues", "Ruptures UE testées en sensibilité"], sources: [{ label: "Archive 2007", url: "https://www.vie-publique.fr/discours/166209-programme-electoral-de-jean-marie-le-pen-president-du-front-national-et" }]
+      },
+      {
+        id: "centre20", name: "Famille centrale pro-européenne", short: "Centre · 20 ans", color: "#d89a2b", confidence: "faible", confidenceKey: "low", date: "UDF–MoDem–Renaissance 2007–2026",
+        summary: "Europe, équilibre budgétaire, investissement, innovation, compétitivité et réformes du travail.", why: "Cette lignée rassemble des partis distincts ; elle mesure une continuité thématique, pas une organisation unique.", model: "supply", euMode: "current",
+        changes: { GF0103: -3, R_OTHERPROD: -4, R_IS: -3, GF0408: 5, GF0904: 4, GF0405: 3 }, structural: { nuclear: 4, renewables: 16, efficiency: 5, integration: 68 }, engines: { laborParticipation: 1, productivity: 0.3, digitalAdministration: 6, publicResearch: 5, industrialInvestment: 5, fraudRecovery: 4 },
+        measures: ["Construction européenne", "Comptes publics et réformes d’offre", "Éducation, innovation et investissement"], sources: [{ label: "Archive centriste 2007", url: "https://www.vie-publique.fr/discours/166035-declaration-de-m-francois-bayrou-president-de-ludf-et-candidat-lel" }]
+      },
+      {
+        id: "radicalleft20", name: "Famille gauche de rupture", short: "LFI · 20 ans", color: "#b52355", confidence: "faible", confidenceKey: "low", date: "PG–Front de gauche–LFI 2008–2026",
+        summary: "Redistribution, retraite à 60 ans, services publics, planification écologique et renégociation européenne.", why: "Le périmètre et les chiffrages ont évolué ; les engagements récurrents sont appliqués à intensité médiane.", model: "keynesian", euMode: "renegotiation",
+        changes: { GF0703: 9, GF0901: 7, GF0902: 7, GF0601: 8, GF0405: 9, GF1007: 9, R_IR: 16, R_IS: 13, R_CAPITALLEVY: 7, R_HIGHINC: 5 }, structural: { renewables: 34, efficiency: 13, carbonTax: 15, integration: 70 }, engines: { minimumWage: 14, retirementAge: -2, teacherResources: 11, healthWorkforce: 50, socialHousing: 80, targetedTransfers: 10, publicResearch: 9, bankLevy: 6 },
+        measures: ["Redistribution et retraite à 60 ans", "Planification et services publics", "Renégociation européenne"], sources: [{ label: "Archives L’Avenir en commun", url: "https://programme.lafranceinsoumise.fr/category/programme/laec/" }]
+      },
+      {
+        id: "ps20", name: "Famille social-démocrate", short: "PS · 20 ans", color: "#d94b70", confidence: "faible", confidenceKey: "low", date: "PS 2007–2026",
+        summary: "Services publics, redistribution progressive, logement, emploi et transition écologique dans un cadre européen réformé.", why: "Seuls les engagements électoraux récurrents sont simulés, pas le bilan des gouvernements.", model: "consensus", euMode: "current",
+        changes: { GF0703: 6, GF0901: 5, GF0902: 5, GF0601: 6, GF0405: 6, GF1007: 6, R_IR: 10, R_IS: 6, R_CAPITALLEVY: 4 }, structural: { renewables: 25, efficiency: 9, carbonTax: 10 }, engines: { minimumWage: 5, retirementAge: -0.5, teacherResources: 7, healthWorkforce: 30, socialHousing: 55, targetedTransfers: 7, publicResearch: 6 },
+        measures: ["Services publics et cohésion", "Fiscalité progressive", "Transition écologique européenne"], sources: [{ label: "Archive présidentielle 2012", url: "https://www.vie-publique.fr/discours/184914-declaration-de-m-francois-hollande-depute-ps-et-candidat-lelection" }]
+      },
+      {
+        id: "right20", name: "Famille libérale-conservatrice", short: "UMP/LR · 20 ans", color: "#3776b6", confidence: "faible", confidenceKey: "low", date: "UMP–LR 2007–2026",
+        summary: "Réduction des dépenses et charges, travail, retraite plus tardive, sécurité, défense et nucléaire.", why: "Les objectifs d’économies ont souvent été plus précis que leur ventilation ; EcoSim répartit prudemment l’effort.", model: "liberal", euMode: "current",
+        changes: { GF0103: -7, GF0401: -3, GF1007: -4, R_IS: -7, R_OTHERPROD: -7, R_SOCIAL: -5, GF0201: 4, GF0301: 4 }, structural: { economicMigration: 40, otherMigration: 55, nuclear: 8 }, engines: { retirementAge: 1, laborParticipation: 1.5, careEfficiency: 7, digitalAdministration: 7, publicSafety: 5, defenseCapacity: 5, productivity: 0.3 },
+        measures: ["Dépense et charges réduites", "Travail et retraites", "Sécurité et nucléaire"], sources: [{ label: "Archives électorales", url: "https://www.vie-publique.fr/discours/165957-interview-de-m-nicolas-sarkozy-ministre-de-linterieur-et-de-lamenage" }]
+      },
+      {
+        id: "greens20", name: "Famille écologiste", short: "Verts · 20 ans", color: "#2d9b67", confidence: "faible", confidenceKey: "low", date: "Verts–EELV–Écologistes 2007–2026",
+        summary: "Sobriété, renouvelables, rénovation, rail, biodiversité, fiscalité écologique compensée et réduction du nucléaire.", why: "Le rythme de sortie du nucléaire et les instruments fiscaux ont varié ; la trajectoire retenue est médiane.", model: "keynesian", euMode: "current",
+        changes: { GF0405: 11, GF0503: 8, GF0504: 4, GF0601: 7, GF1007: 5, R_PRODUCTS: 5, R_IR: 7, R_CAPITALLEVY: 4 }, structural: { nuclear: -7, renewables: 50, efficiency: 18, carbonTax: 35 }, engines: { adaptation: 8, agricultureTransition: 8, carbonSinks: 5, transportInfrastructure: 13, socialHousing: 55, targetedTransfers: 6 },
+        measures: ["Sobriété et rénovation", "Renouvelables et nucléaire réduit", "Fiscalité écologique compensée"], sources: [{ label: "Les Écologistes", url: "https://lesecologistes.fr/" }]
+      },
+      {
+        id: "communist20", name: "Famille communiste et GDR", short: "PCF/GDR · 20 ans", color: "#b6323a", confidence: "faible", confidenceKey: "low", date: "PCF–Front de gauche–GDR 2007–2026",
+        summary: "Salaires et pensions, services publics, réindustrialisation publique, droits sociaux et taxation du capital.", why: "Les coalitions ont changé ; ce scénario isole les propositions économiques récurrentes.", model: "keynesian", euMode: "renegotiation",
+        changes: { GF0703: 9, GF0901: 6, GF0902: 6, GF0404: 8, GF0405: 7, GF1007: 8, R_IR: 13, R_IS: 12, R_CAPITALLEVY: 7 }, structural: { nuclear: 3, renewables: 22, efficiency: 10 }, engines: { minimumWage: 15, retirementAge: -2, pensionIndex: 1, publicPayroll: 5, industrialInvestment: 12, developmentBank: 16, bankLevy: 7, healthWorkforce: 45 },
+        measures: ["Salaires, retraites et services publics", "Réindustrialisation publique", "Capital et finance davantage taxés"], sources: [{ label: "Groupe GDR", url: "https://groupe-communiste.assemblee-nationale.fr/" }]
+      }
+    ]
+  };
+
   const sectors = [
     {
       id: "state",
@@ -809,6 +1040,7 @@ window.ECOSIM_DATA = (() => {
     structural,
     policyEngines,
     presets,
+    politicalScenarios,
     sectors,
     metadata: {
       snapshotDate: "10 octobre 2026",
@@ -817,7 +1049,7 @@ window.ECOSIM_DATA = (() => {
       revenueObservedYear: 2025,
       projectionStart: 2026,
       projectionEnd: 2035,
-      version: "3.0.0"
+      version: "4.0.0"
     }
   };
 })();
