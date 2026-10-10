@@ -12,6 +12,8 @@ L'objectif éditorial est d'aider à préparer la **présidentielle 2027** en co
 
 Le dépôt porte désormais le nom spécial `nicolasmoreau1982-beep.github.io` : le site est servi à la racine du domaine, où `dist/robots.txt` devient le véritable `/robots.txt`. Il autorise l'exploration et indique `/sitemap.xml`. Cela facilite la découverte des pages sans garantir leur indexation ni leur classement.
 
+Les requêtes visées sont des **hypothèses éditoriales**, pas des volumes de recherche mesurés : « simulateur budget France », « simulateur dette publique », « comparateur programmes présidentielle 2027 », « impact économique programmes politiques » et « comment réduire le déficit public ». Le titre d’accueil met en avant le budget, la dette et les programmes ; les guides répondent à des intentions plus précises. « Budget de la France 2026 » est traité avec prudence : la base observée est 2025, les résultats 2026 du site sont simulés. Ne pas ajouter de balise `meta keywords` ni répéter artificiellement ces expressions.
+
 Après publication de cette version sur GitHub Pages, pour demander la découverte des pages :
 
 1. Vérifier la propriété de préfixe d'URL `https://nicolasmoreau1982-beep.github.io/` dans Google Search Console. Le fichier `google3d20062100896a35.html` est présent à la racine de `dist/` ; contrôler qu'il est servi à la même adresse publique avant de cliquer « Valider ».
@@ -54,6 +56,7 @@ La publicité ciblée et de nombreux traceurs publicitaires exigent un consentem
 ## Sources de procédure
 
 - Google Search Central : `https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap`
+- Google Search Central, titres de pages : `https://developers.google.com/search/docs/appearance/title-link`
 - Google Search Console : `https://search.google.com/search-console/about`
 - Cloudflare Web Analytics : `https://developers.cloudflare.com/web-analytics/about/`
 - GoatCounter, compteur public et JSON : `https://www.goatcounter.com/help/visitor-counter`

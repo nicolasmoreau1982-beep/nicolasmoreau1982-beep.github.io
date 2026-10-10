@@ -36,6 +36,9 @@ for (const path of guidePaths) {
 }
 
 const home = read("../dist/index.html");
+assert.match(home, /<title>EcoSim France — Simulateur du budget, de la dette et des programmes 2027<\/title>/);
+assert.match(home, /les résultats pour 2026 et les années suivantes sont des simulations/);
+assert.match(read("../dist/comprendre-budget-france.html"), /valeurs affichées pour 2026 résultent de la projection/);
 for (const [, url] of pages.slice(3)) {
   assert.ok(home.includes(`href="${url.slice(base.length)}"`), `${url} absent des liens HTML d’accueil`);
 }
