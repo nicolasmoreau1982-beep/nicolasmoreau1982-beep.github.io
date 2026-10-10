@@ -24,6 +24,22 @@ window.ECOSIM_DATA = (() => {
 
   const sources = [
     {
+      id: "insee-election-participation-2022",
+      publisher: "Insee",
+      title: "Vingt ans de participation électorale",
+      date: "novembre 2022",
+      url: "https://www.insee.fr/fr/statistiques/6658143",
+      note: "La participation diffère fortement selon l'âge et le diplôme. Les pondérations sociales d'EcoSim restent des hypothèses, non des estimations issues de l'enquête."
+    },
+    {
+      id: "cevipof-election-study",
+      publisher: "CEVIPOF",
+      title: "Enquêtes électorales françaises",
+      date: "2022–2026",
+      url: "https://www.sciencespo.fr/cevipof/fr/etudes-enquetes/",
+      note: "Contexte empirique du vote et des attitudes politiques. EcoSim ne prédit aucun parti ni résultat électoral."
+    },
+    {
       id: "cor-2026",
       publisher: "COR",
       title: "Évolutions et perspectives des retraites",
@@ -559,9 +575,9 @@ window.ECOSIM_DATA = (() => {
 
   const models = {
     consensus: {
-      label: "Consensus empirique",
-      short: "Médiane",
-      description: "Médiane prudente des résultats empiriques, avec effets de demande, d’offre et de dette.",
+      label: "Hypothèse centrale",
+      short: "Central",
+      description: "Paramétrage central indicatif avec effets de demande, d’offre et de dette ; ses coefficients ne constituent pas une médiane estimée.",
       spendScale: 1,
       taxScale: 1,
       supplyScale: 1,
@@ -768,6 +784,7 @@ window.ECOSIM_DATA = (() => {
     energy: {
       independence: 61,
       importBill: 57.7,
+      emissionsMt: 363.4,
       electricityCarbonIntensity: 19.6,
       lifecycleElectricityEmissions: 15.7
     },
@@ -820,7 +837,9 @@ window.ECOSIM_DATA = (() => {
         careerHorizon: 40,
         averageRemainingCareer: 22,
         pensionAccrualRate: 0.28,
-        discountRate: 0.025
+        discountRate: 0.025,
+        paymentYears: 18,
+        employerContributionShare: { fpe: 0.28, fpt: 0.20, fph: 0.20, military: 0.38 }
       }
     },
     controls: {
@@ -840,6 +859,7 @@ window.ECOSIM_DATA = (() => {
       publicPermanentShare: { label: "Part de titulaires dans les flux", min: 20, max: 100, step: 5, value: 69, unit: " %" },
       publicCategoryA: { label: "Part de catégorie A dans les flux", min: 5, max: 75, step: 1, value: 38, unit: " %" },
       publicCategoryB: { label: "Part de catégorie B dans les flux", min: 5, max: 50, step: 1, value: 22, unit: " %" },
+      publicHiringCapacity: { label: "Capacité annuelle de recrutement par mission", min: 2, max: 15, step: 0.5, value: 6, unit: " % des effectifs" },
       trainingEntries: { label: "Entrées en formation supplémentaires", min: -400, max: 600, step: 25, value: 0, unit: " k/an" },
       trainingMatch: { label: "Accès à l’emploi après formation", min: 35, max: 80, step: 1, value: 61, unit: " %" },
       activationPlaces: { label: "Accompagnement intensif supplémentaire", min: -300, max: 600, step: 25, value: 0, unit: " k/an" },
@@ -858,6 +878,14 @@ window.ECOSIM_DATA = (() => {
   };
 
   const policyEngines = {
+    fiscalSide: {
+      laborParticipation: "revenue",
+      minimumWage: "revenue",
+      pensionContribution: "revenue",
+      tradeProtection: "revenue",
+      fraudRecovery: "revenue",
+      bankLevy: "revenue"
+    },
     groups: [
       { id: "work", label: "Travail", icon: "EMP", description: "Participation, productivité et salaires." },
       { id: "pensions", label: "Retraites", icon: "RET", description: "Âge, indexation et cotisations." },
@@ -972,10 +1000,10 @@ window.ECOSIM_DATA = (() => {
       {
         id: "technical", name: "Gouvernement technique", short: "TECH", seats: null, color: "#667085",
         confidence: "élevée", confidenceKey: "high", date: "Convention 2026",
-        summary: "Continuité des lois votées, indexations, entretien des services et respect du cadre européen, sans mesure discrétionnaire nouvelle.",
-        why: "Ce scénario sert de témoin. Il ne prétend pas être apolitique au sens philosophique : il fige seulement les choix nouveaux.",
+        summary: "Trajectoire de référence sans mesure discrétionnaire ajoutée. L’ajustement du déficit prévu jusqu’en 2029 est une hypothèse macroéconomique exogène.",
+        why: "Ce scénario sert de témoin conventionnel. La baisse du déficit inscrite dans la référence n’est pas reconstruite à partir de mesures votées poste par poste.",
         model: "consensus", euMode: "current", changes: {}, structural: {}, engines: {},
-        measures: ["Lois et barèmes déjà en vigueur", "Indexations et renouvellement courant", "Trajectoire européenne de référence"],
+        measures: ["Aucune nouvelle mesure chiffrée", "Hypothèses macroéconomiques de référence", "Correction budgétaire postulée jusqu’en 2029"],
         sources: [{ label: "Budget de l’État 2026", url: "https://www.budget.gouv.fr/reperes/loi_de_finances/articles/chiffres-cles-budget-etat-2026" }]
       },
       {
@@ -1200,6 +1228,26 @@ window.ECOSIM_DATA = (() => {
     }
   ];
 
+  const social = {
+    ages: [
+      { id: "18-24", label: "18–24 ans", voteWeight: 0.55, mobilization: 1.0 },
+      { id: "25-34", label: "25–34 ans", voteWeight: 0.68, mobilization: 1.0 },
+      { id: "35-44", label: "35–44 ans", voteWeight: 0.78, mobilization: 0.88 },
+      { id: "45-54", label: "45–54 ans", voteWeight: 0.85, mobilization: 0.85 },
+      { id: "55-64", label: "55–64 ans", voteWeight: 0.91, mobilization: 0.72 },
+      { id: "65-74", label: "65–74 ans", voteWeight: 1.0, mobilization: 0.55 },
+      { id: "75+", label: "75 ans et +", voteWeight: 0.82, mobilization: 0.35 }
+    ],
+    situations: [
+      { id: "private", label: "Salariés du privé", mobilization: 0.82, minAge: 18, maxAge: 74 },
+      { id: "public", label: "Agents publics", mobilization: 0.95, minAge: 18, maxAge: 74 },
+      { id: "unemployed", label: "Personnes sans emploi", mobilization: 0.58, minAge: 18, maxAge: 74 },
+      { id: "independent", label: "Indépendants", mobilization: 0.62, minAge: 18, maxAge: 74 },
+      { id: "student", label: "Étudiants", mobilization: 0.70, minAge: 18, maxAge: 34 },
+      { id: "retired", label: "Retraités", mobilization: 0.65, minAge: 55, maxAge: 120 }
+    ]
+  };
+
   return {
     BASE,
     sources,
@@ -1216,6 +1264,7 @@ window.ECOSIM_DATA = (() => {
     presets,
     politicalScenarios,
     sectors,
+    social,
     metadata: {
       snapshotDate: "10 octobre 2026",
       spendingDetailObservedYear: 2024,
@@ -1225,7 +1274,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.4.0"
+      version: "4.6.0"
     }
   };
 })();

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ecosim-france.sleekmouse9.chatgpt.site/sitemap.xml

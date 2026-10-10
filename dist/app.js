@@ -41,6 +41,10 @@
   const money = (value, digits = 1) => `${digits ? fmt1.format(value) : fmt0.format(value)} Md€`;
   const percent = (value) => `${fmt1.format(value)} %`;
   const changeFor = (id) => Number(state.changes[id] || 0);
+  const categoryChangeLimits = (category) => {
+    const limit = Math.max(10, Math.ceil(Math.abs(category.value) * 0.7 / 5) * 5);
+    return { min: Math.max(-limit, -category.value), max: limit };
+  };
   const projectionIndex = (horizon) => clamp(Number(horizon) - 1, 0, D.metadata.projectionYears - 1);
 
   function encodeState(payload) {
@@ -98,8 +102,8 @@
         const category = byId.get(id);
         const number = Number(value);
         if (category && !category.locked && Number.isFinite(number)) {
-          const limit = Math.max(10, Math.ceil(Math.abs(category.value) * 0.7 / 5) * 5);
-          state.changes[id] = clamp(number, -limit, limit);
+          const limits = categoryChangeLimits(category);
+          state.changes[id] = clamp(number, limits.min, limits.max);
         }
       });
     }
@@ -209,6 +213,10 @@
       firefighters: "jobsFirefighters",
       territorial: "jobsTerritorial"
     };
+    const pensionPresentValue = (annualPayment, years) => {
+      const rate = workforce.pension.discountRate;
+      return years > 0 ? annualPayment * (1 - (1 + rate) ** -years) / rate : 0;
+    };
     const rawCategoryA = values.publicCategoryA / 100;
     const rawCategoryB = values.publicCategoryB / 100;
     const categoryScale = rawCategoryA + rawCategoryB > 0.95 ? 0.95 / (rawCategoryA + rawCategoryB) : 1;
@@ -227,9 +235,15 @@
       const yearsPresent = index - cohort.start;
       const permanentRetention = 0.985 ** yearsPresent;
       const contractRetention = 0.82 ** yearsPresent;
-      const permanent = cohort.jobs * cohort.permanentShare * permanentRetention;
-      const contract = cohort.jobs * (1 - cohort.permanentShare) * contractRetention;
-      return { permanent, contract, total: permanent + contract };
+      const careerYears = Math.max(1, Math.round(workforce.pension.averageRemainingCareer + Number(state.engines.retirementAge || 0)));
+      const active = yearsPresent < careerYears;
+      const permanent = active ? cohort.jobs * cohort.permanentShare * permanentRetention : 0;
+      const contract = active ? cohort.jobs * (1 - cohort.permanentShare) * contractRetention : 0;
+      const retiredYears = Math.max(0, yearsPresent - careerYears);
+      const retired = !active && retiredYears < workforce.pension.paymentYears
+        ? cohort.jobs * (cohort.permanentShare * 0.985 ** careerYears + (1 - cohort.permanentShare) * 0.82 ** careerYears) * 0.98 ** retiredYears
+        : 0;
+      return { permanent, contract, total: permanent + contract, retired, careerYears, retiredYears };
     };
 
     for (let index = 0; index < D.metadata.projectionYears; index += 1) {
@@ -250,18 +264,29 @@
         const economicEmployment = 0.78 + 0.04 * (1 - Math.exp(-yearsPresent / 2));
         const otherEmployment = 0.33 + (targetIntegration / 100 - 0.33) * (1 - Math.exp(-yearsPresent / 3));
         acc.people += cohort.economic + cohort.other;
-        acc.other += cohort.other;
         acc.employed += cohort.economic * economicEmployment + cohort.other * otherEmployment;
-        acc.integrationCost += cohort.other * 0.004 * Math.exp(-(yearsPresent - 1) / 3);
+        const incomingEconomic = Math.max(0, cohort.economic);
+        const incomingOther = Math.max(0, cohort.other);
+        const outgoingEconomic = Math.max(0, -cohort.economic);
+        const outgoingOther = Math.max(0, -cohort.other);
+        acc.arrivals += incomingEconomic + incomingOther;
+        acc.departures += outgoingEconomic + outgoingOther;
+        acc.arrivalEmployment += incomingEconomic * economicEmployment + incomingOther * otherEmployment;
+        acc.departureEmployment += outgoingEconomic * economicEmployment + outgoingOther * otherEmployment;
+        acc.integrationCost += incomingOther * 0.004 * Math.exp(-(yearsPresent - 1) / 3);
         return acc;
-      }, { people: 0, other: 0, employed: 0, integrationCost: 0 });
+      }, { people: 0, arrivals: 0, departures: 0, employed: 0, arrivalEmployment: 0, departureEmployment: 0, integrationCost: 0 });
       const baseMigration = cohortAccounting(baselineCohorts, defaults.immigrantEmployment);
       const scenarioMigration = cohortAccounting(scenarioCohorts, values.integration);
-      const migrationRevenue = scenarioMigration.employed * 0.025;
-      const migrationCost = scenarioMigration.people * 0.014 + scenarioMigration.integrationCost;
-      const baselineMigrationNet = baseMigration.employed * 0.025 - (baseMigration.people * 0.014 + baseMigration.integrationCost);
-      const migrationNet = migrationRevenue - migrationCost;
-      const migrationFiscalDelta = migrationNet - baselineMigrationNet;
+      const migrationRevenue = scenarioMigration.arrivalEmployment * 0.025;
+      const migrationCost = scenarioMigration.arrivals * 0.014 + scenarioMigration.integrationCost;
+      const departureTaxLoss = scenarioMigration.departureEmployment * 0.025;
+      const departureServiceSavings = scenarioMigration.departures * 0.014;
+      const migrationRevenueDelta = migrationRevenue - departureTaxLoss - baseMigration.arrivalEmployment * 0.025;
+      const migrationSpendingDelta = migrationCost - departureServiceSavings
+        - (baseMigration.arrivals * 0.014 + baseMigration.integrationCost);
+      const migrationNet = migrationRevenue - migrationCost - departureTaxLoss + departureServiceSavings;
+      const migrationFiscalDelta = migrationRevenueDelta - migrationSpendingDelta;
       const youthWorkerDelta = index >= 18
         ? scenarioBirthCohorts.slice(0, index - 17).reduce((sum, cohort, cohortIndex) => sum + (cohort - baselineBirthCohorts[cohortIndex]) * 0.70, 0)
         : 0;
@@ -275,10 +300,30 @@
         fpt: values.publicFptNet,
         fph: values.publicFphNet
       });
-      const missionRecruitments = Object.fromEntries(Object.entries(occupationControlIds)
+      const requestedMissionRecruitments = Object.fromEntries(Object.entries(occupationControlIds)
         .map(([occupation, controlId]) => [occupation, Number(values[controlId] || 0)]));
-      if (index === 0) missionRecruitments.hospital += Number(state.engines.healthWorkforce || 0);
-      occupationCohorts.push({ start: index, jobs: missionRecruitments });
+      if (index === 0) requestedMissionRecruitments.hospital += Number(state.engines.healthWorkforce || 0);
+      const recruitmentLimit = (workforce.pools.unemployedBIT * 0.08 + workforce.pools.halo * 0.03
+        + workforce.pools.underemployment * 0.05 + workforce.pools.franceTravailTraining * 0.20);
+      const missionRecruitments = Object.fromEntries(Object.entries(requestedMissionRecruitments)
+        .map(([id, requested]) => [id, requested > 0
+          ? Math.min(requested, workforce.publicOccupations[id].baseline * values.publicHiringCapacity / 100)
+          : requested]));
+      const requestedPublicHiring = Object.values(requestedMissionRecruitments).reduce((sum, value) => sum + Math.max(0, value), 0);
+      const cappedHiring = Object.values(missionRecruitments).reduce((sum, value) => sum + Math.max(0, value), 0);
+      const hiringScale = cappedHiring > recruitmentLimit ? recruitmentLimit / cappedHiring : 1;
+      Object.keys(missionRecruitments).forEach((id) => {
+        if (missionRecruitments[id] > 0) missionRecruitments[id] *= hiringScale;
+      });
+      const realizedPublicHiring = cappedHiring * hiringScale;
+      occupationCohorts.push({
+        start: index,
+        jobs: missionRecruitments,
+        healthShare: index === 0 && requestedMissionRecruitments.hospital
+          && Math.sign(state.engines.healthWorkforce) === Math.sign(requestedMissionRecruitments.hospital)
+          ? clamp(Math.abs(Number(state.engines.healthWorkforce || 0) / requestedMissionRecruitments.hospital), 0, 1)
+          : 0
+      });
       trainingCohorts.push({ start: index, training: values.trainingEntries, activation: values.activationPlaces });
       const publicByVersant = { fpe: 0, fpt: 0, fph: 0 };
       const publicMissionById = Object.fromEntries(Object.keys(workforce.publicOccupations).map((id) => [id, 0]));
@@ -287,7 +332,13 @@
       let publicMilitaryDelta = 0;
       let genericPayrollCost = 0;
       let missionPayrollCost = 0;
+      let publicPensionCost = 0;
+      let publicPensionContributionRevenue = 0;
+      let healthWorkforceJobs = 0;
+      let healthWorkforceCost = 0;
+      const publicRetiredByMission = Object.fromEntries(Object.keys(workforce.publicOccupations).map((id) => [id, 0]));
       let lifetimeCommitment = 0;
+      const salaryMultiplier = 1 + Number(state.engines.publicPayroll || 0) / 100;
       publicCohorts.forEach((cohort) => {
         const yearsPresent = index - cohort.start;
         Object.keys(publicByVersant).forEach((key) => {
@@ -299,34 +350,63 @@
           publicByVersant[key] += position.total;
           publicPermanentDelta += position.permanent;
           publicContractDelta += position.contract;
-          const annualEmployerCost = position.total * workforce.publicService[key].employerCost * categoryCostMultiplier;
+          const annualEmployerCost = position.total * workforce.publicService[key].employerCost * categoryCostMultiplier * salaryMultiplier;
           genericPayrollCost += annualEmployerCost;
-          const remainingCareer = Math.max(0, workforce.pension.averageRemainingCareer - yearsPresent);
-          const rate = workforce.pension.discountRate;
-          const careerFactor = remainingCareer ? (1 - (1 + rate) ** -remainingCareer) / rate : 0;
-          const pensionFactor = workforce.pension.pensionAccrualRate * 18 / ((1 + rate) ** Math.max(1, remainingCareer));
-          lifetimeCommitment += annualEmployerCost * (careerFactor + pensionFactor);
+          publicPensionContributionRevenue += annualEmployerCost * workforce.pension.employerContributionShare[key];
+          const annualPension = position.retired * workforce.publicService[key].employerCost
+            * workforce.pension.pensionAccrualRate * salaryMultiplier;
+          publicPensionCost += annualPension;
+          const remainingCareer = Math.max(0, position.careerYears - yearsPresent);
+          lifetimeCommitment += pensionPresentValue(annualEmployerCost, remainingCareer)
+            + (remainingCareer > 0
+              ? pensionPresentValue(annualEmployerCost * workforce.pension.pensionAccrualRate, workforce.pension.paymentYears)
+                / (1 + workforce.pension.discountRate) ** remainingCareer
+              : pensionPresentValue(annualPension, Math.max(0, workforce.pension.paymentYears - position.retiredYears)));
         });
       });
       occupationCohorts.forEach((cohort) => {
         const yearsPresent = index - cohort.start;
         Object.entries(workforce.publicOccupations).forEach(([id, occupation]) => {
-          const position = cohort.jobs[id] * occupation.retention ** yearsPresent;
+          const careerYears = Math.max(1, Math.round(occupation.careerYears + (occupation.military ? 0 : Number(state.engines.retirementAge || 0))));
+          const permanentShare = occupation.military ? 1
+            : clamp(occupation.permanentShare + (values.publicPermanentShare - D.structural.controls.publicPermanentShare.value) / 100, 0, 1);
+          const retainedPermanent = cohort.jobs[id] * permanentShare * occupation.retention ** yearsPresent;
+          const retainedContract = occupation.military ? 0
+            : cohort.jobs[id] * (1 - permanentShare) * 0.82 ** yearsPresent;
+          const position = yearsPresent < careerYears ? retainedPermanent + retainedContract : 0;
           publicMissionById[id] += position;
           publicByVersant[occupation.versant] += position;
           if (occupation.military) publicMilitaryDelta += position;
           else {
-            publicPermanentDelta += position * occupation.permanentShare;
-            publicContractDelta += position * (1 - occupation.permanentShare);
+            publicPermanentDelta += yearsPresent < careerYears ? retainedPermanent : 0;
+            publicContractDelta += yearsPresent < careerYears ? retainedContract : 0;
           }
           const mixMultiplier = occupation.categoryMix ? categoryCostMultiplier : 1;
-          const annualEmployerCost = position * occupation.employerCost * mixMultiplier;
+          const annualEmployerCost = position * occupation.employerCost * mixMultiplier * salaryMultiplier;
           missionPayrollCost += annualEmployerCost;
-          const remainingCareer = Math.max(0, occupation.careerYears - yearsPresent);
-          const rate = workforce.pension.discountRate;
-          const careerFactor = remainingCareer ? (1 - (1 + rate) ** -remainingCareer) / rate : 0;
-          const pensionFactor = occupation.pensionRate * 18 / ((1 + rate) ** Math.max(1, remainingCareer));
-          lifetimeCommitment += annualEmployerCost * (careerFactor + pensionFactor);
+          const contributionRevenue = annualEmployerCost * (occupation.military
+            ? workforce.pension.employerContributionShare.military
+            : workforce.pension.employerContributionShare[occupation.versant]);
+          publicPensionContributionRevenue += contributionRevenue;
+          if (id === "hospital" && cohort.healthShare) {
+            healthWorkforceJobs += position * cohort.healthShare;
+            healthWorkforceCost += (annualEmployerCost - contributionRevenue) * cohort.healthShare;
+          }
+          const retiredYears = Math.max(0, yearsPresent - careerYears);
+          const retired = yearsPresent >= careerYears && retiredYears < workforce.pension.paymentYears
+            ? cohort.jobs[id] * (permanentShare * occupation.retention ** careerYears
+              + (1 - permanentShare) * 0.82 ** careerYears) * 0.98 ** retiredYears
+            : 0;
+          publicRetiredByMission[id] += retired;
+          const annualPension = retired * occupation.employerCost * occupation.pensionRate * salaryMultiplier;
+          publicPensionCost += annualPension;
+          if (id === "hospital" && cohort.healthShare) healthWorkforceCost += annualPension * cohort.healthShare;
+          const remainingCareer = Math.max(0, careerYears - yearsPresent);
+          lifetimeCommitment += pensionPresentValue(annualEmployerCost, remainingCareer)
+            + (remainingCareer > 0
+              ? pensionPresentValue(annualEmployerCost * occupation.pensionRate, workforce.pension.paymentYears)
+                / (1 + workforce.pension.discountRate) ** remainingCareer
+              : pensionPresentValue(annualPension, Math.max(0, workforce.pension.paymentYears - retiredYears)));
         });
       });
       const publicEmploymentDelta = Object.values(publicByVersant).reduce((sum, value) => sum + value, 0);
@@ -349,16 +429,19 @@
       const ramp = Math.min(1, age / 10);
       const publicEnergyInvestment = values.efficiency + values.nuclear * 0.45 + values.renewables * 0.10;
       const carbonRevenue = values.carbonTax * 0.30;
-      const importBillChange = values.fossilPrice / 100 * D.structural.energy.importBill
+      const rawImportBillChange = values.fossilPrice / 100 * D.structural.energy.importBill
         - values.nuclear * ramp * 0.18
         - values.renewables * ramp * 0.08
         - values.efficiency * age * 0.16;
+      const importBillChange = Math.max(-D.structural.energy.importBill, rawImportBillChange);
       const energyDemand = publicEnergyInvestment * profile.spendScale * (0.9 * profile.decay ** index + 0.18);
       const energySupply = (-importBillChange * 0.24 + values.efficiency * ramp * 0.12) * profile.supplyScale;
       const energyInflation = values.fossilPrice * 0.018 + values.carbonTax * 0.004
         - values.nuclear * ramp * 0.009 - values.renewables * ramp * 0.004 - values.efficiency * ramp * 0.012;
-      const emissionsChange = -values.nuclear * ramp * 1.35 - values.renewables * ramp * 0.72
+      const rawEmissionsChange = -values.nuclear * ramp * 1.35 - values.renewables * ramp * 0.72
         - values.efficiency * age * 0.55 - values.fossilPrice * 0.10;
+      const remainingEmissions = D.structural.energy.emissionsMt * 0.985 ** age;
+      const emissionsChange = Math.max(-remainingEmissions * 0.85, rawEmissionsChange);
       const demographyFiscalCost = (births - baselineBirths) * 0.012 + values.lifeExpectancy * age * 0.22;
 
       rows.push({
@@ -372,12 +455,20 @@
         migrationRevenue,
         migrationCost,
         migrationNet,
+        migrationRevenueDelta,
+        migrationSpendingDelta,
+        departureTaxLoss,
+        departureServiceSavings,
         migrationFiscalDelta,
         demographyFiscalCost,
         employedDelta,
         laborGdp,
         publicByVersant,
         publicMissionById,
+        publicRetiredByMission,
+        requestedPublicHiring,
+        realizedPublicHiring,
+        publicHiringRate: requestedPublicHiring > 0 ? realizedPublicHiring / requestedPublicHiring : 1,
         publicEmploymentDelta,
         publicPermanentDelta,
         publicContractDelta,
@@ -385,6 +476,10 @@
         publicCategoryMix,
         categoryCostMultiplier,
         publicPayrollCost,
+        publicPensionCost,
+        publicPensionContributionRevenue,
+        healthWorkforceJobs,
+        healthWorkforceCost,
         lifetimeCommitment,
         trainingEmploymentDelta,
         trainingPipeline,
@@ -516,6 +611,46 @@
     return share * 0.985 ** yearsPresent + (1 - share) * 0.82 ** yearsPresent;
   }
 
+  function calculateSocialOutlook(point, reference) {
+    const change = (id) => Number(state.changes[id] || 0);
+    const education = Object.entries(state.changes).reduce((sum, [id, value]) => sum + (id.startsWith("GF09") ? Number(value) : 0), 0);
+    const health = Object.entries(state.changes).reduce((sum, [id, value]) => sum + (id.startsWith("GF07") ? Number(value) : 0), 0);
+    const macro = clamp((point.unemployment - reference.unemployment) * 2.2
+      + (point.inflation - reference.inflation) * 1.5
+      - (point.gdp / reference.gdp - 1) * 100 * 0.9, -12, 12);
+    const budget = {
+      private: change("R_IR") * 0.10 + change("R_SOCIAL") * 0.035 - change("GF1004") * 0.12,
+      public: change("R_IR") * 0.09 - state.engines.publicPayroll * 0.45,
+      unemployed: -change("GF1005") * 0.30 - change("GF1007") * 0.12 - state.engines.youthIntegration * 0.10,
+      independent: change("R_IS") * 0.09 + change("R_OTHERPROD") * 0.14,
+      student: -education * 0.15 - state.engines.vocationalTraining * 0.12,
+      retired: -change("GF1002") * 0.14 - state.engines.pensionIndex * 0.75 + state.engines.retirementAge * 0.2
+    };
+    const cells = [];
+    D.social.ages.forEach((age) => {
+      const lower = Number(age.id.split("-")[0].replace("+", ""));
+      D.social.situations.forEach((situation) => {
+        if (lower > situation.maxAge || (lower + (age.id === "75+" ? 20 : 9)) < situation.minAge) return;
+        const ageFactor = lower >= 65 ? 0.80 : lower < 35 ? 1.15 : 1;
+        const agePolicy = lower >= 65 ? -change("GF1002") * 0.05 : lower < 35 ? -education * 0.04 : 0;
+        const discomfort = clamp((macro + budget[situation.id] + agePolicy
+          + change("R_TVA") * 0.09 - health * 0.07) * ageFactor, -20, 20);
+        const pressure = Math.max(0, discomfort) * age.mobilization * situation.mobilization;
+        cells.push({ age: age.id, ageLabel: age.label, situation: situation.id,
+          situationLabel: situation.label, discomfort, pressure, voteWeight: age.voteWeight });
+      });
+    });
+    const weighted = cells.reduce((sum, cell) => sum + cell.discomfort * cell.voteWeight, 0);
+    const weight = cells.reduce((sum, cell) => sum + cell.voteWeight, 0);
+    const meanDiscomfort = weight ? weighted / weight : 0;
+    const highestPressure = [...cells].sort((a, b) => b.pressure - a.pressure)[0];
+    return {
+      cells, meanDiscomfort, highestPressure,
+      incumbentVoteSensitivity: [round(-meanDiscomfort * 0.05, 2), round(-meanDiscomfort * 0.25, 2)],
+      note: "Indices relatifs hypothétiques ; pas une prévision de manifestation, de participation ni de résultat électoral."
+    };
+  }
+
   function calculateProjection(modelKey = state.model) {
     const baseline = baselineTrajectory();
     const profile = effectiveProfile(modelKey);
@@ -543,6 +678,22 @@
       let supplyContribution = 0;
       const structure = structural[index];
       const engine = engines[index];
+      const healthContribution = engine.contributions.healthWorkforce;
+      if (healthContribution) {
+        const healthGdp = structure.healthWorkforceJobs * 0.076 * profile.supplyScale;
+        engine.fiscalCost += structure.healthWorkforceCost - healthContribution.fiscalCost;
+        engine.demand -= healthContribution.demand;
+        engine.supply += healthGdp - healthContribution.supply;
+        engine.gdpImpact += healthGdp - healthContribution.gdpImpact;
+        engine.jobs += structure.healthWorkforceJobs - healthContribution.jobs;
+        Object.assign(healthContribution, {
+          fiscalCost: structure.healthWorkforceCost,
+          demand: 0,
+          supply: healthGdp,
+          gdpImpact: healthGdp,
+          jobs: structure.healthWorkforceJobs
+        });
+      }
       const labor = allocateLaborMarket(structure, engine, index);
       const cohortizedHealth = engine.contributions.healthWorkforce || { fiscalCost: 0, demand: 0, supply: 0, gdpImpact: 0, jobs: 0 };
 
@@ -564,17 +715,21 @@
       demandContribution += structure.energyDemand;
       supplyContribution += structure.energySupply + structure.laborGdp + structure.workforceGdp;
       spendingChange += structure.publicEnergyInvestment + structure.demographyFiscalCost
-        + structure.publicPayrollCost + structure.trainingFiscalCost;
-      revenueChange += structure.carbonRevenue + structure.migrationFiscalDelta;
+        + structure.publicPayrollCost + structure.publicPensionCost + structure.trainingFiscalCost
+        + structure.migrationSpendingDelta;
+      revenueChange += structure.carbonRevenue + structure.migrationRevenueDelta
+        + structure.publicPensionContributionRevenue;
       const engineGdp = engine.gdpImpact - cohortizedHealth.gdpImpact;
       const engineDemand = engine.demand - cohortizedHealth.demand;
       const engineSupply = engine.supply - cohortizedHealth.supply;
-      const engineFiscalCost = engine.fiscalCost - cohortizedHealth.fiscalCost;
       policyGdp += engineGdp;
       demandContribution += engineDemand;
       supplyContribution += engineSupply;
-      if (engineFiscalCost >= 0) spendingChange += engineFiscalCost;
-      else revenueChange += -engineFiscalCost;
+      Object.entries(engine.contributions).forEach(([id, contribution]) => {
+        if (id === "healthWorkforce") return;
+        if (D.policyEngines.fiscalSide[id] === "revenue") revenueChange -= contribution.fiscalCost;
+        else spendingChange += contribution.fiscalCost;
+      });
 
       const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation
         + engine.inflation + labor.laborTension * 0.18, -4.5, 6.5);
@@ -588,7 +743,7 @@
       previousOutputGap = outputGap;
       const inflation = D.baseline.inflation[index] + (eu.inflationShock[index] || 0) + extraInflation;
       const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap + labor.unemploymentChangeK / 310, 3.2, 18);
-      const revenueFeedback = (scenarioGdp - baseline[index].gdp) * 0.48;
+      const revenueFeedback = (scenarioGdp - baseline[index].gdp - structure.laborGdp) * 0.48;
       const cyclicalSpending = (unemployment - D.baseline.unemployment[index]) * 3.1;
 
       const debtDifferencePrevious = scenarioDebt - baselineDebtPrevious;
@@ -596,7 +751,8 @@
       const debtRisk = Math.max(0, lastDebtRatio - previousBaselineRatio) * 0.045 * profile.debtSensitivity;
       const riskPremium = Math.max(-0.20, eu.rateShock + profile.assumptionRate + debtRisk);
       const transmission = Math.min(1, 0.18 * (index + 1));
-      const extraInterest = debtDifferencePrevious * 0.021 + scenarioDebt * riskPremium / 100 * transmission;
+      const extraInterest = debtDifferencePrevious * D.baseline.policyRate[index] / 100
+        + scenarioDebt * riskPremium / 100 * transmission;
       const directBalanceCost = spendingChange - revenueChange;
       const deficit = baseline[index].deficit + directBalanceCost - revenueFeedback + cyclicalSpending + extraInterest;
       scenarioDebt += deficit;
@@ -645,6 +801,7 @@
       lastDebtRatio = debtRatio;
     }
 
+    scenario.forEach((point, index) => { point.social = calculateSocialOutlook(point, baseline[index]); });
     return { baseline, scenario, profile, eu, structural, engines };
   }
 
@@ -666,6 +823,7 @@
       select.value = state[key];
     });
     $("#scenario-name").value = state.name;
+    renderSavedScenarios();
     renderPresets();
     renderSources();
     renderSectors();
@@ -917,8 +1075,8 @@
   function setCategoryChange(id, rawValue, refreshList = false) {
     const category = byId.get(id);
     if (!category || category.locked) return;
-    const limit = Math.max(10, Math.ceil(Math.abs(category.value) * 0.7 / 5) * 5);
-    const value = clamp(Number(rawValue) || 0, -limit, limit);
+    const limits = categoryChangeLimits(category);
+    const value = clamp(Number(rawValue) || 0, limits.min, limits.max);
     if (Math.abs(value) < 0.01) delete state.changes[id];
     else state.changes[id] = round(value, 1);
     refreshAll(refreshList);
@@ -949,20 +1107,7 @@
   }
 
   function updateSummary() {
-    let spending = 0;
-    let revenue = 0;
-    Object.entries(state.changes).forEach(([id, value]) => {
-      const category = byId.get(id);
-      if (!category) return;
-      if (category.type === "spending") spending += Number(value);
-      else revenue += Number(value);
-    });
-    const structuralYear = state.projection?.structural?.[0];
-    const engineYear = state.projection?.engines?.[0];
-    const cost = spending - revenue
-      + (structuralYear ? structuralYear.energyFiscalCost - structuralYear.migrationFiscalDelta + structuralYear.demographyFiscalCost : 0)
-      + (engineYear ? engineYear.fiscalCost : 0);
-    const balance = -cost;
+    const balance = -(state.projection?.scenario?.[0]?.directBalanceCost || 0);
     $("#direct-balance").textContent = `${balance >= 0 ? "+" : "−"}${money(Math.abs(balance))}`;
     $("#direct-balance").style.color = balance > 0 ? "var(--teal)" : balance < 0 ? "var(--coral)" : "";
     const bar = $("#balance-bar");
@@ -986,13 +1131,20 @@
     return `${formatted}${control.unit}`;
   }
 
+  function boundedControlValue(raw, control) {
+    const value = Number(raw);
+    if (!Number.isFinite(value)) return control.value;
+    const bounded = clamp(value, control.min, control.max);
+    return Number((control.min + Math.round((bounded - control.min) / control.step) * control.step).toFixed(4));
+  }
+
   function structuralIdsForTab(tab) {
     return {
       demography: ["fertility", "lifeExpectancy"],
       migration: ["economicMigration", "otherMigration", "integration"],
       employment: ["trainingEntries", "trainingMatch", "activationPlaces"],
       securityJobs: ["jobsMilitary", "jobsPolice", "jobsGendarmerie", "jobsJudiciary", "jobsPrison", "jobsYouthJustice"],
-      serviceJobs: ["jobsEducation", "jobsStateAdmin", "jobsHospital", "jobsFirefighters", "jobsTerritorial", "publicPermanentShare", "publicCategoryA", "publicCategoryB"],
+      serviceJobs: ["jobsEducation", "jobsStateAdmin", "jobsHospital", "jobsFirefighters", "jobsTerritorial", "publicFpeNet", "publicFptNet", "publicFphNet", "publicHiringCapacity", "publicPermanentShare", "publicCategoryA", "publicCategoryB"],
       energy: ["nuclear", "renewables", "efficiency", "fossilPrice", "carbonTax"]
     }[tab] || [];
   }
@@ -1003,7 +1155,7 @@
       const control = D.structural.controls[id];
       return `
         <div class="structural-control">
-          <div class="structural-control-heading"><label for="structural-${id}">${control.label}</label><output id="output-${id}">${controlText(id, state.structural[id])}</output></div>
+          <div class="structural-control-heading"><label for="structural-${id}">${control.label}</label><div class="control-value-entry"><output id="output-${id}">${controlText(id, state.structural[id])}</output><input data-structural-number="${id}" type="number" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" aria-label="Saisir : ${control.label}" /></div></div>
           <input id="structural-${id}" data-structural-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" />
           <div class="structural-control-scale"><span>${controlText(id, control.min)}</span><span>réf. ${controlText(id, control.value)}</span><span>${controlText(id, control.max)}</span></div>
         </div>`;
@@ -1013,8 +1165,8 @@
       migration: "Les deux flux sont des hypothèses de solde net, pas des nombres de titres de séjour. « Autres motifs » regroupe ici famille, études et humanitaire. Le résultat dépend de l’emploi, pas d’une valeur attribuée aux personnes.",
       employment: "Formation et accompagnement mobilisent progressivement les viviers disponibles. Chômage BIT, inscrits à France Travail, halo et sous-emploi se recouvrent : le modèle ne les additionne jamais comme des personnes immédiatement interchangeables.",
       securityJobs: "Armées, police, gendarmerie, juridictions, pénitentiaire et justice des mineurs ont chacun un coût, une durée de carrière et un taux de maintien propres. Une valeur négative représente des recrutements ou remplacements évités, jamais un licenciement automatique. Les réservistes sont exclus des emplois permanents.",
-      serviceJobs: "Chaque réglage est un flux annuel supplémentaire suivi par cohorte. Les militaires restent séparés des titulaires civils ; les parts de titulaires et de catégories A/B/C s’appliquent aux missions civiles compatibles. L’engagement à 40 ans est patrimonial et n’est pas une dépense immédiate.",
-      energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. Le coût public, le calendrier industriel et la baisse des importations sont des ordres de grandeur sensibles aux technologies."
+      serviceJobs: "Chaque réglage est un flux annuel supplémentaire suivi par cohorte. Les flux génériques État/collectivités/hôpitaux et les métiers détaillés s'additionnent : évitez de saisir deux fois le même recrutement. La capacité annuelle limite les embauches par métier détaillé ; 6 % est une hypothèse prudente, pas une statistique officielle. Les pensions et rémunérations sont suivies séparément.",
+      energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. La baisse des importations est plafonnée à la facture de référence ; les émissions évitées sont limitées par une enveloppe nationale décroissante. Ces plafonds simplifiés ne remplacent pas un modèle de réseau et de production."
     };
     $("#structural-disclaimer").textContent = notes[state.activeStructuralTab];
   }
@@ -1026,23 +1178,22 @@
     const baseline = state.projection.baseline[index];
     const popDelta = structure.population - structure.baselinePopulation;
     const birthDelta = structure.births - structure.baselineBirths;
-    const netBudget = structure.migrationFiscalDelta - structure.energyFiscalCost - structure.demographyFiscalCost
-      - structure.publicPayrollCost - structure.trainingFiscalCost;
     const gdpDelta = point.gdp - baseline.gdp;
-    const unchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
+    const unchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001)
+      && Object.entries(D.policyEngines.controls).every(([id, control]) => Math.abs(state.engines[id] - control.value) < 0.001);
 
     $("#story-horizon").textContent = `à ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
     $("#story-lead").textContent = unchanged && !Object.keys(state.changes).length && state.euMode === "current"
       ? "Vous êtes sur la trajectoire de référence : la population progresse encore grâce au solde migratoire, tandis que le vieillissement pèse progressivement sur la population active."
-      : `À cet horizon, votre scénario porte le PIB à ${money(point.gdp)} (${signed(gdpDelta, " Md€")} face à la référence) et modifie le solde public direct d’environ ${signed(netBudget, " Md€/an")}.`;
+      : `À cet horizon, votre scénario porte le PIB à ${money(point.gdp)} (${signed(gdpDelta, " Md€")} face à la référence) et modifie le solde public direct de ${signed(-point.directBalanceCost, " Md€/an")} : dépenses ${signed(point.spendingChange, " Md€")}, recettes ${signed(point.revenueChange, " Md€")}.`;
 
     const populationText = Math.abs(birthDelta) < 1
       ? `La natalité reste proche de la référence. La population atteint ${fmt1.format(structure.population)} millions.`
       : `${signed(birthDelta, " k")} naissances par an par rapport à la référence ; la population atteint ${fmt1.format(structure.population)} millions (${signed(popDelta, " M")}). Les services liés aux âges changent de ${signed(structure.demographyFiscalCost, " Md€/an")}.`;
-    const migrationText = `Les cohortes simulées génèrent ${money(structure.migrationRevenue)} de prélèvements et ${money(structure.migrationCost)} de services, transferts et intégration cette année, soit un solde de ${signed(structure.migrationNet, " Md€")}.`;
+    const migrationText = `Les arrivées simulées génèrent ${money(structure.migrationRevenue)} de prélèvements et ${money(structure.migrationCost)} de services et d’intégration. Les sorties éventuelles réduisent recettes et dépenses ; le solde net des flux est ${signed(structure.migrationNet, " Md€")}.`;
     const publicText = Math.abs(structure.publicEmploymentDelta) < 0.1
       ? "Les effectifs publics suivent la référence : les départs et recrutements ordinaires sont implicitement remplacés."
-      : `${signed(structure.publicEmploymentDelta, " k")} agents présents par rapport à la référence : ${signed(structure.publicMilitaryDelta, " k")} militaires, ${signed(structure.publicPermanentDelta, " k")} titulaires civils et ${signed(structure.publicContractDelta, " k")} contractuels. Coût employeur annuel : ${signed(structure.publicPayrollCost, " Md€")}.`;
+      : `${signed(structure.publicEmploymentDelta, " k")} agents présents par rapport à la référence : ${signed(structure.publicMilitaryDelta, " k")} militaires, ${signed(structure.publicPermanentDelta, " k")} titulaires civils et ${signed(structure.publicContractDelta, " k")} contractuels. Rémunérations ${signed(structure.publicPayrollCost, " Md€")}/an, pensions ${signed(structure.publicPensionCost, " Md€")}/an et cotisations internes en recettes ${signed(structure.publicPensionContributionRevenue, " Md€")}/an.${structure.publicHiringRate < 0.999 ? ` Recrutements réalisés : ${fmt0.format(structure.publicHiringRate * 100)} % des demandes.` : ""}`;
     const energyDirection = structure.importBillChange > 0.05 ? "alourdit" : structure.importBillChange < -0.05 ? "allège" : "laisse presque inchangée";
     const energyText = `Le scénario ${energyDirection} la facture énergétique de ${money(Math.abs(structure.importBillChange))} et modifie les émissions de ${signed(structure.emissionsChange, " MtCO₂e")}.`;
     $("#story-reasons").innerHTML = `
@@ -1055,7 +1206,7 @@
     const outcomes = [
       ["Population", `${fmt1.format(structure.population)} M`, `${signed(popDelta, " M")} vs réf.`],
       ["Agents publics", signed(structure.publicEmploymentDelta, " k"), "écart vs référence"],
-      ["Coût public annuel", signed(structure.publicPayrollCost, " Md€"), "rémunérations + employeur"],
+      ["Coût public net annuel", signed(structure.publicPayrollCost + structure.publicPensionCost - structure.publicPensionContributionRevenue, " Md€"), "après cotisations internes"],
       ["Emploi net mobilisé", signed(point.labor.netEmployment, " k"), `${fmt0.format(point.labor.realizationRate * 100)} % réalisé`],
       ["Facture énergétique", signed(structure.importBillChange, " Md€"), "variation vs réf."],
       ["Émissions", signed(structure.emissionsChange, " Mt"), "CO₂e vs réf."]
@@ -1070,8 +1221,10 @@
     }).join("");
     const missionRows = Object.entries(workforce.publicOccupations).map(([key, item]) => {
       const delta = structure.publicMissionById[key];
-      const status = item.military ? "statut militaire" : `${fmt0.format(item.permanentShare * 100)} % de titulaires dans les flux`;
-      return `<div class="workforce-row"><span><strong>${item.short} · ${item.label}</strong><small>${fmt1.format(item.baseline)} k observés · ${status} · carrière calibrée ${item.careerYears} ans</small></span><strong class="${classFor(delta)}">${signed(delta, " k")}</strong></div>`;
+      const adjustedShare = clamp(item.permanentShare + (state.structural.publicPermanentShare - D.structural.controls.publicPermanentShare.value) / 100, 0, 1);
+      const status = item.military ? "statut militaire" : `${fmt0.format(adjustedShare * 100)} % de titulaires dans les flux`;
+      const career = Math.max(1, Math.round(item.careerYears + (item.military ? 0 : Number(state.engines.retirementAge || 0))));
+      return `<div class="workforce-row"><span><strong>${item.short} · ${item.label}</strong><small>${fmt1.format(item.baseline)} k de référence · ${status} · carrière ${career} ans · retraités supplémentaires ${signed(structure.publicRetiredByMission[key], " k")}</small></span><strong class="${classFor(delta)}">${signed(delta, " k")}</strong></div>`;
     }).join("");
     const employmentRows = workforce.employmentTypes.map((item) => `<div class="workforce-row"><span><strong>${item.label}</strong><small>${item.note}</small></span><strong>${fmt1.format(item.value)} M</strong></div>`).join("");
     const categoryRows = [
@@ -1089,7 +1242,7 @@
       ["Emploi issu des migrations", `${fmt0.format(point.labor.fromMigration)} k`, "part des cohortes employées"]
     ].map(([label, value, note]) => `<div class="workforce-row"><span><strong>${label}</strong><small>${note}</small></span><strong>${value}</strong></div>`).join("");
     $("#workforce-detail").innerHTML = `
-      <article class="workforce-panel workforce-panel-wide"><h3>Armées, sécurité, justice et services publics</h3><p>Effectifs de référence en milliers. À droite : écart simulé au ${point.year}. Les réservistes et les pompiers volontaires sont affichés dans les sources mais ne sont pas assimilés à des emplois publics permanents.</p><div class="public-mission-grid">${missionRows}</div><div class="public-summary-grid"><div>${publicRows}</div><div>${categoryRows}<div class="workforce-row"><span><strong>Militaires</strong><small>armées et gendarmerie, hors titulaires civils</small></span><strong class="${classFor(structure.publicMilitaryDelta)}">${signed(structure.publicMilitaryDelta, " k")}</strong></div></div><div class="workforce-commitment"><small>Engagement actualisé à 40 ans</small><strong>${signed(structure.lifetimeCommitment, " Md€")}</strong><span>Rémunérations et droits futurs des cohortes ajoutées ou évitées. Indicateur patrimonial, non dépense immédiate.</span></div></div></article>
+      <article class="workforce-panel workforce-panel-wide"><h3>Armées, sécurité, justice et services publics</h3><p>Effectifs de référence en milliers, provenant de millésimes 2024–2026 et de soldes recalés. À droite : écart d’agents en activité au ${point.year}. Recrutements réalisables cette année : ${fmt1.format(structure.realizedPublicHiring)} k sur ${fmt1.format(structure.requestedPublicHiring)} k demandés. Réservistes et pompiers volontaires ne sont pas assimilés à des emplois permanents.</p><div class="public-mission-grid">${missionRows}</div><div class="public-summary-grid"><div>${publicRows}</div><div>${categoryRows}<div class="workforce-row"><span><strong>Militaires</strong><small>armées et gendarmerie, hors titulaires civils</small></span><strong class="${classFor(structure.publicMilitaryDelta)}">${signed(structure.publicMilitaryDelta, " k")}</strong></div></div><div class="workforce-commitment"><small>Engagement actualisé à 40 ans</small><strong>${signed(structure.lifetimeCommitment, " Md€")}</strong><span>Rémunérations et pensions futures des cohortes ajoutées ou évitées. Cette année : pensions ${signed(structure.publicPensionCost, " Md€")}, cotisations internes en recettes ${signed(structure.publicPensionContributionRevenue, " Md€")}.</span></div></div></article>
       <article class="workforce-panel"><h3>Types d’emploi</h3><p>Photographie 2025 reconstituée. Les catégories publiques sont séparées des contrats privés.</p>${employmentRows}</article>
       <article class="workforce-panel"><h3>Viviers et transitions</h3><p>Les sources ne sont pas additives : le modèle applique des taux de disponibilité et d’appariement.</p>${allocationRows}</article>`;
   }
@@ -1115,7 +1268,7 @@
     $("#engine-description").textContent = group.description;
     $("#engine-control-list").innerHTML = controls.map(([id, control]) => `
       <div class="engine-control">
-        <div class="engine-control-head"><label for="engine-${id}">${control.label}</label><output id="engine-output-${id}">${engineControlText(id, state.engines[id])}</output></div>
+        <div class="engine-control-head"><label for="engine-${id}">${control.label}</label><div class="control-value-entry"><output id="engine-output-${id}">${engineControlText(id, state.engines[id])}</output><input data-engine-number="${id}" type="number" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.engines[id]}" aria-label="Saisir : ${control.label}" /></div></div>
         <input id="engine-${id}" data-engine-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.engines[id]}" />
         <div class="engine-control-scale"><span>${engineControlText(id, control.min)}</span><span>réf. ${engineControlText(id, control.value)}</span><span>${engineControlText(id, control.max)}</span></div>
       </div>`).join("");
@@ -1151,10 +1304,20 @@
     }).join("") : `<div class="engine-mechanism"><i>↗</i><div><strong>Chaînes causales prêtes</strong><span>Les résultats apparaîtront ici, classés par importance.</span></div><b>référence</b></div>`;
 
     let alert = "Le résultat central ne valorise pas directement la qualité du service public, la sécurité, le bien-être ou les pertes évitées : ces dimensions restent à lire avec les indicateurs physiques et l’incertitude.";
+    const overlappingCategories = {
+      prevention: ["GF07"], careEfficiency: ["GF07"], teacherResources: ["GF09"], vocationalTraining: ["GF09"],
+      housingBuild: ["GF06"], socialHousing: ["GF06"], defenseCapacity: ["GF02"], publicSafety: ["GF03"],
+      adaptation: ["GF05"], publicResearch: ["GF01", "GF09"], transportInfrastructure: ["GF04"],
+      targetedTransfers: ["GF10"]
+    };
+    const overlap = active.filter(([id]) => (overlappingCategories[id] || []).some((prefix) =>
+      Object.entries(state.changes).some(([categoryId, delta]) => categoryId.startsWith(prefix) && Math.abs(delta) > 0.001)));
     if (state.engines.tradeProtection > 0 && !["breach", "euroExit"].includes(state.euMode)) {
       alert = "Alerte UE : une protection commerciale nationale est incompatible avec la politique commerciale commune. Le modèle ajoute contentieux, représailles et incertitude tant que le cadre européen n’est pas renégocié ou rompu.";
     } else if (state.engines.publicGuarantees > 0) {
       alert = "Les garanties ne sont pas une dépense immédiate complète : le modèle comptabilise une perte attendue. En crise, l’appel de garantie peut toutefois transformer rapidement l’exposition en dette publique.";
+    } else if (overlap.length) {
+      alert = `Risque de double comptage : ${overlap.map(([, control]) => control.label).join(", ")} et des postes budgétaires proches sont modifiés ensemble. Les montants s’additionnent ; si le poste finance déjà ce levier, retirez l’un des deux réglages.`;
     } else if (active.length >= 8) {
       alert = "De nombreux moteurs sont activés simultanément : contraintes de main-d’œuvre, capacités administratives et risques de double comptage élargissent fortement la plage d’incertitude.";
     }
@@ -1202,7 +1365,27 @@
     updateMetricDelta($("#delta-unemployment"), item.unemployment - baseline.unemployment, true, " pt");
     $("#sub-unemployment").textContent = `Estimation annuelle ${item.year}`;
     updatePlainSummary(item, baseline);
+    updateSocialLab(item.social);
     $("#journey-status").textContent = `${state.name || "Mon scénario"} · ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
+    renderSavedComparison();
+  }
+
+  function updateSocialLab(social) {
+    $("#social-discomfort").textContent = `${signed(social.meanDiscomfort, " pt")}`;
+    const top = social.highestPressure;
+    $("#social-pressure").textContent = top?.pressure > 0.05 ? `${top.ageLabel} · ${top.situationLabel}` : "Pas de hausse détectée";
+    $("#social-pressure-detail").textContent = top?.pressure > 0.05
+      ? `Pression indicative ${fmt1.format(top.pressure)} / 20 ; elle suppose une coordination qui n'est pas modélisée.`
+      : "Aucun surcroît de pression dans ce scénario par rapport à la référence.";
+    const bounds = [...social.incumbentVoteSensitivity].sort((a, b) => a - b);
+    $("#social-vote").textContent = Math.abs(social.meanDiscomfort) < 0.05
+      ? "Aucun écart modélisé"
+      : `${signed(bounds[0], " pt")} à ${signed(bounds[1], " pt")}`;
+    $("#social-matrix-head").innerHTML = `<tr><th scope="col">Âge</th>${D.social.situations.map((group) => `<th scope="col">${escapeHtml(group.label)}</th>`).join("")}</tr>`;
+    $("#social-matrix-body").innerHTML = D.social.ages.map((age) => `<tr><th scope="row">${escapeHtml(age.label)}</th>${D.social.situations.map((group) => {
+      const cell = social.cells.find((item) => item.age === age.id && item.situation === group.id);
+      return cell ? `<td class="${cell.discomfort > 0.05 ? "social-risk" : cell.discomfort < -0.05 ? "social-relief" : ""}" title="Pression de mobilisation ${fmt1.format(cell.pressure)} sur 20">${signed(cell.discomfort, " pt")}</td>` : `<td aria-label="hors champ">—</td>`;
+    }).join("")}</tr>`).join("");
   }
 
   function updatePlainSummary(item, baseline) {
@@ -1335,11 +1518,11 @@
       euStatus.textContent = state.euMode === "euroExit" ? "Rupture majeure simulée" : "Contentieux probable";
       euDetail.textContent = D.euModes[state.euMode].description;
     } else if (point2029.deficitRatio <= 3) {
-      euStatus.textContent = "Trajectoire 2029 compatible";
-      euDetail.textContent = `Déficit simulé à ${percent(point2029.deficitRatio)} en 2029, sous le seuil de 3 %.`;
+      euStatus.textContent = "Seuil de déficit respecté";
+      euDetail.textContent = `Déficit simulé à ${percent(point2029.deficitRatio)} en 2029. La trajectoire européenne de dépenses nettes n’est pas évaluée : la conformité complète reste indéterminée.`;
     } else {
       euStatus.textContent = "Objectif 2029 non atteint";
-      euDetail.textContent = `Écart de ${fmt1.format(point2029.deficitRatio - 3)} point(s) au seuil de 3 % en 2029.`;
+      euDetail.textContent = `Écart de ${fmt1.format(point2029.deficitRatio - 3)} point(s) au seuil de 3 % en 2029. La trajectoire de dépenses nettes n’est pas évaluée.`;
     }
 
     const uncertainty = effectiveProfile().uncertainty + D.euModes[state.euMode].uncertainty;
@@ -1481,7 +1664,7 @@
 
   function renderCategoryRow(category) {
     const delta = changeFor(category.id);
-    const limit = Math.max(10, Math.ceil(Math.abs(category.value) * 0.7 / 5) * 5);
+    const limits = categoryChangeLimits(category);
     const newValue = category.value + delta;
     const effect = categoryEffectLabel(category, delta);
     let effectClass = "";
@@ -1496,8 +1679,8 @@
         <div class="change-control">
           ${category.locked
             ? `<span class="locked-note">calculé automatiquement</span>`
-            : `<input type="range" min="${-limit}" max="${limit}" step="0.5" value="${delta}" data-range="${category.id}" aria-label="Variation de ${category.label}" />
-               <input type="number" min="${-limit}" max="${limit}" step="0.5" value="${delta}" data-number="${category.id}" aria-label="Variation en milliards d’euros de ${category.label}" />`}
+            : `<input type="range" min="${limits.min}" max="${limits.max}" step="0.5" value="${delta}" data-range="${category.id}" aria-label="Variation de ${category.label}" />
+               <input type="number" min="${limits.min}" max="${limits.max}" step="0.5" value="${delta}" data-number="${category.id}" aria-label="Variation en milliards d’euros de ${category.label}" />`}
         </div>
         <div class="new-value ${delta ? "changed" : ""}">${money(newValue)}</div>
         <div class="effect-cell ${effectClass}">${effect}</div>
@@ -1564,13 +1747,99 @@
     refreshAll(true);
   }
 
+  const scenarioLibraryKey = "ecosim-france-scenarios";
+
+  function readScenarioLibrary() {
+    try {
+      const value = JSON.parse(localStorage.getItem(scenarioLibraryKey) || "[]");
+      return Array.isArray(value) ? value.filter((item) => item && typeof item.id === "string" && item.scenario && typeof item.scenario === "object") : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function renderSavedScenarios(selectedId = "") {
+    const select = $("#saved-scenarios");
+    const records = readScenarioLibrary();
+    select.innerHTML = `<option value="">${records.length ? "Choisir un scénario…" : "Aucun scénario enregistré"}</option>`
+      + records.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} · ${escapeHtml(item.savedAt)}</option>`).join("");
+    select.value = selectedId;
+    $("#load-scenario").disabled = !select.value;
+    $("#delete-scenario").disabled = !select.value;
+  }
+
+  function renderSavedComparison() {
+    const container = $("#saved-comparison");
+    const saved = readScenarioLibrary().find((item) => item.id === $("#saved-scenarios").value);
+    container.hidden = !saved || !state.projection;
+    if (!saved || !state.projection) return;
+    const currentPoint = state.projection.scenario[projectionIndex(state.horizon)];
+    const snapshot = {
+      name: state.name, changes: state.changes, model: state.model, euMode: state.euMode,
+      cycle: state.cycle, monetary: state.monetary, confidence: state.confidence,
+      structural: state.structural, engines: state.engines
+    };
+    let savedPoint;
+    try {
+      applySerialized(saved.scenario);
+      savedPoint = calculateProjection().scenario[projectionIndex(state.horizon)];
+    } finally {
+      Object.assign(state, snapshot);
+    }
+    const row = (label, point) => `<tr><th scope="row">${escapeHtml(label)}</th><td>${percent(point.deficitRatio)}</td><td>${percent(point.debtRatio)}</td><td>${percent(point.unemployment)}</td></tr>`;
+    container.innerHTML = `<table><caption>Comparer à ${state.horizon} an${state.horizon > 1 ? "s" : ""}</caption><thead><tr><th>Scénario</th><th>Déficit</th><th>Dette</th><th>Chômage</th></tr></thead><tbody>${row("En cours", currentPoint)}${row(saved.name, savedPoint)}</tbody></table>`;
+  }
+
   function saveScenario() {
     state.name = $("#scenario-name").value.trim() || "Mon scénario";
     try {
-      localStorage.setItem("ecosim-france-scenario", JSON.stringify(serializableState()));
-      showToast("Scénario sauvegardé dans ce navigateur");
+      const serialized = serializableState();
+      const id = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const item = { id, name: state.name, savedAt: new Date().toLocaleString("fr-FR"), scenario: serialized };
+      const records = readScenarioLibrary();
+      localStorage.setItem(scenarioLibraryKey, JSON.stringify([...records, item]));
+      localStorage.setItem("ecosim-france-scenario", JSON.stringify(serialized));
+      renderSavedScenarios(id);
+      renderSavedComparison();
+      showToast("Nouvelle copie du scénario enregistrée");
     } catch (error) {
       showToast("La sauvegarde locale est indisponible");
+    }
+  }
+
+  function loadSavedScenario() {
+    const item = readScenarioLibrary().find((record) => record.id === $("#saved-scenarios").value);
+    if (!item) return;
+    pushUndo();
+    state.changes = {};
+    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
+    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
+    applySerialized(item.scenario);
+    $("#scenario-name").value = state.name;
+    $("#model-select").value = state.model;
+    $("#eu-select").value = state.euMode;
+    $("#cycle-select").value = state.cycle;
+    $("#monetary-select").value = state.monetary;
+    $("#confidence-select").value = state.confidence;
+    updateModelDescription();
+    updateAssumptionDescription();
+    renderStructuralControls();
+    renderEngineControls();
+    refreshAll(true);
+    showToast(`Scénario « ${state.name} » chargé`);
+  }
+
+  function deleteSavedScenario() {
+    const selected = $("#saved-scenarios").value;
+    const item = readScenarioLibrary().find((record) => record.id === selected);
+    if (!item || !window.confirm(`Supprimer la copie enregistrée « ${item.name} » ?`)) return;
+    try {
+      localStorage.setItem(scenarioLibraryKey, JSON.stringify(readScenarioLibrary().filter((record) => record.id !== selected)));
+      renderSavedScenarios();
+      renderSavedComparison();
+      showToast("Copie enregistrée supprimée");
+    } catch (error) {
+      showToast("Impossible de supprimer cette copie");
     }
   }
 
@@ -1609,6 +1878,11 @@
       recrutements_publics_categorie_b_pct: round(item.structural.publicCategoryMix.b * 100, 1),
       recrutements_publics_categorie_c_pct: round(item.structural.publicCategoryMix.c * 100, 1),
       cout_annuel_emploi_public_milliards: round(item.structural.publicPayrollCost, 2),
+      pensions_agents_ecart_milliards: round(item.structural.publicPensionCost, 2),
+      cotisations_employeur_internes_recettes_milliards: round(item.structural.publicPensionContributionRevenue, 2),
+      cout_public_net_annuel_milliards: round(item.structural.publicPayrollCost + item.structural.publicPensionCost - item.structural.publicPensionContributionRevenue, 2),
+      recrutements_publics_demandes_milliers: round(item.structural.requestedPublicHiring, 2),
+      recrutements_publics_realises_milliers: round(item.structural.realizedPublicHiring, 2),
       engagement_public_40_ans_milliards: round(item.structural.lifetimeCommitment, 2),
       formation_vers_emploi_milliers: round(item.structural.trainingEmploymentDelta, 1),
       emploi_net_mobilise_milliers: round(item.labor.netEmployment, 1),
@@ -1617,6 +1891,9 @@
       mobilite_emploi_emploi_milliers: round(item.labor.jobToJob, 1),
       taux_realisation_emploi_pct: round(item.labor.realizationRate * 100, 1),
       solde_fiscal_cohortes_milliards: round(item.structural.migrationNet, 2),
+      variation_depenses_directes_milliards: round(item.spendingChange, 2),
+      variation_recettes_directes_milliards: round(item.revenueChange, 2),
+      variation_solde_direct_milliards: round(-item.directBalanceCost, 2),
       facture_energetique_ecart_milliards: round(item.structural.importBillChange, 2),
       emissions_ecart_mtco2e: round(item.structural.emissionsChange, 2),
       moteurs_solde_direct_milliards: round(-item.engines.fiscalCost, 2),
@@ -1626,6 +1903,9 @@
       moteurs_solde_exterieur_milliards: round(item.engines.trade, 2),
       moteurs_emissions_mtco2e: round(item.engines.emissions, 2),
       moteurs_pauvrete_points: round(item.engines.poverty, 2),
+      mecontentement_moyen_ecart_indice: round(item.social.meanDiscomfort, 2),
+      sensibilite_vote_sortant_basse_points: round(Math.min(...item.social.incumbentVoteSensitivity), 2),
+      sensibilite_vote_sortant_haute_points: round(Math.max(...item.social.incumbentVoteSensitivity), 2),
       reference_deficit_pct_pib: round(state.projection.baseline[index].deficitRatio, 2),
       reference_dette_pct_pib: round(state.projection.baseline[index].debtRatio, 2)
     }));
@@ -1703,6 +1983,13 @@
     });
     $("#undo-button").addEventListener("click", undo);
     $("#save-button").addEventListener("click", saveScenario);
+    $("#saved-scenarios").addEventListener("change", () => {
+      $("#load-scenario").disabled = !$("#saved-scenarios").value;
+      $("#delete-scenario").disabled = !$("#saved-scenarios").value;
+      renderSavedComparison();
+    });
+    $("#load-scenario").addEventListener("click", loadSavedScenario);
+    $("#delete-scenario").addEventListener("click", deleteSavedScenario);
     $$("[data-horizon]").forEach((button) => button.addEventListener("click", () => {
       state.horizon = Number(button.dataset.horizon);
       $$("[data-horizon]").forEach((item) => item.classList.toggle("is-active", item === button));
@@ -1715,11 +2002,17 @@
       const button = event.target.closest("[data-structural-tab]");
       if (!button) return;
       state.activeStructuralTab = button.dataset.structuralTab;
-      $$("[data-structural-tab]").forEach((item) => item.classList.toggle("is-active", item === button));
+      $$("[data-structural-tab]").forEach((item) => {
+        item.classList.toggle("is-active", item === button);
+        item.setAttribute("aria-selected", item === button ? "true" : "false");
+      });
       renderStructuralControls();
     });
     $("#structural-control-list").addEventListener("pointerdown", (event) => {
-      if (event.target.dataset.structuralControl) captureEditSnapshot();
+      if (event.target.dataset.structuralControl || event.target.dataset.structuralNumber) captureEditSnapshot();
+    });
+    $("#structural-control-list").addEventListener("focusin", (event) => {
+      if (event.target.dataset.structuralControl || event.target.dataset.structuralNumber) captureEditSnapshot();
     });
     $("#structural-control-list").addEventListener("input", (event) => {
       const id = event.target.dataset.structuralControl;
@@ -1727,10 +2020,20 @@
       state.structural[id] = Number(event.target.value);
       const output = $(`#output-${id}`);
       if (output) output.textContent = controlText(id, state.structural[id]);
+      const numeric = $(`[data-structural-number="${id}"]`);
+      if (numeric) numeric.value = state.structural[id];
       refreshAll(false);
     });
     $("#structural-control-list").addEventListener("change", (event) => {
-      if (!event.target.dataset.structuralControl) return;
+      const id = event.target.dataset.structuralControl || event.target.dataset.structuralNumber;
+      if (!id) return;
+      if (event.target.dataset.structuralNumber) {
+        state.structural[id] = boundedControlValue(event.target.value, D.structural.controls[id]);
+        event.target.value = state.structural[id];
+        $(`#structural-${id}`).value = state.structural[id];
+        $(`#output-${id}`).textContent = controlText(id, state.structural[id]);
+        refreshAll(false);
+      }
       commitEditSnapshot();
     });
     $("#engine-selector").addEventListener("click", (event) => {
@@ -1742,10 +2045,10 @@
       updateEngineRoom();
     });
     $("#engine-control-list").addEventListener("pointerdown", (event) => {
-      if (event.target.dataset.engineControl) captureEditSnapshot();
+      if (event.target.dataset.engineControl || event.target.dataset.engineNumber) captureEditSnapshot();
     });
     $("#engine-control-list").addEventListener("focusin", (event) => {
-      if (event.target.dataset.engineControl) captureEditSnapshot();
+      if (event.target.dataset.engineControl || event.target.dataset.engineNumber) captureEditSnapshot();
     });
     $("#engine-control-list").addEventListener("input", (event) => {
       const id = event.target.dataset.engineControl;
@@ -1753,10 +2056,20 @@
       state.engines[id] = Number(event.target.value);
       const output = $(`#engine-output-${id}`);
       if (output) output.textContent = engineControlText(id, state.engines[id]);
+      const numeric = $(`[data-engine-number="${id}"]`);
+      if (numeric) numeric.value = state.engines[id];
       refreshAll(false);
     });
     $("#engine-control-list").addEventListener("change", (event) => {
-      if (!event.target.dataset.engineControl) return;
+      const id = event.target.dataset.engineControl || event.target.dataset.engineNumber;
+      if (!id) return;
+      if (event.target.dataset.engineNumber) {
+        state.engines[id] = boundedControlValue(event.target.value, D.policyEngines.controls[id]);
+        event.target.value = state.engines[id];
+        $(`#engine-${id}`).value = state.engines[id];
+        $(`#engine-output-${id}`).textContent = engineControlText(id, state.engines[id]);
+        refreshAll(false);
+      }
       commitEditSnapshot();
     });
     $("#reset-engines").addEventListener("click", resetPolicyEngines);
@@ -1868,7 +2181,8 @@
       exportScenario(option.dataset.export);
       $("#export-dialog").close();
     });
-    $$("[data-scroll]").forEach((button) => button.addEventListener("click", () => {
+    $$("[data-scroll]").forEach((button) => button.addEventListener("click", (event) => {
+      if (button.tagName === "A") event.preventDefault();
       $(`#${button.dataset.scroll}`)?.scrollIntoView({ behavior: "smooth" });
     }));
     $("#theme-toggle").addEventListener("click", () => {

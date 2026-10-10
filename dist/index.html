@@ -6,8 +6,15 @@
     <meta name="theme-color" content="#f4f1ea" />
     <meta
       name="description"
-      content="EcoSim France — laboratoire transparent et pluraliste des finances publiques françaises."
+      content="Simulateur du budget public français : ajustez dépenses, recettes, emploi public, démographie et énergie ; explorez leurs effets à 1, 3, 5, 10, 20 et 30 ans."
     />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://ecosim-france.sleekmouse9.chatgpt.site/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="EcoSim France — Simulateur du budget public" />
+    <meta property="og:description" content="Composez un scénario pour les finances publiques françaises et découvrez les effets et les incertitudes jusqu'à 30 ans." />
+    <meta property="og:url" content="https://ecosim-france.sleekmouse9.chatgpt.site/" />
     <title>EcoSim France — Simulateur des finances publiques</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,10 +33,10 @@
         <span>EcoSim <b>France</b></span>
       </a>
       <nav aria-label="Navigation principale">
-        <button class="nav-link is-active" data-scroll="simulator">Simulateur</button>
-        <button class="nav-link" data-scroll="politics">Programmes</button>
-        <button class="nav-link" data-scroll="methodology">Méthode</button>
-        <button class="nav-link" data-scroll="sources">Sources</button>
+        <a class="nav-link is-active" href="#simulator" data-scroll="simulator">Simulateur</a>
+        <a class="nav-link" href="#politics" data-scroll="politics">Programmes</a>
+        <a class="nav-link" href="#methodology" data-scroll="methodology">Méthode</a>
+        <a class="nav-link" href="#sources" data-scroll="sources">Sources</a>
       </nav>
       <div class="top-actions">
         <button class="icon-button" id="theme-toggle" aria-label="Changer de thème" title="Changer de thème">
@@ -53,7 +60,7 @@
 
     <main id="main">
       <section class="hero" id="simulator">
-        <div class="eyebrow"><span class="live-dot"></span>Données arrêtées au 10 octobre 2026</div>
+        <div class="eyebrow"><span class="live-dot"></span>Simulation expérimentale · données arrêtées au 10 octobre 2026</div>
         <div class="hero-grid">
           <div>
             <h1>Et si vous teniez<br /><em>les cordons de la bourse&nbsp;?</em></h1>
@@ -97,6 +104,11 @@
 
           <label class="field-label" for="scenario-name">Nom du scénario</label>
           <input class="text-input" id="scenario-name" value="Mon scénario" maxlength="60" />
+          <div class="saved-scenarios">
+            <label class="field-label" for="saved-scenarios">Scénarios enregistrés dans ce navigateur</label>
+            <div><select id="saved-scenarios"><option value="">Aucun scénario enregistré</option></select><button type="button" id="load-scenario" disabled>Charger</button><button type="button" id="delete-scenario" disabled>Supprimer</button></div>
+            <div class="saved-comparison" id="saved-comparison" hidden></div>
+          </div>
 
           <div class="two-fields">
             <label>
@@ -268,12 +280,12 @@
         <div class="structural-grid">
           <div class="structural-controls">
             <div class="lab-tabs" role="tablist" aria-label="Thèmes structurels">
-              <button class="is-active" data-structural-tab="demography">Démographie</button>
-              <button data-structural-tab="migration">Immigration</button>
-              <button data-structural-tab="employment">Viviers</button>
-              <button data-structural-tab="securityJobs">Régalien</button>
-              <button data-structural-tab="serviceJobs">Services publics</button>
-              <button data-structural-tab="energy">Énergie</button>
+              <button class="is-active" data-structural-tab="demography" role="tab" aria-selected="true">Démographie</button>
+              <button data-structural-tab="migration" role="tab" aria-selected="false">Immigration</button>
+              <button data-structural-tab="employment" role="tab" aria-selected="false">Viviers</button>
+              <button data-structural-tab="securityJobs" role="tab" aria-selected="false">Régalien</button>
+              <button data-structural-tab="serviceJobs" role="tab" aria-selected="false">Services publics</button>
+              <button data-structural-tab="energy" role="tab" aria-selected="false">Énergie</button>
             </div>
             <div id="structural-control-list"></div>
             <div class="lab-disclaimer" id="structural-disclaimer"></div>
@@ -292,6 +304,20 @@
 
         <div class="structural-outcomes" id="structural-outcomes"></div>
         <div class="workforce-detail" id="workforce-detail" aria-label="Détail des emplois et viviers de main-d’œuvre"></div>
+      </section>
+
+      <section class="social-lab" id="social" aria-labelledby="social-title">
+        <div class="section-intro">
+          <div><span class="section-number">04 bis</span><h2 id="social-title">Réactions sociales et électorales</h2></div>
+          <p>Lecture exploratoire par âge et situation. Elle sépare mécontentement, capacité de mobilisation et sanction électorale : aucun groupe ne vote ni ne manifeste d'une seule voix.</p>
+        </div>
+        <div class="social-cards">
+          <article><small>Écart moyen de mécontentement</small><strong id="social-discomfort">—</strong><span>Indice relatif à la trajectoire de référence, pas une enquête d'opinion.</span></article>
+          <article><small>Mobilisation la plus exposée</small><strong id="social-pressure">—</strong><span id="social-pressure-detail">Pression indicative, pas une probabilité de grève.</span></article>
+          <article><small>Sensibilité du vote sortant</small><strong id="social-vote">—</strong><span>Fourchette conventionnelle en points de vote, pas un pronostic.</span></article>
+        </div>
+        <div class="social-matrix-wrap"><table class="social-matrix"><caption>Écart de mécontentement par âge et situation, en points d'indice</caption><thead id="social-matrix-head"></thead><tbody id="social-matrix-body"></tbody></table></div>
+        <p class="social-caveat">Les poids d'âge, de profession et de mobilisation sont des hypothèses de sensibilité. Ils s'inspirent des mécanismes documentés par l'Insee et le CEVIPOF mais ne sont pas estimés sur microdonnées. L'« influence » désigne ici seulement la capacité de mobilisation collective, jamais la valeur des personnes. Le modèle ne prédit ni parti gagnant, ni manifestation, ni effet économique automatique des conflits sociaux.</p>
       </section>
 
       <section class="engine-room" id="engines" aria-labelledby="engine-title">
@@ -472,7 +498,8 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 4.4 · octobre 2026</span>
+      <a href="confidentialite.html">Confidentialité</a>
+      <span>Version 4.6 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -489,21 +516,23 @@
           <h3>2. Détail des dépenses</h3>
           <p>La dernière ventilation fonctionnelle COFOG disponible pour la France porte sur 2024. Chaque poste est multiplié par le rapport entre le total Insee 2025 et le total COFOG 2024. Les montants détaillés sont donc des estimations 2025 calibrées, tandis que leur somme correspond au total observé.</p>
           <h3>3. Moteur macro-budgétaire</h3>
-          <p>Le moteur est semi-structurel. Il applique des multiplicateurs différenciés, une décroissance de l’effet de demande, des effets d’offre retardés, une élasticité des recettes au PIB, une réponse du chômage inspirée de la loi d’Okun et une charge d’intérêts dépendant du stock de dette.</p>
+          <p>Le moteur est semi-structurel. Il applique des multiplicateurs différenciés, une décroissance de l’effet de demande, des effets d’offre retardés, une élasticité des recettes au PIB, une réponse du chômage inspirée de la loi d’Okun et une charge d’intérêts dépendant du stock de dette. Les coefficients détaillés sont des hypothèses de sensibilité : ils n’ont pas été estimés et validés ensemble sur l’histoire française.</p>
           <h3>4. Pluralisme</h3>
           <p>Les cinq cadres ne sont pas des caricatures doctrinales : ils modifient des paramètres identifiables — multiplicateurs de dépense, sensibilité des prélèvements, effets d’offre, persistance et prime de risque. Aucun résultat n’est masqué ou sélectionné selon sa conclusion.</p>
           <h3>5. Incertitude</h3>
           <p>La bande affichée combine incertitude sur les multiplicateurs, horizon de projection et risque institutionnel. Elle ne constitue pas un intervalle de confiance statistique au sens strict ; c’est une plage de sensibilité destinée à empêcher une fausse précision.</p>
           <h3>6. Lecture des résultats</h3>
-          <p>Les résultats sont des écarts par rapport à une trajectoire de référence compatible avec les dernières projections macroéconomiques et avec une correction budgétaire graduelle. Une mesure « favorable au PIB » peut rester défavorable à la dette, et inversement.</p>
+          <p>Les résultats sont des écarts par rapport à une trajectoire de référence qui postule une correction budgétaire graduelle sans détailler toutes les mesures nécessaires. Les dépenses et recettes directes sont affichées séparément ; les retours macroéconomiques viennent ensuite. Une mesure favorable au PIB peut rester défavorable à la dette, et inversement. Le diagnostic européen ne vérifie actuellement que le seuil de déficit, pas la trajectoire des dépenses nettes.</p>
           <h3>7. Démographie, emploi, immigration et énergie</h3>
-          <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Le module d’emploi distingue les trois versants publics, les missions — armées, police, gendarmerie, justice, pénitentiaire, éducation, hôpital, pompiers et autres services —, les statuts, les salariés privés, les indépendants et les viviers. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
+          <p>Le module démographique suit population, naissances, vieillissement et population active par équations agrégées ; il ne simule pas encore toutes les classes d’âge. Le module migratoire suit les cohortes d’arrivées et estime séparément les effets des sorties nettes. Le module d’emploi distingue les trois versants publics, les missions et les statuts, ainsi que plusieurs viviers de travailleurs. L’énergie combine investissement, facture d’importation, prix et émissions, avec des plafonds simplifiés. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
           <h3>8. Emploi public et engagements longs</h3>
-          <p>Chaque flux supplémentaire de recrutement public crée une cohorte suivie séparément. Sa présence, son coût employeur et son engagement actualisé de rémunération et de retraite évoluent selon la mission, le versant, le statut et, lorsque c’est pertinent, la catégorie A, B ou C. Les militaires des armées et de la gendarmerie sont distingués des titulaires civils ; leurs carrières sont calibrées séparément. Les réservistes et pompiers volontaires ne sont pas traités comme des emplois publics permanents. Un titulaire bénéficie de la permanence de son statut, pas de la garantie absolue de conserver le même poste. L’engagement à quarante ans est affiché mais n’est pas passé en dépense immédiate. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
+          <p>Chaque flux annuel supplémentaire de recrutement public crée une cohorte suivie séparément. La titularisation modifie sa durée de présence ; une limite de recrutement par mission et un vivier global plafonnent les embauches. Sa rémunération, puis une pension simplifiée, évoluent selon la mission, le statut et la durée de carrière. Les cotisations employeur de retraite sont aussi inscrites en recettes du régime public afin de refléter les deux côtés de ce flux comptable ; leur part est une hypothèse indicative à recalibrer. Les militaires sont distingués des titulaires civils ; réservistes et pompiers volontaires ne sont pas traités comme des emplois publics permanents. L’engagement actualisé à quarante ans est informatif. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
           <h3>9. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
           <h3>10. Programmes politiques</h3>
-          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Sources, date, conventions et niveau de confiance sont affichés. Le module ne prédit ni les coalitions, ni la capacité parlementaire à voter les mesures, ni leur conformité juridique exacte. Le « gouvernement technique » est une convention de continuité, pas l’absence de valeurs.</p>
+          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
+          <h3>11. Réactions sociales et vote</h3>
+          <p>Le module affiche une matrice âge × situation socio-professionnelle. Il combine des écarts macroéconomiques simulés et l'exposition conventionnelle à certaines mesures. Les poids de mobilisation et la fourchette de sensibilité du vote sortant ne sont pas estimés sur microdonnées : ils servent à tester des hypothèses et ne prédisent ni comportement individuel, ni scrutin, ni conflit social. La population simulée n'est pas ventilée par ces cellules ; aucune taille électorale n'en est déduite.</p>
           <h3>11. Horizons 20 et 30 ans</h3>
           <p>Après 2035, la trajectoire n’est plus une prévision conjoncturelle : elle prolonge des hypothèses structurelles de productivité, inflation, chômage, vieillissement, migrations et coût de la dette. Les nouvelles générations n’affectent l’offre de travail qu’après 18 ans. L’incertitude augmente volontairement plus vite au-delà de dix ans.</p>
         </div>

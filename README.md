@@ -4,13 +4,25 @@ EcoSim France est un simulateur interactif, pluraliste et transparent des financ
 
 ## Lancer localement
 
-Le projet est volontairement sans étape de compilation ni dépendance JavaScript.
+Le site est sans étape de compilation ni dépendance JavaScript. Node.js est nécessaire pour l'interface Python et les tests.
+
+Les étapes de mise en ligne, référencement, audience et publicité sont détaillées dans [PUBLICATION.md](PUBLICATION.md).
 
 ```bash
 python3 -m http.server 4173 --directory dist
 ```
 
 Puis ouvrir `http://localhost:4173`.
+
+La même simulation est accessible depuis Python :
+
+```bash
+python3 ecosim.py
+python3 ecosim.py mon-scenario.json
+python3 ecosim.py mon-scenario.json --complet
+```
+
+`mon-scenario.json` peut contenir, par exemple, `{"structural":{"jobsPolice":5},"engines":{"publicPayroll":2},"changes":{"R_IR":3}}`. Dans un script Python : `from ecosim import simulate; resultat = simulate({"structural": {"jobsPolice": 5}})`. Le calcul reste dans le moteur JavaScript partagé avec le site : l'interface Python ne crée pas une seconde version des équations.
 
 ## Données
 
@@ -42,7 +54,7 @@ Le moteur est semi-structurel et déterministe. Il combine :
 - stock de dette, charge d’intérêts et prime de risque ;
 - scénarios institutionnels européens.
 
-Cinq paramétrages économiques sont proposés : consensus empirique, lecture keynésienne, politique de l’offre, lecture libérale et réindustrialisation ciblée. Ils utilisent la même comptabilité et ne diffèrent que par des paramètres affichés et documentés.
+Cinq paramétrages économiques sont proposés : hypothèse centrale, lecture keynésienne, politique de l’offre, lecture libérale et réindustrialisation ciblée. Ils utilisent la même comptabilité et ne diffèrent que par des paramètres affichés ; leurs coefficients sont des hypothèses de sensibilité, pas des médianes économétriques estimées.
 
 La version 4.0 comprend :
 
@@ -63,6 +75,10 @@ La version 4.3 ajoute un moteur d’emploi par cohortes : recrutements des trois
 
 La version 4.4 distingue les recrutements et carrières des armées, de la Police nationale, de la Gendarmerie, des juridictions, du pénitentiaire, de la justice des mineurs, de l’éducation-recherche, des autres administrations de l’État, des hôpitaux publics, des sapeurs-pompiers professionnels et des autres services territoriaux. Les militaires sont séparés des titulaires civils ; les réservistes et pompiers volontaires ne sont pas comptés comme emplois publics permanents.
 
+La version 4.5 réconcilie le résumé avec le solde direct du moteur, sépare les variations de dépenses et de recettes, relie la titularisation et les rémunérations aux recrutements, fait passer les cohortes d'agents vers des pensions simplifiées, borne les embauches et les effets énergétiques, et ajoute une saisie numérique aux curseurs. Elle permet d'enregistrer plusieurs scénarios locaux et d'en comparer un avec le scénario en cours. Une interface Python partage exactement le même moteur que le site. Le diagnostic européen précise que la trajectoire des dépenses nettes n'est pas encore calculée.
+
+La version 4.6 ajoute une matrice exploratoire des réactions sociales selon sept classes d'âge et six situations. Elle affiche un indice de mécontentement relatif, une pression de mobilisation potentielle et une fourchette de sensibilité du vote sortant. Ces poids sont des hypothèses explicites, non des probabilités ou des prévisions électorales ; ils ne rétroagissent pas automatiquement sur le PIB ou le budget.
+
 ## Structure
 
 ```text
@@ -71,13 +87,19 @@ dist/
   styles.css   design adaptatif et thème sombre
   data.js      données, sources, paramètres et préréglages
   app.js       moteur de projection et interactions
+  confidentialite.html, robots.txt, sitemap.xml   publication et référencement
+ecosim.py      interface Python en ligne de commande et importable
+PUBLICATION.md guide de mise en ligne, référencement, audience et publicité
+scripts/
+  simulate.mjs adaptateur du moteur web pour Python et scripts
 .openai/
   hosting.json configuration de déploiement Sites
 tests/
   model-smoke.mjs tests des trajectoires, cohortes et scénarios politiques
+  test_python_smoke.py vérification de l'interface Python
 ```
 
 ## Limites
 
-Ce simulateur produit des scénarios de sensibilité, pas des prévisions. Les fourchettes ne sont pas des intervalles de confiance statistiques. Les réactions de la BCE, des marchés, des partenaires commerciaux, des ménages et des entreprises ne peuvent pas être anticipées avec précision. À 20 ou 30 ans, la plage de sensibilité est plus informative que le point central.
+Ce simulateur produit des scénarios de sensibilité, pas des prévisions. Les coefficients sectoriels sont des hypothèses explicites et n'ont pas été estimés conjointement ni validés par rétrospective historique. Les fourchettes ne sont pas des intervalles de confiance statistiques. La démographie ne suit pas encore toute la pyramide des âges, et l'énergie n'est pas simulée heure par heure. Les capacités de recrutement et les pensions publiques sont des proxys transparents, pas des comptes actuariels. Le diagnostic européen ne vérifie pas la trajectoire de dépense nette. Les réactions de la BCE, des marchés, des partenaires commerciaux, des ménages et des entreprises ne peuvent pas être anticipées avec précision. À 20 ou 30 ans, la plage de sensibilité est plus informative que le point central.
 
