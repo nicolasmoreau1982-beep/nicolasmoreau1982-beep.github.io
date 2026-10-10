@@ -6,24 +6,32 @@ Le nom retenu est **EcoSim France**. L'adresse publique du dépôt renommé est 
 
 ## Référencement
 
-Le site contient des titres et descriptions descriptifs, des liens HTML, une liste visible des formations effectivement modélisées, des URL canoniques et un `sitemap.xml` portant les trois pages publiques. Les noms de partis sont placés dans le contenu utile : Google ignore la balise `meta keywords`. Les programmes sont traduits partiellement par EcoSim, et non repris comme chiffrages officiels.
+Le site contient des titres et descriptions descriptifs, des liens HTML, une liste visible des formations effectivement modélisées, des URL canoniques et un `sitemap.xml` portant sept pages publiques : accueil, audit, confidentialité et quatre guides thématiques. Les noms de partis sont placés dans le contenu utile : Google ignore la balise `meta keywords`. Les programmes sont traduits partiellement par EcoSim, et non repris comme chiffrages officiels.
 
 L'objectif éditorial est d'aider à préparer la **présidentielle 2027** en comparant les conséquences budgétaires de choix politiques. À ce stade, les scénarios représentent des groupes et familles politiques, **pas les programmes individuels des candidats**. Ne pas référencer une fiche sous le nom d'un candidat avant d'avoir vérifié sa déclaration, daté et sourcé ses mesures, distingué les annonces des hypothèses EcoSim et signalé les mesures non représentables. La liste officielle des candidats relève du Conseil constitutionnel.
 
 Le dépôt porte désormais le nom spécial `nicolasmoreau1982-beep.github.io` : le site est servi à la racine du domaine, où `dist/robots.txt` devient le véritable `/robots.txt`. Il autorise l'exploration et indique `/sitemap.xml`. Cela facilite la découverte des pages sans garantir leur indexation ni leur classement.
 
-Pour demander l'indexation du déploiement actuel :
+Après publication de cette version sur GitHub Pages, pour demander la découverte des pages :
 
-1. vérifier `https://nicolasmoreau1982-beep.github.io/` dans Google Search Console en tant que propriété de préfixe d'URL ;
-2. soumettre `https://nicolasmoreau1982-beep.github.io/sitemap.xml` dans Search Console ;
-3. inspecter l'URL d'accueil et l'audit, puis suivre les rapports d'indexation et le rendu JavaScript ;
-4. publier des mises à jour réellement utiles, obtenir des liens éditoriaux pertinents et corriger les erreurs d'indexation.
+1. Vérifier la propriété de préfixe d'URL `https://nicolasmoreau1982-beep.github.io/` dans Google Search Console. Le fichier `google3d20062100896a35.html` est présent à la racine de `dist/` ; contrôler qu'il est servi à la même adresse publique avant de cliquer « Valider ».
+2. Ouvrir **Indexation → Sitemaps** dans Search Console, saisir `sitemap.xml` dans « Ajouter un sitemap », puis cliquer « Envoyer ». Vérifier que le sitemap est lu sans erreur et qu'il annonce les **sept** URL canoniques. La soumission ne vaut ni indexation ni classement.
+3. Inspecter l'URL d'accueil et chacune des quatre nouvelles pages ; demander éventuellement leur indexation si elles sont accessibles mais non indexées, puis suivre le rapport de pages indexées. Recontrôler après les prochains déploiements.
+4. Corriger les erreurs de rendu ou d'indexation constatées ; publier seulement des mises à jour réellement utiles.
 
-Si l'adresse publique change, mettre à jour ensemble les URL canoniques des trois pages, `dist/sitemap.xml`, `dist/robots.txt`, les liens sociaux et ce guide avant le déploiement suivant.
+Si l'adresse publique change, mettre à jour ensemble les URL canoniques des sept pages, `dist/sitemap.xml`, `dist/robots.txt`, les liens sociaux et ce guide avant le déploiement suivant.
 
 L'ancienne adresse Pages sous `/EcoSimFrance/` n'est pas automatiquement redirigée après le renommage du dépôt. Les trois anciennes pages principales disposent donc d'une redirection HTML/JavaScript vers leurs nouvelles URL, avec conservation des fragments de scénario lorsque JavaScript est disponible. Ce n'est **pas** une redirection HTTP 301 : corriger les liens externes maîtrisés et surveiller les anciennes URL dans Search Console.
 
 L'indexation et le classement ne sont pas garantis. La page principale est du contenu statique lisible sans attendre le calcul JavaScript.
+
+Les quatre guides (`comprendre-budget-france.html`, `reforme-retraites.html`, `programmes-economiques-2027.html`, `reduire-deficit-public.html`) sont eux aussi lisibles sans JavaScript. Ils donnent une explication autonome, des sources primaires, les limites du modèle et un lien vers l'outil. Le cas « retraites » charge un réglage illustratif d'indexation ; ce n'est pas un programme de candidat. Mettre à jour les guides et leurs sources si les données ou le périmètre du moteur changent.
+
+### Liens éditoriaux et retours indépendants
+
+Après vérification de l'indexation, proposer les pages pertinentes à des lecteurs susceptibles de les évaluer : associations d'éducation civique, enseignants, chercheurs en finances publiques, journalistes spécialisés ou communautés de données publiques. Choisir une page adaptée à chaque interlocuteur et expliquer ce qu'elle apporte. Ne pas acheter de liens, automatiser des inscriptions d'annuaire ni présenter EcoSim comme une prévision officiellement validée.
+
+Message court à personnaliser, à envoyer **manuellement** seulement si le contexte s'y prête : « Bonjour, j'ai publié EcoSim France, un simulateur ouvert des finances publiques. Cette page explique [sujet] avec ses sources et les limites du calcul : [URL]. Un retour critique sur la méthode ou les données serait précieux ; aucune citation n'est attendue. » Garder une trace des remarques et corriger publiquement les erreurs signalées. Aucun contact externe n'est effectué par le dépôt.
 
 Des outils proches existent déjà : France Budget (`https://francebudget.fr/`, réutilisation sur data.gouv.fr), Mon Budget pour la France (`https://monbudgetpourlafrance.fr/`) et LexImpact de l'Assemblée nationale (`https://socio-fiscal.leximpact.an.fr/accueil`). Notre différence doit être la traçabilité des hypothèses, la ventilation emploi public/missions, les horizons longs et les limites affichées, pas une revendication d'exactitude supérieure non démontrée.
 

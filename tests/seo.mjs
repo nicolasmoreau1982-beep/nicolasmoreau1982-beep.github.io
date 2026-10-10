@@ -6,7 +6,11 @@ const base = "https://nicolasmoreau1982-beep.github.io/";
 const pages = [
   ["../dist/index.html", base],
   ["../dist/audit.html", `${base}audit.html`],
-  ["../dist/confidentialite.html", `${base}confidentialite.html`]
+  ["../dist/confidentialite.html", `${base}confidentialite.html`],
+  ["../dist/comprendre-budget-france.html", `${base}comprendre-budget-france.html`],
+  ["../dist/reforme-retraites.html", `${base}reforme-retraites.html`],
+  ["../dist/programmes-economiques-2027.html", `${base}programmes-economiques-2027.html`],
+  ["../dist/reduire-deficit-public.html", `${base}reduire-deficit-public.html`]
 ];
 const sitemap = read("../dist/sitemap.xml");
 for (const [path, url] of pages) {
@@ -14,9 +18,32 @@ for (const [path, url] of pages) {
   assert.match(html, new RegExp(`<link rel="canonical" href="${url.replaceAll(".", "\\.")}" \\/>`));
   assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${url} absent du sitemap`);
   assert.doesNotMatch(html, /<meta name="keywords"/i);
+  assert.match(html, /<meta\s+name="description"/i);
+  assert.match(html, /<h1[ >]/i);
+  assert.match(html, /<title>[^<]+<\/title>/i);
+}
+assert.equal((sitemap.match(/<loc>/g) || []).length, pages.length);
+const guidePaths = pages.slice(3).map(([path]) => path);
+for (const path of guidePaths) {
+  const html = read(path);
+  assert.match(html, /href="index\.html#/);
+  assert.match(html, /href="audit\.html/);
+  assert.match(html, /href="https:\/\//);
+  assert.match(html, /href="guides\.css"/);
+  for (const [, target] of html.matchAll(/href="([a-z][^":?#]*\.html)(?:#[^"]*)?"/gi)) {
+    assert.ok(fs.existsSync(new URL(`../dist/${target}`, import.meta.url)), `${path} : lien local manquant ${target}`);
+  }
 }
 
 const home = read("../dist/index.html");
+for (const [, url] of pages.slice(3)) {
+  assert.ok(home.includes(`href="${url.slice(base.length)}"`), `${url} absent des liens HTML d’accueil`);
+}
+const pensions = read("../dist/reforme-retraites.html");
+const scenarioMatch = pensions.match(/href="index\.html#scenario=([A-Za-z0-9_-]+)"/);
+assert.ok(scenarioMatch, "Lien de scénario retraite absent");
+const scenario = JSON.parse(Buffer.from(scenarioMatch[1], "base64url").toString("utf8"));
+assert.equal(scenario.engines.pensionIndex, 1);
 const politics = home.slice(home.indexOf('<section class="politics-lab"'), home.indexOf('<section class="budget-editor"'));
 for (const name of ["Rassemblement National", "Renaissance", "La France insoumise", "Parti socialiste",
   "Les Républicains", "Les Écologistes", "MoDem", "Horizons", "LIOT", "GDR", "UDR"]) {
@@ -27,6 +54,7 @@ assert.match(home, /Présidentielle 2027 : comparer les orientations/);
 assert.match(home, /pas les programmes individuels des candidats/);
 
 const robots = read("../dist/robots.txt");
+assert.equal(read("../dist/google3d20062100896a35.html").trim(), "google-site-verification: google3d20062100896a35.html");
 assert.doesNotMatch(robots, /^Disallow:/m);
 assert.ok(robots.includes(`Sitemap: ${base}sitemap.xml`));
 assert.doesNotMatch(sitemap, /sleekmouse9\.chatgpt\.site/);
