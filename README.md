@@ -89,7 +89,7 @@ La version 4.4 distingue les recrutements et carrières des armées, de la Polic
 
 La version 4.5 réconcilie le résumé avec le solde direct du moteur, sépare les variations de dépenses et de recettes, relie la titularisation et les rémunérations aux recrutements, fait passer les cohortes d'agents vers des pensions simplifiées, borne les embauches et les effets énergétiques, et ajoute une saisie numérique aux curseurs. Elle permet d'enregistrer plusieurs scénarios locaux et d'en comparer un avec le scénario en cours. Une interface Python partage exactement le même moteur que le site. Le diagnostic européen précise que la trajectoire des dépenses nettes n'est pas encore calculée.
 
-La version 4.6 ajoute une matrice exploratoire des réactions sociales selon sept classes d'âge et six situations. Elle affiche un indice de mécontentement relatif, une pression de mobilisation potentielle et une fourchette de sensibilité du vote sortant. Ces poids sont des hypothèses explicites, non des probabilités ou des prévisions électorales ; ils ne rétroagissent pas automatiquement sur le PIB ou le budget.
+La version 4.6 ajoute une matrice exploratoire des réactions sociales selon sept classes d'âge et six situations. Elle affiche un indice de mécontentement relatif et une exposition indicative à la mobilisation. La fourchette électorale n’est plus affichée ni exportée : aucune calibration ne permet de l’interpréter comme un effet sur les votes. Ces poids sont des hypothèses explicites, non des probabilités ou des prévisions électorales ; ils ne rétroagissent pas automatiquement sur le PIB ou le budget.
 
 ### Contrôle rétrospectif (version 4.7)
 

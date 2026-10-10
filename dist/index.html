@@ -115,7 +115,7 @@
             </div>
           </div>
 
-          <p class="scenario-first-step" id="scenario-first-step">Pour commencer, choisissez un exemple. Il reste entièrement modifiable et vous pourrez annuler cette action.</p>
+          <p class="scenario-first-step" id="scenario-first-step">La trajectoire de référence est visible sans réforme. Choisissez un exemple pour essayer une modification ; vous pourrez l’annuler.</p>
           <div class="field-label label-with-help">
             Exemples à modifier
             <button type="button" class="help-dot" aria-label="Aide sur les préréglages" aria-controls="help-panel" aria-expanded="false" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
@@ -218,6 +218,11 @@
             </div>
           </div>
           <p class="results-context" id="results-context">Comparaison à la trajectoire de référence · profil économique : central.</p>
+          <div class="active-scenario" aria-live="polite">
+            <div><small>Scénario actif</small><strong id="active-scenario-name">Référence · aucune réforme</strong><p id="active-scenario-measures">Aucune mesure appliquée.</p></div>
+            <div class="active-scenario-actions"><button type="button" data-scroll="simulator">Modifier</button><button type="button" id="results-undo-button" disabled>Annuler la dernière modification</button></div>
+          </div>
+          <p class="result-status"><strong>Observé</strong> : comptes de départ 2025 · <strong>Modélisé</strong> : trajectoire et écarts ci-dessous · <strong>Exploratoire</strong> : fourchettes, effets sociaux et horizons lointains. <a href="audit.html#incertitude">Méthode et limites ↗</a></p>
           <p class="long-run-note" id="long-run-note" hidden>Horizon structurel : au-delà de 2035, l’écart d’incertitude compte davantage que le point central.</p>
 
           <div class="impact-cards" id="impact-cards">
@@ -363,13 +368,12 @@
 
       <section class="social-lab" id="social" aria-labelledby="social-title">
         <div class="section-intro">
-          <div><span class="section-number">04 bis</span><h2 id="social-title">Réactions sociales et électorales</h2></div>
-          <p>Lecture exploratoire par âge et situation. Elle sépare mécontentement, capacité de mobilisation et sanction électorale : aucun groupe ne vote ni ne manifeste d'une seule voix.</p>
+          <div><span class="section-number">04 bis</span><h2 id="social-title">Laboratoire social expérimental</h2></div>
+          <p>Indices illustratifs d’exposition par âge et situation. Leurs poids ne sont pas estimés sur microdonnées et ne permettent de prédire ni mobilisation ni vote.</p>
         </div>
         <div class="social-cards">
           <article><small>Écart moyen de mécontentement</small><strong id="social-discomfort">—</strong><span>Indice relatif à la trajectoire de référence, pas une enquête d'opinion.</span></article>
           <article><small>Mobilisation la plus exposée</small><strong id="social-pressure">—</strong><span id="social-pressure-detail">Pression indicative, pas une probabilité de grève.</span></article>
-          <article><small>Sensibilité du vote sortant</small><strong id="social-vote">—</strong><span>Fourchette conventionnelle en points de vote, pas un pronostic.</span></article>
         </div>
         <div class="social-matrix-wrap"><table class="social-matrix"><caption>Écart de mécontentement par âge et situation, en points d'indice</caption><thead id="social-matrix-head"></thead><tbody id="social-matrix-body"></tbody></table></div>
         <p class="social-caveat">Les poids d'âge, de profession et de mobilisation sont des hypothèses de sensibilité. Ils s'inspirent des mécanismes documentés par l'Insee et le CEVIPOF mais ne sont pas estimés sur microdonnées. L'« influence » désigne ici seulement la capacité de mobilisation collective, jamais la valeur des personnes. Le modèle ne prédit ni parti gagnant, ni manifestation, ni effet économique automatique des conflits sociaux.</p>
@@ -649,7 +653,7 @@
           <h3>6. Lecture des résultats</h3>
           <p>Les résultats sont des écarts par rapport à une trajectoire de référence qui postule une correction budgétaire graduelle sans détailler toutes les mesures nécessaires. Les dépenses et recettes directes sont affichées séparément ; les retours macroéconomiques viennent ensuite. Une mesure favorable au PIB peut rester défavorable à la dette, et inversement. Le diagnostic européen ne vérifie actuellement que le seuil de déficit, pas la trajectoire des dépenses nettes.</p>
           <h3>7. Démographie, emploi, immigration et énergie</h3>
-          <p>Chômage, naissances et population sont des résultats, pas des décisions. La trajectoire démographique de référence reprend la projection centrale Insee 2026–2056 : naissances, décès, effectifs et part des 65 ans ou plus, à partir d’une pyramide par âge et sexe. Les écarts causés par tes réglages restent calculés par équations agrégées : la pyramide du scénario modifié, les pensions et la santé ne sont pas encore recalculées âge par âge. Le chômage réagit à l’activité et aux flux d’emploi ; les naissances réagissent à une hypothèse de fécondité de fond et, de façon illustrative, aux places de garde après un délai. Ce coefficient EcoSim n’est pas estimé pour la France. Les soldes migratoires, l’espérance de vie et les prix mondiaux restent des hypothèses de contexte avancées. Les cohortes migratoires, l’emploi public par mission et l’énergie restent des approximations, pas des prévisions individuelles.</p>
+          <p>Chômage, naissances et population sont des résultats, pas des décisions. La trajectoire démographique de référence reprend la projection centrale Insee 2026–2056 : naissances, décès, effectifs et part des 65 ans ou plus, à partir d’une pyramide par âge et sexe. Les écarts causés par vos réglages restent calculés par équations agrégées : la pyramide du scénario modifié, les pensions et la santé ne sont pas encore recalculées âge par âge. Le chômage réagit à l’activité et aux flux d’emploi ; les naissances réagissent à une hypothèse de fécondité de fond et, de façon illustrative, aux places de garde après un délai. Ce coefficient EcoSim n’est pas estimé pour la France. Les soldes migratoires, l’espérance de vie et les prix mondiaux restent des hypothèses de contexte avancées. Les cohortes migratoires, l’emploi public par mission et l’énergie restent des approximations, pas des prévisions individuelles.</p>
           <h3>8. Emploi public et engagements longs</h3>
           <p>Chaque flux annuel supplémentaire de recrutement public crée une cohorte suivie séparément. La titularisation modifie sa durée de présence ; une limite de recrutement par mission et un vivier global plafonnent les embauches. Sa rémunération, puis une pension simplifiée, évoluent selon la mission, le statut et la durée de carrière. Les cotisations employeur de retraite sont aussi inscrites en recettes du régime public afin de refléter les deux côtés de ce flux comptable ; leur part est une hypothèse indicative à recalibrer. Les militaires sont distingués des titulaires civils ; réservistes et pompiers volontaires ne sont pas traités comme des emplois publics permanents. L’engagement actualisé à quarante ans est informatif. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
           <h3>9. Moteurs de politiques publiques</h3>
@@ -658,8 +662,8 @@
           <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Un profil économique commun, sélectionnable parmi neuf lectures, s’applique à tous les programmes ; la plage affichée sur le déficit et la dette montre la sensibilité à ces lectures, sans constituer un intervalle de confiance. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
           <h3>11. Moteur fiscal expérimental</h3>
           <p>Un module séparé applique des barèmes IR, IFI et succession simplifiés à des foyers-types pondérés selon revenu et patrimoine ; il peut aussi tester un impôt plancher proposé, désactivé par défaut. Ses écarts de recettes et les gains/pertes simulés alimentent le budget et une réponse de consommation hypothétique. Les foyers-types ne sont pas un échantillon représentatif, les recettes calculées ne sont pas réconciliées avec les comptes et les règles LFSS individuelles ne sont pas codées : ces résultats ne sont pas des prévisions fiscales.</p>
-          <h3>12. Réactions sociales et vote</h3>
-          <p>Le module affiche une matrice âge × situation socio-professionnelle. Il combine des écarts macroéconomiques simulés et l'exposition conventionnelle à certaines mesures. Les poids de mobilisation et la fourchette de sensibilité du vote sortant ne sont pas estimés sur microdonnées : ils servent à tester des hypothèses et ne prédisent ni comportement individuel, ni scrutin, ni conflit social. La population simulée n'est pas ventilée par ces cellules ; aucune taille électorale n'en est déduite.</p>
+          <h3>12. Exposition sociale expérimentale</h3>
+          <p>Le module affiche une matrice âge × situation socio-professionnelle. Il combine des écarts macroéconomiques simulés et l'exposition conventionnelle à certaines mesures. Les poids de mobilisation ne sont pas estimés sur microdonnées : ils illustrent des expositions possibles et ne prédisent ni comportement individuel, ni scrutin, ni conflit social. Aucun indicateur chiffré de vote n’est affiché. La population simulée n'est pas ventilée par ces cellules ; aucune taille électorale n'en est déduite.</p>
           <h3>13. Horizons 20 et 30 ans</h3>
           <p>Après 2035, la trajectoire n’est plus une prévision conjoncturelle : elle prolonge des hypothèses structurelles de productivité, inflation, chômage, vieillissement, migrations et coût de la dette. Les nouvelles générations n’affectent l’offre de travail qu’après 18 ans. L’incertitude augmente volontairement plus vite au-delà de dix ans.</p>
         </div>

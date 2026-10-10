@@ -1150,10 +1150,10 @@
       </div>
       <div class="politics-sensitivity"><strong>Écart entre les neuf lectures économiques</strong><p>Déficit : ${percent(sensitivity.deficit[0])} à ${percent(sensitivity.deficit[1])} du PIB · Dette : ${percent(sensitivity.debt[0])} à ${percent(sensitivity.debt[1])} du PIB. Ce sont des résultats sous hypothèses alternatives, pas un intervalle de confiance.</p></div>
       <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}${horizonCaveat}</p></div>
-      <details class="politics-mapping"><summary>Voir la traduction exacte (${rows.length} réglages)</summary><div>${rows.length ? rows.map((row) => `<span>${row}</span>`).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
+      <details class="politics-mapping"><summary>Voir la traduction exacte (${rows.length} réglages)</summary><div><p>Chaque valeur ci-dessous est une traduction EcoSim, non un chiffrage officiel attribuable à la formation. Les documents cités concernent le scénario dans son ensemble : la correspondance source → mesure et les pages précises ne sont pas encore vérifiées individuellement. Si une mesure ne peut être reliée à une source, son montant ne doit pas être lu comme une proposition chiffrée du groupe.</p>${rows.length ? rows.map((row) => `<span>${escapeHtml(row)}</span>`).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
       <div class="politics-actions">
         <button class="button button-dark" data-apply-politics="${scenario.id}">Appliquer au simulateur</button>
-        <span>${scenario.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label} ↗</a>`).join("")}</span>
+        <span>${scenario.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label} ↗</a>`).join("")}<a href="https://github.com/nicolasmoreau1982-beep/nicolasmoreau1982-beep.github.io/issues/new/choose" target="_blank" rel="noopener noreferrer">Signaler une erreur ↗</a></span>
       </div>`;
   }
 
@@ -1244,6 +1244,7 @@
 
   function pushUndo() {
     state.undoStack.push({
+      name: state.name,
       changes: { ...state.changes },
       model: state.model,
       euMode: state.euMode,
@@ -1258,11 +1259,13 @@
     });
     if (state.undoStack.length > 30) state.undoStack.shift();
     $("#undo-button").disabled = false;
+    $("#results-undo-button").disabled = false;
   }
 
   function captureEditSnapshot() {
     if (!state.editSnapshot) {
       state.editSnapshot = {
+        name: state.name,
         changes: { ...state.changes },
         model: state.model,
         euMode: state.euMode,
@@ -1284,6 +1287,7 @@
     if (state.undoStack.length > 30) state.undoStack.shift();
     state.editSnapshot = null;
     $("#undo-button").disabled = false;
+    $("#results-undo-button").disabled = false;
   }
 
   function setCategoryChange(id, rawValue, refreshList = false) {
@@ -1306,11 +1310,30 @@
     state.changes = { ...preset.changes };
     state.policyStartQuarters = {};
     state.model = preset.model;
+    state.name = preset.label;
+    state.euMode = "current";
+    state.cycle = "normal";
+    state.monetary = "neutral";
+    state.confidence = "stable";
+    state.policyStartQuarter = 1;
+    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([key, control]) => [key, control.value]));
+    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([key, control]) => [key, control.value]));
+    state.fiscal = { ...F.defaults };
     clearScenarioLink();
+    $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
+    $("#eu-select").value = state.euMode;
+    $("#cycle-select").value = state.cycle;
+    $("#monetary-select").value = state.monetary;
+    $("#confidence-select").value = state.confidence;
+    $("#policy-start-quarter").value = String(state.policyStartQuarter);
     updateModelDescription();
+    updateAssumptionDescription();
+    renderStructuralControls();
+    renderEngineControls();
+    renderFiscalControls();
     refreshAll(true);
-    showToast(`Scénario « ${preset.label} » appliqué`);
+    showToast(`Exemple « ${preset.label} » chargé seul. Annuler près des résultats pour revenir en arrière.`);
   }
 
   function refreshAll(refreshList = false) {
@@ -1645,6 +1668,7 @@
     const item = state.projection.scenario[index];
     const baseline = state.projection.baseline[index];
     $("#results-context").textContent = `Résultats ${item.year} comparés à la trajectoire de référence · profil économique : ${D.models[state.model].label}.`;
+    updateActiveScenario();
     const longRunNote = $("#long-run-note");
     longRunNote.hidden = state.horizon <= 10;
     longRunNote.textContent = state.horizon > 10
@@ -1668,6 +1692,30 @@
     renderSavedComparison();
   }
 
+  function updateActiveScenario() {
+    const measures = Object.entries(state.changes).filter(([, value]) => Math.abs(value) > 0.01)
+      .map(([id, value]) => `${byId.get(id)?.label || id} ${signed(value, " Md€/an")}`);
+    Object.entries(D.structural.controls).forEach(([id, control]) => {
+      if (Math.abs(state.structural[id] - control.value) > 0.0001) measures.push(control.label);
+    });
+    Object.entries(D.policyEngines.controls).forEach(([id, control]) => {
+      if (Math.abs(state.engines[id] - control.value) > 0.0001) measures.push(control.label);
+    });
+    Object.entries(F.defaults).forEach(([id, value]) => {
+      if (state.fiscal[id] !== value) measures.push(F.controls[id]?.label || id);
+    });
+    if (state.euMode !== "current") measures.push(`Cadre européen : ${D.euModes[state.euMode].label}`);
+    if (state.model !== "consensus") measures.push(`Profil économique : ${D.models[state.model].label}`);
+    if (state.cycle !== "normal") measures.push(`Cycle : ${D.assumptions.cycle[state.cycle].label}`);
+    if (state.monetary !== "neutral") measures.push(`Politique monétaire : ${D.assumptions.monetary[state.monetary].label}`);
+    if (state.confidence !== "stable") measures.push(`Confiance : ${D.assumptions.confidence[state.confidence].label}`);
+    const hasMeasures = measures.length > 0;
+    $("#active-scenario-name").textContent = hasMeasures ? (state.name || "Mon scénario") : "Référence · aucune réforme";
+    $("#active-scenario-measures").textContent = hasMeasures
+      ? `${measures.length} réglage${measures.length > 1 ? "s" : ""} actif${measures.length > 1 ? "s" : ""} · ${measures.slice(0, 3).join(" · ")}${measures.length > 3 ? ` · et ${measures.length - 3} autre${measures.length - 3 > 1 ? "s" : ""}` : ""}`
+      : "Trajectoire de référence simulée dès l’ouverture, sans réforme préchargée.";
+  }
+
   function updateSocialLab(social) {
     $("#social-discomfort").textContent = `${signed(social.meanDiscomfort, " pt")}`;
     const top = social.highestPressure;
@@ -1675,10 +1723,6 @@
     $("#social-pressure-detail").textContent = top?.pressure > 0.05
       ? `Pression indicative ${fmt1.format(top.pressure)} / 20 ; elle suppose une coordination qui n'est pas modélisée.`
       : "Aucun surcroît de pression dans ce scénario par rapport à la référence.";
-    const bounds = [...social.incumbentVoteSensitivity].sort((a, b) => a - b);
-    $("#social-vote").textContent = Math.abs(social.meanDiscomfort) < 0.05
-      ? "Aucun écart modélisé"
-      : `${signed(bounds[0], " pt")} à ${signed(bounds[1], " pt")}`;
     $("#social-matrix-head").innerHTML = `<tr><th scope="col">Âge</th>${D.social.situations.map((group) => `<th scope="col">${escapeHtml(group.label)}</th>`).join("")}</tr>`;
     $("#social-matrix-body").innerHTML = D.social.ages.map((age) => `<tr><th scope="row">${escapeHtml(age.label)}</th>${D.social.situations.map((group) => {
       const cell = social.cells.find((item) => item.age === age.id && item.situation === group.id);
@@ -2018,6 +2062,7 @@
         </div>
         <div class="new-value ${delta ? "changed" : ""}">${money(newValue)}</div>
         <div class="effect-cell ${effectClass}">${effect}</div>
+        <details class="category-mobile-detail"><summary>Voir le nouveau montant et l’effet simulé</summary><div><span>Nouveau montant : <strong>${money(newValue)}</strong></span><span>Effet indicatif : <strong>${effect}</strong></span></div></details>
       </div>
     `;
   }
@@ -2036,6 +2081,7 @@
 
   function resetScenario() {
     pushUndo();
+    state.name = "Mon scénario";
     state.changes = {};
     state.model = "consensus";
     state.euMode = "current";
@@ -2048,6 +2094,7 @@
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     state.fiscal = { ...F.defaults };
     clearScenarioLink();
+    $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -2066,6 +2113,8 @@
   function undo() {
     const previous = state.undoStack.pop();
     if (!previous) return;
+    state.name = previous.name || "Mon scénario";
+    $("#scenario-name").value = state.name;
     state.changes = previous.changes;
     state.model = previous.model;
     state.euMode = previous.euMode;
@@ -2084,6 +2133,7 @@
     $("#confidence-select").value = state.confidence;
     $("#policy-start-quarter").value = String(state.policyStartQuarter);
     $("#undo-button").disabled = state.undoStack.length === 0;
+    $("#results-undo-button").disabled = state.undoStack.length === 0;
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
@@ -2289,8 +2339,6 @@
       moteurs_emissions_mtco2e: round(item.engines.emissions, 2),
       moteurs_pauvrete_points: round(item.engines.poverty, 2),
       mecontentement_moyen_ecart_indice: round(item.social.meanDiscomfort, 2),
-      sensibilite_vote_sortant_basse_points: round(Math.min(...item.social.incumbentVoteSensitivity), 2),
-      sensibilite_vote_sortant_haute_points: round(Math.max(...item.social.incumbentVoteSensitivity), 2),
       reference_deficit_pct_pib: round(state.projection.baseline[index].deficitRatio, 2),
       reference_dette_pct_pib: round(state.projection.baseline[index].debtRatio, 2)
     }));
@@ -2418,6 +2466,7 @@
     $("#scenario-name").addEventListener("input", (event) => {
       state.name = event.target.value;
       $("#journey-status").textContent = `${state.name || "Mon scénario"} · ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
+      updateActiveScenario();
     });
     $("#preset-list").addEventListener("click", (event) => {
       const preset = event.target.closest("[data-preset]");
@@ -2438,6 +2487,7 @@
       $("#mobile-controls-toggle").textContent = collapsed ? "Ouvrir les réglages" : "Fermer les réglages";
     });
     $("#undo-button").addEventListener("click", undo);
+    $("#results-undo-button").addEventListener("click", undo);
     $("#save-button").addEventListener("click", saveScenario);
     $("#saved-scenarios").addEventListener("change", () => {
       $("#load-scenario").disabled = !$("#saved-scenarios").value;
