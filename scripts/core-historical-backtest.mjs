@@ -33,9 +33,20 @@ const median = (numbers) => {
 };
 const meanAbsolute = (values) => values.reduce((sum, value) => sum + Math.abs(value), 0) / values.length;
 
-export function runCoreOrigin({originYear, horizon, observations = accounts, changes = {}}) {
+export function runCoreOrigin({originYear, horizon, observations = accounts, changes = {}, accountingFlows = {}}) {
   if (!Number.isInteger(horizon) || horizon < 1 || horizon > 10) throw new Error("Horizon invalide (1–10 ans)");
   if (!changes || typeof changes !== "object" || Array.isArray(changes)) throw new Error("Réformes invalides");
+  if (!accountingFlows || typeof accountingFlows !== "object" || Array.isArray(accountingFlows)) {
+    throw new Error("Flux comptables invalides");
+  }
+  for (const [year, flow] of Object.entries(accountingFlows)) {
+    if (!Number.isInteger(Number(year)) || Number(year) <= originYear || Number(year) > originYear + horizon
+      || !flow || typeof flow !== "object" || Array.isArray(flow)
+      || Object.keys(flow).some((key) => !["spendingBn", "revenueBn"].includes(key))
+      || ![flow.spendingBn ?? 0, flow.revenueBn ?? 0].every(Number.isFinite)) {
+      throw new Error(`Flux comptable invalide en ${year}`);
+    }
+  }
   const origin = originSnapshot(observations, originYear, 5);
   const targetRows = observations.filter((row) => row.year > originYear && row.year <= originYear + horizon);
   if (targetRows.length !== horizon || targetRows.some((row, index) => row.year !== originYear + index + 1)) {
@@ -80,8 +91,9 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
   const fiscal = context.window.ECOSIM_FISCAL;
   context.window.ECOSIM_FISCAL = {...fiscal,
     simulate: (config, year, priceFactor) => fiscal.simulate(config, Math.max(2026, year), priceFactor)};
-  const modelContext = {window: context.window, console, TextEncoder, TextDecoder, URL, historicalChanges: changes};
-  vm.runInNewContext(`${appSource.slice(start, end)}\nObject.assign(state.changes, historicalChanges);\nglobalThis.coreResult = calculateProjection();`,
+  const modelContext = {window: context.window, console, TextEncoder, TextDecoder, URL,
+    historicalChanges: changes, historicalAccountingFlows: accountingFlows};
+  vm.runInNewContext(`${appSource.slice(start, end)}\nObject.assign(state.changes, historicalChanges);\nglobalThis.coreResult = calculateProjection(state.model, historicalAccountingFlows);`,
     modelContext, {filename: "dist/app.js (moteur principal)"});
   const prediction = modelContext.coreResult.scenario;
   const naive = modelContext.coreResult.baseline;
@@ -101,7 +113,7 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
   return {originYear, horizon, inputs: {trainingYears: origin.trainingYears,
     assumedRealGrowthPct: realGrowth, assumedDeflatorPct: deflator,
     initialDeficitRatio: originDeficitRatio, initialUnemploymentPct: origin.unemployment,
-    initialDebtBn: origin.debt, changes}, rows};
+    initialDebtBn: origin.debt, changes, accountingFlows}, rows};
 }
 
 // Seul cas actuellement traduisible sans inventer d'assiette ou de calendrier :
@@ -135,6 +147,31 @@ export function runVat2014Sensitivity({observations = accounts} = {}) {
       withVatError: row.error, withoutVatError: withoutVat.rows[index].error}))};
 }
 
+// La bascule de cotisations n'est saisie ici que comme baisse de recettes
+// annoncée pour 2019. Aucun emploi/PIB n'est inféré d'un coût comptable.
+export function runPayroll2019AccountingSensitivity({observations = accounts} = {}) {
+  const event = historicalPolicy.events.find((item) => item.id === "cice_payroll_conversion_2019");
+  if (!event || event.effectiveYear !== 2019 || event.amountInformationYear > 2018
+    || event.fiscalSide !== "revenue" || !event.fiscalOnly || !Number.isFinite(event.amountBn)) {
+    throw new Error("Bascule de cotisations 2019 non représentable en comptabilité seule");
+  }
+  const withFlow = runCoreOrigin({originYear: 2018, horizon: 1, observations,
+    accountingFlows: {2019: {revenueBn: event.amountBn}}});
+  const withoutFlow = runCoreOrigin({originYear: 2018, horizon: 1, observations});
+  const current = withFlow.rows[0];
+  const reference = withoutFlow.rows[0];
+  return {status: "accounting_only_sensitivity_not_full_cice_reform",
+    event: {id: event.id, label: event.label, amountBn: event.amountBn,
+      amountStatus: event.amountStatus, source: event.source},
+    excluded: historicalPolicy.events.filter((item) => item.id === "cice_accounts_2014_2022")
+      .map((item) => ({id: item.id, reason: "Coût CICE déjà présent en partie dans le déficit 2018 de départ ; "
+        + "l'injecter en niveau produirait un double compte. Assiette et calendrier non reconstruits.", source: item.source})),
+    limitation: "2019 only; no employment/GDP effect, no CICE spending overlap modelled, not a causal test",
+    row: {year: 2019, observed: current.actual, withFlow: current.predicted,
+      withoutFlow: reference.predicted, withFlowError: current.error,
+      withoutFlowError: reference.error}};
+}
+
 export function runCoreBacktest({observations = accounts, origins = [2005, 2010, 2013, 2015, 2018, 2020],
   horizons = [1, 3, 5, 10]} = {}) {
   const latest = Math.max(...observations.map((row) => row.year));
@@ -157,7 +194,8 @@ export function runCoreBacktest({observations = accounts, origins = [2005, 2010,
     demographicCoverage: "2026 reference shifted for no-policy runtime only; no historical cohort validation",
     rateAssumption: "policyRate=0 for baseline comparison; debt stock-flow adjustments not modelled",
     scoreEligibility: "diagnostic_only_not_out_of_sample_or_causal_validation",
-    table, cases, vat2014: runVat2014Sensitivity({observations})};
+    table, cases, vat2014: runVat2014Sensitivity({observations}),
+    payroll2019: runPayroll2019AccountingSensitivity({observations})};
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === fs.realpathSync(process.argv[1])) {
@@ -173,6 +211,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === fs.realpathSync(proces
     const vat = result.vat2014.rows[0];
     process.stdout.write(`TVA 2014, sensibilité : ${result.vat2014.amountBn.toFixed(1)} Md€ ex ante ; `
       + `écart de PIB 2014 avec/sans : ${vat.withVatError.gdpPct.toFixed(2)}/${vat.withoutVatError.gdpPct.toFixed(2)} %.\n`);
+    const payroll = result.payroll2019.row;
+    process.stdout.write(`Cotisations 2019, comptabilité seule : ${result.payroll2019.event.amountBn.toFixed(1)} Md€ de recettes ; `
+      + `écart déficit/PIB avec/sans : ${payroll.withFlowError.deficitRatio.toFixed(2)}/${payroll.withoutFlowError.deficitRatio.toFixed(2)} pt.\n`);
     process.stdout.write("Attention : données révisées 2026, autres politiques absentes, pas de test causal ni de vrai hors-échantillon.\n");
   }
 }

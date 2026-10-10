@@ -746,7 +746,7 @@
     };
   }
 
-  function calculateProjection(modelKey = state.model) {
+  function calculateProjection(modelKey = state.model, directAccountingFlows = null) {
     const baseline = baselineTrajectory();
     const profile = effectiveProfile(modelKey);
     const eu = D.euModes[state.euMode];
@@ -848,6 +848,20 @@
         if (D.policyEngines.fiscalSide[id] === "revenue") revenueChange -= contribution.fiscalCost;
         else spendingChange += contribution.fiscalCost;
       });
+
+      // Interface explicite pour les tests historiques de flux comptables
+      // datés sans canal macro estimé (ex. baisse de cotisations 2019).
+      // Le site n'en fournit aucun ; un flux ne devient pas une causalité PIB.
+      const directAccounting = directAccountingFlows?.[baseline[index].year];
+      if (directAccounting) {
+        const spending = directAccounting.spendingBn ?? 0;
+        const revenue = directAccounting.revenueBn ?? 0;
+        if (!Number.isFinite(spending) || !Number.isFinite(revenue)) {
+          throw new Error(`Flux comptable invalide en ${baseline[index].year}`);
+        }
+        spendingChange += spending;
+        revenueChange += revenue;
+      }
 
       // Séquelle de capacité productive associée à la demande : hypothèse de
       // sensibilité, appliquée aux écarts de politique et jamais à la référence.

@@ -6,7 +6,8 @@ import {auditPolicyHistory} from "../scripts/policy-history.mjs";
 import {vintageAudit} from "../scripts/vintage-audit.mjs";
 import {runHistoricalDiagnostics} from "../scripts/historical-replay.mjs";
 import {runComparableBenchmark} from "../scripts/comparable-insee-benchmark.mjs";
-import {runCoreBacktest, runVat2014Sensitivity} from "../scripts/core-historical-backtest.mjs";
+import {runCoreBacktest, runVat2014Sensitivity,
+  runPayroll2019AccountingSensitivity} from "../scripts/core-historical-backtest.mjs";
 
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), "utf8");
 const page = read("../dist/audit.html");
@@ -60,6 +61,11 @@ const coreVat = runVat2014Sensitivity().rows[0];
 for (const value of [coreVat.withVatError.gdpPct, coreVat.withoutVatError.gdpPct]) {
   const formatted = `${value < 0 ? "−" : "+"}${Math.abs(value).toFixed(2).replace(".", ",")} %`;
   assert.ok(page.includes(formatted), `Sensibilité TVA du moteur principal absente : ${formatted}`);
+}
+const payrollErrors = runPayroll2019AccountingSensitivity().row;
+for (const value of [payrollErrors.withFlowError.deficitRatio, payrollErrors.withoutFlowError.deficitRatio]) {
+  const formatted = `${value < 0 ? "−" : "+"}${Math.abs(value).toFixed(2).replace(".", ",")} point`;
+  assert.ok(page.includes(formatted), `Sensibilité comptable 2019 absente : ${formatted}`);
 }
 assert.match(page, /Aucun effet causal ni intervalle par levier/);
 assert.match(script, /data\.cases\.find/);

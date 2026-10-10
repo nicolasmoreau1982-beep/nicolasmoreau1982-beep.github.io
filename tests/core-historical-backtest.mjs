@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import {accounts, runCoreBacktest, runCoreOrigin, runVat2014Sensitivity} from "../scripts/core-historical-backtest.mjs";
+import {accounts, runCoreBacktest, runCoreOrigin, runVat2014Sensitivity,
+  runPayroll2019AccountingSensitivity} from "../scripts/core-historical-backtest.mjs";
 
 const one = runCoreOrigin({originYear: 2013, horizon: 3});
 assert.deepEqual(Array.from(one.rows, (row) => row.year), [2014, 2015, 2016]);
@@ -45,4 +46,28 @@ assert.ok(vat.rows[0].withVat.gdp < vat.rows[0].withoutVat.gdp,
 const vatChangedFuture = runVat2014Sensitivity({observations: changedFuture});
 assert.equal(vatChangedFuture.rows[0].withVat.gdp, vat.rows[0].withVat.gdp,
   "Le rendement ex ante ne doit pas être ajusté avec le PIB futur observé");
+assert.throws(() => runCoreOrigin({originYear: 2018, horizon: 1,
+  accountingFlows: {2020: {revenueBn: -5}}}), /Flux comptable invalide/);
+assert.throws(() => runCoreOrigin({originYear: 2018, horizon: 1,
+  accountingFlows: {2019: {revenueBn: Infinity}}}), /Flux comptable invalide/);
+const deferredFlow = runCoreOrigin({originYear: 2018, horizon: 2,
+  accountingFlows: {2020: {spendingBn: 4}}});
+const deferredNeutral = runCoreOrigin({originYear: 2018, horizon: 2});
+assert.equal(deferredFlow.rows[0].predicted.deficitRatio, deferredNeutral.rows[0].predicted.deficitRatio);
+assert.ok(Math.abs(deferredFlow.rows[1].predicted.directSpendingChangeBn - 4) < 1e-8);
+const payroll = runPayroll2019AccountingSensitivity();
+assert.equal(payroll.event.amountBn, -20.4);
+assert.ok(payroll.excluded.some((event) => event.id === "cice_accounts_2014_2022"));
+assert.ok(Math.abs(payroll.row.withFlow.directRevenueChangeBn + 20.4) < 1e-8);
+assert.equal(payroll.row.withFlow.gdp, payroll.row.withoutFlow.gdp,
+  "Un coût comptable sans canal macro ne doit pas créer artificiellement du PIB");
+assert.equal(payroll.row.withFlow.unemployment, payroll.row.withoutFlow.unemployment);
+assert.ok(Math.abs(payroll.row.withFlow.deficitRatio - payroll.row.withoutFlow.deficitRatio
+  - 20.4 / payroll.row.withFlow.gdp * 100) < 1e-8);
+const payrollFutureOnly = accounts.map((row) => row.year > 2018
+  ? {...row, gdp: row.gdp * 1.5, spending: row.spending * 1.4,
+    revenue: row.revenue * 0.9, debt: row.debt * 1.3, unemployment: row.unemployment + 3}
+  : {...row});
+const payrollChangedFuture = runPayroll2019AccountingSensitivity({observations: payrollFutureOnly});
+assert.equal(payrollChangedFuture.row.withFlow.deficitRatio, payroll.row.withFlow.deficitRatio);
 console.log("Rétrotest du moteur principal : origine, absence de fuite et scores vérifiés.");
