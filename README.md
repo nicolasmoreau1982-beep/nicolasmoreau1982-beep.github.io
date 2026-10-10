@@ -155,6 +155,12 @@ L’interface distingue les **mesures publiques** des **hypothèses de contexte*
 
 L'IHM et l'interface Python acceptent `policyStartQuarter` (1 à 4, défaut 1) pour **les variations des postes de dépenses et recettes** à partir de 2026. Chaque poste modifié peut aussi préciser son propre trimestre via l'interface ou `policyStartQuarters`, par exemple `{"R_TVA":3,"GF0405":4}`. Un départ en juillet réduit de moitié le coût direct et l'exposition macro de la mesure en première année ; à partir de 2027, une mesure permanente compte en année pleine. Les autres moteurs (démographie, emploi public, énergie, etc.) conservent leur pas annuel : il ne faut pas lire cette option comme une conversion trimestrielle intégrale du simulateur principal.
 
+### Parcours et portabilité des scénarios (version 4.15)
+
+L'IHM web peut maintenant **réimporter** le JSON qu'elle exporte, ainsi qu'un objet de réglages EcoSim sans enveloppe. L'import vérifie la structure, refuse les fichiers de plus de 2 Mo, repart des valeurs par défaut avant d'appliquer les réglages et signale un autre numéro de version. Il n'enregistre pas automatiquement la copie importée : utilisez « Sauvegarder » pour la garder dans ce navigateur. Si un ancien lien `#scenario=` était ouvert, le chargement d'un autre scénario retire ce fragment pour éviter qu'un rafraîchissement ne rétablisse silencieusement les anciens réglages.
+
+La navigation mobile permet d'accéder à toutes les rubriques, à l'export et au changement de thème. Un tableau de repères donne les valeurs du graphique sans survol, notamment sur téléphone ou au clavier. Le thème choisi est repris dans le simulateur, l'audit et la page de confidentialité ; l'audit ne déborde plus horizontalement sur téléphone. Les anciens liens canoniques et le sitemap pointant vers Sites ont été retirés, car aucun domaine de production n'a été choisi. Cette passe ne constitue **pas** le rétrotest du moteur principal, toujours à réaliser.
+
 ## Structure
 
 ```text
@@ -168,7 +174,7 @@ dist/
   insee-projection.js projection démographique Insee condensée pour le navigateur
   fiscal.js    moteur fiscal expérimental : règles datées et foyers-types
   app.js       moteur de projection et interactions
-  confidentialite.html, robots.txt, sitemap.xml   publication et référencement
+  confidentialite.html, robots.txt                confidentialité et référencement
 ecosim.py      interface Python en ligne de commande et importable
 PUBLICATION.md guide de mise en ligne, référencement, audience et publicité
 MODEL_AUDIT.md références scientifiques, benchmarks et limites

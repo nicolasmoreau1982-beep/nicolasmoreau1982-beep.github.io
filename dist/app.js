@@ -90,6 +90,10 @@
     };
   }
 
+  function clearScenarioLink() {
+    if (location.hash.startsWith("#scenario=")) window.history.replaceState(null, "", location.pathname + location.search);
+  }
+
   function applySerialized(payload) {
     if (!payload || typeof payload !== "object") return false;
     if (D.models[payload.model]) state.model = payload.model;
@@ -142,6 +146,18 @@
       });
     }
     return true;
+  }
+
+  function parseScenarioImport(content) {
+    const file = JSON.parse(content);
+    const payload = file?.scenario && !Array.isArray(file.scenario) ? file.scenario : file;
+    const knownFields = ["changes", "structural", "engines", "fiscal", "model", "euMode", "cycle", "monetary", "confidence"];
+    if (!payload || typeof payload !== "object" || Array.isArray(payload) ||
+      !knownFields.some((key) => Object.hasOwn(payload, key))) {
+      throw new Error("Ce fichier ne contient pas de scénario EcoSim.");
+    }
+    if (payload.model && !D.models[payload.model]) throw new Error("Cadre économique inconnu dans ce fichier.");
+    return {payload, version: file?.metadata?.version || payload.version || null};
   }
 
   function loadInitialState() {
@@ -1260,6 +1276,7 @@
     state.changes = { ...preset.changes };
     state.policyStartQuarters = {};
     state.model = preset.model;
+    clearScenarioLink();
     $("#model-select").value = state.model;
     updateModelDescription();
     refreshAll(true);
@@ -1748,6 +1765,25 @@
       <div class="chart-tooltip"></div>
     `;
     $("#chart-caption").textContent = `${config.label} · ${config.unit}. Bande exploratoire : sensibilité du modèle${metric === "growth" ? "; pas de plancher historique propre à la croissance annuelle." : " et plancher d'erreur historique d'un prévisionniste témoin ; au-delà de 10 ans, extrapolation non validée."}`;
+    $("#chart-data-caption").textContent = `${config.label} : points de repère du scénario et de la référence`;
+    $("#chart-data-body").replaceChildren(...[1, 3, 5, 10, 20, 30].map((horizon) => {
+      const index = horizon - 1;
+      const point = scenario[index];
+      const reference = baseline[index];
+      const difference = (metric === "deficitRatio" ? -1 : 1) * (point[metric] - reference[metric]);
+      const unit = metric === "gdp" ? " Md€" : " pt";
+      const row = document.createElement("tr");
+      const cells = [String(point.year), config.format(point[metric]), config.format(reference[metric]),
+        `${difference > 0 ? "+" : difference < 0 ? "−" : ""}${fmt1.format(Math.abs(difference))}${unit}`,
+        `±${fmt1.format(point.bands[metric] || 0)}${unit}`];
+      cells.forEach((value, position) => {
+        const cell = document.createElement(position === 0 ? "th" : "td");
+        if (position === 0) cell.scope = "row";
+        cell.textContent = value;
+        row.append(cell);
+      });
+      return row;
+    }));
 
     const tooltip = $(".chart-tooltip", $("#chart-wrap"));
     $$(".chart-point", $("#chart-wrap")).forEach((point) => {
@@ -1980,6 +2016,7 @@
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     state.fiscal = { ...F.defaults };
+    clearScenarioLink();
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -2086,15 +2123,22 @@
     }
   }
 
-  function loadSavedScenario() {
-    const item = readScenarioLibrary().find((record) => record.id === $("#saved-scenarios").value);
-    if (!item) return;
+  function restoreScenario(payload) {
     pushUndo();
+    state.name = "Mon scénario";
+    state.model = "consensus";
+    state.euMode = "current";
+    state.cycle = "normal";
+    state.monetary = "neutral";
+    state.confidence = "stable";
+    state.policyStartQuarter = 1;
+    state.policyStartQuarters = {};
     state.changes = {};
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     state.fiscal = { ...F.defaults };
-    applySerialized(item.scenario);
+    applySerialized(payload);
+    clearScenarioLink();
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
@@ -2108,7 +2152,30 @@
     renderEngineControls();
     renderFiscalControls();
     refreshAll(true);
+  }
+
+  function loadSavedScenario() {
+    const item = readScenarioLibrary().find((record) => record.id === $("#saved-scenarios").value);
+    if (!item) return;
+    restoreScenario(item.scenario);
     showToast(`Scénario « ${state.name} » chargé`);
+  }
+
+  async function importScenarioFile(file) {
+    if (!file) return;
+    if (file.size > 2_000_000) {
+      showToast("Fichier trop volumineux (limite : 2 Mo)");
+      return;
+    }
+    try {
+      const {payload, version} = parseScenarioImport(await file.text());
+      restoreScenario(payload);
+      showToast(version && version !== D.metadata.version
+        ? "Scénario importé depuis une autre version : vérifiez les réglages"
+        : "Scénario importé ; sauvegardez-le pour le conserver ici");
+    } catch (error) {
+      showToast(error instanceof SyntaxError ? "JSON illisible : import annulé" : error.message || "Import impossible");
+    }
   }
 
   function deleteSavedScenario() {
@@ -2304,6 +2371,11 @@
     });
     $("#load-scenario").addEventListener("click", loadSavedScenario);
     $("#delete-scenario").addEventListener("click", deleteSavedScenario);
+    $("#import-scenario").addEventListener("click", () => $("#import-scenario-file").click());
+    $("#import-scenario-file").addEventListener("change", (event) => {
+      importScenarioFile(event.target.files?.[0]);
+      event.target.value = "";
+    });
     $$("[data-horizon]").forEach((button) => button.addEventListener("click", () => {
       state.horizon = Number(button.dataset.horizon);
       $$("[data-horizon]").forEach((item) => item.classList.toggle("is-active", item === button));
@@ -2505,6 +2577,7 @@
     });
     $("#method-modal-button").addEventListener("click", () => $("#method-dialog").showModal());
     $("#export-button").addEventListener("click", () => $("#export-dialog").showModal());
+    $("#mobile-export-button").addEventListener("click", () => $("#export-dialog").showModal());
     $("#export-dialog").addEventListener("click", (event) => {
       const option = event.target.closest("[data-export]");
       if (!option) return;
@@ -2515,18 +2588,22 @@
       if (button.tagName === "A") event.preventDefault();
       $(`#${button.dataset.scroll}`)?.scrollIntoView({ behavior: "smooth" });
     }));
-    $("#theme-toggle").addEventListener("click", () => {
+    const toggleTheme = () => {
       const current = document.documentElement.dataset.theme;
       const next = current === "dark" ? "light" : "dark";
       document.documentElement.dataset.theme = next;
-      localStorage.setItem("ecosim-theme", next);
+      try { localStorage.setItem("ecosim-theme", next); } catch { /* thème conservé pour cette session */ }
       renderChart();
-    });
+    };
+    $("#theme-toggle").addEventListener("click", toggleTheme);
+    $("#mobile-theme-toggle").addEventListener("click", toggleTheme);
   }
 
   function initTheme() {
-    const saved = localStorage.getItem("ecosim-theme");
-    if (saved) document.documentElement.dataset.theme = saved;
+    try {
+      const saved = localStorage.getItem("ecosim-theme");
+      if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
+    } catch { /* le thème système reste disponible */ }
   }
 
   function initResponsiveUX() {
@@ -2547,6 +2624,31 @@
     mobile.addEventListener?.("change", (event) => apply(event.matches));
   }
 
+  function initMobileMenu() {
+    const button = $("#mobile-nav-toggle");
+    const nav = $("#main-nav");
+    const close = () => {
+      nav.classList.remove("is-open");
+      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-label", "Ouvrir le menu");
+    };
+    button.addEventListener("click", () => {
+      const open = nav.classList.toggle("is-open");
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+    });
+    nav.addEventListener("click", (event) => {
+      if (event.target.closest("a, button")) close();
+    });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") close(); });
+    document.addEventListener("click", (event) => {
+      if (!nav.contains(event.target) && !button.contains(event.target)) close();
+    });
+    window.matchMedia("(max-width: 760px)").addEventListener?.("change", (event) => {
+      if (!event.matches) close();
+    });
+  }
+
   function initJourneyObserver() {
     if (!("IntersectionObserver" in window)) return;
     const ids = ["workspace", "structural", "politics", "budget"];
@@ -2563,6 +2665,7 @@
   initializeControls();
   initResponsiveUX();
   bindEvents();
+  initMobileMenu();
   renderCategories();
   refreshAll(false);
   initJourneyObserver();

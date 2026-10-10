@@ -99,10 +99,12 @@
 .audit-footer { padding: 30px 0 55px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; color: var(--ink-2); font-size: 11px; }
 .audit-footer a { color: var(--blue); }
 @media (max-width: 1080px) {
-  .audit-layout { grid-template-columns: 1fr; gap: 0; }
+  .audit-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .audit-sidebar { position: static; padding-top: 22px; }
   .audit-sidebar > p, .audit-sidebar-note { display: none; }
-  .audit-sidebar nav { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; margin: 0; border: 0; padding-bottom: 12px; }
+  .audit-sidebar nav { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; margin: 0; border: 0; padding-bottom: 5px; scrollbar-width: none; }
+  .audit-sidebar nav::-webkit-scrollbar { display: none; }
+  .audit-sidebar::after { content: "Faites défiler pour voir toutes les rubriques →"; display: block; color: var(--ink-2); font-size: 10px; margin-top: 4px; }
   .audit-sidebar nav a { border: 1px solid var(--line); border-radius: 99px; margin: 0; padding: 7px 12px; }
   .audit-hero { padding-top: 50px; }
 }
@@ -111,6 +113,8 @@
   .audit-topbar-label { display: none; }
   .audit-back { font-size: 10px; padding: 8px 10px; }
   .audit-layout { padding: 0 17px; }
+  .audit-content, .audit-hero, .audit-section { min-width: 0; }
+  .audit-hero h1 { overflow-wrap: anywhere; }
   .audit-hero { padding: 44px 0 48px; }
   .audit-hero h1 { font-size: clamp(38px, 11vw, 55px); }
   .audit-hero > p { font-size: 14px; }

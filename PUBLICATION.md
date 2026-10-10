@@ -2,14 +2,14 @@
 
 ## Adresse et hébergement
 
-Le nom retenu est **EcoSim France**. L'adresse Sites du projet est `https://ecosim-france.sleekmouse9.chatgpt.site/` : c'est un sous-domaine fourni par l'hébergeur, pas un nom de domaine enregistré au nom du projet. Sa visibilité publique dépend du réglage d'accès Sites. Le code statique peut aussi être exporté vers Cloudflare Pages avec un sous-domaine `*.pages.dev` et son offre gratuite, si l'on préfère un hébergement indépendant. Un domaine personnalisé réellement possédé par le projet implique généralement des frais annuels de registre ; « DNS gratuit » ne signifie pas « domaine gratuit ».
+Le nom retenu est **EcoSim France**. Aucun domaine ni hébergeur public de production n'est défini dans ce dépôt. L'ancienne adresse Sites n'est plus utilisée : l'utilisateur a écarté cet hébergement. Le dossier `dist/` est statique et peut être servi par un hébergeur choisi ultérieurement. Un domaine personnalisé réellement possédé par le projet implique généralement des frais annuels de registre ; « DNS gratuit » ne signifie pas « domaine gratuit ».
 
 ## Référencement
 
-Le site contient un titre descriptif, une description, des liens HTML, un `robots.txt`, un `sitemap.xml` et des adresses canoniques. Après ouverture publique :
+Le site contient un titre descriptif, une description, des liens HTML et un `robots.txt`. Il ne publie plus d'adresse canonique ni de sitemap pointant vers l'ancien hébergeur. Une fois le domaine de production choisi et le site réellement ouvert :
 
 1. créer un compte Google Search Console et vérifier l'adresse du site ;
-2. soumettre `https://ecosim-france.sleekmouse9.chatgpt.site/sitemap.xml` ;
+2. générer un `sitemap.xml` avec les URL absolues du domaine retenu, l'ajouter au `robots.txt`, puis le soumettre ;
 3. demander l'inspection de la page d'accueil, puis suivre les rapports d'indexation ;
 4. publier une page de méthodologie et des mises à jour réellement utiles, obtenir des liens éditoriaux pertinents et corriger les erreurs d'indexation.
 
@@ -21,7 +21,7 @@ Des outils proches existent déjà : France Budget (`https://francebudget.fr/`, 
 
 Au lancement, aucune mesure d'audience ni publicité n'est chargée. L'option simple pour un tableau de bord de visites est Cloudflare Web Analytics ; l'activation nécessite un compte et le snippet fourni par le tableau de bord. Google Analytics 4 est une autre option, plus riche mais qui nécessite une configuration de confidentialité et de consentement adaptée. Vérifier la configuration choisie à l'aide des critères de la CNIL avant de prétendre à une exemption de consentement.
 
-Pour une publicité discrète, réserver au maximum un bloc clairement marqué « Publicité » après les résultats et loin des curseurs, boutons et exports ; pas d'interstitiel ni de publicité collante. Ne rien injecter avant l'ouverture d'un compte, la validation par la régie et la mise à jour de la page de confidentialité. AdSense n'accepte normalement pas un sous-domaine ordinaire comme nouvelle propriété, sauf cas de plateforme partenaire ; l'adresse Sites seule pourrait donc ne pas être admissible. Envisager plutôt un domaine propre si la monétisation devient importante, ou un partenariat direct clairement identifié et sans traceur.
+Pour une publicité discrète, réserver au maximum un bloc clairement marqué « Publicité » après les résultats et loin des curseurs, boutons et exports ; pas d'interstitiel ni de publicité collante. Ne rien injecter avant l'ouverture d'un compte, la validation par la régie et la mise à jour de la page de confidentialité. L'admissibilité d'un futur domaine à AdSense devra être vérifiée auprès de la régie au moment de la demande.
 
 La publicité ciblée et de nombreux traceurs publicitaires exigent un consentement préalable en France. Une information légale sur l'éditeur et l'hébergement doit être finalisée selon le statut du projet avant monétisation. Les chiffres sociaux et électoraux du simulateur restent expérimentaux et ne doivent pas être présentés comme un sondage.
 

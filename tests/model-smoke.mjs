@@ -19,6 +19,7 @@ const modelSource = `${appSource.slice(start, end)}
   globalThis.__ecosimTest = {
     state,
     calculateProjection,
+    parseScenarioImport,
     resetStructural() {
       state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
       state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
@@ -37,9 +38,15 @@ const modelContext = {
 };
 vm.runInNewContext(modelSource, modelContext, { filename: "app-model.js" });
 
-const { state, calculateProjection, resetStructural } = modelContext.__ecosimTest;
+const { state, calculateProjection, parseScenarioImport, resetStructural } = modelContext.__ecosimTest;
 const data = dataContext.window.ECOSIM_DATA;
 const finite = (value) => Number.isFinite(value);
+
+assert.equal(parseScenarioImport(JSON.stringify({metadata: {version: data.metadata.version},
+  scenario: {name: "Test", changes: {GF0405: 3}}})).payload.changes.GF0405, 3);
+assert.equal(parseScenarioImport(JSON.stringify({engines: {childcarePlaces: 100}})).payload.engines.childcarePlaces, 100);
+assert.throws(() => parseScenarioImport("{}"), /scénario EcoSim/);
+assert.throws(() => parseScenarioImport(JSON.stringify({model: "modele_inconnu"})), /Cadre économique inconnu/);
 
 resetStructural();
 const baseline = calculateProjection();

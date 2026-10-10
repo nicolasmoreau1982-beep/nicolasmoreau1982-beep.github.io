@@ -1,21 +1,46 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Confidentialité — EcoSim France</title>
-  <meta name="description" content="Fonctionnement des sauvegardes locales et confidentialité du simulateur EcoSim France." />
-  <link rel="canonical" href="https://ecosim-france.sleekmouse9.chatgpt.site/confidentialite" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="privacy-page">
-    <a href="index.html">← Retour au simulateur</a>
-    <h1>Confidentialité</h1>
-    <p>EcoSim France fonctionne dans votre navigateur. Les scénarios enregistrés et le thème sont stockés localement sur votre appareil ; nous ne recevons pas ces données. Un lien de partage contient les réglages du scénario dans son fragment d’URL : ne le partagez que si vous souhaitez les rendre visibles à son destinataire.</p>
-    <p>Cette version n’intègre aucun outil de mesure d’audience ni aucune régie publicitaire. Elle charge toutefois des polices depuis Google Fonts : votre navigateur contacte alors Google. Une version ultérieure pourra héberger les polices localement.</p>
-    <p>L’hébergeur peut déposer un cookie technique de protection contre les robots et produire des journaux pour faire fonctionner et protéger le site. Pour les modalités exactes de leur conservation, consultez la politique de l’hébergeur. Toute publicité ou mesure d’audience ajoutée à l’avenir sera annoncée ici avant activation.</p>
-    <p>Mise à jour : 10 octobre 2026.</p>
-  </main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1ea" />
+    <meta name="description" content="Confidentialité d’EcoSim France : scénarios locaux, liens partagés, polices externes et absence de publicité ou d’analytics." />
+    <title>Confidentialité — EcoSim France</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="theme.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="topbar privacy-topbar">
+      <a class="brand" href="index.html" aria-label="EcoSim France — retour au simulateur">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>EcoSim <b>France</b></span>
+      </a>
+      <span class="privacy-topbar-label">Vie privée</span>
+      <a class="button button-ghost" href="index.html">← Simulateur</a>
+    </header>
+    <main id="main" class="privacy-layout">
+      <span class="eyebrow">Données personnelles · état de cette version</span>
+      <h1>Vos scénarios restent<br /><em>dans votre navigateur.</em></h1>
+      <p class="privacy-lead">EcoSim calcule localement. Nous ne recevons pas les réglages que vous saisissez. Voici ce qui reste sur votre appareil et les rares services contactés lors de la consultation.</p>
+      <div class="privacy-summary" aria-label="Résumé de confidentialité">
+        <article><span>Scénarios</span><strong>Stockage local</strong><p>Les sauvegardes et le thème restent dans ce navigateur jusqu’à leur suppression ou l’effacement de ses données.</p></article>
+        <article><span>Audience et publicité</span><strong>Non intégrées</strong><p>Cette version n’embarque ni outil de mesure d’audience ni régie publicitaire.</p></article>
+        <article><span>Services externes</span><strong>Polices Google</strong><p>Les pages du site chargent leurs polices depuis Google Fonts ; votre navigateur contacte alors Google.</p></article>
+      </div>
+      <section aria-labelledby="privacy-share-title">
+        <h2 id="privacy-share-title">Exporter et partager</h2>
+        <p>Un export JSON ou CSV est généré dans votre navigateur. Un lien de partage place les réglages du scénario dans le fragment de l’URL, après <code>#</code>. Ce fragment n’est normalement pas envoyé au serveur par la navigation HTTP, mais toute personne recevant le lien peut lire vos réglages : ne le partagez qu’en connaissance de cause.</p>
+      </section>
+      <section aria-labelledby="privacy-host-title">
+        <h2 id="privacy-host-title">Hébergement</h2>
+        <p>L’hébergeur que vous choisissez peut tenir des journaux techniques ou utiliser des protections contre les robots. Leur contenu et leur durée de conservation dépendent de cet hébergeur ; EcoSim ne les contrôle pas. Toute publicité ou mesure d’audience ajoutée à l’avenir devra être annoncée ici avant activation.</p>
+      </section>
+      <div class="privacy-actions"><a class="button button-dark" href="index.html#workspace">Revenir à mon scénario</a><a class="button button-ghost" href="audit.html#provenance">Voir les sources du modèle</a></div>
+      <p class="privacy-updated">Mise à jour : 10 octobre 2026.</p>
+    </main>
+  </body>
 </html>

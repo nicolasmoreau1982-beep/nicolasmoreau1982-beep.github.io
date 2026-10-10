@@ -13,7 +13,7 @@ const home = read("../dist/index.html");
 const script = read("../dist/audit.js");
 
 assert.match(home, /href="audit\.html"/);
-assert.match(page, /href="index\.html#methodology"/);
+assert.match(page, /href="index\.html#workspace"/);
 for (const id of ["verdict","provenance","methode","histoire","recherche","incertitude","reproduire","limites"]) {
   assert.match(page, new RegExp(`id="${id}"`));
   assert.match(page, new RegExp(`href="#${id}"`));
