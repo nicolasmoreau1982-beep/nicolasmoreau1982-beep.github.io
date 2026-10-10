@@ -174,7 +174,7 @@
 
           <div class="field-label label-with-help">
             Point de départ rapide
-            <button class="help-dot" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
+            <button type="button" class="help-dot" aria-label="Aide sur les préréglages" aria-controls="help-panel" aria-expanded="false" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
           </div>
           <div class="preset-list" id="preset-list"></div>
 
@@ -212,7 +212,7 @@
 
           <div class="impact-cards" id="impact-cards">
             <article class="impact-card" data-metric="deficit">
-              <div class="metric-label"><span class="metric-dot coral"></span>Déficit public <button class="help-dot" data-tooltip="Besoin de financement de toutes les administrations publiques.">?</button></div>
+              <div class="metric-label"><span class="metric-dot coral"></span>Déficit public <button type="button" class="help-dot" aria-label="Définition du déficit public" aria-controls="help-panel" aria-expanded="false" data-tooltip="Besoin de financement de toutes les administrations publiques.">?</button></div>
               <strong id="metric-deficit">—</strong>
               <span class="metric-delta" id="delta-deficit">—</span>
               <small id="sub-deficit">—</small>
@@ -614,6 +614,8 @@
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="app-error" id="app-error" role="alert" hidden><span id="app-error-message"></span><button type="button" id="app-error-close" aria-label="Fermer le message d’erreur">×</button></div>
+    <div class="help-panel" id="help-panel" role="region" aria-label="Aide contextuelle" tabindex="-1" hidden><strong>Aide</strong><p id="help-panel-text"></p><button type="button" id="help-panel-close" aria-label="Fermer l’aide">Fermer</button></div>
 
     <dialog id="method-dialog" class="modal">
       <form method="dialog" class="modal-shell">

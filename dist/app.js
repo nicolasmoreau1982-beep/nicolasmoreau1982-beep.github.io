@@ -161,14 +161,18 @@
     return {payload, version: file?.metadata?.version || payload.version || null};
   }
 
+  let invalidInitialLink = false;
   function loadInitialState() {
     const hash = location.hash.match(/^#scenario=(.+)$/);
     if (hash) {
       try {
         if (applySerialized(decodeState(hash[1]))) return;
+        invalidInitialLink = true;
       } catch (error) {
+        invalidInitialLink = true;
         console.warn("Scénario URL illisible", error);
       }
+      clearScenarioLink();
     }
     try {
       const saved = localStorage.getItem("ecosim-france-scenario");
@@ -2145,7 +2149,7 @@
       renderSavedComparison();
       showToast("Nouvelle copie du scénario enregistrée");
     } catch (error) {
-      showToast("La sauvegarde locale est indisponible");
+      showToast("La sauvegarde locale est indisponible. Exportez le scénario en JSON pour le conserver.", { error: true });
     }
   }
 
@@ -2190,7 +2194,7 @@
   async function importScenarioFile(file) {
     if (!file) return;
     if (file.size > 2_000_000) {
-      showToast("Fichier trop volumineux (limite : 2 Mo)");
+      showToast("Fichier trop volumineux : choisissez un scénario JSON de 2 Mo maximum.", { error: true });
       return;
     }
     try {
@@ -2200,7 +2204,7 @@
         ? "Scénario importé depuis une autre version : vérifiez les réglages"
         : "Scénario importé ; sauvegardez-le pour le conserver ici");
     } catch (error) {
-      showToast(error instanceof SyntaxError ? "JSON illisible : import annulé" : error.message || "Import impossible");
+      showToast(error instanceof SyntaxError ? "JSON illisible : import annulé. Vérifiez le fichier et réessayez." : `${error.message || "Import impossible"} Vérifiez le fichier et réessayez.`, { error: true });
     }
   }
 
@@ -2214,7 +2218,7 @@
       renderSavedComparison();
       showToast("Copie enregistrée supprimée");
     } catch (error) {
-      showToast("Impossible de supprimer cette copie");
+      showToast("Impossible de supprimer cette copie. Vérifiez l'accès au stockage du navigateur.", { error: true });
     }
   }
 
@@ -2291,7 +2295,11 @@
     }));
     if (type === "link") {
       const url = `${location.origin}${location.pathname}#scenario=${encodeState(serializableState())}`;
-      navigator.clipboard?.writeText(url).then(() => showToast("Lien du scénario copié"), () => showToast("Impossible de copier automatiquement"));
+      if (!navigator.clipboard?.writeText) {
+        showToast("La copie du lien n'est pas disponible dans ce navigateur. Utilisez l'export JSON pour partager le scénario.", { error: true });
+        return;
+      }
+      navigator.clipboard.writeText(url).then(() => showToast("Lien du scénario copié"), () => showToast("Impossible de copier automatiquement. Utilisez l'export JSON pour partager le scénario.", { error: true }));
       return;
     }
     let content;
@@ -2317,12 +2325,45 @@
   }
 
   let toastTimer;
-  function showToast(message) {
+  function showToast(message, { error = false } = {}) {
+    if (error) {
+      $("#app-error-message").textContent = message;
+      $("#app-error").hidden = false;
+      return;
+    }
     const toast = $("#toast");
     toast.textContent = message;
     toast.classList.add("is-visible");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2400);
+  }
+
+  function initHelpAndAlerts() {
+    const helpPanel = $("#help-panel");
+    let activeHelp = null;
+    const closeHelp = (restoreFocus = false) => {
+      if (!activeHelp) return;
+      const button = activeHelp;
+      activeHelp.setAttribute("aria-expanded", "false");
+      helpPanel.hidden = true;
+      activeHelp = null;
+      if (restoreFocus || helpPanel.contains(document.activeElement)) button.focus();
+    };
+    $$(".help-dot").forEach((button) => button.addEventListener("click", () => {
+      if (activeHelp === button) { closeHelp(true); return; }
+      closeHelp();
+      activeHelp = button;
+      button.setAttribute("aria-expanded", "true");
+      $("#help-panel-text").textContent = button.dataset.tooltip || "Aucune aide disponible.";
+      helpPanel.hidden = false;
+      helpPanel.focus();
+    }));
+    $("#help-panel-close").addEventListener("click", () => closeHelp(true));
+    $("#app-error-close").addEventListener("click", () => { $("#app-error").hidden = true; });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeHelp(true); });
+    document.addEventListener("click", (event) => {
+      if (activeHelp && !helpPanel.contains(event.target) && !activeHelp.contains(event.target)) closeHelp();
+    });
   }
 
   function bindEvents() {
@@ -2333,7 +2374,7 @@
       const candidate = { ...state.fiscal, [id]: value };
       try { F.validate(candidate); } catch {
         event.target.value = String(state.fiscal[id]);
-        showToast("Valeur fiscale hors limites");
+        showToast("Valeur fiscale hors limites. Choisissez une valeur autorisée par ce réglage.", { error: true });
         return;
       }
       pushUndo();
@@ -2697,6 +2738,8 @@
   initializeControls();
   initResponsiveUX();
   bindEvents();
+  initHelpAndAlerts();
+  if (invalidInitialLink) showToast("Lien de scénario illisible : les réglages locaux ou de départ sont affichés. Vérifiez le lien partagé.", { error: true });
   initMobileMenu();
   renderCategories();
   refreshAll(false);

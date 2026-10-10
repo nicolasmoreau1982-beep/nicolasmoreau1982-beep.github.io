@@ -183,9 +183,8 @@ h3 { margin: 0; }
 .advanced-grid select { height: 36px; font-size: 10px; }
 .advanced-controls > p { margin: 0; padding: 0 12px 12px; color: var(--ink-2); font-size: 9px; line-height: 1.5; }
 .label-with-help { display: flex; align-items: center; gap: 6px; }
-.help-dot { width: 17px; height: 17px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--ink-2); padding: 0; font-size: 10px; line-height: 15px; position: relative; }
-.help-dot::after { content: attr(data-tooltip); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%) translateY(4px); width: 210px; background: var(--ink); color: var(--card); padding: 8px 10px; border-radius: 7px; font-size: 10px; line-height: 1.4; text-transform: none; letter-spacing: normal; opacity: 0; pointer-events: none; transition: .15s; z-index: 10; }
-.help-dot:hover::after, .help-dot:focus::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+.help-dot { width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--blue); padding: 0; font-size: 13px; font-weight: 700; line-height: 1; }
+.help-dot[aria-expanded="true"] { background: var(--blue-soft); border-color: var(--blue); }
 .preset-list { display: grid; gap: 7px; }
 .preset { text-align: left; width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 10px 12px; display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; transition: .15s; }
 .preset:hover { border-color: var(--blue); transform: translateX(2px); }
@@ -550,7 +549,16 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 .visit-counter strong { color: var(--ink); font-variant-numeric: tabular-nums; }
 
 .modal { width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 40px); border: 0; border-radius: 18px; padding: 0; background: var(--card); color: var(--ink); box-shadow: 0 30px 100px rgba(0,0,0,.35); }.modal::backdrop { background: rgba(13,18,26,.62); backdrop-filter: blur(5px); }.modal.compact { width: min(520px, calc(100vw - 32px)); }.modal-shell { display: flex; flex-direction: column; max-height: calc(100vh - 40px); }.modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 24px 26px 18px; border-bottom: 1px solid var(--line); }.modal-header h2 { margin-top: 5px; }.modal-body { padding: 24px 26px; overflow: auto; }.modal-body h3 { font: 600 20px var(--serif); margin: 22px 0 8px; }.modal-body h3:first-child { margin-top: 0; }.modal-body p { color: var(--ink-2); font-size: 12px; line-height: 1.7; }.modal-footer { padding: 16px 26px; border-top: 1px solid var(--line); text-align: right; }.export-options { display: grid; gap: 10px; }.export-options button { text-align: left; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 15px; }.export-options button:hover { border-color: var(--blue); }.export-options strong, .export-options span { display: block; }.export-options span { color: var(--ink-2); font-size: 10px; margin-top: 3px; }
-.toast { position: fixed; z-index: 60; left: 50%; bottom: 24px; transform: translate(-50%, 18px); background: var(--ink); color: var(--card); padding: 10px 15px; border-radius: 9px; font-size: 11px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .22s; }.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.toast { position: fixed; z-index: 60; left: 50%; bottom: 24px; transform: translate(-50%, 18px); background: var(--ink); color: var(--card); padding: 10px 15px; border-radius: 9px; font-size: 12px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .22s; }.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.app-error, .help-panel { position: fixed; z-index: 70; width: min(390px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); box-shadow: var(--shadow); font-size: 13px; line-height: 1.5; }
+.app-error[hidden], .help-panel[hidden] { display: none; }
+.app-error { top: 126px; right: 16px; display: flex; align-items: flex-start; gap: 14px; padding: 15px; border-left: 4px solid var(--coral); }
+.app-error span { flex: 1; }
+.app-error button { border: 1px solid var(--line); border-radius: 7px; background: transparent; min-width: 30px; min-height: 30px; }
+.help-panel { right: 16px; bottom: 20px; padding: 17px; }
+.help-panel strong { display: block; color: var(--blue); margin-bottom: 6px; }
+.help-panel p { margin: 0 0 14px; }
+.help-panel button { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); padding: 7px 12px; font-weight: 700; }
 
 @media (max-width: 1100px) {
   .workspace { grid-template-columns: 330px minmax(0, 1fr); }
@@ -598,9 +606,36 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
   .methodology { padding: 70px 18px; }.method-heading { display: block; }.method-heading h2 { font-size: 38px; }.method-heading > p { margin-top: 24px; }.method-grid { grid-template-columns: 1fr; }.method-grid article, .method-grid article:not(:first-child) { border-right: 0; border-bottom: 1px solid #475166; padding: 24px 0; }.method-grid article:last-child { border-bottom: 0; }.source-grid { grid-template-columns: 1fr; }.source-card { grid-template-columns: 74px 1fr; }.source-card time { display: none; }
   .method-actions { justify-content: flex-start; }
   .journey-inner button { font-size: 11px; min-height: 38px; }.journey-inner button i { font-size: 9px; width: 19px; height: 19px; }
+  .hero-reference-note, .baseline-strip span, .baseline-strip small, .mobile-controls-toggle,
+  .text-button, .preset strong, .scenario-balance span { font-size: 12px; line-height: 1.5; }
   .panel-note p, .model-description, .calendar-control p, .impact-card small, .plain-summary p, .chart-caption { font-size: 11px; }
-  .metric-label, .metric-delta, .horizon-switch button, .metric-switch button { font-size: 10px; }
+  .metric-label, .metric-delta, .horizon-switch button, .metric-switch button { font-size: 11px; }
   .horizon-switch button, .metric-switch button { min-height: 36px; }
+  .field-label, .model-description, .calendar-control p, .model-assumptions, .advanced-controls summary,
+  .advanced-controls > p, .preset small, .saved-scenarios button, .saved-scenarios select,
+  .scenario-balance small, .panel-note p, .long-run-note, .impact-card small, .plain-summary p,
+  .chart-caption, .chart-data p, .diagnostic p, .category-name small, .locked-note, .table-footer p,
+  .structural-baseline small, .structural-baseline span, .structural-control-intro span,
+  .structural-assumptions > p, .story-caveat, .structural-outcome small, .structural-outcome span,
+  .engine-tab small, .engine-controls-card > p, .engine-assumptions > p, .engine-footnote,
+  .politics-model-note, .politics-list-note, .party-copy small, .politics-warning p,
+  .politics-explanation p, .politics-results small, .politics-results span, .politics-sensitivity p,
+  .politics-mapping span, .politics-actions a, .sector-footnote, .sector-card p,
+  .sector-numbers small, .source-card p, .source-publisher, .advanced-controls summary small,
+  .preset-badge, .plain-summary > span, .chart-legend, .diagnostic small,
+  .comparison-heading small, .comparison-heading > span, .modified-toggle, .budget-tabs span,
+  .group-delta, .structural-assumptions summary small, .structural-assumption-group h4,
+  .story-heading small, .story-reason span, .workforce-commitment small,
+  .workforce-commitment span, .engine-card-heading small, .engine-assumptions summary small,
+  .engine-story-top, .engine-mechanism span, .engine-alert, .engine-outcome small,
+  .engine-outcome span, .politics-model span, .politics-horizon > span,
+  .politics-detail-head small, .politics-measures span, .politics-sensitivity strong,
+  .politics-explanation strong, .politics-mapping summary, .politics-comparison-head small,
+  .politics-comparison-head > span, .sector-visual-header small, .sector-visual-header span,
+  .sector-card-heading span { font-size: 12px; line-height: 1.5; }
+  .politics-compare-row, .politics-compare-row.is-head, .politics-compare-row small,
+  .politics-card > b small, .confidence, .sector-bar-row, .sector-bar-row strong { font-size: 12px; }
+  .app-error { top: 118px; }
   footer { gap: 12px; text-align: left; }footer > .footer-version { margin-left: 0; }
 }
 

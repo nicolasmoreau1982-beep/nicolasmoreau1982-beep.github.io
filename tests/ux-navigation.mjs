@@ -21,6 +21,15 @@ assert.match(home, /id="politics-model-select"[^>]*aria-describedby="politics-mo
 assert.match(app, /politicsModelSelect\.innerHTML = modelSelect\.innerHTML/);
 assert.match(app, /state\.politicsModel = event\.target\.value/);
 assert.match(home, /id="visit-counter" hidden/);
+assert.match(home, /id="app-error" role="alert" hidden/);
+assert.match(home, /id="help-panel" role="region"[^>]*tabindex="-1" hidden/);
+assert.equal((home.match(/class="help-dot"[^>]*aria-controls="help-panel"[^>]*aria-expanded="false"/g) || []).length, 2);
+assert.match(app, /function initHelpAndAlerts\(/);
+assert.match(app, /if \(error\) \{\s*\$\("#app-error-message"\)\.textContent = message;/);
+assert.match(app, /Lien de scénario illisible : les réglages locaux ou de départ sont affichés/);
+assert.match(styles, /\.app-error\[hidden\], \.help-panel\[hidden\] \{ display: none; \}/);
+assert.match(styles, /\.field-label, \.model-description, \.calendar-control p,/);
+assert.match(styles, /\.sector-card-heading span \{ font-size: 12px; line-height: 1\.5; \}/);
 assert.match(styles, /\.visit-counter\[hidden\] \{ display: none; \}/);
 assert.match(home, /id="import-scenario-file"[^>]*accept="\.json,application\/json"/);
 assert.match(home, /id="chart-data-body"/);
