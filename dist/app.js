@@ -1087,22 +1087,42 @@
 
   function politicalTranslationRows(scenario) {
     const rows = [];
+    if (scenario.euMode !== "current") rows.push({ key: "euMode", label: "Cadre européen", value: D.euModes[scenario.euMode]?.label || scenario.euMode });
     Object.entries(scenario.changes).forEach(([id, value]) => {
       const category = byId.get(id);
       if (!category) return;
       const direction = value > 0 ? "+" : "−";
       const kind = category.type === "spending" ? "Dépense" : "Recette";
-      rows.push(`${kind} · ${category.label} : ${direction}${fmt1.format(Math.abs(value))} Md€/an`);
+      rows.push({ key: `changes.${id}`, label: `${kind} · ${category.label}`, value: `${direction}${fmt1.format(Math.abs(value))} Md€/an` });
     });
     Object.entries(scenario.structural).forEach(([id, value]) => {
       const control = D.structural.controls[id];
-      if (control) rows.push(`${control.kind === "assumption" ? "Hypothèse de contexte · " : "Mesure · "}${control.label} : ${controlText(id, value)}`);
+      if (control) rows.push({ key: `structural.${id}`, label: `${control.kind === "assumption" ? "Hypothèse de contexte" : "Mesure"} · ${control.label}`, value: controlText(id, value) });
     });
     Object.entries(scenario.engines).forEach(([id, value]) => {
       const control = D.policyEngines.controls[id];
-      if (control) rows.push(`${control.kind === "assumption" ? "Hypothèse de réalisation · " : "Mesure · "}${control.label} : ${engineControlText(id, value)}`);
+      if (control) rows.push({ key: `engines.${id}`, label: `${control.kind === "assumption" ? "Hypothèse de réalisation" : "Mesure"} · ${control.label}`, value: engineControlText(id, value) });
     });
     return rows;
+  }
+
+  function politicalEvidenceRow(row, evidence) {
+    const exact = evidence?.status === "exact";
+    const related = evidence?.status === "related";
+    return `<div class="politics-evidence-row">
+      <div><strong>${escapeHtml(row.label)}</strong><span>${escapeHtml(row.value)}</span></div>
+      <small class="${exact ? "evidence-exact" : related ? "evidence-related" : "evidence-unverified"}">${exact ? "Valeur et grandeur présentes dans la source" : related ? "Proposition documentée · traduction EcoSim non équivalente" : "Valeur EcoSim non vérifiée dans une source précise"}</small>
+      ${evidence ? `<p><a href="${escapeHtml(evidence.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(evidence.sourceTitle)} · ${escapeHtml(evidence.locator)} ↗</a><br>${escapeHtml(evidence.note)}</p>` : ""}
+    </div>`;
+  }
+
+  function politicalEvidenceSummary(scenario) {
+    const rows = politicalTranslationRows(scenario);
+    return {
+      rows,
+      exact: rows.filter((row) => scenario.evidence?.[row.key]?.status === "exact").length,
+      related: rows.filter((row) => scenario.evidence?.[row.key]?.status === "related").length
+    };
   }
 
   function renderPoliticsList() {
@@ -1112,7 +1132,7 @@
       <button class="politics-card ${scenario.id === state.selectedPolitics ? "is-active" : ""}" data-politics-id="${scenario.id}" style="--party-color:${scenario.color}">
         <span class="party-mark">${scenario.short}</span>
         <span class="party-copy"><strong>${scenario.name}</strong><small>${scenario.date}</small></span>
-        <span class="confidence confidence-${scenario.confidenceKey}">${scenario.confidence}</span>
+        <span class="confidence confidence-${scenario.confidenceKey}">traduction ${scenario.confidence}</span>
         ${scenario.seats ? `<b>${scenario.seats}<small> sièges</small></b>` : ""}
       </button>`).join("");
     $("#politics-list-note").textContent = state.politicsView === "current"
@@ -1131,14 +1151,15 @@
     const horizonCaveat = state.politicsHorizon > 10
       ? " À cet horizon structurel, une alternance, une crise, une innovation ou une modification des traités peut inverser la trajectoire."
       : "";
-    const rows = politicalTranslationRows(scenario);
+    const { rows, exact: verifiedCount, related: relatedCount } = politicalEvidenceSummary(scenario);
     $("#politics-detail").innerHTML = `
       <div class="politics-detail-head" style="--party-color:${scenario.color}">
         <span class="party-mark large">${scenario.short}</span>
         <div><small>${scenario.date}</small><h3>${scenario.name}</h3></div>
-        <span class="confidence confidence-${scenario.confidenceKey}">confiance ${scenario.confidence}</span>
+        <span class="confidence confidence-${scenario.confidenceKey}">traduction ${scenario.confidence}</span>
       </div>
       <p class="politics-summary">${scenario.summary}</p>
+      <p class="politics-provenance-summary">Provenance des ${rows.length} réglages : ${verifiedCount} valeur exacte · ${relatedCount} proposition documentée · ${rows.length - verifiedCount - relatedCount} valeur${rows.length - verifiedCount - relatedCount > 1 ? "s" : ""} EcoSim non vérifiée${rows.length - verifiedCount - relatedCount > 1 ? "s" : ""} individuellement.</p>
       <div class="politics-measures">${scenario.measures.map((item, index) => `<div><i>0${index + 1}</i><span>${item}</span></div>`).join("")}</div>
       <div class="politics-results">
         <div><small>Déficit</small><strong>${percent(point.deficitRatio)}</strong><span>${signed(point.deficitRatio - baseline.deficitRatio, " pt vs réf.")}</span></div>
@@ -1150,7 +1171,7 @@
       </div>
       <div class="politics-sensitivity"><strong>Écart entre les neuf lectures économiques</strong><p>Déficit : ${percent(sensitivity.deficit[0])} à ${percent(sensitivity.deficit[1])} du PIB · Dette : ${percent(sensitivity.debt[0])} à ${percent(sensitivity.debt[1])} du PIB. Ce sont des résultats sous hypothèses alternatives, pas un intervalle de confiance.</p></div>
       <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}${horizonCaveat}</p></div>
-      <details class="politics-mapping"><summary>Voir la traduction exacte (${rows.length} réglages)</summary><div><p>Chaque valeur ci-dessous est une traduction EcoSim, non un chiffrage officiel attribuable à la formation. Les documents cités concernent le scénario dans son ensemble : la correspondance source → mesure et les pages précises ne sont pas encore vérifiées individuellement. Si une mesure ne peut être reliée à une source, son montant ne doit pas être lu comme une proposition chiffrée du groupe.</p>${rows.length ? rows.map((row) => `<span>${escapeHtml(row)}</span>`).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
+      <details class="politics-mapping"><summary>Voir les ${rows.length} réglages et leurs sources · ${verifiedCount} valeur exacte, ${relatedCount} proposition documentée</summary><div><p>Une source générale ne prouve pas chaque montant. « Valeur exacte » exige la même grandeur, la même valeur et une page précise ; « proposition documentée » signale un lien mais une traduction non équivalente. Les autres montants sont des hypothèses EcoSim. Aucun blanc n’est interprété comme un effet nul.</p>${rows.length ? rows.map((row) => politicalEvidenceRow(row, scenario.evidence?.[row.key])).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
       <div class="politics-actions">
         <button class="button button-dark" data-apply-politics="${scenario.id}">Appliquer au simulateur</button>
         <span>${scenario.sources.map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label} ↗</a>`).join("")}<a href="https://github.com/nicolasmoreau1982-beep/nicolasmoreau1982-beep.github.io/issues/new/choose" target="_blank" rel="noopener noreferrer">Signaler une erreur ↗</a></span>
@@ -1166,7 +1187,7 @@
       const gdpDelta = (point.gdp / baseline.gdp - 1) * 100;
       const emissions = point.structural.emissionsChange + point.engines.emissions;
       return `<button class="politics-compare-row ${scenario.id === state.selectedPolitics ? "is-selected" : ""}" data-politics-id="${scenario.id}" style="--party-color:${scenario.color}">
-        <span><i></i><b>${scenario.short}</b><small>${scenario.confidence}</small></span>
+        <span><i></i><b>${scenario.short}</b><small>traduction ${scenario.confidence}</small></span>
         <span>${percent(point.deficitRatio)}</span><span>${percent(point.debtRatio)}</span><span>${signed(gdpDelta, " %")}</span><span>${percent(point.unemployment)}</span><span>${signed(emissions, " Mt")}</span>
       </button>`;
     }).join("");

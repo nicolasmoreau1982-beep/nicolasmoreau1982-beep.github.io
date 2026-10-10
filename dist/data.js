@@ -1130,6 +1130,18 @@ window.ECOSIM_DATA = (() => {
         changes: { GF0703: 10, GF0901: 7, GF0902: 7, GF0904: 5, GF0601: 8, GF0405: 10, GF1007: 10, R_IR: 18, R_IS: 15, R_CAPITALLEVY: 8, R_HIGHINC: 6, R_EXCEPTIONAL: 8 },
         structural: { renewables: 35, efficiency: 12, carbonTax: 15, economicMigration: 70, otherMigration: 140, integration: 70 },
         engines: { minimumWage: 14, retirementAge: -2, pensionIndex: 1.5, teacherResources: 12, healthWorkforce: 55, socialHousing: 90, targetedTransfers: 12, publicResearch: 10, transportInfrastructure: 12, bankLevy: 6, fraudRecovery: 9 },
+        evidence: {
+          "engines.minimumWage": {
+            status: "related",
+            sourceValue: 14,
+            sourceUnit: "% de hausse du SMIC net annoncé",
+            modelUnit: "% de salaire minimum réel",
+            sourceTitle: "NFP, proposition macroéconomique, juin 2024",
+            locator: "p. 4, section « Augmenter fortement les salaires »",
+            url: "https://lafranceinsoumise.fr/wp-content/uploads/2024/06/RECIT-MACRO-FRONT-POPULAIRE-VF.pdf#page=4",
+            note: "Le document annonce +14 % du SMIC net, tandis que le levier EcoSim est +14 % de salaire minimum réel. L’inflation et le calendrier ne sont pas réconciliés : même chiffre, grandeur différente. Les effets économiques sont des hypothèses EcoSim."
+          }
+        },
         measures: ["SMIC, retraites et transferts revalorisés", "Services publics et planification écologique", "Impôts progressifs, capital et grandes entreprises"],
         sources: [{ label: "Proposition macroéconomique NFP", url: "https://lafranceinsoumise.fr/wp-content/uploads/2024/06/RECIT-MACRO-FRONT-POPULAIRE-VF.pdf" }, { label: "L’Avenir en commun", url: "https://programme.lafranceinsoumise.fr/category/programme/laec/" }]
       },
