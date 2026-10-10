@@ -1,0 +1,8 @@
+{
+  "status": "hypotheses_exploratoires_non_estimees",
+  "description": "Paramètres du prototype de rejeu, indépendants des observations futures. Les coefficients emploi et stabilisateurs reprennent l'ordre de grandeur utilisé par le moteur EcoSim 2025 ; leur invariance historique n'est pas démontrée.",
+  "lookback": 5,
+  "revenueElasticity": 1,
+  "unemploymentOkun": 0.35,
+  "unemploymentCostSharePerPoint": 0.0010364
+}

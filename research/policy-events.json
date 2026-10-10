@@ -1,0 +1,38 @@
+{
+  "snapshot": "10 octobre 2026",
+  "cases": [
+    {
+      "id": "vat_2014",
+      "year": 2014,
+      "label": "Relèvement des taux de TVA de 2014",
+      "observedIncrementBn": 6.5,
+      "baseYear": 2013,
+      "effectiveYear": 2014,
+      "fiscalSide": "revenue",
+      "instrument": "vat",
+      "amountInformationYear": 2015,
+      "contemporaryModelEstimateRealGdpPct": -0.1,
+      "status": "comparaison_de_variantes_non_causale",
+      "sources": {
+        "policyAndYield": "https://www.insee.fr/fr/statistiques/fichier/1288733/ECOFRA15.pdf",
+        "contemporaryEstimate": "https://www.senat.fr/rap/l12-213-1/l12-213-177.html"
+      },
+      "warning": "Rendement comptable observé, pas choc fiscal ex ante isolé ; le Sénat publiait une estimation de modèle, non un effet mesuré. Le CICE et les autres chocs de 2014 ne sont pas neutralisés."
+    },
+    {
+      "id": "cice_2014",
+      "year": 2014,
+      "label": "Crédit d'impôt pour la compétitivité et l'emploi",
+      "rate2013Pct": 4,
+      "rate2014Pct": 6,
+      "claim2014Bn": 18.2,
+      "effectiveYear": 2014,
+      "status": "non_representable",
+      "sources": {
+        "policyAndClaim": "https://www.strategie-plan.gouv.fr/actualites/point-detape-suivi-cice-2013-2014",
+        "exPostEvaluation": "https://www.strategie.gouv.fr/files/files/Publications/2020/CICE/fs-2020-rapport-cice2020-16septembre-final18h.pdf"
+      },
+      "warning": "Le CICE est un crédit d'impôt sur les salaires éligibles, non une baisse uniforme de R_SOCIAL ; la créance et la dépense en trésorerie suivent des calendriers différents. EcoSim ne dispose pas des assiettes par tranche de salaire."
+    }
+  ]
+}

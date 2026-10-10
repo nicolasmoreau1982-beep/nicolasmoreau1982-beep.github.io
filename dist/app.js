@@ -2,9 +2,16 @@
   "use strict";
 
   const D = window.ECOSIM_DATA;
+  const H = window.ECOSIM_HISTORY;
+  const F = window.ECOSIM_FISCAL;
+  if (!F) throw new Error("Moteur fiscal manquant");
+  const populationProjection = window.ECOSIM_INSEE_PROJECTION;
+  if (!populationProjection?.rows?.length) throw new Error("Projection démographique Insee manquante");
+  const populationByYear = new Map(populationProjection.rows.map((row) => [row.year, row]));
   const allCategories = [...D.spending, ...D.revenue];
   const byId = new Map(allCategories.map((item) => [item.id, item]));
   const fmt1 = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const fmt2 = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fmt0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
 
   const state = {
@@ -14,9 +21,12 @@
     cycle: "normal",
     monetary: "neutral",
     confidence: "stable",
+    policyStartQuarter: 1,
+    policyStartQuarters: {},
     structural: Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value])),
     activeStructuralTab: "demography",
     engines: Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value])),
+    fiscal: { ...F.defaults },
     activeEngine: "work",
     politicsView: "current",
     politicsHorizon: 3,
@@ -41,6 +51,7 @@
   const money = (value, digits = 1) => `${digits ? fmt1.format(value) : fmt0.format(value)} Md€`;
   const percent = (value) => `${fmt1.format(value)} %`;
   const changeFor = (id) => Number(state.changes[id] || 0);
+  const categoryStartQuarter = (id) => state.policyStartQuarters[id] || state.policyStartQuarter;
   const categoryChangeLimits = (category) => {
     const limit = Math.max(10, Math.ceil(Math.abs(category.value) * 0.7 / 5) * 5);
     return { min: Math.max(-limit, -category.value), max: limit };
@@ -70,8 +81,11 @@
       cycle: state.cycle,
       monetary: state.monetary,
       confidence: state.confidence,
+      policyStartQuarter: state.policyStartQuarter,
+      policyStartQuarters: { ...state.policyStartQuarters },
       structural: { ...state.structural },
       engines: { ...state.engines },
+      fiscal: { ...state.fiscal },
       changes: Object.fromEntries(Object.entries(state.changes).filter(([, value]) => Math.abs(value) > 0.0001))
     };
   }
@@ -83,6 +97,16 @@
     if (D.assumptions.cycle[payload.cycle]) state.cycle = payload.cycle;
     if (D.assumptions.monetary[payload.monetary]) state.monetary = payload.monetary;
     if (D.assumptions.confidence[payload.confidence]) state.confidence = payload.confidence;
+    state.policyStartQuarter = [1, 2, 3, 4].includes(Number(payload.policyStartQuarter))
+      ? Number(payload.policyStartQuarter) : 1;
+    state.policyStartQuarters = {};
+    if (payload.policyStartQuarters && typeof payload.policyStartQuarters === "object") {
+      for (const [id, quarter] of Object.entries(payload.policyStartQuarters)) {
+        if (byId.has(id) && !byId.get(id).locked && [1, 2, 3, 4].includes(Number(quarter))) {
+          state.policyStartQuarters[id] = Number(quarter);
+        }
+      }
+    }
     if (typeof payload.name === "string") state.name = payload.name.slice(0, 60);
     if (payload.structural && typeof payload.structural === "object") {
       Object.entries(D.structural.controls).forEach(([id, control]) => {
@@ -95,6 +119,16 @@
         const value = Number(payload.engines[id]);
         if (Number.isFinite(value)) state.engines[id] = clamp(value, control.min, control.max);
       });
+    }
+    state.fiscal = { ...F.defaults };
+    if (payload.fiscal && typeof payload.fiscal === "object") {
+      const candidate = { ...F.defaults };
+      Object.entries(F.controls).forEach(([id, control]) => {
+        if (payload.fiscal[id] === undefined) return;
+        const value = Number(payload.fiscal[id]);
+        if (Number.isFinite(value)) candidate[id] = clamp(value, control.min, control.max);
+      });
+      try { state.fiscal = F.validate(candidate); } catch { state.fiscal = { ...F.defaults }; }
     }
     if (payload.changes && typeof payload.changes === "object") {
       state.changes = {};
@@ -168,22 +202,47 @@
     };
   }
 
-  function categoryPolicyImpact(category, delta, index, priceIndex, profile) {
-    const ramp = index === 0 ? category.lag : Math.min(1, category.lag + index * 0.28);
+  function interpolateVariant(points, year) {
+    const years = Object.keys(points).map(Number).sort((a, b) => a - b);
+    if (year <= years[0]) return points[years[0]];
+    if (year >= years.at(-1)) return points[years.at(-1)];
+    const upper = years.find((value) => value >= year);
+    const lower = years[years.indexOf(upper) - 1];
+    return points[lower] + (points[upper] - points[lower]) * (year - lower) / (upper - lower);
+  }
+
+  function categoryPolicyImpact(category, delta, index, priceIndex, profile, baselineGdp = D.BASE.gdp,
+    startQuarter = 1) {
+    const exposure = index === 0 ? (5 - startQuarter) / 4 : 1;
+    const age = index + 1 - (startQuarter - 1) / 4;
+    if (category.id === "R_TVA") {
+      // Variante Mésange : effet en volume du PIB et niveau des prix à la
+      // consommation. La hausse de TVA n'est pas une baisse du déflateur PIB.
+      const variant = D.researchVariants.vat;
+      const fullAmount = delta * priceIndex;
+      const amount = fullAmount * exposure;
+      const realGdp = amount * interpolateVariant(variant.realGdpPct, age) * profile.taxScale;
+      const cpiLevel = (elapsed) => elapsed <= 0 ? 0 : elapsed < 1
+        ? elapsed * variant.cpiLevelPct[1] : interpolateVariant(variant.cpiLevelPct, elapsed);
+      const cpiChange = cpiLevel(age) - cpiLevel(age - 1);
+      return { demand: realGdp, supply: 0, inflation: 0,
+        cpiPoints: cpiChange * fullAmount / baselineGdp * 100, amount };
+    }
+    const ramp = index === 0 ? category.lag : Math.min(1, category.lag + Math.max(0, age - 1) * (category.rampPerYear || 0.28));
     const persistentDemand = category.type === "spending" ? 0.55 : 0.45;
-    const demandWeight = persistentDemand + (1 - persistentDemand) * profile.decay ** index;
+    const demandWeight = persistentDemand + (1 - persistentDemand) * profile.decay ** Math.max(0, age - 1);
     const strategic = profile.strategicBoost && ["GF0403", "GF0404", "GF0405", "GF0408", "GF0503"].includes(category.id)
       ? profile.strategicBoost
       : 1;
-    const amount = delta * priceIndex;
+    const amount = delta * priceIndex * exposure;
     const direction = category.type === "spending" ? 1 : -1;
     const scale = category.type === "spending" ? profile.spendScale : profile.taxScale;
-    const leakage = 1 - (category.importShare || 0) * 0.22;
+    const leakage = clamp(1 - (category.importShare || 0) * 0.22 * (profile.importLeakageScale || 1), 0.35, 1);
     const demand = direction * amount * category.multiplier * scale * ramp * demandWeight * leakage * strategic;
-    const supplyMaturity = 1 - Math.exp(-(index + 1) / 3.6);
+    const supplyMaturity = 1 - Math.exp(-age / 3.6);
     const supply = direction * amount * category.supply * profile.supplyScale * supplyMaturity * strategic;
     const inflation = direction * amount * category.inflation * (profile.inflationBoost || 1);
-    return { demand, supply, inflation, amount };
+    return { demand, supply, inflation, cpiPoints: 0, amount };
   }
 
   function calculateStructuralTrajectory(profile) {
@@ -248,12 +307,23 @@
 
     for (let index = 0; index < D.metadata.projectionYears; index += 1) {
       const age = index + 1;
-      const baselineBirths = defaults.births * (1 - index * 0.004);
-      const baselineDeaths = defaults.deaths * (1 + index * 0.0035);
+      const referenceYear = D.metadata.projectionStart + index;
+      const referenceStart = populationByYear.get(referenceYear);
+      const referenceEnd = populationByYear.get(referenceYear + 1);
+      if (!referenceStart || !referenceEnd) throw new Error(`Projection Insee absente en ${referenceYear}`);
+      const baselineBirths = referenceStart.birthsK;
+      const baselineDeaths = referenceStart.deathsK;
       const deaths = baselineDeaths * (1 - values.lifeExpectancy * 0.018);
-      const births = baselineBirths * (values.fertility / defaults.fertility) * (population / Math.max(defaults.population, baselinePopulation));
-      baselinePopulation += (baselineBirths - baselineDeaths + defaults.netMigration) / 1000;
-      population += (births - deaths + values.economicMigration + values.otherMigration) / 1000;
+      const fertilityResponse = D.structural.fertilityResponse;
+      const childcarePlaces = clamp(Number(state.engines.childcarePlaces) || 0, 0, fertilityResponse.childcarePlacesForFullEffectK);
+      const policyFertilityDelta = fertilityResponse.maxAdditionalChildrenPerWoman
+        * childcarePlaces / fertilityResponse.childcarePlacesForFullEffectK
+        * (age <= 1 ? 0 : 1 - Math.exp(-(age - 1) / fertilityResponse.maturationYears));
+      const effectiveFertility = values.fertility + policyFertilityDelta;
+      const births = baselineBirths * (effectiveFertility / defaults.fertility) * (population / baselinePopulation);
+      baselinePopulation = referenceEnd.populationM;
+      population += (births - deaths + values.economicMigration + values.otherMigration
+        + referenceStart.adjustmentK) / 1000;
       baselineBirthCohorts.push(baselineBirths);
       scenarioBirthCohorts.push(births);
 
@@ -303,8 +373,11 @@
       const requestedMissionRecruitments = Object.fromEntries(Object.entries(occupationControlIds)
         .map(([occupation, controlId]) => [occupation, Number(values[controlId] || 0)]));
       if (index === 0) requestedMissionRecruitments.hospital += Number(state.engines.healthWorkforce || 0);
+      // Les personnes inscrites en formation à France Travail peuvent aussi
+      // relever du halo ou du sous-emploi : ne pas les ajouter comme un
+      // quatrième stock indépendant au plafond annuel de recrutement.
       const recruitmentLimit = (workforce.pools.unemployedBIT * 0.08 + workforce.pools.halo * 0.03
-        + workforce.pools.underemployment * 0.05 + workforce.pools.franceTravailTraining * 0.20);
+        + workforce.pools.underemployment * 0.05);
       const missionRecruitments = Object.fromEntries(Object.entries(requestedMissionRecruitments)
         .map(([id, requested]) => [id, requested > 0
           ? Math.min(requested, workforce.publicOccupations[id].baseline * values.publicHiringCapacity / 100)
@@ -435,7 +508,8 @@
         - values.efficiency * age * 0.16;
       const importBillChange = Math.max(-D.structural.energy.importBill, rawImportBillChange);
       const energyDemand = publicEnergyInvestment * profile.spendScale * (0.9 * profile.decay ** index + 0.18);
-      const energySupply = (-importBillChange * 0.24 + values.efficiency * ramp * 0.12) * profile.supplyScale;
+      const energySupply = (-importBillChange * 0.24 + values.efficiency * ramp * 0.12)
+        * profile.supplyScale * (profile.energySupplyScale || 1);
       const energyInflation = values.fossilPrice * 0.018 + values.carbonTax * 0.004
         - values.nuclear * ramp * 0.009 - values.renewables * ramp * 0.004 - values.efficiency * ramp * 0.012;
       const rawEmissionsChange = -values.nuclear * ramp * 1.35 - values.renewables * ramp * 0.72
@@ -450,7 +524,11 @@
         baselinePopulation,
         births,
         baselineBirths,
-        age65Share: defaults.age65Share + age * 0.23 + values.lifeExpectancy * 0.18 - (population - baselinePopulation) / population * 20,
+        effectiveFertility,
+        policyFertilityDelta,
+        age65Share: referenceEnd.age65SharePct + values.lifeExpectancy * 0.18
+          - (population - baselinePopulation) / population * 20,
+        age80Share: referenceEnd.age80M / referenceEnd.populationM * 100,
         cumulativeMigration: scenarioMigration.people,
         migrationRevenue,
         migrationCost,
@@ -491,7 +569,7 @@
         importBillChange,
         energyDemand,
         energySupply,
-        energyInflation,
+        energyInflation: energyInflation * (profile.energyInflationScale || 1),
         emissionsChange,
         gdpImpact: laborGdp + workforceGdp + energyDemand + energySupply
       });
@@ -672,6 +750,7 @@
 
       let policyGdp = 0;
       let policyInflationBillions = 0;
+      let policyCpiPoints = 0;
       let spendingChange = 0;
       let revenueChange = 0;
       let demandContribution = 0;
@@ -696,20 +775,42 @@
       }
       const labor = allocateLaborMarket(structure, engine, index);
       const cohortizedHealth = engine.contributions.healthWorkforce || { fiscalCost: 0, demand: 0, supply: 0, gdpImpact: 0, jobs: 0 };
+      const fiscal = F.simulate(state.fiscal, baseline[index].year, priceIndex);
 
       Object.entries(state.changes).forEach(([id, deltaValue]) => {
         const delta = Number(deltaValue);
         if (!delta) return;
         const category = byId.get(id);
         if (!category || category.locked) return;
-        const impact = categoryPolicyImpact(category, delta, index, priceIndex, profile);
+        const impact = categoryPolicyImpact(category, delta, index, priceIndex, profile, baseline[index].gdp,
+          categoryStartQuarter(id));
         demandContribution += impact.demand;
         supplyContribution += impact.supply;
         policyGdp += impact.demand + impact.supply;
         policyInflationBillions += impact.inflation * (profile.decay ** index);
+        policyCpiPoints += impact.cpiPoints;
         if (category.type === "spending") spendingChange += impact.amount;
         else revenueChange += impact.amount;
       });
+
+      for (const [tax, categoryId] of Object.entries({
+        ir: "R_IR", ifi: "R_OTHERWEALTH", inheritance: "R_SUCCESSION", floor: "R_OTHERWEALTH"
+      })) {
+        const amount = fiscal.deltaByTax[tax];
+        if (Math.abs(amount) < 1e-9) continue;
+        // La micro-simulation produit déjà un rendement nominal de l'année.
+        // Le canal macro attend un choc en euros de la base 2025.
+        const fiscalPolicyIndex = index - (state.fiscal.startYear - D.metadata.projectionStart);
+        const impact = categoryPolicyImpact(byId.get(categoryId), amount / priceIndex,
+          fiscalPolicyIndex, priceIndex, profile, baseline[index].gdp, 1);
+        revenueChange += impact.amount;
+        supplyContribution += impact.supply;
+        policyGdp += impact.supply;
+        policyInflationBillions += impact.inflation * (profile.decay ** index);
+      }
+      const fiscalDemand = fiscal.distributionDemandBn * profile.taxScale;
+      demandContribution += fiscalDemand;
+      policyGdp += fiscalDemand;
 
       policyGdp += structure.gdpImpact;
       demandContribution += structure.energyDemand;
@@ -731,9 +832,18 @@
         else spendingChange += contribution.fiscalCost;
       });
 
-      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation
-        + engine.inflation + labor.laborTension * 0.18, -4.5, 6.5);
-      institutionPriceFactor *= 1 + ((eu.inflationShock[index] || 0) + extraInflation) / 100;
+      // Séquelle de capacité productive associée à la demande : hypothèse de
+      // sensibilité, appliquée aux écarts de politique et jamais à la référence.
+      const hysteresis = demandContribution * (profile.hysteresisScale || 0)
+        * (1 - Math.exp(-(index + 1) / 4));
+      policyGdp += hysteresis;
+      supplyContribution += hysteresis;
+
+      const sharedPriceShock = policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation
+        + engine.inflation + labor.laborTension * 0.18;
+      const extraInflation = clamp(sharedPriceShock + policyCpiPoints, -4.5, 6.5);
+      const gdpDeflatorShock = clamp(sharedPriceShock, -4.5, 6.5);
+      institutionPriceFactor *= 1 + ((eu.inflationShock[index] || 0) + gdpDeflatorShock) / 100;
       const scenarioGdp = Math.max(
         baseline[index].gdp * institutionRealFactor * institutionPriceFactor + policyGdp,
         baseline[index].gdp * 0.62
@@ -749,7 +859,8 @@
       const debtDifferencePrevious = scenarioDebt - baselineDebtPrevious;
       const previousBaselineRatio = index === 0 ? D.BASE.debtRatio : baseline[index - 1].debtRatio;
       const debtRisk = Math.max(0, lastDebtRatio - previousBaselineRatio) * 0.045 * profile.debtSensitivity;
-      const riskPremium = Math.max(-0.20, eu.rateShock + profile.assumptionRate + debtRisk);
+      const riskPremium = Math.max(-0.20, eu.rateShock + profile.assumptionRate + debtRisk
+        + Math.max(0, extraInflation) * (profile.inflationRiskScale || 0));
       const transmission = Math.min(1, 0.18 * (index + 1));
       const extraInterest = debtDifferencePrevious * D.baseline.policyRate[index] / 100
         + scenarioDebt * riskPremium / 100 * transmission;
@@ -763,9 +874,11 @@
       const longRunUncertainty = index < 10 ? 1 : 1 + (index - 9) * 0.065;
       const uncertaintyScale = (profile.uncertainty * (1 + index * 0.07) + eu.uncertainty * (1 + index * 0.09) + Math.min(1.2, engine.uncertainty / 240)) * longRunUncertainty;
       const baselineMacroRisk = index < 10 ? 0.001 + index * 0.0003 : 0.004 + (index - 9) * 0.0016;
-      const gdpBand = Math.max(baseline[index].gdp * baselineMacroRisk, policySize * uncertaintyScale + baseline[index].gdp * eu.uncertainty * 0.006);
-      const deficitBand = Math.max(0.08 + Math.max(0, index - 9) * 0.07, (Math.abs(directBalanceCost) * profile.uncertainty + eu.uncertainty * 12) / scenarioGdp * 100 * (1 + index * 0.08));
-      const debtBand = Math.max(0.25, (gdpBand / scenarioGdp * 100 + deficitBand) * Math.sqrt(index + 1));
+      const modelGdpBand = Math.max(baseline[index].gdp * baselineMacroRisk, policySize * uncertaintyScale + baseline[index].gdp * eu.uncertainty * 0.006);
+      const gdpBand = Math.max(modelGdpBand, baseline[index].gdp * H.stressFloor("gdpPct", index + 1) / 100);
+      const fiscalStress = Math.abs(fiscal.totalBn) * (state.fiscal.wealthFloorEnabled ? 1.5 : 1);
+      const deficitBand = Math.max(0.08 + Math.max(0, index - 9) * 0.07, (Math.abs(directBalanceCost) * profile.uncertainty + eu.uncertainty * 12 + fiscalStress) / scenarioGdp * 100 * (1 + index * 0.08), H.stressFloor("deficitRatio", index + 1));
+      const debtBand = Math.max(0.25, (modelGdpBand / scenarioGdp * 100 + deficitBand) * Math.sqrt(index + 1), H.stressFloor("debtRatio", index + 1));
 
       scenario.push({
         year: baseline[index].year,
@@ -784,17 +897,19 @@
         extraInterest,
         demandContribution,
         supplyContribution,
+        hysteresis,
         outputGap,
         riskPremium,
         structural: structure,
         engines: engine,
         labor,
+        fiscal,
         bands: {
           gdp: gdpBand,
           deficitRatio: deficitBand,
           debtRatio: debtBand,
-          growth: Math.max(0.12, gdpBand / baseline[index].gdp * 65),
-          unemployment: Math.max(0.08, gdpBand / baseline[index].gdp * 28)
+          growth: Math.max(0.12, modelGdpBand / baseline[index].gdp * 65),
+          unemployment: Math.max(0.08, modelGdpBand / baseline[index].gdp * 28, H.stressFloor("unemployment", index + 1))
         }
       });
       baselineDebtPrevious = baseline[index].debt;
@@ -812,6 +927,7 @@
     const euSelect = $("#eu-select");
     euSelect.innerHTML = Object.entries(D.euModes).map(([id, mode]) => `<option value="${id}">${mode.label}</option>`).join("");
     euSelect.value = state.euMode;
+    $("#policy-start-quarter").value = String(state.policyStartQuarter);
     const assumptionSelects = [
       ["cycle-select", "cycle"],
       ["monetary-select", "monetary"],
@@ -826,8 +942,10 @@
     renderSavedScenarios();
     renderPresets();
     renderSources();
+    renderHistoryAudit();
     renderSectors();
     renderStructuralControls();
+    renderFiscalControls();
     renderEngineSelector();
     renderEngineControls();
     renderPolitics();
@@ -856,6 +974,14 @@
     `).join("");
   }
 
+  function renderHistoryAudit() {
+    const rows = H.horizons.map((horizon) => {
+      const result = H.report[horizon];
+      return `<tr><th scope="row">${horizon} an${horizon > 1 ? "s" : ""}</th><td>${result.n}</td><td>${fmt1.format(result.metrics.gdpPct.mae)} %</td><td>${fmt1.format(result.metrics.deficitRatio.mae)} pt</td><td>${fmt1.format(result.metrics.debtRatio.mae)} pt</td><td>${fmt1.format(result.metrics.unemployment.mae)} pt</td></tr>`;
+    }).join("");
+    $("#history-audit").innerHTML = `<div class="history-audit-scroll"><table><caption>Erreur absolue moyenne du prévisionniste témoin, calculée uniquement sur les années postérieures à chaque origine</caption><thead><tr><th>Horizon</th><th>Cas</th><th>PIB nominal</th><th>Déficit/PIB</th><th>Dette/PIB</th><th>Chômage</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
   const politicalProjectionCache = new Map();
 
   function politicalScenarioList() {
@@ -876,8 +1002,11 @@
       cycle: state.cycle,
       monetary: state.monetary,
       confidence: state.confidence,
+      policyStartQuarter: state.policyStartQuarter,
+      policyStartQuarters: state.policyStartQuarters,
       structural: state.structural,
-      engines: state.engines
+      engines: state.engines,
+      fiscal: state.fiscal
     };
     state.changes = { ...scenario.changes };
     state.model = "consensus";
@@ -885,8 +1014,11 @@
     state.cycle = "normal";
     state.monetary = "neutral";
     state.confidence = "stable";
+    state.policyStartQuarter = 1;
+    state.policyStartQuarters = {};
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, scenario.structural[id] ?? control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, scenario.engines[id] ?? control.value]));
+    state.fiscal = { ...F.defaults };
     const projection = calculateProjection();
     Object.assign(state, snapshot);
     politicalProjectionCache.set(scenario.id, projection);
@@ -910,11 +1042,11 @@
     });
     Object.entries(scenario.structural).forEach(([id, value]) => {
       const control = D.structural.controls[id];
-      if (control) rows.push(`${control.label} : ${controlText(id, value)}`);
+      if (control) rows.push(`${control.kind === "assumption" ? "Hypothèse de contexte · " : "Mesure · "}${control.label} : ${controlText(id, value)}`);
     });
     Object.entries(scenario.engines).forEach(([id, value]) => {
       const control = D.policyEngines.controls[id];
-      if (control) rows.push(`${control.label} : ${engineControlText(id, value)}`);
+      if (control) rows.push(`${control.kind === "assumption" ? "Hypothèse de réalisation · " : "Mesure · "}${control.label} : ${engineControlText(id, value)}`);
     });
     return rows;
   }
@@ -996,6 +1128,8 @@
     if (!scenario) return;
     pushUndo();
     state.changes = { ...scenario.changes };
+    state.policyStartQuarter = 1;
+    state.policyStartQuarters = {};
     state.model = "consensus";
     state.euMode = scenario.euMode;
     state.cycle = "normal";
@@ -1003,6 +1137,7 @@
     state.confidence = "stable";
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([key, control]) => [key, scenario.structural[key] ?? control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([key, control]) => [key, scenario.engines[key] ?? control.value]));
+    state.fiscal = { ...F.defaults };
     state.name = scenario.name;
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
@@ -1010,10 +1145,12 @@
     $("#cycle-select").value = state.cycle;
     $("#monetary-select").value = state.monetary;
     $("#confidence-select").value = state.confidence;
+    $("#policy-start-quarter").value = String(state.policyStartQuarter);
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
     renderEngineControls();
+    renderFiscalControls();
     refreshAll(true);
     showToast(`Scénario « ${scenario.name} » appliqué et modifiable`);
     $("#simulator").scrollIntoView({ behavior: "smooth" });
@@ -1023,6 +1160,31 @@
     const model = D.models[state.model];
     const eu = D.euModes[state.euMode];
     $("#model-description").textContent = `${model.description} ${eu.description}`;
+    const coefficients = [
+      `Demande dépenses ×${model.spendScale}`,
+      `Demande prélèvements ×${model.taxScale}`,
+      `Offre ×${model.supplyScale}`,
+      `Persistance ${model.decay}`,
+      `Sensibilité dette ×${model.debtSensitivity}`,
+      `Incertitude exploratoire ${model.uncertainty}`
+    ];
+    if (model.strategicBoost) coefficients.push(`Postes stratégiques ×${model.strategicBoost}`);
+    if (model.inflationBoost) coefficients.push(`Prix des mesures ×${model.inflationBoost}`);
+    if (model.hysteresisScale) coefficients.push(`Séquelle de demande ×${model.hysteresisScale}`);
+    if (model.importLeakageScale) coefficients.push(`Fuite importations ×${model.importLeakageScale}`);
+    if (model.inflationRiskScale) coefficients.push(`Prix → taux +${model.inflationRiskScale} pt/pt`);
+    if (model.energySupplyScale) coefficients.push(`Offre énergie ×${model.energySupplyScale}`);
+    if (model.energyInflationScale) coefficients.push(`Prix énergie ×${model.energyInflationScale}`);
+    $("#model-parameters").textContent = coefficients.join(" · ");
+    const evidence = $("#model-evidence");
+    evidence.replaceChildren(...(model.evidence || []).map((source) => {
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = source.label;
+      return link;
+    }));
   }
 
   function updateAssumptionDescription() {
@@ -1042,8 +1204,11 @@
       cycle: state.cycle,
       monetary: state.monetary,
       confidence: state.confidence,
+      policyStartQuarter: state.policyStartQuarter,
+      policyStartQuarters: { ...state.policyStartQuarters },
       structural: { ...state.structural },
-      engines: { ...state.engines }
+      engines: { ...state.engines },
+      fiscal: { ...state.fiscal }
     });
     if (state.undoStack.length > 30) state.undoStack.shift();
     $("#undo-button").disabled = false;
@@ -1058,8 +1223,11 @@
         cycle: state.cycle,
         monetary: state.monetary,
         confidence: state.confidence,
+        policyStartQuarter: state.policyStartQuarter,
+        policyStartQuarters: { ...state.policyStartQuarters },
         structural: { ...state.structural },
-        engines: { ...state.engines }
+        engines: { ...state.engines },
+        fiscal: { ...state.fiscal }
       };
     }
   }
@@ -1077,7 +1245,10 @@
     if (!category || category.locked) return;
     const limits = categoryChangeLimits(category);
     const value = clamp(Number(rawValue) || 0, limits.min, limits.max);
-    if (Math.abs(value) < 0.01) delete state.changes[id];
+    if (Math.abs(value) < 0.01) {
+      delete state.changes[id];
+      delete state.policyStartQuarters[id];
+    }
     else state.changes[id] = round(value, 1);
     refreshAll(refreshList);
   }
@@ -1087,6 +1258,7 @@
     if (!preset) return;
     pushUndo();
     state.changes = { ...preset.changes };
+    state.policyStartQuarters = {};
     state.model = preset.model;
     $("#model-select").value = state.model;
     updateModelDescription();
@@ -1103,7 +1275,42 @@
     renderModelComparison();
     updateStructuralLab();
     updateEngineRoom();
+    updateFiscalPanel();
     if (refreshList) renderCategories();
+  }
+
+  function renderFiscalControls() {
+    const rows = Object.entries(F.controls).map(([id, control]) => {
+      const current = state.fiscal[id];
+      if (id === "wealthFloorEnabled") return `<label class="fiscal-field"><span>${control.label}</span>
+        <select data-fiscal-control="${id}"><option value="0" ${current === 0 ? "selected" : ""}>Désactivé — droit actuel</option>
+          <option value="1" ${current === 1 ? "selected" : ""}>Activé — simulation de proposition</option></select></label>`;
+      return `<label class="fiscal-field"><span>${control.label}</span><span class="fiscal-input-wrap">
+        <input type="number" min="${control.min}" max="${control.max}" step="${control.step}"
+          value="${current}" data-fiscal-control="${id}" /><small>${control.unit}</small></span></label>`;
+    });
+    $("#fiscal-control-list").innerHTML = rows.join("");
+  }
+
+  function updateFiscalPanel() {
+    const point = state.projection.scenario[projectionIndex(state.horizon)];
+    const fiscal = point.fiscal;
+    const byTax = fiscal.deltaByTax;
+    $("#fiscal-year").textContent = String(point.year);
+    $("#fiscal-total").textContent = `${signed(fiscal.totalBn, " Md€ / an")}`;
+    $("#fiscal-breakdown").innerHTML = [
+      ["IR", byTax.ir], ["IFI", byTax.ifi], ["Successions", byTax.inheritance],
+      ["Impôt plancher proposé", byTax.floor]
+    ].map(([label, value]) => `<div><span>${label}</span><strong>${signed(value, " Md€")}</strong></div>`).join("");
+    $("#fiscal-groups").innerHTML = fiscal.groups.map((group) => `<tr><th scope="row">${group.label}</th>
+      <td>${fmt0.format(group.winners)}</td><td>${fmt0.format(group.losers)}</td>
+      <td>${signed(group.averageGainEuro, " €")}</td></tr>`).join("");
+    $("#fiscal-wealth-groups").innerHTML = fiscal.wealthGroups.map((group) => `<tr><th scope="row">${group.label}</th>
+      <td>${fmt0.format(group.winners)}</td><td>${fmt0.format(group.losers)}</td>
+      <td>${signed(group.averageGainEuro, " €")}</td></tr>`).join("");
+    const overlap = ["R_IR", "R_OTHERWEALTH", "R_SUCCESSION"].filter((id) =>
+      Math.abs(changeFor(id)) > 0.001).length > 0;
+    $("#fiscal-warning").textContent = `Échantillon synthétique : 41,5 millions de foyers-types pondérés, mais croisement revenu-patrimoine et successions non observés. L'assiette IR a été ajustée sur 2020–2022 ; le test hors échantillon 2023–2024 surestime encore l'IR net de 7,5 Md€ en moyenne. Les héritiers ne figurent pas dans les gagnants/perdants. Niveaux indicatifs au départ : IR simplifié 98,8 Md€ en règles 2026 contre 94,3 Md€ d'IR net Insee 2025 ; IFI 2,07 contre 2,71 Md€ Insee ; successions 23,88 contre 16,07 Md€ Insee. Les rendements de réformes ne sont pas validés.${overlap ? " Attention : un curseur de recette IR, patrimoine ou successions est aussi modifié ; les deux chocs s'additionnent." : ""}`;
   }
 
   function updateSummary() {
@@ -1140,47 +1347,84 @@
 
   function structuralIdsForTab(tab) {
     return {
-      demography: ["fertility", "lifeExpectancy"],
-      migration: ["economicMigration", "otherMigration", "integration"],
-      employment: ["trainingEntries", "trainingMatch", "activationPlaces"],
+      demography: [],
+      migration: [],
+      employment: ["trainingEntries", "activationPlaces"],
       securityJobs: ["jobsMilitary", "jobsPolice", "jobsGendarmerie", "jobsJudiciary", "jobsPrison", "jobsYouthJustice"],
-      serviceJobs: ["jobsEducation", "jobsStateAdmin", "jobsHospital", "jobsFirefighters", "jobsTerritorial", "publicFpeNet", "publicFptNet", "publicFphNet", "publicHiringCapacity", "publicPermanentShare", "publicCategoryA", "publicCategoryB"],
-      energy: ["nuclear", "renewables", "efficiency", "fossilPrice", "carbonTax"]
+      serviceJobs: ["jobsEducation", "jobsStateAdmin", "jobsHospital", "jobsFirefighters", "jobsTerritorial", "publicFpeNet", "publicFptNet", "publicFphNet", "publicPermanentShare", "publicCategoryA", "publicCategoryB"],
+      energy: ["nuclear", "renewables", "efficiency", "carbonTax"]
     }[tab] || [];
+  }
+
+  function structuralControlMarkup(id) {
+    const control = D.structural.controls[id];
+    return `
+      <div class="structural-control">
+        <div class="structural-control-heading"><label for="structural-${id}">${control.label}</label><div class="control-value-entry"><output id="output-${id}">${controlText(id, state.structural[id])}</output><input data-structural-number="${id}" type="number" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" aria-label="Saisir : ${control.label}" /></div></div>
+        <input id="structural-${id}" data-structural-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" />
+        <div class="structural-control-scale"><span>${controlText(id, control.min)}</span><span>réf. ${controlText(id, control.value)}</span><span>${controlText(id, control.max)}</span></div>
+      </div>`;
+  }
+
+  function renderScenarioAssumptions() {
+    const groups = [
+      ["Démographie", ["fertility", "lifeExpectancy"]],
+      ["Migration et insertion", ["economicMigration", "otherMigration", "integration"]],
+      ["Marché du travail", ["trainingMatch", "publicHiringCapacity"]],
+      ["Prix mondiaux", ["fossilPrice"]]
+    ];
+    $("#structural-assumption-list").innerHTML = groups.map(([title, ids]) => `
+      <div class="structural-assumption-group"><h4>${title}</h4>${ids.map(structuralControlMarkup).join("")}</div>
+    `).join("");
+  }
+
+  function updateDerivedPanel() {
+    if (!state.projection) return;
+    const index = projectionIndex(state.horizon);
+    const structure = state.projection.scenario[index].structural;
+    if (state.activeStructuralTab === "demography") {
+      $("#derived-fertility").textContent = `${fmt2.format(structure.effectiveFertility)} enfant/femme`;
+      $("#derived-births").textContent = `${fmt0.format(structure.births)} k/an`;
+      $("#derived-population").textContent = `${fmt1.format(structure.population)} M`;
+    } else if (state.activeStructuralTab === "migration") {
+      $("#derived-migration-flow").textContent = `${fmt0.format(state.structural.economicMigration + state.structural.otherMigration)} k/an`;
+      $("#derived-migration-revenue").textContent = money(structure.migrationRevenue);
+      $("#derived-migration-cost").textContent = money(structure.migrationCost);
+    }
   }
 
   function renderStructuralControls() {
     const ids = structuralIdsForTab(state.activeStructuralTab);
-    $("#structural-control-list").innerHTML = ids.map((id) => {
-      const control = D.structural.controls[id];
-      return `
-        <div class="structural-control">
-          <div class="structural-control-heading"><label for="structural-${id}">${control.label}</label><div class="control-value-entry"><output id="output-${id}">${controlText(id, state.structural[id])}</output><input data-structural-number="${id}" type="number" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" aria-label="Saisir : ${control.label}" /></div></div>
-          <input id="structural-${id}" data-structural-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" />
-          <div class="structural-control-scale"><span>${controlText(id, control.min)}</span><span>réf. ${controlText(id, control.value)}</span><span>${controlText(id, control.max)}</span></div>
-        </div>`;
-    }).join("");
+    const derived = {
+      demography: `<div class="derived-panel"><strong>La démographie est un résultat</strong><p>Les naissances évoluent avec les hypothèses et, de façon exploratoire, avec les places de garde. La politique ne fixe pas un nombre d’enfants par femme.</p><dl><dt>Fécondité simulée</dt><dd id="derived-fertility">—</dd><dt>Naissances annuelles</dt><dd id="derived-births">—</dd><dt>Population</dt><dd id="derived-population">—</dd></dl><button class="button button-ghost" type="button" data-open-engine="education">Agir sur les places de garde →</button></div>`,
+      migration: `<div class="derived-panel"><strong>Flux retenus et effets estimés</strong><p>Le solde migratoire est une hypothèse de scénario, pas un volume que l’État choisit exactement. Les recettes et coûts ci-dessous sont simulés.</p><dl><dt>Solde retenu · hypothèse</dt><dd id="derived-migration-flow">—</dd><dt>Recettes des cohortes</dt><dd id="derived-migration-revenue">—</dd><dt>Services et intégration</dt><dd id="derived-migration-cost">—</dd></dl><button class="button button-ghost" type="button" data-open-assumptions>Tester les flux en hypothèse →</button></div>`
+    };
+    $("#structural-control-list").innerHTML = ids.length ? ids.map(structuralControlMarkup).join("") : derived[state.activeStructuralTab] || "";
     const notes = {
-      demography: "La fécondité modifie immédiatement les naissances et les dépenses familiales. Son effet sur la population active ne commence qu’après 18 ans ; à 20–30 ans, il devient visible mais reste très incertain.",
-      migration: "Les deux flux sont des hypothèses de solde net, pas des nombres de titres de séjour. « Autres motifs » regroupe ici famille, études et humanitaire. Le résultat dépend de l’emploi, pas d’une valeur attribuée aux personnes.",
-      employment: "Formation et accompagnement mobilisent progressivement les viviers disponibles. Chômage BIT, inscrits à France Travail, halo et sous-emploi se recouvrent : le modèle ne les additionne jamais comme des personnes immédiatement interchangeables.",
+      demography: "Fécondité et espérance de vie de référence : volet « Hypothèses de contexte ». Les places de garde peuvent modifier la natalité après un délai ; le coefficient est illustratif et non validé. Les enfants supplémentaires ne rejoignent l’emploi qu’après 18 ans.",
+      migration: "Les soldes et le taux d’emploi après intégration sont des hypothèses avancées. « Autres motifs » regroupe famille, études et humanitaire ; les coûts et recettes simulés ne sont pas une valeur attribuée aux personnes.",
+      employment: "Les entrées en formation et places d’accompagnement sont des décisions. Le taux de retour à l’emploi est une hypothèse avancée. Les viviers BIT, France Travail, halo et sous-emploi se recouvrent et ne sont pas additionnés.",
       securityJobs: "Armées, police, gendarmerie, juridictions, pénitentiaire et justice des mineurs ont chacun un coût, une durée de carrière et un taux de maintien propres. Une valeur négative représente des recrutements ou remplacements évités, jamais un licenciement automatique. Les réservistes sont exclus des emplois permanents.",
-      serviceJobs: "Chaque réglage est un flux annuel supplémentaire suivi par cohorte. Les flux génériques État/collectivités/hôpitaux et les métiers détaillés s'additionnent : évitez de saisir deux fois le même recrutement. La capacité annuelle limite les embauches par métier détaillé ; 6 % est une hypothèse prudente, pas une statistique officielle. Les pensions et rémunérations sont suivies séparément.",
-      energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. La baisse des importations est plafonnée à la facture de référence ; les émissions évitées sont limitées par une enveloppe nationale décroissante. Ces plafonds simplifiés ne remplacent pas un modèle de réseau et de production."
+      serviceJobs: "Chaque réglage est un flux annuel supplémentaire suivi par cohorte. Les flux génériques et les métiers détaillés s’additionnent : évitez de saisir deux fois le même recrutement. La capacité de recrutement reste une hypothèse avancée ; les pensions et rémunérations sont suivies séparément.",
+      energy: "Capacités et taxe carbone sont des choix de scénario. Le prix mondial des fossiles est une hypothèse avancée, non une décision française. Les plafonds simplifiés ne remplacent pas un modèle de réseau et de production."
     };
     $("#structural-disclaimer").textContent = notes[state.activeStructuralTab];
+    renderScenarioAssumptions();
+    updateDerivedPanel();
   }
 
   function updateStructuralLab() {
     const index = projectionIndex(state.horizon);
     const point = state.projection.scenario[index];
     const structure = point.structural;
+    updateDerivedPanel();
     const baseline = state.projection.baseline[index];
     const popDelta = structure.population - structure.baselinePopulation;
     const birthDelta = structure.births - structure.baselineBirths;
     const gdpDelta = point.gdp - baseline.gdp;
     const unchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001)
-      && Object.entries(D.policyEngines.controls).every(([id, control]) => Math.abs(state.engines[id] - control.value) < 0.001);
+      && Object.entries(D.policyEngines.controls).every(([id, control]) => Math.abs(state.engines[id] - control.value) < 0.001)
+      && Object.entries(F.defaults).every(([id, value]) => state.fiscal[id] === value);
 
     $("#story-horizon").textContent = `à ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
     $("#story-lead").textContent = unchanged && !Object.keys(state.changes).length && state.euMode === "current"
@@ -1201,10 +1445,12 @@
       <div class="story-reason"><i>PUB</i><div><strong>Fonction publique par cohorte</strong><span>${publicText}</span></div></div>
       <div class="story-reason"><i>EMP</i><div><strong>Emploi, formation et migration</strong><span>${migrationText} Le vivier permet de réaliser ${fmt0.format(point.labor.realizationRate * 100)} % des créations d’emploi privées simulées.</span></div></div>
       <div class="story-reason"><i>ENE</i><div><strong>Énergie, prix et importations</strong><span>${energyText}</span></div></div>`;
-    $("#story-caveat").textContent = "Les viviers BIT, France Travail, halo, sous-emploi et formation se recouvrent : ils ne sont jamais additionnés comme des personnes immédiatement interchangeables. Les compétences, la localisation, les conditions de travail, les salaires et les mobilités emploi-emploi limitent la réalisation des recrutements.";
+    $("#story-caveat").textContent = "Les viviers BIT, France Travail, halo, sous-emploi et formation se recouvrent. Compétences et localisation limitent les recrutements. Le lien exploratoire entre places de garde et fécondité n’est pas un coefficient causal validé ; chômage et natalité restent sensibles à d’autres facteurs non modélisés.";
 
     const outcomes = [
       ["Population", `${fmt1.format(structure.population)} M`, `${signed(popDelta, " M")} vs réf.`],
+      ["Naissances", `${fmt0.format(structure.births)} k/an`, `${signed(birthDelta, " k")} vs réf.`],
+      ["Chômage", percent(point.unemployment), `${signed(point.unemployment - baseline.unemployment, " pt")} vs réf.`],
       ["Agents publics", signed(structure.publicEmploymentDelta, " k"), "écart vs référence"],
       ["Coût public net annuel", signed(structure.publicPayrollCost + structure.publicPensionCost - structure.publicPensionContributionRevenue, " Md€"), "après cotisations internes"],
       ["Emploi net mobilisé", signed(point.labor.netEmployment, " k"), `${fmt0.format(point.labor.realizationRate * 100)} % réalisé`],
@@ -1265,13 +1511,17 @@
     const controls = Object.entries(D.policyEngines.controls).filter(([, control]) => control.group === state.activeEngine);
     $("#engine-kicker").textContent = `Moteur ${group.icon}`;
     $("#engine-active-title").textContent = group.label;
-    $("#engine-description").textContent = group.description;
-    $("#engine-control-list").innerHTML = controls.map(([id, control]) => `
+    $("#engine-description").textContent = `${group.description} Les résultats visés mais non directement pilotables sont séparés ci-dessous.`;
+    const controlMarkup = ([id, control]) => `
       <div class="engine-control">
         <div class="engine-control-head"><label for="engine-${id}">${control.label}</label><div class="control-value-entry"><output id="engine-output-${id}">${engineControlText(id, state.engines[id])}</output><input data-engine-number="${id}" type="number" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.engines[id]}" aria-label="Saisir : ${control.label}" /></div></div>
         <input id="engine-${id}" data-engine-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.engines[id]}" />
         <div class="engine-control-scale"><span>${engineControlText(id, control.min)}</span><span>réf. ${engineControlText(id, control.value)}</span><span>${engineControlText(id, control.max)}</span></div>
-      </div>`).join("");
+      </div>`;
+    const measures = controls.filter(([, control]) => control.kind !== "assumption");
+    const assumptions = controls.filter(([, control]) => control.kind === "assumption");
+    $("#engine-control-list").innerHTML = measures.map(controlMarkup).join("")
+      + (assumptions.length ? `<details class="engine-assumptions"><summary>Hypothèses de réalisation <small>Avancé · résultats non garantis</small></summary><p>Ces valeurs décrivent un résultat possible des politiques et du contexte ; elles ne sont pas des décisions immédiatement exécutables.</p>${assumptions.map(controlMarkup).join("")}</details>` : "");
   }
 
   function updateEngineRoom() {
@@ -1284,7 +1534,7 @@
     const selectedFiscal = selected.reduce((sum, item) => sum + item.fiscalCost, 0);
     const selectedGdp = selected.reduce((sum, item) => sum + item.gdpImpact, 0);
     const group = D.policyEngines.groups.find((item) => item.id === state.activeEngine);
-    $("#engine-active-count").textContent = `${active.length} levier${active.length > 1 ? "s" : ""} actif${active.length > 1 ? "s" : ""}`;
+    $("#engine-active-count").textContent = `${active.length} réglage${active.length > 1 ? "s" : ""} actif${active.length > 1 ? "s" : ""}`;
     $("#engine-story-title").textContent = active.length
       ? `${group.label} : les effets directs et les retours se séparent.`
       : "Le budget seul ne raconte pas toute l’histoire.";
@@ -1292,7 +1542,7 @@
       ? `À ${state.horizon} an${state.horizon > 1 ? "s" : ""}, le moteur ${group.label.toLowerCase()} modifie directement le solde de ${signed(-selectedFiscal, " Md€/an")} et le niveau du PIB d’environ ${signed(selectedGdp, " Md€")}. Les autres moteurs actifs continuent d’agir en parallèle.`
       : active.length
         ? `Aucun réglage n’est actif dans ${group.label.toLowerCase()}, mais ${active.length} levier${active.length > 1 ? "s agissent" : " agit"} ailleurs dans le modèle.`
-        : "Activez un levier pour distinguer son coût comptable immédiat, son effet de demande, sa montée en puissance productive et ses externalités.";
+        : "Activez une mesure ou une hypothèse de réalisation pour distinguer coût, activité et effets différés.";
 
     const ranked = active.map(([id, control]) => ({ id, control, impact: engine.contributions[id] }))
       .filter((item) => item.impact)
@@ -1397,10 +1647,17 @@
     const demand = item.demandContribution;
     const supply = item.supplyContribution;
     const isReference = Math.abs(deficitDelta) < 0.03 && Math.abs(growthDelta) < 0.03 && Math.abs(debtDelta) < 0.05;
+    const delayedQuarters = [...new Set(Object.entries(state.changes)
+      .filter(([, value]) => Math.abs(Number(value)) > 0.01)
+      .map(([id]) => categoryStartQuarter(id))
+      .filter((quarter) => quarter > 1))].sort();
+    const calendarNote = delayedQuarters.length
+      ? ` Certaines mesures budgétaires débutent au ${delayedQuarters.map((quarter) => `T${quarter}`).join(" ou au ")} : seule leur période d'application en 2026 est comptée.`
+      : "";
 
     if (isReference) {
       $("#plain-summary-title").textContent = "Votre scénario suit la trajectoire de référence.";
-      $("#plain-summary-text").textContent = `À ${state.horizon} an${state.horizon > 1 ? "s" : ""}, aucune modification ne déplace sensiblement le déficit, la dette ou l’activité. Choisissez un préréglage ou modifiez un levier pour comparer.`;
+      $("#plain-summary-text").textContent = `À ${state.horizon} an${state.horizon > 1 ? "s" : ""}, aucune modification ne déplace sensiblement le déficit, la dette ou l’activité. Choisissez un préréglage ou modifiez un levier pour comparer.${calendarNote}`;
       return;
     }
 
@@ -1426,7 +1683,7 @@
     if (Math.abs(item.extraInterest) > 2) reasons.push("la charge d’intérêts amplifie progressivement le résultat");
     if (!reasons.length) reasons.push("plusieurs effets de faible ampleur se compensent");
     const caveat = state.horizon > 10 ? " À cet horizon, retenez surtout la direction et la fourchette, pas la décimale." : "";
-    $("#plain-summary-text").textContent = `Pourquoi : ${reasons.slice(0, 3).join(" ; ")}.${caveat}`;
+    $("#plain-summary-text").textContent = `Pourquoi : ${reasons.slice(0, 3).join(" ; ")}.${calendarNote}${caveat}`;
   }
 
   function metricConfig(metric) {
@@ -1490,7 +1747,7 @@
       </svg>
       <div class="chart-tooltip"></div>
     `;
-    $("#chart-caption").textContent = `${config.label} · ${config.unit}. Bande de sensibilité du modèle « ${D.models[state.model].label} », ajustée au cycle, à la BCE et à la confiance.`;
+    $("#chart-caption").textContent = `${config.label} · ${config.unit}. Bande exploratoire : sensibilité du modèle${metric === "growth" ? "; pas de plancher historique propre à la croissance annuelle." : " et plancher d'erreur historique d'un prévisionniste témoin ; au-delà de 10 ans, extrapolation non validée."}`;
 
     const tooltip = $(".chart-tooltip", $("#chart-wrap"));
     $$(".chart-point", $("#chart-wrap")).forEach((point) => {
@@ -1525,9 +1782,9 @@
       euDetail.textContent = `Écart de ${fmt1.format(point2029.deficitRatio - 3)} point(s) au seuil de 3 % en 2029. La trajectoire de dépenses nettes n’est pas évaluée.`;
     }
 
-    const uncertainty = effectiveProfile().uncertainty + D.euModes[state.euMode].uncertainty;
-    $("#risk-status").textContent = uncertainty < 0.45 ? "Modérée" : uncertainty < 0.95 ? "Élevée" : "Très élevée";
-    $("#risk-detail").textContent = `Dette centrale : ${percent(point2035.debtRatio)} à 10 ans, ${percent(point2055.debtRatio)} à 30 ans ; sensibilité longue ±${fmt1.format(point2055.bands.debtRatio)} points.`;
+    const selectedDebtBand = state.projection.scenario[projectionIndex(state.horizon)].bands.debtRatio;
+    $("#risk-status").textContent = selectedDebtBand < 8 ? "Déjà notable" : selectedDebtBand < 20 ? "Large" : "Très large";
+    $("#risk-detail").textContent = `Dette centrale : ${percent(point2035.debtRatio)} à 10 ans, ${percent(point2055.debtRatio)} à 30 ans ; plage exploratoire à 30 ans ±${fmt1.format(point2055.bands.debtRatio)} points, extrapolée sans validation historique.`;
 
     const point = state.projection.scenario[2];
     const demand = Math.abs(point.demandContribution);
@@ -1535,7 +1792,8 @@
     const interest = Math.abs(point.extraInterest);
     const structureUnchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
     const enginesUnchanged = Object.entries(D.policyEngines.controls).every(([id, control]) => Math.abs(state.engines[id] - control.value) < 0.001);
-    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged && enginesUnchanged) {
+    const fiscalUnchanged = Object.entries(F.defaults).every(([id, value]) => state.fiscal[id] === value);
+    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged && enginesUnchanged && fiscalUnchanged) {
       $("#mechanism-status").textContent = "Scénario de référence";
       $("#mechanism-detail").textContent = "Aucune mesure n’est appliquée : la trajectoire centrale reproduit exactement la référence.";
     } else if (interest > demand && interest > supply) {
@@ -1552,14 +1810,15 @@
 
   function renderModelComparison() {
     const index = projectionIndex(state.horizon);
-    const colors = ["#4055bf", "#d85e55", "#168b80", "#7d62c7", "#d89a38"];
+    $("#comparison-title").textContent = `Une mesure, ${Object.keys(D.models).length} lectures`;
+    const colors = ["#4055bf", "#d85e55", "#168b80", "#7d62c7", "#d89a38", "#a0476e", "#426987", "#75933d", "#a4652d"];
     const rows = Object.entries(D.models).map(([id, model], modelIndex) => {
       const point = calculateProjection(id).scenario[index];
       const growthWidth = clamp((point.growth + 1.5) / 4 * 100, 4, 100);
       const deficitWidth = clamp(point.deficitRatio / 8 * 100, 4, 100);
       const debtWidth = clamp((point.debtRatio - 80) / 70 * 100, 4, 100);
       return `
-        <div class="comparison-row ${id === state.model ? "is-selected" : ""}" style="--model-color:${colors[modelIndex]}">
+        <div class="comparison-row ${id === state.model ? "is-selected" : ""}" style="--model-color:${colors[modelIndex % colors.length]}">
           <div class="comparison-model"><i></i><span>${model.label}</span></div>
           <div class="comparison-cell"><small>Croissance</small><span>${percent(point.growth)}</span><span class="comparison-bar"><i style="--bar-width:${growthWidth}%"></i></span></div>
           <div class="comparison-cell"><small>Déficit</small><span>−${percent(point.deficitRatio)}</span><span class="comparison-bar"><i style="--bar-width:${deficitWidth}%"></i></span></div>
@@ -1604,9 +1863,11 @@
   }
 
   function categoryEffectLabel(category, delta) {
+    if (category.id === "R_TVA" && !delta) return "Mésange 2017";
     if (!delta) return `×${fmt1.format(category.multiplier)}`;
     const profile = effectiveProfile();
-    const impact = categoryPolicyImpact(category, delta, 2, 1.05, profile);
+    const impact = categoryPolicyImpact(category, delta, 2, 1.05, profile, D.BASE.gdp,
+      categoryStartQuarter(category.id));
     const value = impact.demand + impact.supply;
     return `PIB ${signed(value, " Md€")}`;
   }
@@ -1631,7 +1892,8 @@
       const effect = allChildren.reduce((sum, category) => {
         const change = changeFor(category.id);
         if (!change) return sum;
-        const impact = categoryPolicyImpact(category, change, 2, 1.05, effectiveProfile());
+        const impact = categoryPolicyImpact(category, change, 2, 1.05, effectiveProfile(), D.BASE.gdp,
+          categoryStartQuarter(category.id));
         return sum + impact.demand + impact.supply;
       }, 0);
       const collapsed = state.collapsed.has(group.id) && !query;
@@ -1674,7 +1936,12 @@
     }
     return `
       <div class="category-row" data-category="${category.id}">
-        <div class="category-name"><strong>${category.label}</strong><small>${category.id} · ${category.observedYear === 2025 ? "observé 2025" : "calibré 2025"}</small></div>
+        <div class="category-name"><strong>${category.label}</strong><small>${category.id} · ${category.observedYear === 2025 ? "observé 2025" : "calibré 2025"}</small>
+          ${delta && !category.locked ? `<label class="category-quarter-label">Début 2026 <select data-category-quarter="${category.id}" aria-label="Trimestre de début de ${category.label}">
+            <option value="default" ${!state.policyStartQuarters[category.id] ? "selected" : ""}>Défaut (T${state.policyStartQuarter})</option>
+            ${[1, 2, 3, 4].map((quarter) => `<option value="${quarter}" ${state.policyStartQuarters[category.id] === quarter ? "selected" : ""}>T${quarter}</option>`).join("")}
+          </select></label>` : ""}
+        </div>
         <div class="value-cell">${money(category.value)}</div>
         <div class="change-control">
           ${category.locked
@@ -1708,17 +1975,22 @@
     state.cycle = "normal";
     state.monetary = "neutral";
     state.confidence = "stable";
+    state.policyStartQuarter = 1;
+    state.policyStartQuarters = {};
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
+    state.fiscal = { ...F.defaults };
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
     $("#monetary-select").value = state.monetary;
     $("#confidence-select").value = state.confidence;
+    $("#policy-start-quarter").value = String(state.policyStartQuarter);
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
     renderEngineControls();
+    renderFiscalControls();
     refreshAll(true);
     showToast("Scénario réinitialisé");
   }
@@ -1732,18 +2004,23 @@
     state.cycle = previous.cycle || "normal";
     state.monetary = previous.monetary || "neutral";
     state.confidence = previous.confidence || "stable";
+    state.policyStartQuarter = previous.policyStartQuarter || 1;
+    state.policyStartQuarters = { ...(previous.policyStartQuarters || {}) };
     state.structural = previous.structural ? { ...previous.structural } : Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = previous.engines ? { ...previous.engines } : Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
+    state.fiscal = previous.fiscal ? { ...previous.fiscal } : { ...F.defaults };
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
     $("#monetary-select").value = state.monetary;
     $("#confidence-select").value = state.confidence;
+    $("#policy-start-quarter").value = String(state.policyStartQuarter);
     $("#undo-button").disabled = state.undoStack.length === 0;
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
     renderEngineControls();
+    renderFiscalControls();
     refreshAll(true);
   }
 
@@ -1777,7 +2054,9 @@
     const snapshot = {
       name: state.name, changes: state.changes, model: state.model, euMode: state.euMode,
       cycle: state.cycle, monetary: state.monetary, confidence: state.confidence,
-      structural: state.structural, engines: state.engines
+      policyStartQuarter: state.policyStartQuarter,
+      policyStartQuarters: state.policyStartQuarters,
+      structural: state.structural, engines: state.engines, fiscal: state.fiscal
     };
     let savedPoint;
     try {
@@ -1814,6 +2093,7 @@
     state.changes = {};
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
+    state.fiscal = { ...F.defaults };
     applySerialized(item.scenario);
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
@@ -1821,10 +2101,12 @@
     $("#cycle-select").value = state.cycle;
     $("#monetary-select").value = state.monetary;
     $("#confidence-select").value = state.confidence;
+    $("#policy-start-quarter").value = String(state.policyStartQuarter);
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
     renderEngineControls();
+    renderFiscalControls();
     refreshAll(true);
     showToast(`Scénario « ${state.name} » chargé`);
   }
@@ -1891,6 +2173,11 @@
       mobilite_emploi_emploi_milliers: round(item.labor.jobToJob, 1),
       taux_realisation_emploi_pct: round(item.labor.realizationRate * 100, 1),
       solde_fiscal_cohortes_milliards: round(item.structural.migrationNet, 2),
+      reforme_fiscale_recettes_milliards: round(item.fiscal.totalBn, 2),
+      reforme_ir_milliards: round(item.fiscal.deltaByTax.ir, 2),
+      reforme_ifi_milliards: round(item.fiscal.deltaByTax.ifi, 2),
+      reforme_successions_milliards: round(item.fiscal.deltaByTax.inheritance, 2),
+      reforme_impot_plancher_milliards: round(item.fiscal.deltaByTax.floor, 2),
       variation_depenses_directes_milliards: round(item.spendingChange, 2),
       variation_recettes_directes_milliards: round(item.revenueChange, 2),
       variation_solde_direct_milliards: round(-item.directBalanceCost, 2),
@@ -1946,6 +2233,20 @@
   }
 
   function bindEvents() {
+    $("#fiscal-control-list").addEventListener("change", (event) => {
+      const id = event.target?.dataset?.fiscalControl;
+      if (!id || !F.controls[id]) return;
+      const value = Number(event.target.value);
+      const candidate = { ...state.fiscal, [id]: value };
+      try { F.validate(candidate); } catch {
+        event.target.value = String(state.fiscal[id]);
+        showToast("Valeur fiscale hors limites");
+        return;
+      }
+      pushUndo();
+      state.fiscal = candidate;
+      refreshAll();
+    });
     $("#model-select").addEventListener("change", (event) => {
       pushUndo();
       state.model = event.target.value;
@@ -1957,6 +2258,19 @@
       state.euMode = event.target.value;
       updateModelDescription();
       refreshAll();
+    });
+    $("#policy-start-quarter").addEventListener("change", (event) => {
+      pushUndo();
+      state.policyStartQuarter = Number(event.target.value);
+      refreshAll(true);
+    });
+    $("#category-list").addEventListener("change", (event) => {
+      const id = event.target.dataset.categoryQuarter;
+      if (!id) return;
+      pushUndo();
+      if (event.target.value === "default") delete state.policyStartQuarters[id];
+      else state.policyStartQuarters[id] = Number(event.target.value);
+      refreshAll(true);
     });
     [["cycle-select", "cycle"], ["monetary-select", "monetary"], ["confidence-select", "confidence"]].forEach(([elementId, key]) => {
       $(`#${elementId}`).addEventListener("change", (event) => {
@@ -1997,6 +2311,7 @@
       renderModelComparison();
       updateStructuralLab();
       updateEngineRoom();
+      updateFiscalPanel();
     }));
     $(".lab-tabs").addEventListener("click", (event) => {
       const button = event.target.closest("[data-structural-tab]");
@@ -2008,13 +2323,28 @@
       });
       renderStructuralControls();
     });
-    $("#structural-control-list").addEventListener("pointerdown", (event) => {
+    $("#structural-control-list").addEventListener("click", (event) => {
+      if (event.target.closest("[data-open-assumptions]")) {
+        const panel = $("#structural-assumptions");
+        panel.open = true;
+        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        return;
+      }
+      const button = event.target.closest("[data-open-engine]");
+      if (!button) return;
+      state.activeEngine = button.dataset.openEngine;
+      renderEngineSelector();
+      renderEngineControls();
+      updateEngineRoom();
+      $("#engines").scrollIntoView({ behavior: "smooth" });
+    });
+    $(".structural-controls").addEventListener("pointerdown", (event) => {
       if (event.target.dataset.structuralControl || event.target.dataset.structuralNumber) captureEditSnapshot();
     });
-    $("#structural-control-list").addEventListener("focusin", (event) => {
+    $(".structural-controls").addEventListener("focusin", (event) => {
       if (event.target.dataset.structuralControl || event.target.dataset.structuralNumber) captureEditSnapshot();
     });
-    $("#structural-control-list").addEventListener("input", (event) => {
+    $(".structural-controls").addEventListener("input", (event) => {
       const id = event.target.dataset.structuralControl;
       if (!id) return;
       state.structural[id] = Number(event.target.value);
@@ -2024,7 +2354,7 @@
       if (numeric) numeric.value = state.structural[id];
       refreshAll(false);
     });
-    $("#structural-control-list").addEventListener("change", (event) => {
+    $(".structural-controls").addEventListener("change", (event) => {
       const id = event.target.dataset.structuralControl || event.target.dataset.structuralNumber;
       if (!id) return;
       if (event.target.dataset.structuralNumber) {

@@ -1,0 +1,57 @@
+{
+  "description": "Rétrotest conditionnel de l'IR par année de revenu (DGFiP) ; séries comptables séparées par année civile (Insee). Les recettes DGFiP et Insee ne sont pas interchangeables.",
+  "insee": {
+    "sourcePage": "https://www.insee.fr/fr/statistiques/8988845",
+    "sourceFile": "https://www.insee.fr/fr/statistiques/fichier/8988845/t_3217_fr.xlsx",
+    "sourceSha256": "589b94cf953d0fdb6e07b123dcadfd11b831e866096ec0cfb0911d62ae432790",
+    "table": "3.217, base 2020, 28 août 2026, Md EUR courants ; IR avant crédits ligne 75, crédits utilisés en déduction ligne 76, crédits remboursables payés ligne 77, IFI/ISF ligne 88, successions ligne 95",
+    "rows": [
+      {"year":2018,"irBeforeCreditsBn":83.02,"irCreditsDeductedBn":5.448,"irCreditsRefundedBn":3.788,"wealthTaxBn":1.847,"inheritanceBn":11.895},
+      {"year":2019,"irBeforeCreditsBn":83.926,"irCreditsDeductedBn":6.245,"irCreditsRefundedBn":2.228,"wealthTaxBn":2.059,"inheritanceBn":12.228},
+      {"year":2020,"irBeforeCreditsBn":82.266,"irCreditsDeductedBn":6.365,"irCreditsRefundedBn":1.483,"wealthTaxBn":1.997,"inheritanceBn":12.527},
+      {"year":2021,"irBeforeCreditsBn":85.844,"irCreditsDeductedBn":4.929,"irCreditsRefundedBn":1.715,"wealthTaxBn":2.025,"inheritanceBn":14.719},
+      {"year":2022,"irBeforeCreditsBn":95.987,"irCreditsDeductedBn":5.495,"irCreditsRefundedBn":1.995,"wealthTaxBn":2.27,"inheritanceBn":15.182},
+      {"year":2023,"irBeforeCreditsBn":96.925,"irCreditsDeductedBn":6.324,"irCreditsRefundedBn":2.098,"wealthTaxBn":2.296,"inheritanceBn":16.564},
+      {"year":2024,"irBeforeCreditsBn":96.018,"irCreditsDeductedBn":6.722,"irCreditsRefundedBn":2.163,"wealthTaxBn":2.682,"inheritanceBn":15.907},
+      {"year":2025,"irBeforeCreditsBn":103.626,"irCreditsDeductedBn":7.173,"irCreditsRefundedBn":2.143,"wealthTaxBn":2.714,"inheritanceBn":16.07}
+    ]
+  },
+  "dgfipIncomeYear": {
+    "incomeDefinition": "Revenu total net déclaré publié ; n'est pas le revenu net imposable au barème. IR net figurant sur les avis, non encaissement budgétaire.",
+    "rows": [
+      {"year":2020,"declaredIncomeBn":1238,"taxUnitsM":39.9,"netIncomeTaxBn":74.0,"source":"https://www.impots.gouv.fr/sites/default/files/media/9_statistiques/0_etudes_et_stats/0_publications/dgfip_statistiques/2022/num07_05/dgfip_statistiques_07_mai2022_2.pdf"},
+      {"year":2021,"declaredIncomeBn":1322,"taxUnitsM":40.3,"netIncomeTaxBn":80.8,"source":"https://www.impots.gouv.fr/dgfip-statistiques-limpot-sur-les-revenus-percus-en-2021"},
+      {"year":2022,"declaredIncomeBn":1389,"taxUnitsM":40.7,"netIncomeTaxBn":82.1,"source":"https://www.impots.gouv.fr/dgfip-statistiques-limpot-sur-les-revenus-percus-en-2022"},
+      {"year":2023,"declaredIncomeBn":1466,"taxUnitsM":41.0,"netIncomeTaxBn":83.5,"source":"https://www.impots.gouv.fr/sites/default/files/media/9_statistiques/0_etudes_et_stats/0_publications/dgfip_statistiques/2025/num32_04/dgfip_stat_32_2025.pdf"},
+      {"year":2024,"declaredIncomeBn":1541,"taxUnitsM":41.5,"netIncomeTaxBn":92.0,"source":"https://www.impots.gouv.fr/dgfip-statistiques-limpot-sur-le-revenu-2024-ete-plus-dynamique-que-les-revenus","provisional":true}
+    ]
+  },
+  "incomeTaxBrackets": {
+    "description": "Bornes par part en euros de revenu, taux successifs 0/11/30/41/45 %. Le reste du calcul de l'IR n'est pas codé.",
+    "rows": [
+      {"year":2020,"upper":[10084,25710,73516,158122],"source":"https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20210330"},
+      {"year":2021,"upper":[10225,26070,74545,160336],"source":"https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20220516"},
+      {"year":2022,"upper":[10777,27478,78570,168994],"source":"https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20230626"},
+      {"year":2023,"upper":[11294,28797,82341,177106],"source":"https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20240618"},
+      {"year":2024,"upper":[11497,29315,83823,180294],"source":"https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20250414"}
+    ]
+  },
+  "dgfipWealthTax": {
+    "sourcePage": "https://www.impots.gouv.fr/impot-sur-la-fortune-immobiliere-ifi",
+    "sourceFile": "https://www.impots.gouv.fr/node/25584",
+    "sourceSha256": "222c4791676e87fcd62c22c5485f300a3d882593e4e053c5456f82afde9ba528",
+    "description": "IFI par dernière tranche marginale. Chaque bin contient [nombre de redevables en milliers, patrimoine net taxable moyen en milliers EUR, impôt net moyen en milliers EUR]. Valeurs DGFiP publiées arrondies ; moyenne d'un barème sur une tranche n'égale pas toujours le barème à la moyenne.",
+    "rows": [
+      {"year":2018,"bins":[[103.84,1739.373,4.837],[22.878,3358.985,16.705],[4.762,6575.106,47.898],[1.139,18028.017,158.478]]},
+      {"year":2019,"bins":[[107.29,1754.029,5.155],[25.171,3361.109,17.602],[5.353,6591.968,50.326],[1.294,18419.22,173.494]]},
+      {"year":2020,"bins":[[109.45,1766.08,5.224],[26.746,3361.46,17.601],[5.717,6590.366,49.394],[1.423,18547.834,162.811]]},
+      {"year":2021,"bins":[[115.335,1773.61805,5.27118],[29.541,3350.98298,17.47235],[6.277,6568.74224,48.64372],[1.538,18157.24661,153.935]]},
+      {"year":2022,"bins":[[122.68,1779.396,5.312],[32.555,3349.016,17.445],[6.947,6575.762,48.966],[1.713,18469.385,159.961]]},
+      {"year":2023,"bins":[[131.4,1779.1,5.3],[35.4,3349.8,17.5],[7.4,6592.3,48.7],[1.8,18143.8,151.0]]},
+      {"year":2024,"bins":[[137.7,1780.8,5.3],[38.1,3352.0,17.5],[8.1,6606.7,49.1],[2.1,18866.7,168.9]]},
+      {"year":2025,"bins":[[142.2,1783.5,5.4],[40.3,3352.8,17.5],[8.7,6572.0,48.9],[2.3,20154.8,189.2]]}
+    ]
+  },
+  "split": {"fitYears":[2020,2021,2022],"holdoutYears":[2023,2024]},
+  "limitations": ["Ce n'est pas un backtest du budget APU ni un test causal des réformes.","Le revenu déclaré, le revenu imposable au barème, les réductions et crédits, la décote, le PFU et la CEHR diffèrent.","Foyers synthétiques inchangés dans leur distribution et composition ; seules leur masse et l'assiette agrégée évoluent.","Le contrôle IFI par groupes de taux marginal utilise des moyennes, pas des microdonnées conjointes ; il ne calibre pas les réformes.","Aucune assiette historique des successions n'est codée."]
+}

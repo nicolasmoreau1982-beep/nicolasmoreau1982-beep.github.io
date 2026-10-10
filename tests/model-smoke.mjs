@@ -6,6 +6,9 @@ const root = new URL("../", import.meta.url);
 const dataSource = fs.readFileSync(new URL("dist/data.js", root), "utf8");
 const dataContext = { window: {} };
 vm.runInNewContext(dataSource, dataContext, { filename: "data.js" });
+vm.runInNewContext(fs.readFileSync(new URL("dist/history.js", root), "utf8"), dataContext, { filename: "history.js" });
+vm.runInNewContext(fs.readFileSync(new URL("dist/insee-projection.js", root), "utf8"), dataContext, { filename: "insee-projection.js" });
+vm.runInNewContext(fs.readFileSync(new URL("dist/fiscal.js", root), "utf8"), dataContext, { filename: "fiscal.js" });
 
 const appSource = fs.readFileSync(new URL("dist/app.js", root), "utf8");
 const start = appSource.indexOf("(() => {") + "(() => {".length;
@@ -19,6 +22,7 @@ const modelSource = `${appSource.slice(start, end)}
     resetStructural() {
       state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
       state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
+      state.fiscal = { ...window.ECOSIM_FISCAL.defaults };
       state.changes = {};
     }
   };`;
@@ -40,14 +44,117 @@ const finite = (value) => Number.isFinite(value);
 resetStructural();
 const baseline = calculateProjection();
 assert.equal(baseline.scenario.length, 30);
+assert.equal(Object.keys(data.models).length, 9, "Les nouveaux profils doivent être disponibles au moteur partagé");
+for (const model of Object.keys(data.models)) {
+  const unchanged = calculateProjection(model);
+  for (const index of [0, 9, 29]) {
+    for (const field of ["gdp", "deficit", "debt"]) {
+      assert.ok(Math.abs(unchanged.scenario[index][field] - baseline.scenario[index][field]) < 1e-7,
+        `${model} ne doit pas changer la trajectoire centrale sans mesure (${field}, ${index + 1} ans)`);
+    }
+  }
+}
+
+resetStructural();
+state.changes.GF0405 = -10;
+const centralCut = calculateProjection("consensus").scenario;
+const crisisCut = calculateProjection("debtCrisis").scenario;
+assert.ok(crisisCut[2].gdp < centralCut[2].gdp, "La consolidation en récession accentue la contraction");
+assert.ok(crisisCut[9].hysteresis < 0, "La séquelle de capacité reste traçable dans la sortie");
+
+resetStructural();
+state.changes.GF0405 = 10;
+const centralInvestment = calculateProjection("consensus").scenario;
+const openInvestment = calculateProjection("openEconomy").scenario;
+assert.ok(openInvestment[0].gdp < centralInvestment[0].gdp,
+  "La fuite importée réduit l'effet intérieur d'une dépense supplémentaire");
+
+resetStructural();
+state.changes.R_TVA = 10;
+const centralInflation = calculateProjection("consensus").scenario;
+const stabilizationInflation = calculateProjection("stabilization").scenario;
+assert.ok(stabilizationInflation[0].riskPremium > centralInflation[0].riskPremium,
+  "La stabilisation rend le financement sensible au choc d'inflation supplémentaire");
+
+resetStructural();
+state.structural.efficiency = 10;
+const centralEnergy = calculateProjection("consensus").scenario[4].structural;
+const constrainedEnergy = calculateProjection("constrainedTransition").scenario[4].structural;
+assert.ok(constrainedEnergy.energySupply < centralEnergy.energySupply,
+  "Les contraintes énergétiques ralentissent les gains d'offre");
+assert.ok(Math.abs(constrainedEnergy.energyInflation) > Math.abs(centralEnergy.energyInflation),
+  "Le canal prix de l'énergie varie également");
+
+resetStructural();
+const demographicProjection = dataContext.window.ECOSIM_INSEE_PROJECTION.rows;
+for (const row of baseline.scenario) {
+  const target = demographicProjection.find((item) => item.year === row.year + 1);
+  assert.ok(Math.abs(row.structural.population - target.populationM) < 1e-6,
+    `La référence démographique doit suivre l'Insee au 1er janvier ${row.year + 1}`);
+  assert.ok(Math.abs(row.structural.age65Share - target.age65SharePct) < 1e-6);
+}
 assert.ok(baseline.scenario.every((row) => [row.gdp, row.debt, row.deficit, row.unemployment].every(finite)));
 assert.ok(baseline.scenario.every((row) => Math.abs(row.structural.publicEmploymentDelta) < 1e-9));
 assert.ok(baseline.scenario.every((row) => Math.abs(row.social.meanDiscomfort) < 1e-9));
+assert.equal(data.structural.controls.fertility.kind, "assumption");
+assert.equal(data.structural.controls.economicMigration.kind, "assumption");
+assert.equal(data.structural.controls.fossilPrice.kind, "assumption");
 assert.equal(
   Number(Object.values(data.structural.workforce.publicOccupations).reduce((sum, item) => sum + item.baseline, 0).toFixed(1)),
   Number((data.structural.workforce.publicEmployment * 1000).toFixed(1)),
   "Le détail par mission doit se recaler sur l'emploi public total"
 );
+
+resetStructural();
+state.engines.childcarePlaces = 300;
+const childcareScenario = calculateProjection();
+assert.equal(childcareScenario.scenario[0].structural.births, baseline.scenario[0].structural.births,
+  "Aucun effet natalité immédiat des places de garde");
+assert.ok(childcareScenario.scenario[4].structural.births > baseline.scenario[4].structural.births,
+  "La politique de garde doit agir sur les naissances avec délai");
+assert.ok(childcareScenario.scenario[4].structural.policyFertilityDelta > 0);
+assert.ok(childcareScenario.scenario[4].structural.policyFertilityDelta <= data.structural.fertilityResponse.maxAdditionalChildrenPerWoman);
+assert.ok(childcareScenario.scenario[20].structural.employedDelta > baseline.scenario[20].structural.employedDelta,
+  "Les cohortes supplémentaires n'entrent dans le travail qu'après 18 ans");
+
+resetStructural();
+state.structural.fertility = 1.30;
+const lowerFertility = calculateProjection();
+assert.ok(lowerFertility.scenario[2].structural.births < baseline.scenario[2].structural.births,
+  "L'hypothèse avancée de fécondité reste un test de sensibilité");
+
+resetStructural();
+state.changes.GF0405 = 10;
+const investmentScenario = calculateProjection();
+assert.notEqual(investmentScenario.scenario[2].unemployment, baseline.scenario[2].unemployment,
+  "Le chômage doit rester une sortie réagissant à la politique");
+state.policyStartQuarter = 3;
+const delayedInvestment = calculateProjection();
+assert.ok(Math.abs(delayedInvestment.scenario[0].spendingChange - investmentScenario.scenario[0].spendingChange / 2) < 1e-9,
+  "Une mesure entrant en juillet doit peser six mois la première année");
+assert.ok(Math.abs(delayedInvestment.scenario[1].spendingChange - investmentScenario.scenario[1].spendingChange) < 1e-9,
+  "Une mesure permanente pèse une année pleine à partir de l'année suivante");
+assert.ok(delayedInvestment.scenario[0].gdp < investmentScenario.scenario[0].gdp);
+state.policyStartQuarter = 1;
+state.policyStartQuarters = {GF0405: 3};
+const individuallyScheduled = calculateProjection();
+assert.ok(Math.abs(individuallyScheduled.scenario[0].spendingChange - delayedInvestment.scenario[0].spendingChange) < 1e-9,
+  "Un poste peut avoir son propre trimestre distinct du défaut global");
+state.policyStartQuarters = {};
+resetStructural();
+state.changes.R_TVA = 10;
+const vatJanuary = calculateProjection();
+state.policyStartQuarter = 3;
+const vatJuly = calculateProjection();
+assert.ok(vatJuly.scenario[0].inflation < vatJanuary.scenario[0].inflation,
+  "Le choc de prix TVA doit aussi être décalé dans le calendrier");
+state.policyStartQuarter = 1;
+state.changes.GF0405 = 10;
+state.policyStartQuarters = {GF0405: 3, R_TVA: 4};
+const staggered = calculateProjection();
+assert.ok(Math.abs(staggered.scenario[0].spendingChange - delayedInvestment.scenario[0].spendingChange) < 1e-9);
+assert.ok(Math.abs(staggered.scenario[0].revenueChange - vatJanuary.scenario[0].revenueChange / 4) < 1e-9);
+state.policyStartQuarters = {};
 
 resetStructural();
 state.structural.jobsMilitary = 10;

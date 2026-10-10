@@ -1,0 +1,62 @@
+{
+  "description": "Inventaire NON exhaustif de réformes ou mesures budgétaires majeures encore non encodées. Le statut ne signifie pas effet nul. Les chocs exogènes (crise financière, pandémie, prix mondiaux) doivent être renseignés séparément des mesures de réponse.",
+  "events": [
+    {
+      "id": "stimulus_2009",
+      "effectiveYear": 2009,
+      "label": "Plan de relance 2009",
+      "status": "not_modelled",
+      "source": "https://www.budget.gouv.fr/sites/performance_publique/files/farandole/ressources/medias/documents/ressources/PLF2010/rapport_depense_2010.pdf",
+      "warning": "Dépenses et mesures fiscales temporaires, calendrier d'exécution et financement non ventilés ; ne pas confondre enveloppe annoncée et dépense APU constatée."
+    },
+    {
+      "id": "pfu_ifi_2018",
+      "effectiveYear": 2018,
+      "label": "PFU et remplacement de l'ISF par l'IFI",
+      "status": "not_modelled",
+      "source": "https://www.economie.gouv.fr/files/files/Actus2018/RESF_2019_web.pdf",
+      "warning": "Assiettes du capital, comportements et chronologie des rendements non encodés."
+    },
+    {
+      "id": "employee_contributions_csg_2018",
+      "effectiveYear": 2018,
+      "effectiveQuarter": 4,
+      "label": "Suppression finale des cotisations chômage salariales en octobre 2018 et bascule vers la CSG",
+      "status": "not_modelled",
+      "source": "https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mes-autres-impots-et-taxes/suppression-des-cotisations",
+      "warning": "La première baisse date de janvier et la suppression totale d'octobre ; les pertes de cotisations, hausse de CSG et transferts compensateurs doivent être consolidés ensemble avant d'injecter un rendement net."
+    },
+    {
+      "id": "cice_conversion_macro_2019",
+      "effectiveYear": 2019,
+      "label": "Effets macroéconomiques de la transformation du CICE en allègements de cotisations",
+      "status": "not_modelled",
+      "source": "https://www.budget.gouv.fr/files/files/publications%20direction/RA/rapport_activite_DB_2019_web_octobre_2020.pdf",
+      "warning": "Le coût comptable indicatif du CICE et la baisse de recettes 2019 sont présents dans le rejeu ; assiettes salariales, emploi, PIB et incidence par secteur restent non représentés."
+    },
+    {
+      "id": "covid_support_2021",
+      "effectiveYear": 2021,
+      "label": "Prolongation des soutiens Covid et plan de relance",
+      "status": "not_modelled",
+      "source": "https://www.budget.gouv.fr/documentation/file-download/21099",
+      "warning": "Activité partielle, fonds de solidarité, santé et financement européen non ventilés par année et par périmètre APU."
+    },
+    {
+      "id": "energy_shields_2022",
+      "effectiveYear": 2022,
+      "label": "Boucliers tarifaires et aides face au choc énergétique",
+      "status": "not_modelled",
+      "source": "https://www.vie-publique.fr/files/rapport/pdf/286731.pdf",
+      "warning": "Coûts bruts, compensations et prix mondiaux doivent être séparés ; le choc énergétique lui-même n'est pas une politique."
+    },
+    {
+      "id": "pension_reform_2023",
+      "effectiveYear": 2023,
+      "label": "Réforme des retraites 2023",
+      "status": "not_modelled",
+      "source": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000047445077",
+      "warning": "Montée en charge par génération, âges de liquidation, emploi des seniors et pensions non encodés."
+    }
+  ]
+}

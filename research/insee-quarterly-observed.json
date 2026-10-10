@@ -1,0 +1,952 @@
+{
+  "sourcePage": "https://www.insee.fr/fr/statistiques/9035065?sommaire=9007859",
+  "sourceFile": "https://www.insee.fr/fr/statistiques/fichier/9035065/t_compteapu_val.xls",
+  "sourceSha256": "b464578c4826d7551519b395c62dbc3c739d519ad6370f16b5069e53ec57cc56",
+  "published": "2026-08-28",
+  "unit": "Md EUR courants par trimestre",
+  "adjustment": "CVS-CJO",
+  "accountingBasis": "SEC 2010, base 2020",
+  "warning": "Les trimestres CVS-CJO ne sont pas les comptes annuels bruts ; les sommes peuvent différer légèrement.",
+  "rows": [
+    {
+      "year": 2003,
+      "quarter": 1,
+      "spending": 217.637,
+      "revenue": 201.606,
+      "balance": -16.031,
+      "gdp": 401.813,
+      "interest": 11.774,
+      "publicCompensation": 53.543
+    },
+    {
+      "year": 2003,
+      "quarter": 2,
+      "spending": 219.384,
+      "revenue": 203.404,
+      "balance": -15.98,
+      "gdp": 402.227,
+      "interest": 11.664,
+      "publicCompensation": 53.931
+    },
+    {
+      "year": 2003,
+      "quarter": 3,
+      "spending": 221.424,
+      "revenue": 204.416,
+      "balance": -17.008,
+      "gdp": 408.987,
+      "interest": 11.578,
+      "publicCompensation": 54.378
+    },
+    {
+      "year": 2003,
+      "quarter": 4,
+      "spending": 223.46,
+      "revenue": 206.361,
+      "balance": -17.098,
+      "gdp": 411.774,
+      "interest": 11.643,
+      "publicCompensation": 54.682
+    },
+    {
+      "year": 2004,
+      "quarter": 1,
+      "spending": 225.488,
+      "revenue": 210.227,
+      "balance": -15.262,
+      "gdp": 418.068,
+      "interest": 11.837,
+      "publicCompensation": 55.05
+    },
+    {
+      "year": 2004,
+      "quarter": 2,
+      "spending": 227.886,
+      "revenue": 213.021,
+      "balance": -14.865,
+      "gdp": 420.78,
+      "interest": 11.847,
+      "publicCompensation": 55.127
+    },
+    {
+      "year": 2004,
+      "quarter": 3,
+      "spending": 229.824,
+      "revenue": 214.21,
+      "balance": -15.614,
+      "gdp": 424.036,
+      "interest": 11.979,
+      "publicCompensation": 55.329
+    },
+    {
+      "year": 2004,
+      "quarter": 4,
+      "spending": 232.313,
+      "revenue": 217.763,
+      "balance": -14.55,
+      "gdp": 429.993,
+      "interest": 11.847,
+      "publicCompensation": 55.849
+    },
+    {
+      "year": 2005,
+      "quarter": 1,
+      "spending": 235.478,
+      "revenue": 223.028,
+      "balance": -12.45,
+      "gdp": 433.477,
+      "interest": 11.965,
+      "publicCompensation": 56.594
+    },
+    {
+      "year": 2005,
+      "quarter": 2,
+      "spending": 238.09,
+      "revenue": 220.711,
+      "balance": -17.379,
+      "gdp": 437.098,
+      "interest": 11.919,
+      "publicCompensation": 57.204
+    },
+    {
+      "year": 2005,
+      "quarter": 3,
+      "spending": 240.531,
+      "revenue": 224.713,
+      "balance": -15.818,
+      "gdp": 442.65,
+      "interest": 12.022,
+      "publicCompensation": 57.824
+    },
+    {
+      "year": 2005,
+      "quarter": 4,
+      "spending": 241.798,
+      "revenue": 225.683,
+      "balance": -16.115,
+      "gdp": 447.299,
+      "interest": 11.94,
+      "publicCompensation": 58.201
+    },
+    {
+      "year": 2006,
+      "quarter": 1,
+      "spending": 245.483,
+      "revenue": 231.892,
+      "balance": -13.591,
+      "gdp": 452.766,
+      "interest": 12.07,
+      "publicCompensation": 58.442
+    },
+    {
+      "year": 2006,
+      "quarter": 2,
+      "spending": 246.946,
+      "revenue": 234.106,
+      "balance": -12.839,
+      "gdp": 460.43,
+      "interest": 12.073,
+      "publicCompensation": 58.569
+    },
+    {
+      "year": 2006,
+      "quarter": 3,
+      "spending": 248.641,
+      "revenue": 235.166,
+      "balance": -13.475,
+      "gdp": 464.821,
+      "interest": 12.04,
+      "publicCompensation": 59.03
+    },
+    {
+      "year": 2006,
+      "quarter": 4,
+      "spending": 251.439,
+      "revenue": 242.344,
+      "balance": -9.095,
+      "gdp": 470.235,
+      "interest": 11.876,
+      "publicCompensation": 59.4
+    },
+    {
+      "year": 2007,
+      "quarter": 1,
+      "spending": 255.373,
+      "revenue": 240.837,
+      "balance": -14.536,
+      "gdp": 477.308,
+      "interest": 12.326,
+      "publicCompensation": 60.081
+    },
+    {
+      "year": 2007,
+      "quarter": 2,
+      "spending": 258.299,
+      "revenue": 245.106,
+      "balance": -13.193,
+      "gdp": 482.904,
+      "interest": 12.678,
+      "publicCompensation": 60.607
+    },
+    {
+      "year": 2007,
+      "quarter": 3,
+      "spending": 261.356,
+      "revenue": 247.013,
+      "balance": -14.343,
+      "gdp": 487.476,
+      "interest": 13.192,
+      "publicCompensation": 60.969
+    },
+    {
+      "year": 2007,
+      "quarter": 4,
+      "spending": 264.418,
+      "revenue": 248.546,
+      "balance": -15.872,
+      "gdp": 491.56,
+      "interest": 13.899,
+      "publicCompensation": 61.226
+    },
+    {
+      "year": 2008,
+      "quarter": 1,
+      "spending": 266.674,
+      "revenue": 251.671,
+      "balance": -15.003,
+      "gdp": 499.328,
+      "interest": 14.294,
+      "publicCompensation": 61.547
+    },
+    {
+      "year": 2008,
+      "quarter": 2,
+      "spending": 268.285,
+      "revenue": 253.151,
+      "balance": -15.134,
+      "gdp": 499.156,
+      "interest": 14.72,
+      "publicCompensation": 62.08
+    },
+    {
+      "year": 2008,
+      "quarter": 3,
+      "spending": 271.384,
+      "revenue": 256.092,
+      "balance": -15.292,
+      "gdp": 498.273,
+      "interest": 14.565,
+      "publicCompensation": 62.514
+    },
+    {
+      "year": 2008,
+      "quarter": 4,
+      "spending": 273.693,
+      "revenue": 249.526,
+      "balance": -24.168,
+      "gdp": 492.255,
+      "interest": 13.59,
+      "publicCompensation": 63.133
+    },
+    {
+      "year": 2009,
+      "quarter": 1,
+      "spending": 275.226,
+      "revenue": 239.963,
+      "balance": -35.263,
+      "gdp": 481.621,
+      "interest": 12.924,
+      "publicCompensation": 63.657
+    },
+    {
+      "year": 2009,
+      "quarter": 2,
+      "spending": 279.735,
+      "revenue": 246.208,
+      "balance": -33.528,
+      "gdp": 482.656,
+      "interest": 12.138,
+      "publicCompensation": 64.128
+    },
+    {
+      "year": 2009,
+      "quarter": 3,
+      "spending": 282.462,
+      "revenue": 243.379,
+      "balance": -39.083,
+      "gdp": 483.647,
+      "interest": 12.067,
+      "publicCompensation": 64.798
+    },
+    {
+      "year": 2009,
+      "quarter": 4,
+      "spending": 285.261,
+      "revenue": 250.402,
+      "balance": -34.859,
+      "gdp": 489.063,
+      "interest": 12.153,
+      "publicCompensation": 65.234
+    },
+    {
+      "year": 2010,
+      "quarter": 1,
+      "spending": 285.862,
+      "revenue": 246.565,
+      "balance": -39.297,
+      "gdp": 492.412,
+      "interest": 12.349,
+      "publicCompensation": 65.324
+    },
+    {
+      "year": 2010,
+      "quarter": 2,
+      "spending": 287.173,
+      "revenue": 250.765,
+      "balance": -36.409,
+      "gdp": 497.139,
+      "interest": 12.462,
+      "publicCompensation": 65.342
+    },
+    {
+      "year": 2010,
+      "quarter": 3,
+      "spending": 288.979,
+      "revenue": 254.874,
+      "balance": -34.104,
+      "gdp": 501.597,
+      "interest": 12.786,
+      "publicCompensation": 65.74
+    },
+    {
+      "year": 2010,
+      "quarter": 4,
+      "spending": 289.61,
+      "revenue": 256.742,
+      "balance": -32.867,
+      "gdp": 502.845,
+      "interest": 13.111,
+      "publicCompensation": 66.13
+    },
+    {
+      "year": 2011,
+      "quarter": 1,
+      "spending": 291.55,
+      "revenue": 263.049,
+      "balance": -28.501,
+      "gdp": 512.766,
+      "interest": 13.456,
+      "publicCompensation": 66.562
+    },
+    {
+      "year": 2011,
+      "quarter": 2,
+      "spending": 293.1,
+      "revenue": 264.55,
+      "balance": -28.549,
+      "gdp": 513.573,
+      "interest": 13.888,
+      "publicCompensation": 66.986
+    },
+    {
+      "year": 2011,
+      "quarter": 3,
+      "spending": 294.663,
+      "revenue": 268.611,
+      "balance": -26.052,
+      "gdp": 515.31,
+      "interest": 14.339,
+      "publicCompensation": 67.34
+    },
+    {
+      "year": 2011,
+      "quarter": 4,
+      "spending": 296.249,
+      "revenue": 269.92,
+      "balance": -26.328,
+      "gdp": 519.33,
+      "interest": 14.313,
+      "publicCompensation": 67.59
+    },
+    {
+      "year": 2012,
+      "quarter": 1,
+      "spending": 298.767,
+      "revenue": 270.998,
+      "balance": -27.769,
+      "gdp": 520.324,
+      "interest": 14.057,
+      "publicCompensation": 67.727
+    },
+    {
+      "year": 2012,
+      "quarter": 2,
+      "spending": 300.842,
+      "revenue": 271.469,
+      "balance": -29.372,
+      "gdp": 520.335,
+      "interest": 14.023,
+      "publicCompensation": 68.027
+    },
+    {
+      "year": 2012,
+      "quarter": 3,
+      "spending": 302.111,
+      "revenue": 274.857,
+      "balance": -27.254,
+      "gdp": 524.034,
+      "interest": 13.644,
+      "publicCompensation": 68.316
+    },
+    {
+      "year": 2012,
+      "quarter": 4,
+      "spending": 307.196,
+      "revenue": 283.573,
+      "balance": -23.623,
+      "gdp": 523.263,
+      "interest": 13.216,
+      "publicCompensation": 68.539
+    },
+    {
+      "year": 2013,
+      "quarter": 1,
+      "spending": 308.175,
+      "revenue": 279.859,
+      "balance": -28.316,
+      "gdp": 526.745,
+      "interest": 12.662,
+      "publicCompensation": 68.926
+    },
+    {
+      "year": 2013,
+      "quarter": 2,
+      "spending": 310.065,
+      "revenue": 283.655,
+      "balance": -26.41,
+      "gdp": 532.619,
+      "interest": 12.453,
+      "publicCompensation": 69.366
+    },
+    {
+      "year": 2013,
+      "quarter": 3,
+      "spending": 311.226,
+      "revenue": 286.551,
+      "balance": -24.675,
+      "gdp": 530.87,
+      "interest": 12.235,
+      "publicCompensation": 69.711
+    },
+    {
+      "year": 2013,
+      "quarter": 4,
+      "spending": 313.319,
+      "revenue": 287.926,
+      "balance": -25.393,
+      "gdp": 532.922,
+      "interest": 12.077,
+      "publicCompensation": 70.077
+    },
+    {
+      "year": 2014,
+      "quarter": 1,
+      "spending": 313.434,
+      "revenue": 289.549,
+      "balance": -23.885,
+      "gdp": 535.056,
+      "interest": 12.091,
+      "publicCompensation": 70.326
+    },
+    {
+      "year": 2014,
+      "quarter": 2,
+      "spending": 313.529,
+      "revenue": 288.702,
+      "balance": -24.827,
+      "gdp": 537.38,
+      "interest": 11.931,
+      "publicCompensation": 70.6
+    },
+    {
+      "year": 2014,
+      "quarter": 3,
+      "spending": 315.2,
+      "revenue": 291.113,
+      "balance": -24.087,
+      "gdp": 541.959,
+      "interest": 11.689,
+      "publicCompensation": 70.875
+    },
+    {
+      "year": 2014,
+      "quarter": 4,
+      "spending": 315.886,
+      "revenue": 290.212,
+      "balance": -25.675,
+      "gdp": 542.107,
+      "interest": 11.605,
+      "publicCompensation": 71.142
+    },
+    {
+      "year": 2015,
+      "quarter": 1,
+      "spending": 317.034,
+      "revenue": 294.012,
+      "balance": -23.023,
+      "gdp": 546.487,
+      "interest": 11.419,
+      "publicCompensation": 71.265
+    },
+    {
+      "year": 2015,
+      "quarter": 2,
+      "spending": 317.615,
+      "revenue": 294.34,
+      "balance": -23.275,
+      "gdp": 548.39,
+      "interest": 11.328,
+      "publicCompensation": 71.338
+    },
+    {
+      "year": 2015,
+      "quarter": 3,
+      "spending": 317.369,
+      "revenue": 297.04,
+      "balance": -20.329,
+      "gdp": 552.794,
+      "interest": 10.902,
+      "publicCompensation": 71.251
+    },
+    {
+      "year": 2015,
+      "quarter": 4,
+      "spending": 316.15,
+      "revenue": 297.084,
+      "balance": -19.066,
+      "gdp": 555.117,
+      "interest": 11.059,
+      "publicCompensation": 71.262
+    },
+    {
+      "year": 2016,
+      "quarter": 1,
+      "spending": 318.007,
+      "revenue": 296.718,
+      "balance": -21.29,
+      "gdp": 557.539,
+      "interest": 10.793,
+      "publicCompensation": 71.322
+    },
+    {
+      "year": 2016,
+      "quarter": 2,
+      "spending": 318.575,
+      "revenue": 298.12,
+      "balance": -20.454,
+      "gdp": 555.054,
+      "interest": 10.536,
+      "publicCompensation": 71.471
+    },
+    {
+      "year": 2016,
+      "quarter": 3,
+      "spending": 320.766,
+      "revenue": 298.707,
+      "balance": -22.059,
+      "gdp": 557.294,
+      "interest": 10.616,
+      "publicCompensation": 72.231
+    },
+    {
+      "year": 2016,
+      "quarter": 4,
+      "spending": 323.183,
+      "revenue": 302.882,
+      "balance": -20.301,
+      "gdp": 560.734,
+      "interest": 10.486,
+      "publicCompensation": 72.636
+    },
+    {
+      "year": 2017,
+      "quarter": 1,
+      "spending": 326.382,
+      "revenue": 305.375,
+      "balance": -21.007,
+      "gdp": 566.023,
+      "interest": 10.329,
+      "publicCompensation": 73.167
+    },
+    {
+      "year": 2017,
+      "quarter": 2,
+      "spending": 328.406,
+      "revenue": 309.862,
+      "balance": -18.544,
+      "gdp": 571.804,
+      "interest": 10.253,
+      "publicCompensation": 73.66
+    },
+    {
+      "year": 2017,
+      "quarter": 3,
+      "spending": 334.023,
+      "revenue": 312.288,
+      "balance": -21.735,
+      "gdp": 575.917,
+      "interest": 10.325,
+      "publicCompensation": 73.934
+    },
+    {
+      "year": 2017,
+      "quarter": 4,
+      "spending": 333.036,
+      "revenue": 317.285,
+      "balance": -15.751,
+      "gdp": 580.74,
+      "interest": 10.113,
+      "publicCompensation": 74.075
+    },
+    {
+      "year": 2018,
+      "quarter": 1,
+      "spending": 331.545,
+      "revenue": 317.493,
+      "balance": -14.053,
+      "gdp": 582.797,
+      "interest": 10.436,
+      "publicCompensation": 74.02
+    },
+    {
+      "year": 2018,
+      "quarter": 2,
+      "spending": 330.806,
+      "revenue": 317.126,
+      "balance": -13.68,
+      "gdp": 585.164,
+      "interest": 10.676,
+      "publicCompensation": 74.075
+    },
+    {
+      "year": 2018,
+      "quarter": 3,
+      "spending": 331.299,
+      "revenue": 316.463,
+      "balance": -14.837,
+      "gdp": 591.517,
+      "interest": 10.291,
+      "publicCompensation": 74.187
+    },
+    {
+      "year": 2018,
+      "quarter": 4,
+      "spending": 334.205,
+      "revenue": 322.145,
+      "balance": -12.06,
+      "gdp": 597.349,
+      "interest": 10.257,
+      "publicCompensation": 74.403
+    },
+    {
+      "year": 2019,
+      "quarter": 1,
+      "spending": 333.495,
+      "revenue": 320.144,
+      "balance": -13.351,
+      "gdp": 604.514,
+      "interest": 9.964,
+      "publicCompensation": 74.683
+    },
+    {
+      "year": 2019,
+      "quarter": 2,
+      "spending": 335.905,
+      "revenue": 321.245,
+      "balance": -14.66,
+      "gdp": 609.212,
+      "interest": 9.563,
+      "publicCompensation": 74.988
+    },
+    {
+      "year": 2019,
+      "quarter": 3,
+      "spending": 337.908,
+      "revenue": 325.647,
+      "balance": -12.262,
+      "gdp": 611.584,
+      "interest": 8.889,
+      "publicCompensation": 75.3
+    },
+    {
+      "year": 2019,
+      "quarter": 4,
+      "spending": 339.342,
+      "revenue": 321.351,
+      "balance": -17.991,
+      "gdp": 610.168,
+      "interest": 8.453,
+      "publicCompensation": 75.661
+    },
+    {
+      "year": 2020,
+      "quarter": 1,
+      "spending": 346.957,
+      "revenue": 311.018,
+      "balance": -35.939,
+      "gdp": 588.126,
+      "interest": 7.909,
+      "publicCompensation": 75.707
+    },
+    {
+      "year": 2020,
+      "quarter": 2,
+      "spending": 361.379,
+      "revenue": 284.07,
+      "balance": -77.309,
+      "gdp": 532.526,
+      "interest": 7.288,
+      "publicCompensation": 77.488
+    },
+    {
+      "year": 2020,
+      "quarter": 3,
+      "spending": 350.468,
+      "revenue": 318.467,
+      "balance": -32.001,
+      "gdp": 595.825,
+      "interest": 7.319,
+      "publicCompensation": 76.613
+    },
+    {
+      "year": 2020,
+      "quarter": 4,
+      "spending": 371.415,
+      "revenue": 309.576,
+      "balance": -61.839,
+      "gdp": 600.823,
+      "interest": 7.207,
+      "publicCompensation": 77.788
+    },
+    {
+      "year": 2021,
+      "quarter": 1,
+      "spending": 375.074,
+      "revenue": 319.681,
+      "balance": -55.393,
+      "gdp": 606.682,
+      "interest": 7.498,
+      "publicCompensation": 78.46
+    },
+    {
+      "year": 2021,
+      "quarter": 2,
+      "spending": 374.751,
+      "revenue": 324.686,
+      "balance": -50.065,
+      "gdp": 617.792,
+      "interest": 8.005,
+      "publicCompensation": 79.006
+    },
+    {
+      "year": 2021,
+      "quarter": 3,
+      "spending": 366.616,
+      "revenue": 335.618,
+      "balance": -30.997,
+      "gdp": 637.344,
+      "interest": 9.024,
+      "publicCompensation": 79.554
+    },
+    {
+      "year": 2021,
+      "quarter": 4,
+      "spending": 374.425,
+      "revenue": 345.762,
+      "balance": -28.663,
+      "gdp": 642.912,
+      "interest": 10.274,
+      "publicCompensation": 80.12
+    },
+    {
+      "year": 2022,
+      "quarter": 1,
+      "spending": 379.666,
+      "revenue": 347.372,
+      "balance": -32.294,
+      "gdp": 649.103,
+      "interest": 11.703,
+      "publicCompensation": 80.743
+    },
+    {
+      "year": 2022,
+      "quarter": 2,
+      "spending": 381.475,
+      "revenue": 357.747,
+      "balance": -23.729,
+      "gdp": 655.824,
+      "interest": 12.91,
+      "publicCompensation": 81.29
+    },
+    {
+      "year": 2022,
+      "quarter": 3,
+      "spending": 391.712,
+      "revenue": 360.392,
+      "balance": -31.32,
+      "gdp": 667.944,
+      "interest": 12.865,
+      "publicCompensation": 84.378
+    },
+    {
+      "year": 2022,
+      "quarter": 4,
+      "spending": 397.328,
+      "revenue": 358.673,
+      "balance": -38.656,
+      "gdp": 679.687,
+      "interest": 13.456,
+      "publicCompensation": 84.759
+    },
+    {
+      "year": 2023,
+      "quarter": 1,
+      "spending": 397.884,
+      "revenue": 362.382,
+      "balance": -35.503,
+      "gdp": 691.51,
+      "interest": 13.042,
+      "publicCompensation": 84.93
+    },
+    {
+      "year": 2023,
+      "quarter": 2,
+      "spending": 399.624,
+      "revenue": 363.537,
+      "balance": -36.087,
+      "gdp": 708.058,
+      "interest": 13.504,
+      "publicCompensation": 85.203
+    },
+    {
+      "year": 2023,
+      "quarter": 3,
+      "spending": 402.729,
+      "revenue": 363.463,
+      "balance": -39.266,
+      "gdp": 714.002,
+      "interest": 12.982,
+      "publicCompensation": 86.831
+    },
+    {
+      "year": 2023,
+      "quarter": 4,
+      "spending": 408.56,
+      "revenue": 367.466,
+      "balance": -41.094,
+      "gdp": 724.101,
+      "interest": 13.881,
+      "publicCompensation": 89.379
+    },
+    {
+      "year": 2024,
+      "quarter": 1,
+      "spending": 413.014,
+      "revenue": 373.127,
+      "balance": -39.887,
+      "gdp": 728.634,
+      "interest": 14.201,
+      "publicCompensation": 89.492
+    },
+    {
+      "year": 2024,
+      "quarter": 2,
+      "spending": 416.617,
+      "revenue": 376.715,
+      "balance": -39.902,
+      "gdp": 729.518,
+      "interest": 14.661,
+      "publicCompensation": 90.551
+    },
+    {
+      "year": 2024,
+      "quarter": 3,
+      "spending": 420.416,
+      "revenue": 376.497,
+      "balance": -43.918,
+      "gdp": 739.287,
+      "interest": 15.378,
+      "publicCompensation": 91.309
+    },
+    {
+      "year": 2024,
+      "quarter": 4,
+      "spending": 422.896,
+      "revenue": 377.427,
+      "balance": -45.469,
+      "gdp": 739.374,
+      "interest": 15.89,
+      "publicCompensation": 91.686
+    },
+    {
+      "year": 2025,
+      "quarter": 1,
+      "spending": 424.908,
+      "revenue": 387.137,
+      "balance": -37.771,
+      "gdp": 743.571,
+      "interest": 15.582,
+      "publicCompensation": 92.152
+    },
+    {
+      "year": 2025,
+      "quarter": 2,
+      "spending": 427.554,
+      "revenue": 386.955,
+      "balance": -40.6,
+      "gdp": 745.275,
+      "interest": 16.11,
+      "publicCompensation": 92.332
+    },
+    {
+      "year": 2025,
+      "quarter": 3,
+      "spending": 429.761,
+      "revenue": 389.548,
+      "balance": -40.213,
+      "gdp": 750.64,
+      "interest": 16.483,
+      "publicCompensation": 92.573
+    },
+    {
+      "year": 2025,
+      "quarter": 4,
+      "spending": 432.487,
+      "revenue": 399.48,
+      "balance": -33.007,
+      "gdp": 755.703,
+      "interest": 17.547,
+      "publicCompensation": 92.955
+    },
+    {
+      "year": 2026,
+      "quarter": 1,
+      "spending": 434.779,
+      "revenue": 396.045,
+      "balance": -38.734,
+      "gdp": 756.553,
+      "interest": 18.191,
+      "publicCompensation": 93.442
+    },
+    {
+      "year": 2026,
+      "quarter": 2,
+      "spending": 437.249,
+      "revenue": 398.174,
+      "balance": -39.075,
+      "gdp": 759.713,
+      "interest": 18.916,
+      "publicCompensation": 93.958
+    }
+  ]
+}

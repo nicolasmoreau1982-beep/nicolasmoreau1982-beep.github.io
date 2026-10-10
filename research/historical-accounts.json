@@ -1,0 +1,16 @@
+{
+  "source": "https://www.insee.fr/fr/statistiques/fichier/8988845/t_3201_fr.xlsx",
+  "sourcePage": "https://www.insee.fr/fr/statistiques/8988845",
+  "description": "Tableau Insee 3.201, comptes APU S13, base 2020, mise à jour du 28 août 2026. Lignes 27 (total dépenses) et 58 (total recettes), milliards d'euros nominaux, colonnes 2003–2025. Valeurs du classeur arrondies ici à 0,0001 Md€. Même périmètre que B9NF (ligne 66). Le PIB/dette/chômage provient séparément d'Eurostat dans dist/history.js.",
+  "columns": ["year", "spendingBn", "revenueBn"],
+  "rows": [
+    [2003,881.7856,815.4686],[2004,915.9064,855.6066],[2005,956.1425,894.3411],
+    [2006,992.2408,943.1782],[2007,1039.2876,981.3519],[2008,1080.2205,1010.5304],
+    [2009,1122.6072,979.7733],[2010,1151.9618,1009.2013],[2011,1175.7047,1066.3192],
+    [2012,1208.9531,1100.9659],[2013,1242.3578,1137.646],[2014,1257.6492,1159.1452],
+    [2015,1268.0078,1182.3268],[2016,1280.6482,1196.623],[2017,1321.4446,1244.3869],
+    [2018,1327.6324,1273.0162],[2019,1346.1547,1287.9292],[2020,1430.357,1223.2726],
+    [2021,1491.4241,1326.2748],[2022,1550.3314,1424.4356],[2023,1608.2708,1456.3505],
+    [2024,1672.5892,1503.4711],[2025,1714.1117,1562.5197]
+  ]
+}

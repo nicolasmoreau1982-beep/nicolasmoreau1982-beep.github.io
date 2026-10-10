@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1ea" />
+    <meta name="description" content="Audit d'EcoSim France : provenance des données, hypothèses, tests historiques, écarts, incertitude et limites du simulateur." />
+    <title>Audit du modèle — EcoSim France</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="audit.css" />
+  </head>
+  <body class="audit-page">
+    <a class="skip-link" href="#main">Aller à l’audit</a>
+    <header class="topbar audit-topbar">
+      <a class="brand" href="index.html" aria-label="EcoSim France — retour au simulateur">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>EcoSim <b>France</b></span>
+      </a>
+      <span class="audit-topbar-label">Documentation du modèle</span>
+      <a class="button button-ghost audit-back" href="index.html#methodology">← Retour au simulateur</a>
+    </header>
+
+    <main id="main" class="audit-layout">
+      <aside class="audit-sidebar" aria-label="Sommaire de l’audit">
+        <p>Lire l’audit</p>
+        <nav aria-label="Sections de l’audit">
+          <a href="#verdict">01 · Statut du modèle</a>
+          <a href="#provenance">02 · Données et hypothèses</a>
+          <a href="#methode">03 · Mécanismes</a>
+          <a href="#histoire">04 · Tests historiques</a>
+          <a href="#recherche">05 · Modèles de recherche</a>
+          <a href="#incertitude">06 · Incertitude</a>
+          <a href="#reproduire">07 · Reproduire</a>
+          <a href="#limites">08 · Limites et suite</a>
+        </nav>
+        <div class="audit-sidebar-note">Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+      </aside>
+
+      <div class="audit-content">
+        <div class="audit-hero">
+          <span class="audit-kicker">Annexe méthodologique · version 4.14</span>
+          <h1>Les chiffres sont utiles.<br /><em>Leur mode d’emploi aussi.</em></h1>
+          <p>Cette page indique ce qui est observé, ce qui est emprunté à la recherche, ce qui reste une hypothèse et ce que nos tests mesurent réellement. Elle documente aussi les écarts et les éléments encore impossibles à vérifier.</p>
+          <div class="audit-status-row" aria-label="Statut des éléments du modèle">
+            <span><i class="status-dot observed"></i> Observé</span>
+            <span><i class="status-dot anchored"></i> Calibré</span>
+            <span><i class="status-dot assumed"></i> Exploratoire</span>
+            <span><i class="status-dot unavailable"></i> Non validé</span>
+          </div>
+          <div class="audit-quick-links"><a href="#audit-triplet">Explorer les comparaisons Insee ↗</a><a href="#incertitude">Comprendre l’incertitude ↗</a></div>
+        </div>
+
+        <section class="audit-section" id="verdict" aria-labelledby="verdict-title">
+          <div class="audit-section-heading"><span>01</span><h2 id="verdict-title">Ce que vaut le résultat</h2></div>
+          <div class="audit-verdict">
+            <strong>EcoSim est un bac à scénarios, pas une prévision validée.</strong>
+            <p>Il sert à explorer des mécanismes et à comparer des hypothèses sous une comptabilité commune. Les chiffres centraux, surtout à 10–30 ans, ne permettent pas de prédire un budget futur ni de classer de façon scientifique les programmes politiques.</p>
+          </div>
+          <div class="audit-card-grid">
+            <article><span class="audit-label">Ce qui est contrôlé</span><p>Comptes de départ sourcés, équations et entrées consultables, tests automatisés, témoin historique sur 2003–2025.</p></article>
+            <article><span class="audit-label">Ce qui est calibré</span><p>Le canal TVA reprend une variante publiée de Mésange 2017. Un bon accord avec cette même variante est donc attendu par construction.</p></article>
+            <article><span class="audit-label">Ce qui ne l’est pas</span><p>La majorité des coefficients causaux, les traductions des programmes, les réactions sociales et les horizons longs n’ont pas de validation hors échantillon.</p></article>
+          </div>
+        </section>
+
+        <section class="audit-section" id="provenance" aria-labelledby="provenance-title">
+          <div class="audit-section-heading"><span>02</span><h2 id="provenance-title">D’où viennent les nombres ?</h2></div>
+          <p class="audit-intro">Une valeur publiée, un recalage entre années et une hypothèse de comportement ne sont pas la même chose. Le périmètre « toutes APU » évite de confondre budget de l’État et finances publiques consolidées.</p>
+          <div class="audit-table-wrap"><table class="audit-table">
+            <caption>Chaîne de provenance de la référence, arrêtée au 10 octobre 2026</caption>
+            <thead><tr><th>Élément</th><th>Origine et millésime</th><th>Traitement dans EcoSim</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Dépenses, recettes, déficit 2025</th><td><a href="https://www.insee.fr/fr/statistiques/8988845">Tableau 3.201 actualisé en août 2026, Insee</a></td><td>Base intégrée : 1 714,1 ; 1 562,5 ; −151,6 Md€, cohérente avec ce millésime.</td><td><span class="tag observed">Rapproché</span></td></tr>
+              <tr><th scope="row">PIB et dette 2025</th><td><a href="https://www.insee.fr/fr/statistiques/8996855">PIB, Insee</a> · <a href="https://www.insee.fr/fr/statistiques/8955019">dette, Insee</a></td><td>PIB 2 991,1 Md€ ; dette 3 460,5 Md€.</td><td><span class="tag observed">Observé</span></td></tr>
+              <tr><th scope="row">Dépenses par fonction</th><td><a href="https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=fr">COFOG 2024, Eurostat</a></td><td>Parts de 2024 appliquées au total Insee 2025 ; le détail 2025 n’est pas observé poste par poste.</td><td><span class="tag anchored">Recalé</span></td></tr>
+              <tr><th scope="row">Séries 2003–2025</th><td><a href="https://www.insee.fr/fr/statistiques/8988845">Dépenses et recettes Insee 3.201</a> ; <a href="https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp/default/table">PIB</a>, <a href="https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table">dette</a>, <a href="https://ec.europa.eu/eurostat/databrowser/view/une_rt_a/default/table">chômage</a> Eurostat</td><td>23 observations annuelles révisées, copie figée le 10 octobre 2026.</td><td><span class="tag observed">Révisé</span></td></tr>
+              <tr><th scope="row">Flux trimestriels APU</th><td><a href="https://www.insee.fr/fr/statistiques/9035065?sommaire=9007859">Comptes trimestriels, Insee, base 2020, août 2026</a></td><td>94 trimestres 2003T1–2026T2, prix courants CVS-CJO ; cibles observées distinctes des flux simulés.</td><td><span class="tag observed">Observé</span></td></tr>
+              <tr><th scope="row">Sous-secteurs publics</th><td><a href="https://www.insee.fr/fr/statistiques/8988845">Tableau Insee 3.215</a></td><td>État, ODAC, collectivités et sécurité sociale ; transferts internes retirés du total consolidé.</td><td><span class="tag observed">Observé</span></td></tr>
+              <tr><th scope="row">Prévision de référence proche</th><td><a href="https://www.banque-france.fr/fr/publications-et-statistiques/publications/projections-macroeconomiques-intermediaires-septembre-2026">Banque de France, septembre 2026</a></td><td>Ancrage macro 2026–2028 ; ensuite prolongements structurels conditionnels.</td><td><span class="tag anchored">Ancré</span></td></tr>
+              <tr><th scope="row">Emploi public, démographie, énergie</th><td>Insee/DGAFP 2024–2025, Dares, SDES 2024, RTE 2025 : <a href="index.html#sources">détail source par source</a></td><td>Effectifs ventilés, cohortes, viviers et capacités ; coûts et réponses comportementales restent simplifiés.</td><td><span class="tag assumed">Mixte</span></td></tr>
+              <tr><th scope="row">Population par âge et sexe</th><td><a href="https://www.insee.fr/fr/statistiques/8990852?sommaire=8991068">Projection centrale Insee 2026–2070</a></td><td>Pyramide âge × sexe figée dans les données de recherche ; trajectoire de référence 2026–2056 utilisée par le simulateur. Projection conditionnelle, pas observation future.</td><td><span class="tag anchored">Projeté</span></td></tr>
+              <tr><th scope="row">Viviers de travail</th><td><a href="https://www.insee.fr/fr/statistiques/9012123">Enquête Emploi 2025 : chômage et halo</a> ; <a href="https://www.insee.fr/fr/statistiques/9012121">sous-emploi</a></td><td>Totaux BIT/halo/sous-emploi utilisés pour le vivier global ; ventilations âge et diplôme conservées pour audit, pas assimilées à des candidats immédiatement disponibles.</td><td><span class="tag observed">Observé</span></td></tr>
+              <tr><th scope="row">Commerce et branches</th><td><a href="https://www.insee.fr/fr/statistiques/8988861">TES 2024, 17 produits</a></td><td>Production intérieure et importations observées ; aucune conversion automatique en multiplicateur budgétaire.</td><td><span class="tag observed">Observé</span></td></tr>
+              <tr><th scope="row">Scénarios politiques et réaction sociale</th><td>Documents des groupes et paramètres affichés dans le simulateur</td><td>Traduction manuelle des mesures ; pondérations de colère/vote conventionnelles, non estimées sur microdonnées.</td><td><span class="tag assumed">Hypothèse</span></td></tr>
+            </tbody>
+          </table></div>
+          <div class="audit-warning audit-reconciliation">
+            <strong>Millésimes à ne pas mélanger.</strong>
+            <p>Une première comparaison avec <a href="https://www.insee.fr/fr/statistiques/8997691">l’Insee Première de mai 2026</a> avait signalé à tort une anomalie de la base 2025 : les chiffres y étaient 1 714,2 et 1 561,7 Md€. Le <a href="https://www.insee.fr/fr/statistiques/8988845">tableau détaillé 3.201 actualisé en août 2026</a> donne 1 714,1 Md€ de dépenses et 1 562,5 Md€ de recettes, soit 151,6 Md€ de déficit : la base budgétaire intégrée correspond à ce millésime. Le ratio de dette provient encore d’une série Eurostat figée distincte (115,6 % contre 115,7 % dans une publication Insee) : sa date et ses révisions doivent être harmonisées avant une réconciliation complète.</p>
+          </div>
+          <p class="audit-caption">Les sources agrégées sont dans <a href="data.js">data.js</a>, les règles fiscales sélectionnées dans <a href="fiscal.js">fiscal.js</a> et l’historique figé dans <a href="history.js">history.js</a>. Une révision d’Eurostat ne modifie pas silencieusement ces chiffres.</p>
+        </section>
+
+        <section class="audit-section" id="methode" aria-labelledby="methode-title">
+          <div class="audit-section-heading"><span>03</span><h2 id="methode-title">Comment le moteur relie les variables</h2></div>
+          <div class="audit-process" aria-label="Chaîne simplifiée de simulation">
+            <div><b>1</b><strong>Mesure</strong><small>coût direct, calendrier, périmètre</small></div>
+            <div><b>2</b><strong>Économie</strong><small>demande, offre, emploi, prix</small></div>
+            <div><b>3</b><strong>Budget</strong><small>recettes, stabilisateurs, intérêts</small></div>
+            <div><b>4</b><strong>Dette et risques</strong><small>stock annuel, cadre UE, incertitude</small></div>
+          </div>
+          <p>Le moteur est <strong>semi-structurel et déterministe</strong>. Il applique des coefficients par instrument, des délais et des persistances, puis réinjecte l’activité dans les recettes et certaines dépenses. La dette accumule les déficits simulés et influe sur les intérêts. Neuf lectures économiques changent des coefficients de sensibilité, pas la comptabilité de base : ce ne sont ni neuf modèles estimés indépendamment, ni une moyenne de consensus scientifique.</p>
+          <h3 id="profils">Profils économiques : analogies et limites</h3>
+          <p>Les cinq profils d'origine sont complétés par quatre <strong>tests de sensibilité</strong>. Une analogie internationale n'importe ni les institutions, ni les politiques, ni les données du pays cité : sélectionner un profil ne programme aucune coupe ni hausse d'impôt. Les coefficients sont inscrits dans <code>dist/data.js</code>, exposés sous le sélecteur de profil et <strong>non ajustés aux trajectoires grecques ou argentines</strong>. Les cinq profils existants conservent leurs coefficients ; sans réforme, la trajectoire centrale de PIB, déficit et dette est identique entre les neuf lectures, mais leurs bandes de sensibilité diffèrent.</p>
+          <div class="audit-table-wrap"><table class="audit-table">
+            <caption>Nouveaux canaux, valeurs exploratoires relatives au profil central</caption>
+            <thead><tr><th>Lecture</th><th>Canal codé</th><th>Appui scientifique et frontière</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Consolidation en récession</th><td>Dépenses ×1,46 ; prélèvements ×1,26 ; séquelle de capacité = 0,22 × écart de demande × montée en charge de quatre ans.</td><td><a href="https://www.imf.org/en/publications/cr/issues/2016/12/31/greece-ex-post-evaluation-of-exceptional-access-under-the-2010-stand-by-arrangement-40639">Évaluation ex post du FMI sur la Grèce</a>. Elle motive le risque de récession ; elle n'est pas une calibration française. Pas de défaut souverain ni de restructuration simulés.</td></tr>
+              <tr><th scope="row">Stabilisation inflationniste</th><td>Demande dépenses ×0,66 ; sensibilité de la dette ×1,55 ; prime de risque additionnelle = 0,12 point de taux par point d'inflation supplémentaire positif.</td><td><a href="https://www.imf.org/en/news/articles/2025/04/08/pr25095-argentina-imf-reaches-staff-level-agreement-with-argentina-on-a-48-month-eff">Programme argentin 2025, FMI</a>. L'ancrage budgétaire et la désinflation inspirent la lecture ; l'Argentine a sa monnaie, pas la France. Aucune dévaluation ou politique de banque centrale argentine n'est transposée.</td></tr>
+              <tr><th scope="row">Économie ouverte</th><td>Le facteur de fuite par importations passe de <code>1 − 0,22 × part importée</code> à <code>1 − 0,484 × part importée</code>, borné à 0,35.</td><td><a href="https://www.imf.org/en/publications/wp/issues/2016/12/31/what-determines-government-spending-multipliers-25975">Étude FMI sur les multiplicateurs et le change</a>. Les importations sectorielles marginales ne sont pas estimées ; l'union monétaire demeure le cadre par défaut.</td></tr>
+              <tr><th scope="row">Transition énergétique contrainte</th><td>Gains d'offre énergétique ×0,62 et réaction des prix énergétiques ×1,40 ; les autres effets d'offre conservent leur propre coefficient.</td><td><a href="https://www.elibrary.imf.org/view/journals/001/2026/046/article-A001-en.xml">Étude FMI sur la transition de l'UE</a>. Le réseau, les permis, les pénuries et le recyclage des recettes carbone ne sont pas modélisés explicitement.</td></tr>
+            </tbody>
+          </table></div>
+          <p>Ces lectures servent à comparer le <em>sens</em> et l'amplitude des réponses conditionnelles. Les écarts historiques du témoin et du rejeu ne valident pas leurs nouveaux coefficients ; il manque des chocs identifiés et des comparaisons hors échantillon par régime. À 10–30 ans, l'incertitude est particulièrement grande et les bandes affichées restent exploratoires.</p>
+          <p>Dans l’IHM principale, chaque poste de budget modifié peut recevoir un trimestre d’entrée en vigueur, qui <strong>proratise sa première année</strong> ; les autres moteurs et les sorties restent annuels. Le rejeu historique expérimental possède, lui, quatre flux internes par an : sa trajectoire de référence simulée reste ventilée synthétiquement depuis l’année, mais ses <strong>cibles de comparaison trimestrielles sont désormais observées</strong> dans les comptes Insee. Ces deux niveaux de résolution ne doivent pas être confondus.</p>
+          <p>Le module d’emploi public suit les recrutements par mission et statut, ainsi que rémunérations, sorties et pensions simplifiées sur plusieurs décennies ; l’« engagement à 40 ans » est indicatif, pas un passif actuariel certifié. Les viviers de chômage, formation, halo et sous-emploi sont séparés pour limiter les doubles comptes. Les scénarios de sortie des traités européens sont des expériences conditionnelles, non une prédiction juridique ou monétaire.</p>
+          <p><strong>Indicateurs contre hypothèses :</strong> le chômage est calculé à partir de l’activité et des flux d’emploi ; il n’est pas fixé par un curseur. La fécondité de fond, les soldes migratoires et les prix fossiles mondiaux sont des hypothèses avancées, séparées des mesures publiques. Les cibles de productivité, activité, âge effectif de retraite, efficience et fraude recouvrée sont aussi présentées comme hypothèses de réalisation, car une loi ne garantit pas ces résultats. À titre de sensibilité, 300 000 places de garde supplémentaires ajoutent au plus 0,03 enfant par femme à la fécondité simulée après montée en charge, avec un délai initial d’un an ; les naissances et les coûts associés sont alors recalculés. <a href="https://www.ined.fr/fr/publications/editions/document-travail/impact-family-policy-fertility-trends">Une étude de l’Ined</a> étaye la direction possible de l’effet des services de garde, <strong>pas ce coefficient précis</strong>, qui reste une convention exploratoire. Les autres réactions démographiques aux politiques ne sont pas encore quantifiées.</p>
+          <h3 id="fiscalite">Fiscalité : ce qui est codé et ce qui ne l’est pas</h3>
+          <p>Le <a href="fiscal.js">moteur fiscal expérimental</a> applique des règles 2026 datées pour les tranches d’IR, l’IFI et les successions <em>en ligne directe</em>, plus une variante d’impôt plancher sur la fortune <strong>non en vigueur</strong>. Les réglages modifient les règles à partir de l’année choisie. Les écarts de recettes alimentent le budget ; les gains/pertes des foyers-types passent par des propensions à consommer <strong>supposées</strong> (90 %, 75 %, 60 %, 45 %, 25 % selon le groupe), puis dans le canal de demande macro. Les règles de référence sont prolongées en euros constants après 2026 : aucune loi future n’est présumée connue.</p>
+          <div class="audit-table-wrap"><table class="audit-table">
+            <caption>Couverture des textes : ni les lois ni leurs annexes ne sont intégralement transcrites</caption>
+            <thead><tr><th>Bloc</th><th>Pris en compte</th><th>Manquant pour une simulation juridique et distributive fidèle</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><a href="https://www.budget.gouv.fr/documentation/documents-budgetaires-lois/exercice-2026">LFI 2026 et annexes</a></th><td>Barème IR 2026, quelques agrégats du budget de l’État.</td><td>Articles fiscaux exhaustifs, crédits par mission/programme/action, niches, exonérations, dates infra-annuelles et exécution.</td></tr>
+              <tr><th scope="row"><a href="https://www.securite-sociale.fr/home/la-secu-en-detail/loi-de-financement/annees-passees/plfss-2026.html">LFSS 2026 et annexes</a></th><td>Objectifs et références cités ; paramètres légaux individuels non calculés.</td><td>Barèmes de prestations, taux/assiettes/plafonds de cotisations, exonérations, branches et ONDAM détaillé.</td></tr>
+              <tr><th scope="row">Droit fiscal permanent</th><td>Barèmes IR et IFI, succession directe simplifiée.</td><td>Quotient familial plafonné, décote IR, crédits d’impôt, revenus à taux forfaitaire, IFI plafonnement/réductions, autres héritiers et donations antérieures.</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Population de calcul non représentative :</strong> les 41,5 millions de foyers sont 16 foyers-types pondérés construits à la main, et les 241 000 parts successorales sont des cas illustratifs indépendants. Le nombre total de foyers est rapproché d’une <a href="https://www.impots.gouv.fr/dgfip-statistiques-limpot-sur-le-revenu-2024-ete-plus-dynamique-que-les-revenus">statistique DGFiP</a>, mais leur croisement revenu × patrimoine, les successions et la queue au-delà de 100 M€ ne proviennent pas de microdonnées françaises. Après ajustement limité de l’assiette IR, le modèle simplifié donne environ 98,8 Md€ en règles 2026, à comparer prudemment à 94,3 Md€ d’IR net <a href="https://www.insee.fr/fr/statistiques/8988845">Insee 2025</a> ; l’IFI reste à 2,07 contre 2,71 Md€ et les successions à 23,88 contre 16,07 Md€ dans le même tableau. <strong>Les niveaux n’ont ni la même année de droit ni toutes les mêmes règles.</strong> Les rendements de réforme et les gagnants/perdants ne sont pas des prévisions validées.</p>
+          <h4>Rétrotest de l’IR, par année de revenu</h4>
+          <p>Pour chaque année 2020–2024, le calcul réapplique le <a href="https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20250414">barème historique officiel</a> aux foyers-types, en utilisant uniquement le total des revenus déclarés et le nombre de foyers publiés pour cette année par la DGFiP. Un seul coefficient d’assiette effective (0,7227) est ajusté sur 2020–2022, puis <strong>gelé</strong> pour 2023–2024. Le moteur courant en transporte l’équivalent (0,7731) sur les foyers-types : il s’agit d’un substitut provisoire aux assiettes, décotes, crédits et revenus hors barème manquants, pas d’une nouvelle règle fiscale.</p>
+          <div class="audit-table-wrap"><table class="audit-table">
+            <caption>IR net sur avis DGFiP et modèle conditionnel, en Md€ ; écart = modèle moins observé</caption>
+            <thead><tr><th>Revenus</th><th>Bloc</th><th>Observé</th><th>Avant</th><th>Après</th><th>Écart après</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">2020</th><td>Ajustement</td><td>74,0</td><td>132,7</td><td>71,0</td><td>−3,0</td></tr>
+              <tr><th scope="row">2021</th><td>Ajustement</td><td>80,8</td><td>149,5</td><td>80,4</td><td>−0,4</td></tr>
+              <tr><th scope="row">2022</th><td>Ajustement</td><td>82,1</td><td>158,3</td><td>85,1</td><td>+3,0</td></tr>
+              <tr><th scope="row">2023</th><td>Validation</td><td>83,5</td><td>169,2</td><td>91,0</td><td>+7,5</td></tr>
+              <tr><th scope="row">2024</th><td>Validation</td><td>92,0 <small>(provisoire)</small></td><td>185,4</td><td>99,6</td><td>+7,6</td></tr>
+            </tbody>
+          </table></div>
+          <p>Erreur absolue moyenne hors ajustement : <strong>7,55 Md€</strong> (8,6 % du niveau observé moyen), contre 89,54 Md€ sans correction. Le signe positif persistant suggère une mauvaise distribution des revenus imposables et/ou des règles manquantes (décote, quotient familial plafonné, crédits, PFU, CEHR) ; l’agrégat ne permet pas d’attribuer chaque euro d’écart. La hausse 2024 de l’IR hors barème et de la CEHR, signalée par la <a href="https://www.impots.gouv.fr/dgfip-statistiques-limpot-sur-le-revenu-2024-ete-plus-dynamique-que-les-revenus">DGFiP</a>, confirme qu’un seul barème ne suffit pas. Ce test utilise des entrées contemporaines observées : <strong>ce n’est pas une prévision faite en 2020, ni une validation causale des effets des réformes.</strong></p>
+          <p>Un second contrôle applique le barème IFI inchangé depuis 2018 aux <a href="https://www.impots.gouv.fr/impot-sur-la-fortune-immobiliere-ifi">patrimoines nets moyens DGFiP par quatre tranches marginales</a>, avec leurs effectifs annuels, puis compare à l’impôt net moyen publié. Sans aucun recalage IFI, l’écart modèle moins observé passe de <strong>+0,24 Md€ en 2018</strong> à <strong>+0,34 Md€ en 2025</strong> (en 2025 : 2,67 contre 2,33 Md€). L’impôt net tient compte de réductions et plafonnements absents du prototype ; calculer un barème sur une moyenne peut aussi différer de la moyenne des impôts individuels. Ce test <strong>ne valide pas</strong> le croisement revenu × immobilier de nos 16 foyers-types, ni le rendement d’un changement de seuil.</p>
+          <p>Les observations <a href="https://www.insee.fr/fr/statistiques/8988845">Insee 3.217</a> 2018–2025 (IR avant crédits, crédits utilisés et remboursés, IFI/ISF, successions) sont archivées dans <code>research/fiscal-history.json</code>. Elles mesurent des années civiles comptables et ne doivent pas être substituées aux avis DGFiP : les deux séries diffèrent par calendrier, périmètre et traitement des crédits. Pour les successions, aucune distribution historique des parts transmises et des liens de parenté n’a été reconstituée ; l’écart de niveau reste un diagnostic, <strong>pas un rétrotest</strong>. Les fichiers et calculs sont vérifiables avec <code>python3 scripts/verify-fiscal-source.py</code> et <code>node scripts/fiscal-backtest.mjs</code>.</p>
+          <p>Le seuil de 100 M€ et le plancher de 2 % de la <a href="https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html">proposition dite Zucman</a> sont illustrés par une contribution <code>max(0, 2 % × patrimoine net − IR − IFI − autres impôts couverts supposés)</code>. L’assiette, les impôts imputables, les valorisations et l’exil fiscal ne sont pas entièrement reproduits. Les 1 800 foyers au-dessus de 100 M€ dans le jeu synthétique sont une <strong>hypothèse de scénario</strong>, pas un fichier fiscal observé. Un rendement précis exigerait des données confidentielles ou une méthode indépendante validée.</p>
+          <div class="audit-equation"><span>Identités à conserver</span><code>solde = recettes − dépenses ; dette(t+1) ≈ dette(t) − solde(t+1) + ajustements stock-flux</code><p>EcoSim simplifie encore l’ajustement stock-flux et impose une partie de la trajectoire de référence du déficit : la réconciliation détaillée par catégorie reste à faire.</p></div>
+        </section>
+
+        <section class="audit-section" id="histoire" aria-labelledby="histoire-title">
+          <div class="audit-section-heading"><span>04</span><h2 id="histoire-title">Ce que l’histoire teste — et ne teste pas</h2></div>
+          <p class="audit-intro">Depuis chaque année d’origine 2007–2024, un <strong>prévisionniste témoin simple</strong> utilise uniquement les années antérieures pour projeter la croissance nominale médiane récente, le déficit et le chômage constants, puis la dette cumulée. Nous comparons ses prévisions aux observations Eurostat révisées. Ce témoin <strong>n’est pas le moteur causal d’EcoSim</strong>.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric" id="backtest-table">
+            <caption>Erreurs du témoin en pseudo-hors-échantillon ; MAE / P80 de l’erreur absolue</caption>
+            <thead><tr><th>Horizon</th><th>Cas</th><th>PIB nominal<br />% / %</th><th>Déficit / PIB<br />pt / pt</th><th>Dette / PIB<br />pt / pt</th><th>Chômage<br />pt / pt</th></tr></thead>
+            <tbody id="backtest-body"><tr><td colspan="6">Chargement des résultats…</td></tr></tbody>
+          </table></div>
+          <noscript><p>Activez JavaScript pour recalculer le tableau à partir de <a href="history.js">history.js</a>, ou lancez <code>node scripts/backtest.mjs</code> depuis le dépôt.</p></noscript>
+          <p class="audit-caption"><strong>MAE</strong> : moyenne des erreurs absolues ; <strong>P80</strong> : 80e centile de ces erreurs sur les cas observés, et non probabilité de couverture future. À 10 ans il ne reste que neuf cas, dont les horizons se chevauchent. Les séries utilisées sont révisées a posteriori : ce n’est pas un véritable test sur les seules données disponibles à chaque date.</p>
+          <h3>Rejeu daté du moteur : premier diagnostic, entrées incomplètes</h3>
+          <p>Ce module de rejeu <strong>séparé du moteur principal</strong> part des comptes APU en 2005, 2010, 2015 ou 2020 et compare chaque année son résultat aux séries historiques. Il inclut les deux changements de TVA de 2014 (rendements <em>ex ante</em> de 2,5 et 4,2 Md€), la dépense CICE en comptabilité nationale selon le PLF 2019 et l’allègement de cotisations chiffré pour 2019. Le total TVA estimé de 6,7 Md€ est à rapprocher du rendement global de 6,5 Md€ <a href="https://www.insee.fr/fr/statistiques/fichier/1288733/ECOFRA15.pdf">rapporté par l’Insee</a> ; ce contrôle ne prouve pas les effets sur la croissance.</p>
+          <h3 id="banc-insee">Banc à données communes Insee · revue externe en attente</h3>
+          <p>Un second diagnostic fige <a href="https://www.insee.fr/fr/statistiques/8988797">PIB et croissance</a>, <a href="https://www.insee.fr/fr/statistiques/8988845">dépenses et recettes</a>, ainsi que <a href="https://www.insee.fr/fr/statistiques/8988843">dette et ajustements stock-flux</a> issus des tableaux Insee en base 2020. Il part des mêmes comptes pour rejouer les mesures documentées et comparer les années suivantes, sans utiliser les cibles futures dans le calcul. Les comptes sont toutefois révisés en 2026, et les politiques simultanées restent incomplètes. Le chômage de contexte provient encore d'une autre série et n'entre pas dans ce score commun.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+            <caption>Prototype historique, simulé moins Insee : cas partiels, pas effets causaux</caption>
+            <thead><tr><th>Départ → année</th><th>PIB nominal</th><th>Dépenses</th><th>Recettes</th><th>Déficit/PIB</th><th>Dette/PIB</th><th>Manque majeur</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">2013 → 2014</th><td>−0,14 %</td><td>+17,0 Md€</td><td>+1,5 Md€</td><td>+0,73 pt</td><td>+2,36 pt</td><td>Coût du CICE inconnu à l'origine</td></tr>
+              <tr><th scope="row">2018 → 2019</th><td>−1,02 %</td><td>−6,6 Md€</td><td>−7,1 Md€</td><td>+0,05 pt</td><td>+0,68 pt</td><td>Effet macro de la bascule CICE non estimé</td></tr>
+              <tr><th scope="row">2020 → 2021</th><td>−5,09 %</td><td>−38,4 Md€</td><td>−70,2 Md€</td><td>+1,69 pt</td><td>+7,39 pt</td><td>Soutiens Covid et rebond incomplets</td></tr>
+            </tbody>
+          </table></div>
+          <p class="audit-caption">Sur 2014–2016, l'erreur moyenne absolue de déficit/PIB est de 1,89 pt avec les mesures encodées contre 2,09 pt sans elles ; pour le PIB nominal, elle passe au contraire de 0,43 % sans mesures à 0,60 % avec. Le calcul « sans mesures » n'est pas une France contrefactuelle. La courbe TVA utilisée provient de Mésange 2017, <strong>postérieure au départ 2013</strong> : ce n'est pas une prévision à millésime d'époque. Le tableau Insee de passage déficit → dette laisse en 2014 une discordance d'environ −0,64 Md€ avec les autres tableaux : elle est conservée. <strong>Aucun expert extérieur n'a encore revu ce banc ; il n'évalue pas le moteur principal.</strong> Commandes et protocole d'examen : <code>scripts/comparable-insee-benchmark.mjs</code> et <code>VALIDATION_REVIEW.md</code> dans le dépôt.</p>
+          <div class="audit-triplet" id="audit-triplet" aria-labelledby="audit-triplet-title">
+            <div class="audit-triplet-heading">
+              <div><span class="audit-label">Lecture vérifiable · Insee</span><h4 id="audit-triplet-title">De l’année T aux résultats suivants</h4></div>
+              <span class="tag unavailable">Diagnostic partiel · non validé</span>
+            </div>
+            <p>Choisissez une année de départ et une année observée. Les montants initiaux, les mesures réellement encodées et les cinq écarts proviennent du <strong>même calcul du prototype historique</strong>. Leurs sources et les exclusions sont indiquées ; un effet absent n’est jamais interprété comme nul.</p>
+            <div class="audit-controls">
+              <label for="audit-comparable-case">Départ T <select id="audit-comparable-case"></select></label>
+              <label for="audit-comparable-year">Résultat observé <select id="audit-comparable-year"></select></label>
+            </div>
+            <div class="audit-triplet-grid">
+              <article><span class="audit-label">1 · État de départ</span><h5 id="audit-comparable-origin-title">—</h5><dl id="audit-comparable-origin"></dl><p id="audit-comparable-assumptions" class="audit-caption"></p></article>
+              <article><span class="audit-label">2 · Mesures encodées</span><h5 id="audit-comparable-policy-title">—</h5><ul id="audit-comparable-policies"></ul><p class="audit-caption">Variations directes de l’année affichée, pas coûts cumulés ; montants ex ante ou projetés, non rendements constatés poste par poste.</p></article>
+              <article><span class="audit-label">3 · Ce qui manque</span><h5>Couverture partielle</h5><ul id="audit-comparable-missing"></ul><p class="audit-caption">Inventaire non exhaustif ; les chocs exogènes ne sont pas tous représentés.</p></article>
+            </div>
+            <div class="audit-table-wrap"><table class="audit-table audit-numeric audit-triplet-table">
+              <caption id="audit-comparable-caption">Résultat à T+1, prototype moins Insee</caption>
+              <thead><tr><th>Indicateur</th><th>Insee observé</th><th>Prototype simulé</th><th>Écart signé</th></tr></thead>
+              <tbody id="audit-comparable-results"><tr><td colspan="4">Chargement des résultats…</td></tr></tbody>
+            </table></div>
+            <p id="audit-comparable-summary" class="audit-caption" aria-live="polite"></p>
+            <p class="audit-caption">Compte initial et cible : <a href="https://www.insee.fr/fr/statistiques/8988797">PIB Insee</a>, <a href="https://www.insee.fr/fr/statistiques/8988845">dépenses et recettes Insee</a>, <a href="https://www.insee.fr/fr/statistiques/8988843">dette Insee</a>, tous dans le gel révisé au 10 octobre 2026. Les montants des politiques sont filtrés sur leur année de connaissance ; <strong>les comptes initiaux révisés et la courbe TVA Mésange 2017 ne l’étaient pas nécessairement à T</strong>. Les observations après T servent uniquement à mesurer l’écart. L’ajustement stock-flux de la dette, absent de la prévision, figure dans les données sources et peut expliquer une partie de son écart.</p>
+          </div>
+          <div class="audit-controls">
+            <label for="audit-frequency">Pas du calcul <select id="audit-frequency"><option value="annual">Annuel (ancien)</option><option value="quarterly">Trimestriel</option></select></label>
+            <label for="audit-origin">Année de départ <select id="audit-origin"><option value="2020">2020 · 5 ans</option><option value="2015">2015 · 10 ans</option><option value="2010">2010 · 15 ans</option><option value="2005">2005 · 20 ans</option></select></label>
+            <label for="audit-metric">Indicateur <select id="audit-metric"><option value="deficitRatio">Déficit / PIB</option><option value="debtRatio">Dette / PIB</option><option value="spending">Dépenses</option><option value="revenue">Recettes</option><option value="gdp">PIB nominal</option><option value="unemployment">Chômage</option></select></label>
+          </div>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric audit-year-table">
+            <caption id="audit-year-caption">Comparaison annuelle — simulé moins observé</caption>
+            <thead><tr><th>Année</th><th>Observé</th><th>Simulé</th><th>Écart</th></tr></thead>
+            <tbody id="audit-year-body"><tr><td colspan="4">Chargement des résultats…</td></tr></tbody>
+          </table></div>
+          <p id="audit-year-summary" class="audit-caption" aria-live="polite"></p>
+          <details id="audit-quarter-ledger" class="audit-quarter-ledger" hidden>
+            <summary>Comparer chaque trimestre à l’Insee</summary>
+            <p>Colonne « observé » : comptes Insee en prix courants, CVS-CJO. Colonne « simulé » : référence et effets de politiques calculés par notre prototype ; sa référence reste une ventilation synthétique des hypothèses annuelles. L’écart mesure l’ajustement brut du prototype incomplet, pas un effet causal.</p>
+            <label for="audit-quarter-metric">Indicateur trimestriel <select id="audit-quarter-metric"><option value="deficit">Déficit</option><option value="spending">Dépenses</option><option value="revenue">Recettes</option><option value="gdp">PIB nominal</option></select></label>
+            <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+              <caption id="audit-quarter-caption">Flux trimestriels, Md€ : observé, simulé, écart</caption>
+              <thead><tr><th>Période</th><th>Observé</th><th>Simulé</th><th>Écart</th></tr></thead>
+              <tbody id="audit-quarter-body"></tbody>
+            </table></div>
+            <p id="audit-quarter-summary" class="audit-caption" aria-live="polite"></p>
+          </details>
+          <p class="audit-caption">Dépenses et recettes : <a href="https://www.insee.fr/fr/statistiques/8988845">montants annuels APU Insee 3.201 actualisés en août 2026</a> ; PIB, dette et chômage : séries Eurostat figées. Les montants CICE 2018–2022 sont des <a href="https://www.strategie.gouv.fr/files/files/Publications/Rapport/fs-_rapport_cice-2018-02-10.pdf">prévisions PLF 2019</a>, <strong>pas</strong> des réalisations Insee ; le montant de cotisations de 2019 est <a href="https://www.economie.gouv.fr/files/files/Actus2018/RESF_2019_web.pdf">ex ante</a> et maintenu nominalement ensuite, faute de série d’assiette. L’effet du CICE sur PIB/emploi, les crises, les prix de l’énergie, les taux et la plupart des autres mesures restent absents. Mode <code>--blind</code> disponible en ligne de commande, mais les comptes de départ restent des séries révisées. Ces écarts ne sont <strong>ni un score de validation d’EcoSim ni une estimation causale des politiques</strong>.</p>
+          <p class="audit-caption">Les cibles trimestrielles proviennent du <a href="https://www.insee.fr/fr/statistiques/9035065?sommaire=9007859">classeur Insee actuel en base 2020</a>. L’ancienne page de séries trimestrielles citée auparavant était en base 2010 et arrêtée. Les flux Insee sont corrigés des variations saisonnières et des jours ouvrables ; leur somme n’est pas forcée à égaler le compte annuel brut. En 2025, elle le dépasse de 0,60 Md€ pour les dépenses comme pour les recettes. Les écarts sont calculés, mais le modèle trimestriel reste <strong>exploratoire et incomplet</strong>.</p>
+          <h3>Qui dépense et qui encaisse ?</h3>
+          <p>Les sous-secteurs publics ne s’additionnent pas directement : une subvention de l’État à une collectivité est une dépense pour l’un et une recette pour l’autre, mais pas deux opérations pour l’ensemble des administrations. Le tableau ci-dessous utilise le <a href="https://www.insee.fr/fr/statistiques/8988845">compte Insee 3.215</a> ; il est diagnostique, pas encore un moteur de prévision par administration.</p>
+          <label for="audit-subsector-year">Année des sous-secteurs <select id="audit-subsector-year"></select></label>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+            <caption>Comptes publics par sous-secteur, Md€ nominaux</caption>
+            <thead><tr><th>Secteur</th><th>Dépenses</th><th>Recettes</th><th>Déficit</th></tr></thead>
+            <tbody id="audit-subsector-body"></tbody>
+          </table></div>
+          <p id="audit-subsector-note" class="audit-caption"></p>
+          <h3>Démographie, travail et échanges : nouveaux contrôles</h3>
+          <p>Le scénario démographique de référence suit désormais les <a href="https://www.insee.fr/fr/statistiques/8990852?sommaire=8991068">effectifs annuels par âge et sexe de l’Insee</a>. Pour une année simulée, la population affichée correspond au 1er janvier de l’année suivante, après les flux de naissance, décès, migration et ajustement statistique. Les changements de fécondité et migration restent des sensibilités agrégées ; la pyramide du <em>scénario modifié</em> n’est pas encore recalculée âge par âge.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+            <caption>Scénario central Insee : population au 1er janvier, naissances et décès pendant l’année (projection après 2026)</caption>
+            <thead><tr><th>Année</th><th>Population (M)</th><th>65 ans ou + (%)</th><th>80 ans ou + (M)</th><th>Naissances (k)</th><th>Décès (k)</th></tr></thead>
+            <tbody id="audit-population-body"></tbody>
+          </table></div>
+          <p>En 2025, l’<a href="https://www.insee.fr/fr/statistiques/9012123">enquête Emploi</a> compte séparément chômage BIT et halo ; le <a href="https://www.insee.fr/fr/statistiques/9012121">sous-emploi</a> concerne des personnes déjà en emploi. Les réunir dans un « stock de chômeurs » serait faux. Le simulateur utilise les effectifs de <strong>15 à 64 ans</strong> de ces trois viviers pour un plafond indicatif de recrutements, mais pas encore les croisements âge × diplôme × métier, faute de taux de transition validés. Le tableau ci-dessous montre les totaux tous âges de l'enquête.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+            <caption>Viviers Insee 2025 par âge, milliers de personnes ; catégories distinctes</caption>
+            <thead><tr><th>Âge</th><th>Chômage BIT</th><th>Halo</th><th>Sous-emploi</th></tr></thead>
+            <tbody id="audit-labour-body"></tbody>
+          </table></div>
+          <details class="audit-quarter-ledger"><summary>Chômage par diplôme et ressources/importations par produit</summary>
+            <p>Diplômes : les totaux peuvent inclure des réponses non renseignées. TES : une part d’importations dans les ressources d’un produit n’est <strong>pas</strong> la fuite marginale d’une nouvelle dépense publique ; ce tableau ne calibre pas encore les multiplicateurs d’EcoSim.</p>
+            <div class="audit-table-wrap"><table class="audit-table audit-numeric"><caption>Chômeurs BIT par diplôme, Insee 2025, milliers</caption><thead><tr><th>Diplôme</th><th>Effectif</th></tr></thead><tbody id="audit-diploma-body"></tbody></table></div>
+            <div class="audit-table-wrap"><table class="audit-table audit-numeric"><caption>TES Insee 2024 : part des importations dans la production + importations du produit</caption><thead><tr><th>Produit</th><th>Production (Md€)</th><th>Importations (Md€)</th><th>Part (%)</th></tr></thead><tbody id="audit-tes-body"></tbody></table></div>
+          </details>
+          <p class="audit-caption">Exemple de mesure dont la date compte : les <a href="https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mes-autres-impots-et-taxes/suppression-des-cotisations">cotisations chômage salariales ont été diminuées en janvier puis supprimées en octobre 2018</a>. Cette bascule n’est encore qu’inventoriée : il faudrait aussi consolider la hausse de CSG et les compensations avant de lui attribuer un coût net.</p>
+          <div class="audit-warning"><strong>Ce que montrent les écarts.</strong><p>Après un départ en 2020, le PIB est déjà sous-estimé de 5,1 % en 2021 : la reprise post-Covid manque. Après un départ en 2010, la dépense est surestimée de 282,2 Md€ en 2019 : une tendance de dépense globale ne suffit pas. La dette ajoute une autre lacune : l’ajustement stock-flux apparent des séries assemblées atteint environ +96 Md€ en 2009, alors que le rejeu le fixe à zéro. La priorité est donc de réconcilier les comptes et d’introduire des catégories et chocs datés, pas de forcer un coefficient unique pour faire disparaître l’erreur.</p></div>
+          <p class="audit-caption">Contrôle supplémentaire : avec le petit calendrier de mesures, l’erreur moyenne de déficit/PIB du départ 2015 vaut 1,67 point, contre 1,53 point sans ces mesures. Leur ajout <strong>n’améliore pas systématiquement</strong> l’ajustement ; l’ablation <code>--ablate</code> n’est pas un contrefactuel historique.</p>
+          <h3>Prévisions publiées à l’époque : un autre contrôle, une autre question</h3>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+            <caption>Prévisions de croissance réelle de la Banque de France, comparées à Eurostat révisé ; ce ne sont pas des prévisions EcoSim</caption>
+            <thead><tr><th>Publication → année cible</th><th>Prévu</th><th>Observé</th><th>Écart absolu</th><th>Publication</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Déc. 2019 → 2020</th><td>+1,1 %</td><td>−7,4 %</td><td>8,5 pt</td><td><a href="https://publications.banque-france.fr/projections-macroeconomiques-decembre-2019">BDF 2019</a></td></tr>
+              <tr><th scope="row">Déc. 2022 → 2023</th><td>+0,3 %</td><td>+1,6 %</td><td>1,3 pt</td><td><a href="https://www.banque-france.fr/fr/publications-et-statistiques/publications/projections-macroeconomiques-decembre-2022">BDF 2022</a></td></tr>
+              <tr><th scope="row">Déc. 2023 → 2024</th><td>+0,9 %</td><td>+1,5 %</td><td>0,6 pt</td><td><a href="https://www.banque-france.fr/fr/publications-et-statistiques/publications/projections-macroeconomiques-decembre-2023">BDF 2023</a></td></tr>
+              <tr><th scope="row">Déc. 2023 → 2025</th><td>+1,3 %</td><td>+0,8 %</td><td>0,5 pt</td><td><a href="https://www.banque-france.fr/fr/publications-et-statistiques/publications/projections-macroeconomiques-decembre-2023">BDF 2023</a></td></tr>
+            </tbody>
+          </table></div>
+          <p class="audit-caption">Ces quatre « millésimes » montrent le risque de choc imprévu — surtout 2020 — mais ne mesurent aucun écart de prévision d’EcoSim, qui n’existait pas à ces dates.</p>
+        </section>
+
+        <section class="audit-section" id="recherche" aria-labelledby="recherche-title">
+          <div class="audit-section-heading"><span>05</span><h2 id="recherche-title">Comparaison aux modèles publiés</h2></div>
+          <p><a href="https://www.insee.fr/fr/statistiques/2848300">Mésange 2017 (Insee / DG Trésor)</a> publie des variantes précisément définies. Pour une hausse permanente de TVA équivalant à un point du PIB, EcoSim reprend la trajectoire publiée du PIB réel et des prix à la consommation. La correction a notamment supprimé un effet de signe erroné : auparavant, la hausse de TVA faisait baisser l’inflation simulée.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric">
+            <caption>Choc TVA de +1 point de PIB ex ante, écart de PIB réel à la référence (%). EcoSim central contre Mésange 2017, tableau 4.1.5</caption>
+            <thead><tr><th>Horizon</th><th>Mésange</th><th>EcoSim</th><th>Écart</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1 an</th><td>−0,32</td><td>−0,32</td><td>0,00 pt</td></tr>
+              <tr><th scope="row">3 ans</th><td>−0,72</td><td>−0,70</td><td>+0,02 pt</td></tr>
+              <tr><th scope="row">5 ans</th><td>−0,81</td><td>−0,77</td><td>+0,04 pt</td></tr>
+              <tr><th scope="row">10 ans</th><td>−0,78</td><td>−0,71</td><td>+0,07 pt</td></tr>
+            </tbody>
+          </table></div>
+          <p class="audit-caption">À un an, hausse du niveau des prix à la consommation Mésange : +1,48 % ; variation de l’inflation annuelle EcoSim : +1,47 point. Ce sont des grandeurs proches mais pas identiques. La proximité du PIB est <strong>un contrôle de calibration, pas une validation indépendante</strong>.</p>
+          <div class="audit-table-wrap"><table class="audit-table">
+            <caption>Comparaison de périmètre, pas palmarès de précision</caption>
+            <thead><tr><th>Modèle</th><th>Ce qu’il sait calculer</th><th>État du rapprochement avec EcoSim</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><a href="https://www.insee.fr/fr/statistiques/2848300">Mésange</a></th><td>Réponses macroéconomiques trimestrielles à des chocs définis.</td><td>Variante TVA reprise pour calibrage ; autres leviers pas encore strictement comparables.</td></tr>
+              <tr><th scope="row"><a href="https://www.insee.fr/fr/information/2021951">Ines</a></th><td>Impôts, cotisations et prestations par ménage selon les barèmes ; modèle statique.</td><td>Aucune comparaison chiffrée représentative : EcoSim n’a ni la même population ERFS ni les mêmes règles fines.</td></tr>
+              <tr><th scope="row"><a href="https://www.insee.fr/fr/information/3606338">Destinie 2</a></th><td>Carrières, vieillissement et droits à retraite sur le long terme.</td><td>Projection d’âge Insee importée, mais carrières et pensions non reproduites ; aucun score comparable.</td></tr>
+            </tbody>
+          </table></div>
+          <div class="audit-warning"><strong>Deux rapprochements restent non comparables au sens strict.</strong><p>Une hausse du poste « transport » n’est pas un choc pur d’investissement public ; une baisse des cotisations sociales agrégées n’est pas une baisse des seules cotisations employeur. Les chiffres correspondants du script de benchmark sont des signaux de travail, pas des écarts de performance interprétables.</p></div>
+          <h3>Mesures passées reconstituées</h3>
+          <p>La hausse de TVA de 2014 a accru la fiscalité indirecte d’environ <a href="https://www.insee.fr/fr/statistiques/fichier/1288733/ECOFRA15.pdf">6,5 Md€ selon l’Insee</a>. Une conversion en part du PIB 2013 puis à la base 2025 donne 9,17 Md€ ; EcoSim produit −0,10 % de PIB réel à un an. Une <a href="https://www.senat.fr/rap/l12-213-1/l12-213-177.html">estimation ex ante du Sénat</a> était aussi de −0,1 %. Ce sont deux <strong>estimations de modèle</strong>, pas un effet causal observé : d’autres politiques, dont le CICE, agissaient simultanément.</p>
+          <p>Le <a href="https://www.strategie.gouv.fr/files/files/Publications/2020/CICE/fs-2020-rapport-cice2020-16septembre-final18h.pdf">CICE</a> reste non représentable <em>comme mesure causale</em> dans le moteur principal : assiette salariale éligible et décalage entre créance fiscale et trésorerie manquent. Le rejeu intègre seulement une série de <strong>dépenses comptables indicatives</strong>, sans inventer d'effet sur PIB ou emploi.</p>
+          <p class="audit-caption">Autres références pertinentes, <em>non intégrées ni validées ici</em> : <a href="https://www.tresor.economie.gouv.fr/Articles/2017/05/19/la-maquette-de-prevision-opale-2017">Opale</a> pour le court terme, <a href="https://www.ofce.sciences-po.fr/pdf/revue/2022/11-176OFCE.pdf">ThreeME</a> pour l’énergie-climat, <a href="https://openfisca.org/fr/packages/">OpenFisca</a> pour les règles socio-fiscales. Ils répondent à des questions différentes.</p>
+          <p class="audit-caption">Comparaison avec les simulateurs citoyens : <a href="https://github.com/cturkieh/france-budget-simulateur">France Budget</a>, <a href="https://francesimulator.com/donnees/">France Simulator</a> et <a href="https://github.com/Vadech/moi-president">Moi, Président</a> ne publient pas un banc d’essai commun sur les mêmes chocs, périmètres et millésimes. La couverture plus large d’EcoSim ne démontre donc pas une meilleure précision.</p>
+        </section>
+
+        <section class="audit-section" id="incertitude" aria-labelledby="incertitude-title">
+          <div class="audit-section-heading"><span>06</span><h2 id="incertitude-title">Comment lire les fourchettes</h2></div>
+          <p class="audit-intro"><strong>Oui, comparer T → T+1 permet de mesurer une erreur de prévision.</strong> Répéter ce test avec le moteur principal figé, les informations disponibles à chaque T et des années non utilisées pour régler ses coefficients permettrait d’estimer un biais, une erreur typique et la fréquence réelle de couverture de ses fourchettes. <strong>Ce calcul n’est pas encore réalisé pour EcoSim.</strong></p>
+          <div class="audit-table-wrap"><table class="audit-table">
+            <caption>Trois notions différentes derrière le mot « incertitude »</caption>
+            <thead><tr><th>Question</th><th>Ce que l’on peut calculer</th><th>Statut actuel</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Erreur de prévision globale</th><td>Sur plusieurs départs T, comparer observé − simulé séparément pour PIB, dépenses, recettes, déficit et dette ; publier biais, erreur absolue et couverture des bandes, par horizon.</td><td><span class="tag assumed">Pas pour le moteur principal</span> Le tableau historique concerne un témoin ; le banc Insee concerne un prototype incomplet.</td></tr>
+              <tr><th scope="row">Effet d’une réforme</th><td>Comparer la réforme à un contrefactuel crédible, en isolant chocs et politiques simultanées. La différence « avec / sans mesure » dans le code n’est qu’une ablation.</td><td><span class="tag unavailable">Non identifié</span> Aucun effet causal ni intervalle par levier n’est déduit de ces écarts.</td></tr>
+              <tr><th scope="row">Horizon 10–30 ans</th><td>Tester les scénarios structurels et publier plusieurs trajectoires conditionnelles ; les quelques départs historiques longs se chevauchent.</td><td><span class="tag unavailable">Stress exploratoire</span> Pas de probabilité de réalisation démontrée.</td></tr>
+            </tbody>
+          </table></div>
+          <div class="audit-card-grid two">
+            <article><span class="audit-label">Construction</span><p>Pour PIB, déficit/PIB, dette/PIB et chômage, la bande interne au scénario ne peut pas être plus étroite que le P80 des erreurs du témoin historique. Entre 1, 3, 5 et 10 ans, ce plancher est interpolé avec une enveloppe monotone.</p></article>
+            <article><span class="audit-label">Après dix ans</span><p>Le plancher est prolongé linéairement à 20–30 ans comme <em>stress</em>. Il n’existe pas de backtest historique à ces horizons dans EcoSim. Les ruptures monétaires, climatiques, politiques ou sanitaires peuvent sortir très loin de la plage affichée.</p></article>
+          </div>
+          <p class="audit-warning"><strong>Ce ne sont pas des intervalles de confiance à 80 %.</strong> Le P80 est une statistique descriptive du témoin, pas une probabilité attribuable aux scénarios EcoSim. La couverture réelle n’a pas été mesurée. Les bandes ne corrigent pas les erreurs de structure, de causalité ni de traduction d’un programme.</p>
+          <p class="audit-caption">Un écart observé peut venir de la tendance de référence, d’une mesure manquante, d’un choc imprévu, d’un coefficient erroné ou d’une révision statistique. Une seule année ne permet pas de les séparer ; davantage de trimestres ne créent pas automatiquement des expériences indépendantes. Les références méthodologiques sur <a href="https://www.elibrary.imf.org/view/journals/001/2014/093/article-A001-en.xml">l’identification des chocs budgétaires (FMI)</a> et les <a href="https://www.insee.fr/fr/information/7768619">révisions des comptes (Insee)</a> motivent ces réserves.</p>
+        </section>
+
+        <section class="audit-section" id="reproduire" aria-labelledby="reproduire-title">
+          <div class="audit-section-heading"><span>07</span><h2 id="reproduire-title">Vérifier soi-même</h2></div>
+          <p>Le site est statique : le navigateur reçoit les mêmes fichiers que ceux utilisés par l’interface Python. Les hypothèses et montants sont dans <a href="data.js">data.js</a>, la projection Insee condensée dans <a href="insee-projection.js">insee-projection.js</a>, l’historique dans <a href="history.js">history.js</a> et le moteur dans <a href="app.js">app.js</a>. Les scripts suivants sont dans le dépôt source du projet, pas dans le dossier web publié.</p>
+          <pre class="audit-code"><code>node scripts/backtest.mjs           # témoin historique : MAE et P80
+node scripts/check-history.mjs      # dérive éventuelle des séries Eurostat, sans écriture
+node scripts/vintage-audit.mjs      # prévisions BDF datées vs réalisations
+node scripts/benchmark-research.mjs # variantes Mésange et écarts
+node scripts/policy-history.mjs     # TVA 2014 ; CICE non représentable
+node scripts/historical-replay.mjs --annual # écarts année par année
+node scripts/historical-replay.mjs --quarterly --annual --quarters # cibles Insee annuelles et trimestrielles
+node scripts/historical-replay.mjs --ablate # avec / sans mesures codées
+node scripts/historical-replay.mjs --blind # entrées connues à l'origine uniquement
+node scripts/comparable-insee-benchmark.mjs --json # comptes Insee communs, cas partiels
+python3 scripts/verify-insee-validation.py # vérifie les quatre classeurs figés
+node scripts/export-historical-audit.mjs # régénère le tableau de cette page
+node scripts/export-insee-projection.mjs # régénère la référence démographique du site
+python3 scripts/import-insee-observations.py # rafraîchit les classeurs (xlrd requis)
+node tests/insee-observations.mjs # réconciliation des nouvelles séries
+node tests/historical-replay.mjs    # calendriers, comptes et anti-fuite
+node tests/history-backtest.mjs     # garde-fou anti-fuite des années futures</code></pre>
+          <p>Les mesures du rejeu et leurs liens primaires figurent dans <code>research/historical-policy-timeline.json</code> ; <code>research/policy-events.json</code> documente séparément la variante de choc TVA du moteur principal. Une modification de donnée ou de coefficient doit conserver son origine, son millésime, sa formule de transformation et un test de non-régression. Les exports du simulateur permettent de conserver les réglages et trajectoires d’un scénario, mais ne figent pas encore automatiquement une empreinte de version du moteur.</p>
+        </section>
+
+        <section class="audit-section" id="limites" aria-labelledby="limites-title">
+          <div class="audit-section-heading"><span>08</span><h2 id="limites-title">Ce qu’il manque pour parler de fiabilité</h2></div>
+          <ol class="audit-roadmap">
+            <li><strong>Rejouer le moteur principal sur de vrais millésimes.</strong> Conserver les données publiées à chaque date T et davantage de réformes identifiées, avec annonce, entrée en vigueur, assiette et coût effectivement constaté. Figer les coefficients avant les années de test.</li>
+            <li><strong>Chocs réellement équivalents.</strong> Distinguer investissement pur, cotisations employeur/salarié, crédits d’impôt et bases taxables avant de comparer les réponses à Mésange ou d’évaluer le CICE.</li>
+            <li><strong>Réconciliation comptable annuelle.</strong> La base agrégée 2025 est rapprochée au bon millésime Insee ; il reste à rapprocher chaque poste de dépenses et recettes, déficit, charge d’intérêts, dette et ajustements stock-flux, sans imposer la trajectoire de déficit de référence.</li>
+            <li><strong>Erreurs et couverture publiées.</strong> Tester hors échantillon le moteur EcoSim lui-même, publier biais, MAE et fréquence observée dans les bandes par indicateur et horizon, comparer au témoin naïf sur les mêmes années, puis faire relire le protocole par des économistes indépendants.</li>
+            <li><strong>Long terme et politique.</strong> Confronter énergie-climat, retraites et démographie à des scénarios spécialisés ; estimer réactions sociales et vote sur données adaptées avant toute prétention prédictive.</li>
+          </ol>
+          <div class="audit-verdict closing"><strong>En pratique</strong><p>Utilisez EcoSim pour demander « que se passerait-il sous ces hypothèses ? », et lisez le mécanisme, le statut des données et la fourchette avant d’interpréter un chiffre. Si une mesure n’est pas représentable, son absence de résultat est une information — pas un zéro.</p></div>
+        </section>
+
+        <footer class="audit-footer"><a href="index.html">← Revenir au simulateur</a><span>Audit des données et calculs figés au 10 octobre 2026</span></footer>
+      </div>
+    </main>
+    <script src="history.js"></script>
+    <script src="historical-audit-data.js"></script>
+    <script src="audit.js"></script>
+  </body>
+</html>

@@ -24,6 +24,14 @@ window.ECOSIM_DATA = (() => {
 
   const sources = [
     {
+      id: "eurostat-historical-apu",
+      publisher: "Eurostat",
+      title: "Historique macroéconomique français 2003–2025",
+      date: "extraction du 10 octobre 2026",
+      url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table",
+      note: "PIB (nama_10_gdp), solde APU (gov_10a_main), dette (gov_10dd_edpt1) et chômage (une_rt_a). Copie révisée dans history.js ; diagnostic rétrospectif reproductible."
+    },
+    {
       id: "insee-election-participation-2022",
       publisher: "Insee",
       title: "Vingt ans de participation électorale",
@@ -53,7 +61,7 @@ window.ECOSIM_DATA = (() => {
       title: "Projections de population 2026–2070",
       date: "juin 2026",
       url: "https://www.insee.fr/fr/information/6536990",
-      note: "Scénarios de population, vieillissement et population active utilisés pour encadrer les horizons 20 et 30 ans."
+      note: "Projection centrale par âge et sexe 2026–2056 utilisée pour la référence démographique. Les écarts de politique restent agrégés."
     },
     {
       id: "ec-dsm-2025",
@@ -320,6 +328,14 @@ window.ECOSIM_DATA = (() => {
       note: "Fin du déficit excessif attendue en 2029 et plafonds de dépense nette."
     },
     {
+      id: "insee-mesange-2017",
+      publisher: "Insee · DG Trésor",
+      title: "Mésange 2017 — variantes de fiscalité et de dépense publique",
+      date: "mai 2017",
+      url: "https://www.insee.fr/fr/statistiques/2848300",
+      note: "Tableaux 4.1.1–4.1.5 : réponses du PIB et de l’emploi à des chocs permanents de 1 point de PIB. Le canal TVA de première année sert d’ancrage externe ; les autres canaux d’EcoSim ne sont pas validés par ce seul rapprochement."
+    },
+    {
       id: "ecb-multipliers",
       publisher: "BCE",
       title: "Comparing fiscal multipliers across models and countries in Europe",
@@ -568,10 +584,22 @@ window.ECOSIM_DATA = (() => {
     supply,
     inflation,
     lag: 0.96,
+    effectSource: id === "R_TVA" ? "insee-mesange-2017" : null,
     importShare: 0.06,
     observedYear: 2025,
     source: "insee-accounts"
   }));
+
+  // Mésange 2017, tableau 4.1.5 : hausse permanente de TVA procurant
+  // 1 point de PIB de recette ex ante. Variantes de modèle, non observations.
+  // L'année 30 prolonge vers la colonne « long terme » : non validée à 30 ans.
+  const researchVariants = {
+    vat: {
+      source: "insee-mesange-2017",
+      realGdpPct: { 1: -0.32, 2: -0.66, 3: -0.72, 5: -0.81, 10: -0.78, 30: -0.70 },
+      cpiLevelPct: { 0: 0, 1: 1.48, 2: 1.58, 3: 1.52, 5: 1.30, 10: 0.89, 30: 0.76 }
+    }
+  };
 
   const models = {
     consensus: {
@@ -630,6 +658,60 @@ window.ECOSIM_DATA = (() => {
       uncertainty: 0.50,
       strategicBoost: 1.30,
       inflationBoost: 1.18
+    },
+    debtCrisis: {
+      label: "Consolidation en récession",
+      short: "Crise de dette",
+      description: "Analogie de la Grèce après 2010 : une coupe ou une hausse d'impôt peut contracter davantage l'activité et laisser des séquelles. Pour une récession, choisissez aussi « Activité déprimée » dans les hypothèses avancées ; aucune coupe n'est déclenchée automatiquement.",
+      spendScale: 1.46,
+      taxScale: 1.26,
+      supplyScale: 0.90,
+      decay: 0.82,
+      debtSensitivity: 1.25,
+      hysteresisScale: 0.22,
+      uncertainty: 0.62,
+      evidence: [{ label: "Évaluation ex post du FMI (Grèce, 2010)", url: "https://www.imf.org/en/publications/cr/issues/2016/12/31/greece-ex-post-evaluation-of-exceptional-access-under-the-2010-stand-by-arrangement-40639" }]
+    },
+    stabilization: {
+      label: "Stabilisation inflationniste",
+      short: "Stabilisation",
+      description: "Analogie partielle de l'Argentine récente : priorité à l'ancrage budgétaire et à la désinflation, avec financement plus sensible aux tensions de prix. La France dans l'euro ne contrôle pas sa monnaie comme l'Argentine.",
+      spendScale: 0.66,
+      taxScale: 0.84,
+      supplyScale: 1.12,
+      decay: 0.58,
+      debtSensitivity: 1.55,
+      inflationBoost: 1.28,
+      inflationRiskScale: 0.12,
+      uncertainty: 0.68,
+      evidence: [{ label: "Programme Argentine 2025, FMI", url: "https://www.imf.org/en/news/articles/2025/04/08/pr25095-argentina-imf-reaches-staff-level-agreement-with-argentina-on-a-48-month-eff" }]
+    },
+    openEconomy: {
+      label: "Économie ouverte",
+      short: "Ouverture",
+      description: "Lecture inspirée de Mundell-Fleming : une part accrue de l'impulsion de demande fuit vers les importations, selon le poste touché et le cadre de change. L'euro reste le cadre de référence sauf choix distinct.",
+      spendScale: 1,
+      taxScale: 1,
+      supplyScale: 1,
+      decay: 0.72,
+      debtSensitivity: 1,
+      importLeakageScale: 2.20,
+      uncertainty: 0.46,
+      evidence: [{ label: "Multiplicateurs et régime de change, FMI", url: "https://www.imf.org/en/publications/wp/issues/2016/12/31/what-determines-government-spending-multipliers-25975" }]
+    },
+    constrainedTransition: {
+      label: "Transition énergétique contrainte",
+      short: "Transition",
+      description: "L'investissement énergétique agit moins vite sur l'offre et les chocs de prix se transmettent davantage. Le mix de politiques et les capacités industrielles restent déterminants ; ce n'est pas une prévision climatique.",
+      spendScale: 1,
+      taxScale: 1,
+      supplyScale: 1.10,
+      decay: 0.72,
+      debtSensitivity: 1,
+      energySupplyScale: 0.62,
+      energyInflationScale: 1.40,
+      uncertainty: 0.58,
+      evidence: [{ label: "Transition énergétique européenne, FMI", url: "https://www.elibrary.imf.org/view/journals/001/2026/046/article-A001-en.xml" }]
     }
   };
 
@@ -770,16 +852,25 @@ window.ECOSIM_DATA = (() => {
 
   const structural = {
     demographics: {
-      population: 69.1,
+      population: 69.081996,
       fertility: 1.56,
-      births: 645,
-      deaths: 651,
-      age65Share: 22,
+      births: 630.843,
+      deaths: 659.472,
+      age65Share: 22.20441,
       netMigration: 150,
       economicMigration: 50,
       otherMigration: 100,
       immigrantEmployment: 62,
       totalEmployment: 69.3
+    },
+    // Sensibilité illustrative, non coefficient causal estimé : la recherche
+    // documente le sens possible mais pas cet ordre de grandeur pour la France.
+    fertilityResponse: {
+      childcarePlacesForFullEffectK: 300,
+      maxAdditionalChildrenPerWoman: 0.03,
+      maturationYears: 3,
+      source: "https://www.ined.fr/fr/publications/editions/document-travail/impact-family-policy-fertility-trends",
+      status: "hypothese_exploratoire"
     },
     energy: {
       independence: 61,
@@ -825,9 +916,9 @@ window.ECOSIM_DATA = (() => {
         { id: "otherEmployment", label: "Autres emplois et arrondis", value: 0.38, note: "sans contrat connu et écarts de champ" }
       ],
       pools: {
-        unemployedBIT: 2400,
-        halo: 1800,
-        underemployment: 1300,
+        unemployedBIT: 2425.7,
+        halo: 1870.0,
+        underemployment: 1260.4,
         franceTravailABC: 5801.5,
         franceTravailTraining: 343.8,
         annualTrainingEntries: 918.9,
@@ -843,15 +934,15 @@ window.ECOSIM_DATA = (() => {
       }
     },
     controls: {
-      fertility: { label: "Fécondité", min: 1.0, max: 2.4, step: 0.01, value: 1.56, unit: " enfant/femme" },
-      lifeExpectancy: { label: "Écart d’espérance de vie", min: -3, max: 5, step: 0.5, value: 0, unit: " an" },
-      economicMigration: { label: "Solde migratoire économique", min: -50, max: 300, step: 5, value: 50, unit: " k/an" },
-      otherMigration: { label: "Autres motifs — proxy", min: -100, max: 300, step: 5, value: 100, unit: " k/an" },
-      integration: { label: "Emploi après intégration", min: 40, max: 80, step: 1, value: 62, unit: " %" },
+      fertility: { label: "Fécondité hors nouvelles mesures", min: 1.0, max: 2.4, step: 0.01, value: 1.56, unit: " enfant/femme", kind: "assumption" },
+      lifeExpectancy: { label: "Évolution exogène de l’espérance de vie", min: -3, max: 5, step: 0.5, value: 0, unit: " an", kind: "assumption" },
+      economicMigration: { label: "Solde migratoire économique supposé", min: -50, max: 300, step: 5, value: 50, unit: " k/an", kind: "assumption" },
+      otherMigration: { label: "Solde migratoire autres motifs supposé", min: -100, max: 300, step: 5, value: 100, unit: " k/an", kind: "assumption" },
+      integration: { label: "Taux d’emploi des nouveaux arrivants supposé", min: 40, max: 80, step: 1, value: 62, unit: " %", kind: "assumption" },
       nuclear: { label: "Nucléaire supplémentaire en 2035", min: -10, max: 20, step: 1, value: 0, unit: " GW" },
       renewables: { label: "Renouvelables supplémentaires en 2035", min: -20, max: 80, step: 2, value: 0, unit: " GW" },
       efficiency: { label: "Rénovation et efficacité publiques", min: 0, max: 30, step: 1, value: 0, unit: " Md€/an" },
-      fossilPrice: { label: "Choc sur les prix fossiles importés", min: -40, max: 100, step: 5, value: 0, unit: " %" },
+      fossilPrice: { label: "Choc extérieur sur les prix fossiles", min: -40, max: 100, step: 5, value: 0, unit: " %", kind: "assumption" },
       carbonTax: { label: "Signal-prix carbone supplémentaire", min: -30, max: 100, step: 5, value: 0, unit: " €/t" },
       publicFpeNet: { label: "Recrutements supplémentaires — État", min: -100, max: 100, step: 5, value: 0, unit: " k/an" },
       publicFptNet: { label: "Recrutements supplémentaires — collectivités", min: -100, max: 100, step: 5, value: 0, unit: " k/an" },
@@ -859,9 +950,9 @@ window.ECOSIM_DATA = (() => {
       publicPermanentShare: { label: "Part de titulaires dans les flux", min: 20, max: 100, step: 5, value: 69, unit: " %" },
       publicCategoryA: { label: "Part de catégorie A dans les flux", min: 5, max: 75, step: 1, value: 38, unit: " %" },
       publicCategoryB: { label: "Part de catégorie B dans les flux", min: 5, max: 50, step: 1, value: 22, unit: " %" },
-      publicHiringCapacity: { label: "Capacité annuelle de recrutement par mission", min: 2, max: 15, step: 0.5, value: 6, unit: " % des effectifs" },
+      publicHiringCapacity: { label: "Capacité de recrutement supposée par mission", min: 2, max: 15, step: 0.5, value: 6, unit: " % des effectifs", kind: "assumption" },
       trainingEntries: { label: "Entrées en formation supplémentaires", min: -400, max: 600, step: 25, value: 0, unit: " k/an" },
-      trainingMatch: { label: "Accès à l’emploi après formation", min: 35, max: 80, step: 1, value: 61, unit: " %" },
+      trainingMatch: { label: "Taux d’accès à l’emploi après formation supposé", min: 35, max: 80, step: 1, value: 61, unit: " %", kind: "assumption" },
       activationPlaces: { label: "Accompagnement intensif supplémentaire", min: -300, max: 600, step: 25, value: 0, unit: " k/an" },
       jobsMilitary: { label: "Recrutements — armées", min: -8, max: 30, step: 1, value: 0, unit: " k/an" },
       jobsPolice: { label: "Recrutements — Police nationale", min: -5, max: 20, step: 1, value: 0, unit: " k/an" },
@@ -901,21 +992,21 @@ window.ECOSIM_DATA = (() => {
       { id: "finance", label: "Finance", icon: "FIN", description: "Garanties et banque publique." }
     ],
     controls: {
-      laborParticipation: { group: "work", label: "Taux d’activité", min: -5, max: 8, step: 0.5, value: 0, unit: " pt", effects: { fiscal: -4.5, demand: 0.8, supply: 11.5, jobs: 180, poverty: -0.10, lag: 0.50 } },
-      productivity: { group: "work", label: "Productivité annuelle", min: -1, max: 2.5, step: 0.1, value: 0, unit: " pt/an", effects: { fiscal: 0, demand: 0, supply: 22, jobs: -8, inflation: -0.12, trade: 2.4, lag: 0.30 } },
+      laborParticipation: { group: "work", label: "Variation supposée du taux d’activité", kind: "assumption", min: -5, max: 8, step: 0.5, value: 0, unit: " pt", effects: { fiscal: -4.5, demand: 0.8, supply: 11.5, jobs: 180, poverty: -0.10, lag: 0.50 } },
+      productivity: { group: "work", label: "Gain annuel de productivité supposé", kind: "assumption", min: -1, max: 2.5, step: 0.1, value: 0, unit: " pt/an", effects: { fiscal: 0, demand: 0, supply: 22, jobs: -8, inflation: -0.12, trade: 2.4, lag: 0.30 } },
       minimumWage: { group: "work", label: "Salaire minimum réel", min: -10, max: 20, step: 1, value: 0, unit: " %", effects: { fiscal: -0.04, demand: 0.38, supply: -0.10, jobs: -3, inflation: 0.025, poverty: -0.035, lag: 0.85, uncertainty: 0.18 } },
 
-      retirementAge: { group: "pensions", label: "Âge effectif de départ", min: -3, max: 3, step: 0.5, value: 0, unit: " an", effects: { fiscal: -6.2, demand: -0.6, supply: 7.5, jobs: 75, poverty: 0.03, lag: 0.55 } },
+      retirementAge: { group: "pensions", label: "Écart supposé d’âge effectif de départ", kind: "assumption", min: -3, max: 3, step: 0.5, value: 0, unit: " an", effects: { fiscal: -6.2, demand: -0.6, supply: 7.5, jobs: 75, poverty: 0.03, lag: 0.55 } },
       pensionIndex: { group: "pensions", label: "Indexation au-dessus des prix", min: -4, max: 4, step: 0.5, value: 0, unit: " pt", effects: { fiscal: 4.1, demand: 2.4, supply: 0, inflation: 0.025, poverty: -0.07, lag: 0.95 } },
       pensionContribution: { group: "pensions", label: "Cotisation retraite", min: -3, max: 5, step: 0.5, value: 0, unit: " pt", effects: { fiscal: -9.5, demand: -2.4, supply: -2.2, jobs: -18, inflation: 0.03, poverty: 0.02, lag: 0.90 } },
 
       prevention: { group: "health", label: "Prévention supplémentaire", min: 0, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.78, supply: 0.22, jobs: 7, poverty: -0.015, lag: 0.45 } },
-      careEfficiency: { group: "health", label: "Efficience des soins", min: -10, max: 15, step: 1, value: 0, unit: " %", effects: { fiscal: -1.25, demand: -0.18, supply: 0.22, jobs: -1.5, lag: 0.35, uncertainty: 0.12 } },
+      careEfficiency: { group: "health", label: "Efficience des soins supposée", kind: "assumption", min: -10, max: 15, step: 1, value: 0, unit: " %", effects: { fiscal: -1.25, demand: -0.18, supply: 0.22, jobs: -1.5, lag: 0.35, uncertainty: 0.12 } },
       healthWorkforce: { group: "health", label: "Soignants publics supplémentaires", min: -30, max: 80, step: 5, value: 0, unit: " k", effects: { fiscal: 0.055, demand: 0.048, supply: 0.016, jobs: 1, lag: 0.70 } },
 
       teacherResources: { group: "education", label: "Moyens scolaires", min: -15, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.86, supply: 0.24, jobs: 10, poverty: -0.02, lag: 0.55 } },
       vocationalTraining: { group: "education", label: "Formation professionnelle", min: -5, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.72, supply: 0.42, jobs: 13, poverty: -0.03, lag: 0.42 } },
-      childcarePlaces: { group: "education", label: "Places de garde supplémentaires", min: 0, max: 300, step: 10, value: 0, unit: " k", effects: { fiscal: 0.018, demand: 0.018, supply: 0.038, jobs: 0.8, poverty: -0.004, lag: 0.62 } },
+      childcarePlaces: { group: "education", label: "Programme de places de garde financées", min: 0, max: 300, step: 10, value: 0, unit: " k", effects: { fiscal: 0.018, demand: 0.018, supply: 0.038, jobs: 0.8, poverty: -0.004, lag: 0.62 } },
 
       housingBuild: { group: "housing", label: "Logements supplémentaires", min: -100, max: 350, step: 10, value: 0, unit: " k/an", effects: { fiscal: 0.035, demand: 0.12, supply: 0.03, jobs: 1.1, inflation: -0.003, poverty: -0.002, lag: 0.55 } },
       socialHousing: { group: "housing", label: "Dont logements sociaux", min: 0, max: 150, step: 5, value: 0, unit: " k/an", effects: { fiscal: 0.075, demand: 0.10, supply: 0.022, jobs: 1.25, inflation: -0.003, poverty: -0.009, lag: 0.48 } },
@@ -935,7 +1026,7 @@ window.ECOSIM_DATA = (() => {
 
       publicPayroll: { group: "administration", label: "Rémunération publique réelle", min: -8, max: 15, step: 0.5, value: 0, unit: " %", effects: { fiscal: 3.5, demand: 2.1, supply: 0.10, inflation: 0.035, poverty: -0.025, lag: 0.94 } },
       digitalAdministration: { group: "administration", label: "Transformation numérique", min: 0, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: 0.72, demand: 0.62, supply: 0.28, jobs: -2, lag: 0.38 } },
-      fraudRecovery: { group: "administration", label: "Recouvrement fraude et erreurs", min: 0, max: 25, step: 1, value: 0, unit: " Md€/an ciblés", effects: { fiscal: -0.70, demand: -0.16, supply: -0.03, lag: 0.80, uncertainty: 0.25 } },
+      fraudRecovery: { group: "administration", label: "Recouvrement supposé fraude et erreurs", kind: "assumption", min: 0, max: 25, step: 1, value: 0, unit: " Md€/an ciblés", effects: { fiscal: -0.70, demand: -0.16, supply: -0.03, lag: 0.80, uncertainty: 0.25 } },
 
       targetedTransfers: { group: "social", label: "Transferts sociaux ciblés", min: -15, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.78, supply: 0.02, inflation: 0.012, poverty: -0.11, lag: 0.96 } },
       disabilityInclusion: { group: "social", label: "Autonomie et handicap", min: -5, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.58, supply: 0.26, jobs: 6, poverty: -0.05, lag: 0.62 } },
@@ -1255,6 +1346,7 @@ window.ECOSIM_DATA = (() => {
     spending,
     revenueGroups,
     revenue,
+    researchVariants,
     models,
     assumptions,
     euModes,
@@ -1274,7 +1366,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.6.0"
+      version: "4.14.0"
     }
   };
 })();

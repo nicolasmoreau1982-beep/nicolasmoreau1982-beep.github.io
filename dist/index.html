@@ -37,6 +37,8 @@
         <a class="nav-link" href="#politics" data-scroll="politics">Programmes</a>
         <a class="nav-link" href="#methodology" data-scroll="methodology">Méthode</a>
         <a class="nav-link" href="#sources" data-scroll="sources">Sources</a>
+        <a class="nav-link" href="#fiscal" data-scroll="fiscal">Fiscalité</a>
+        <a class="nav-link" href="audit.html">Audit complet</a>
       </nav>
       <div class="top-actions">
         <button class="icon-button" id="theme-toggle" aria-label="Changer de thème" title="Changer de thème">
@@ -65,13 +67,14 @@
           <div>
             <h1>Et si vous teniez<br /><em>les cordons de la bourse&nbsp;?</em></h1>
             <p class="hero-copy">
-              Modifiez le budget, la démographie, l’immigration et l’énergie. Observez les effets estimés sur le déficit,
-              la dette, la croissance, l’emploi et les émissions — sans cacher les hypothèses ni l’incertitude.
+              Modifiez le budget, l’emploi public, la formation et l’énergie. Testez aussi des contextes démographiques et migratoires.
+              Observez les effets estimés sur le déficit, la dette, le chômage et les naissances — sans cacher l’incertitude.
             </p>
             <div class="hero-actions">
               <button class="button button-dark" data-scroll="workspace">Commencer la simulation</button>
               <button class="button button-ghost" data-scroll="politics">Comparer les programmes</button>
             </div>
+            <a class="hero-audit-link" href="audit.html">Comment vérifier les hypothèses et les résultats ? ↗</a>
           </div>
           <div class="hero-stamp" aria-label="Périmètre de la simulation">
             <span>Périmètre</span>
@@ -85,7 +88,7 @@
           <div><span>Recettes</span><strong>1 562,5 Md€</strong><small>52,2 % du PIB</small></div>
           <div class="negative"><span>Déficit</span><strong>−151,6 Md€</strong><small>−5,1 % du PIB</small></div>
           <div><span>Dette</span><strong>3 460,5 Md€</strong><small>115,6 % du PIB</small></div>
-          <div class="baseline-source"><span>Référence</span><strong>Exécution 2025</strong><small>Comptes nationaux Insee</small></div>
+          <div class="baseline-source"><span>Référence</span><strong>Base 2025</strong><small><a href="audit.html#provenance">Sources et millésimes ↗</a></small></div>
         </div>
       </section>
 
@@ -121,6 +124,22 @@
             </label>
           </div>
           <p class="model-description" id="model-description"></p>
+          <details class="model-assumptions">
+            <summary>Hypothèses de transmission de ce profil</summary>
+            <p id="model-parameters"></p>
+            <div id="model-evidence" class="model-evidence"></div>
+            <p>Ces coefficients sont des tests de sensibilité, non des estimations causales tirées du pays cité. Le profil ne change aucune ligne budgétaire tant que vous ne choisissez pas de mesure. <a href="audit.html#profils">Voir les limites et sources</a>.</p>
+          </details>
+          <div class="calendar-control">
+            <label class="field-label" for="policy-start-quarter">Début par défaut des variations budgétaires</label>
+            <select id="policy-start-quarter" aria-describedby="policy-quarter-help">
+              <option value="1">2026 · T1 (janvier)</option>
+              <option value="2">2026 · T2 (avril)</option>
+              <option value="3">2026 · T3 (juillet)</option>
+              <option value="4">2026 · T4 (octobre)</option>
+            </select>
+            <p id="policy-quarter-help">Chaque poste modifié peut aussi avoir son propre trimestre. Le coût et les effets de la première année sont proratisés ; les moteurs démographiques et sociaux restent annuels.</p>
+          </div>
 
           <details class="advanced-controls">
             <summary>
@@ -161,7 +180,7 @@
 
           <div class="panel-note">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5m0 3.5v.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-            <p>Une simulation n’est pas une prévision. Les fourchettes s’élargissent avec le temps et lors des ruptures institutionnelles.</p>
+            <p>Une simulation n’est pas une prévision validée. Les fourchettes sont des stress exploratoires, pas des probabilités vérifiées. <a href="audit.html#incertitude">Voir ce qui a été testé et ce qui manque ↗</a></p>
           </div>
         </aside>
 
@@ -249,7 +268,7 @@
 
           <article class="model-comparison">
             <div class="comparison-heading">
-              <div><small>Pluralisme des modèles</small><h3>Une mesure, cinq lectures</h3></div>
+              <div><small>Pluralisme des modèles</small><h3 id="comparison-title">Une mesure, neuf lectures</h3></div>
               <span id="comparison-horizon">Horizon 3 ans</span>
             </div>
             <div class="comparison-table" id="comparison-table"></div>
@@ -263,7 +282,7 @@
             <span class="section-number">03</span>
             <h2 id="structural-title">Population, emploi & énergie</h2>
           </div>
-          <p>Réglez les transformations lentes. Chaque curseur modifie la trajectoire budgétaire, le PIB et les indicateurs physiques.</p>
+          <p>Choisissez des mesures publiques ; population, naissances et chômage apparaissent comme résultats. Les facteurs que l’État ne fixe pas directement sont rangés dans les hypothèses avancées.</p>
         </div>
 
         <div class="structural-baseline" aria-label="Repères observés">
@@ -279,6 +298,7 @@
 
         <div class="structural-grid">
           <div class="structural-controls">
+            <div class="structural-control-intro"><strong>Mesures & résultats</strong><span>Une politique est un réglage ; un indicateur est calculé.</span></div>
             <div class="lab-tabs" role="tablist" aria-label="Thèmes structurels">
               <button class="is-active" data-structural-tab="demography" role="tab" aria-selected="true">Démographie</button>
               <button data-structural-tab="migration" role="tab" aria-selected="false">Immigration</button>
@@ -289,6 +309,11 @@
             </div>
             <div id="structural-control-list"></div>
             <div class="lab-disclaimer" id="structural-disclaimer"></div>
+            <details class="structural-assumptions" id="structural-assumptions">
+              <summary>Hypothèses de contexte <small>Avancé · non pilotables directement</small></summary>
+              <p>Ces valeurs décrivent un monde possible, pas une décision du gouvernement. Conservez la référence pour mesurer l’effet des seules mesures ; modifiez-les pour un test de sensibilité.</p>
+              <div id="structural-assumption-list"></div>
+            </details>
           </div>
 
           <article class="story-panel" aria-live="polite">
@@ -434,6 +459,40 @@
         </div>
       </section>
 
+      <section class="fiscal-section" id="fiscal" aria-labelledby="fiscal-title">
+        <div class="section-intro">
+          <div>
+            <span class="section-number">Atelier fiscal · expérimental</span>
+            <h2 id="fiscal-title">Qui paie une réforme fiscale ?</h2>
+            <p>Changez une règle, pas une recette supposée. L’écart calculé remonte dans le budget et le moteur macro.</p>
+          </div>
+        </div>
+        <div class="fiscal-layout">
+          <div class="fiscal-card">
+            <h3>Règles modifiables</h3>
+            <p>Référence : barème IR 2026 sur revenus 2025, IFI et successions en ligne directe. Au-delà de 2026, les règles sont prolongées en euros constants : les lois futures ne sont pas connues.</p>
+            <div class="fiscal-control-grid" id="fiscal-control-list"></div>
+          </div>
+          <div class="fiscal-card fiscal-results" aria-live="polite">
+            <small>Écart de recettes en <span id="fiscal-year">2026</span></small>
+            <strong id="fiscal-total">0 Md€ / an</strong>
+            <div id="fiscal-breakdown" class="fiscal-breakdown"></div>
+            <h3>Foyers-types gagnants et perdants</h3>
+            <div class="fiscal-table-wrap"><table>
+              <thead><tr><th>Revenus</th><th>Gagnants</th><th>Perdants</th><th>Gain moyen</th></tr></thead>
+              <tbody id="fiscal-groups"></tbody>
+            </table></div>
+            <h3>Lecture par patrimoine net</h3>
+            <div class="fiscal-table-wrap"><table>
+              <thead><tr><th>Patrimoine</th><th>Gagnants</th><th>Perdants</th><th>Gain moyen</th></tr></thead>
+              <tbody id="fiscal-wealth-groups"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <p class="fiscal-caution" id="fiscal-warning"></p>
+        <p class="fiscal-sources">Sources des règles : <a href="https://www.impots.gouv.fr/particulier/questions/comment-calculer-mon-taux-dimposition-dapres-le-bareme-progressif-de-limpot">IR</a>, <a href="https://www.impots.gouv.fr/particulier/calcul-de-lifi">IFI</a>, <a href="https://www.impots.gouv.fr/particulier/questions/comment-dois-je-calculer-les-droits-de-succession">successions</a> et <a href="https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html">proposition d’impôt plancher</a>. Celle-ci n’est pas incluse dans le droit de référence. <a href="audit.html#fiscalite">Périmètre et limites ↗</a></p>
+      </section>
+
       <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
         <div class="section-intro">
           <div>
@@ -455,13 +514,13 @@
             <span class="section-number light">08</span>
             <h2 id="method-title">Un modèle qui montre ses coutures.</h2>
           </div>
-          <p>Nous ne choisissons pas une école économique à votre place. Cinq lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
+          <p>Nous ne choisissons pas une école économique à votre place. Neuf lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
         </div>
         <div class="method-grid">
           <article>
             <span>01</span>
             <h3>Impulsion directe</h3>
-            <p>Chaque dépense ou prélèvement reçoit un multiplicateur propre, un délai d’exécution et une fuite par les importations.</p>
+            <p>Chaque dépense ou prélèvement reçoit un multiplicateur propre, un délai d’exécution et une fuite par les importations. La TVA suit une variante publiée de Mésange ; les autres coefficients restent exploratoires.</p>
           </article>
           <article>
             <span>02</span>
@@ -479,10 +538,23 @@
             <p>Euro, règles européennes, prime de risque, change et inflation sont traités par scénarios, avec une incertitude explicite.</p>
           </article>
         </div>
+        <div class="history-audit">
+          <div>
+            <h3>Le contrôle par l’histoire</h3>
+            <p>Sur les comptes français 2003–2025, nous rejouons un prévisionniste témoin depuis chaque année 2007–2024. Il ne voit que le passé à sa date de départ : croissance nominale médiane récente, déficit et chômage maintenus, dette cumulée. Voici ses erreurs, pas une validation des effets des réformes d’EcoSim.</p>
+          </div>
+          <div id="history-audit"></div>
+          <p class="history-audit-note">Données révisées, non les publications disponibles à l’époque ; crises de 2008 et 2020 incluses. Le plancher des bandes utilise le 80e centile des erreurs absolues, sans garantie de couverture future. À 20–30 ans, il est prolongé linéairement à titre de stress, sans validation historique. Sources : <a href="https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp/default/table" target="_blank" rel="noopener noreferrer">PIB Eurostat</a>, <a href="https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table" target="_blank" rel="noopener noreferrer">déficit</a>, <a href="https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table" target="_blank" rel="noopener noreferrer">dette</a>, <a href="https://ec.europa.eu/eurostat/databrowser/view/une_rt_a/default/table" target="_blank" rel="noopener noreferrer">chômage</a>.</p>
+          <p class="history-audit-note">La variante TVA est ancrée sur <a href="https://www.insee.fr/fr/statistiques/2848300" target="_blank" rel="noopener noreferrer">Mésange 2017 (Insee et DG Trésor)</a> : c’est un calibrage explicite, pas un test indépendant. La réforme TVA de 2014 a été reconstituée partiellement ; le CICE ne peut pas encore être simulé fidèlement avec les postes actuels.</p>
+          <p class="history-audit-note">Nous comparons aussi, dans un <strong>prototype distinct</strong>, les comptes Insee à T, les mesures encodées et les résultats à T+1. <a href="audit.html#audit-triplet">Explorer chaque cas, les écarts et les politiques manquantes ↗</a>. Cela mesure des erreurs du prototype, pas encore la couverture des fourchettes du moteur principal ni l’effet causal d’une réforme.</p>
+        </div>
         <div class="method-callout">
           <strong>Ce que ce simulateur ne prétend pas faire</strong>
-          <p>Prédire les crises, les décisions futures de la BCE, les réactions politiques étrangères ou le comportement exact de 69 millions de personnes. Au-delà de trois ans, l’intervalle compte davantage que le point central.</p>
-          <button class="button button-light" id="method-modal-button">Lire la méthode complète</button>
+          <p>Prédire les crises, les décisions futures de la BCE, les réactions politiques étrangères ou le comportement exact de 69 millions de personnes. Au-delà de trois ans, la fourchette de stress compte davantage que le point central ; sa couverture statistique n’est pas établie.</p>
+          <div class="method-actions">
+            <button class="button button-light" id="method-modal-button">Lire la méthode complète</button>
+            <a class="button button-light" href="audit.html">Audit, écarts et limites ↗</a>
+          </div>
         </div>
       </section>
 
@@ -499,7 +571,8 @@
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
       <a href="confidentialite">Confidentialité</a>
-      <span>Version 4.6 · octobre 2026</span>
+      <a href="audit.html">Audit du modèle</a>
+      <span>Version 4.14 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -516,24 +589,26 @@
           <h3>2. Détail des dépenses</h3>
           <p>La dernière ventilation fonctionnelle COFOG disponible pour la France porte sur 2024. Chaque poste est multiplié par le rapport entre le total Insee 2025 et le total COFOG 2024. Les montants détaillés sont donc des estimations 2025 calibrées, tandis que leur somme correspond au total observé.</p>
           <h3>3. Moteur macro-budgétaire</h3>
-          <p>Le moteur est semi-structurel. Il applique des multiplicateurs différenciés, une décroissance de l’effet de demande, des effets d’offre retardés, une élasticité des recettes au PIB, une réponse du chômage inspirée de la loi d’Okun et une charge d’intérêts dépendant du stock de dette. Les coefficients détaillés sont des hypothèses de sensibilité : ils n’ont pas été estimés et validés ensemble sur l’histoire française.</p>
+          <p>Le moteur est semi-structurel. Il applique des multiplicateurs différenciés, une décroissance de l’effet de demande, des effets d’offre retardés, une élasticité des recettes au PIB, une réponse du chômage inspirée de la loi d’Okun et une charge d’intérêts dépendant du stock de dette. Le canal TVA reprend une variante Mésange 2017 pour le PIB réel et les prix à la consommation, sans confondre ceux-ci avec le déflateur du PIB. Les autres coefficients détaillés sont des hypothèses de sensibilité : ils n’ont pas été estimés et validés ensemble sur l’histoire française.</p>
           <h3>4. Pluralisme</h3>
           <p>Les cinq cadres ne sont pas des caricatures doctrinales : ils modifient des paramètres identifiables — multiplicateurs de dépense, sensibilité des prélèvements, effets d’offre, persistance et prime de risque. Aucun résultat n’est masqué ou sélectionné selon sa conclusion.</p>
           <h3>5. Incertitude</h3>
-          <p>La bande affichée combine incertitude sur les multiplicateurs, horizon de projection et risque institutionnel. Elle ne constitue pas un intervalle de confiance statistique au sens strict ; c’est une plage de sensibilité destinée à empêcher une fausse précision.</p>
+          <p>La bande affichée combine la sensibilité aux hypothèses et un plancher tiré d’erreurs historiques d’un prévisionniste témoin. Le témoin n’est pas le moteur de politique publique et ses erreurs ne valident pas ses coefficients causaux. Ces données sont révisées et les origines ne sont pas de véritables millésimes de publication. Au-delà de dix ans, le plancher est extrapolé sans test historique. La bande n’est pas un intervalle de confiance statistique ni une garantie de couverture.</p>
           <h3>6. Lecture des résultats</h3>
           <p>Les résultats sont des écarts par rapport à une trajectoire de référence qui postule une correction budgétaire graduelle sans détailler toutes les mesures nécessaires. Les dépenses et recettes directes sont affichées séparément ; les retours macroéconomiques viennent ensuite. Une mesure favorable au PIB peut rester défavorable à la dette, et inversement. Le diagnostic européen ne vérifie actuellement que le seuil de déficit, pas la trajectoire des dépenses nettes.</p>
           <h3>7. Démographie, emploi, immigration et énergie</h3>
-          <p>Le module démographique suit population, naissances, vieillissement et population active par équations agrégées ; il ne simule pas encore toutes les classes d’âge. Le module migratoire suit les cohortes d’arrivées et estime séparément les effets des sorties nettes. Le module d’emploi distingue les trois versants publics, les missions et les statuts, ainsi que plusieurs viviers de travailleurs. L’énergie combine investissement, facture d’importation, prix et émissions, avec des plafonds simplifiés. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
+          <p>Chômage, naissances et population sont des résultats, pas des décisions. La trajectoire démographique de référence reprend la projection centrale Insee 2026–2056 : naissances, décès, effectifs et part des 65 ans ou plus, à partir d’une pyramide par âge et sexe. Les écarts causés par tes réglages restent calculés par équations agrégées : la pyramide du scénario modifié, les pensions et la santé ne sont pas encore recalculées âge par âge. Le chômage réagit à l’activité et aux flux d’emploi ; les naissances réagissent à une hypothèse de fécondité de fond et, de façon illustrative, aux places de garde après un délai. Ce coefficient EcoSim n’est pas estimé pour la France. Les soldes migratoires, l’espérance de vie et les prix mondiaux restent des hypothèses de contexte avancées. Les cohortes migratoires, l’emploi public par mission et l’énergie restent des approximations, pas des prévisions individuelles.</p>
           <h3>8. Emploi public et engagements longs</h3>
           <p>Chaque flux annuel supplémentaire de recrutement public crée une cohorte suivie séparément. La titularisation modifie sa durée de présence ; une limite de recrutement par mission et un vivier global plafonnent les embauches. Sa rémunération, puis une pension simplifiée, évoluent selon la mission, le statut et la durée de carrière. Les cotisations employeur de retraite sont aussi inscrites en recettes du régime public afin de refléter les deux côtés de ce flux comptable ; leur part est une hypothèse indicative à recalibrer. Les militaires sont distingués des titulaires civils ; réservistes et pompiers volontaires ne sont pas traités comme des emplois publics permanents. L’engagement actualisé à quarante ans est informatif. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
           <h3>9. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
           <h3>10. Programmes politiques</h3>
           <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
-          <h3>11. Réactions sociales et vote</h3>
+          <h3>11. Moteur fiscal expérimental</h3>
+          <p>Un module séparé applique des barèmes IR, IFI et succession simplifiés à des foyers-types pondérés selon revenu et patrimoine ; il peut aussi tester un impôt plancher proposé, désactivé par défaut. Ses écarts de recettes et les gains/pertes simulés alimentent le budget et une réponse de consommation hypothétique. Les foyers-types ne sont pas un échantillon représentatif, les recettes calculées ne sont pas réconciliées avec les comptes et les règles LFSS individuelles ne sont pas codées : ces résultats ne sont pas des prévisions fiscales.</p>
+          <h3>12. Réactions sociales et vote</h3>
           <p>Le module affiche une matrice âge × situation socio-professionnelle. Il combine des écarts macroéconomiques simulés et l'exposition conventionnelle à certaines mesures. Les poids de mobilisation et la fourchette de sensibilité du vote sortant ne sont pas estimés sur microdonnées : ils servent à tester des hypothèses et ne prédisent ni comportement individuel, ni scrutin, ni conflit social. La population simulée n'est pas ventilée par ces cellules ; aucune taille électorale n'en est déduite.</p>
-          <h3>11. Horizons 20 et 30 ans</h3>
+          <h3>13. Horizons 20 et 30 ans</h3>
           <p>Après 2035, la trajectoire n’est plus une prévision conjoncturelle : elle prolonge des hypothèses structurelles de productivité, inflation, chômage, vieillissement, migrations et coût de la dette. Les nouvelles générations n’affectent l’offre de travail qu’après 18 ans. L’incertitude augmente volontairement plus vite au-delà de dix ans.</p>
         </div>
         <div class="modal-footer"><button class="button button-dark" value="close">J’ai compris</button></div>
@@ -552,6 +627,9 @@
     </dialog>
 
     <script src="data.js"></script>
+    <script src="history.js"></script>
+    <script src="insee-projection.js"></script>
+    <script src="fiscal.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

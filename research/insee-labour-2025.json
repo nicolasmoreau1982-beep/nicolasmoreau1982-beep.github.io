@@ -1,0 +1,114 @@
+{
+  "sourcePages": [
+    "https://www.insee.fr/fr/statistiques/9012123",
+    "https://www.insee.fr/fr/statistiques/9012121"
+  ],
+  "sourceFiles": [
+    "https://www.insee.fr/fr/statistiques/fichier/9012123/EEC_CHOM02.xlsx",
+    "https://www.insee.fr/fr/statistiques/fichier/9012123/EEC_HALO01.xlsx",
+    "https://www.insee.fr/fr/statistiques/fichier/9012121/EEC_SSEMP01.xlsx"
+  ],
+  "sourceSha256": [
+    "b43a4f556561dfc1833e469b6552c731899ed2998bdd76eb653df55f0540a302",
+    "ee9bc9487ce8f5c13c30bf0d4e8f6b163be17f656b4d3f68cc75e0fce52e85e5",
+    "e15df746307d89e52840874e3f4af68979c9f303bf5f819d67ee1c2043afc463"
+  ],
+  "published": "2026-07-02",
+  "referenceYear": 2025,
+  "unit": "milliers de personnes",
+  "warning": "Moyennes annuelles de l'enquête Emploi : chômage BIT, halo et sous-emploi sont des ensembles distincts. La qualification ne donne pas la disponibilité immédiate pour chaque métier.",
+  "totals": {
+    "unemployedK": 2451.2,
+    "haloK": 1925.6,
+    "underemployedK": 1293.4,
+    "haloAvailableNotSeekingK": 715.1
+  },
+  "recruitmentAges15to64K": {
+    "unemployedK": 2425.7,
+    "haloK": 1870.0,
+    "underemployedK": 1260.4
+  },
+  "ages": [
+    {
+      "age": "15-24",
+      "unemployedK": 678.1,
+      "haloK": 591.6,
+      "underemployedK": 209.7,
+      "haloAvailableNotSeekingK": 176.9
+    },
+    {
+      "age": "25-49",
+      "unemployedK": 1269.6,
+      "haloK": 906.9,
+      "underemployedK": 685.7,
+      "haloAvailableNotSeekingK": 348.6
+    },
+    {
+      "age": "50-64",
+      "unemployedK": 477.9,
+      "haloK": 371.4,
+      "underemployedK": 364.9,
+      "haloAvailableNotSeekingK": 154.6
+    },
+    {
+      "age": "65+",
+      "unemployedK": 25.5,
+      "haloK": 55.6,
+      "underemployedK": 33.0,
+      "haloAvailableNotSeekingK": 34.9
+    }
+  ],
+  "diplomas": [
+    {
+      "diploma": "Aucun diplôme, CEP ou brevet des collèges",
+      "unemployedK": 567.2,
+      "byAgeK": {
+        "15-24": 172.8,
+        "25-49": 266.6,
+        "50-64": 121.0,
+        "65+": 6.8
+      }
+    },
+    {
+      "diploma": "CAP, BEP ou diplôme de niveau équivalent",
+      "unemployedK": 436.9,
+      "byAgeK": {
+        "15-24": 72.6,
+        "25-49": 234.6,
+        "50-64": 125.4,
+        "65+": 4.3
+      }
+    },
+    {
+      "diploma": "Baccalauréat",
+      "unemployedK": 632.7,
+      "byAgeK": {
+        "15-24": 280.2,
+        "25-49": 268.1,
+        "50-64": 81.8,
+        "65+": 2.6
+      }
+    },
+    {
+      "diploma": "Diplôme du supérieur court",
+      "unemployedK": 226.5,
+      "byAgeK": {
+        "15-24": 39.3,
+        "25-49": 123.0,
+        "50-64": 61.6,
+        "65+": 2.5
+      }
+    },
+    {
+      "diploma": "Diplôme du supérieur long",
+      "unemployedK": 578.9,
+      "byAgeK": {
+        "15-24": 108.4,
+        "25-49": 374.8,
+        "50-64": 86.4,
+        "65+": 9.4
+      }
+    }
+  ],
+  "unemployedDiplomaUnknownK": 9.0
+}

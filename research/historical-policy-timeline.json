@@ -1,0 +1,71 @@
+{
+  "description": "Entrées du rejeu annuel ou trimestriel, NON exhaustives. Les montants sont des rythmes annuels en Md€ nominaux : le calcul trimestriel en compte un quart par trimestre actif. Signe positif = hausse de la ligne comptable. Les montants ex ante/projetés ne sont pas des réalisations Insee et les canaux causaux non estimés restent nuls par omission, pas par hypothèse économique.",
+  "events": [
+    {
+      "id": "vat_normal_2014",
+      "label": "TVA normale 19,6 % → 20 %",
+      "effectiveYear": 2014,
+      "effectiveQuarter": 1,
+      "fiscalSide": "revenue",
+      "instrument": "vat",
+      "amountBn": 2.5,
+      "amountInformationYear": 2012,
+      "amountStatus": "estimation_ex_ante",
+      "source": "https://www.senat.fr/rap/l12-213-1/l12-213-179.html",
+      "warning": "Rendement ex ante, pas rendement isolé observé ; réponse macro TVA agrégée, non sectorielle."
+    },
+    {
+      "id": "vat_intermediate_2014",
+      "label": "TVA intermédiaire 7 % → 10 %",
+      "effectiveYear": 2014,
+      "effectiveQuarter": 1,
+      "fiscalSide": "revenue",
+      "instrument": "vat",
+      "amountBn": 4.2,
+      "amountInformationYear": 2012,
+      "amountStatus": "estimation_ex_ante",
+      "source": "https://www.senat.fr/rap/l12-213-1/l12-213-179.html",
+      "warning": "Rendement ex ante ; taux réduit finalement maintenu à 5,5 %, donc le -0,8 Md€ prévu initialement n'est pas injecté."
+    },
+    {
+      "id": "cice_accounts_2014_2022",
+      "label": "CICE, dépense en comptabilité nationale (PLF 2019)",
+      "effectiveYear": 2014,
+      "effectiveQuarter": 1,
+      "endYear": 2022,
+      "fiscalSide": "spending",
+      "instrument": "cice",
+      "fiscalOnly": true,
+      "annualAmountBn": {"2014": 10.2, "2015": 17.6, "2016": 18.4, "2017": 18.5, "2018": 22.4, "2019": 20.2, "2020": 1.6, "2021": 1.4, "2022": 1.2},
+      "amountInformationYear": 2018,
+      "amountStatus": "projection_plf2019_non_realisation",
+      "source": "https://www.strategie.gouv.fr/files/files/Publications/Rapport/fs-_rapport_cice-2018-02-10.pdf",
+      "warning": "Série PLF 2019 en comptabilité nationale ; certaines années projetées, non réalisations révisées. Aucun effet PIB/emploi estimé. Résidu supposé nul après 2022 faute de série."
+    },
+    {
+      "id": "cice_payroll_conversion_2019",
+      "label": "Allègements de cotisations remplaçant le CICE",
+      "effectiveYear": 2019,
+      "effectiveQuarter": 1,
+      "fiscalSide": "revenue",
+      "instrument": "payroll_contributions",
+      "fiscalOnly": true,
+      "amountBn": -20.4,
+      "amountInformationYear": 2018,
+      "amountStatus": "chiffrage_ex_ante_2019_puis_niveau_nominal_constant_hypothetique",
+      "source": "https://www.economie.gouv.fr/files/files/Actus2018/RESF_2019_web.pdf",
+      "warning": "Bascule ex ante de 2019 ; -20,4 Md€ maintenus nominaux ensuite faute de série annuelle d'assiette salariale. Aucun effet PIB/emploi estimé. Ne pas compenser le CICE dépensé en 2019 : les coûts se superposent."
+    }
+  ],
+  "checks": [
+    {
+      "id": "vat_2014_total",
+      "year": 2014,
+      "modelInputBn": 6.7,
+      "observedBn": 6.5,
+      "metric": "augmentation globale de fiscalité indirecte attribuée au relèvement de TVA",
+      "source": "https://www.insee.fr/fr/statistiques/fichier/1288733/ECOFRA15.pdf",
+      "warning": "Le total ex ante de 6,7 Md€ est comparé au rendement ex post de 6,5 Md€, sans recalage des composantes."
+    }
+  ]
+}

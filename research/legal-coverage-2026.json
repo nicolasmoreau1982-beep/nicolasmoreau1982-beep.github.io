@@ -1,0 +1,39 @@
+{
+  "snapshotDate": "2026-10-10",
+  "status": "inventaire_partiel_non_exhaustif",
+  "purpose": "Distinguer règles codées, simples comptes observés et paramètres de lois encore absents. Un texte voté ne garantit pas sa réalisation comptable.",
+  "sources": [
+    {
+      "id": "lfi-2026",
+      "title": "Loi de finances initiale 2026 et documents annexes",
+      "url": "https://www.budget.gouv.fr/documentation/documents-budgetaires-lois/exercice-2026",
+      "coded": ["barème IR 2026 sur revenus 2025 (tranches simplifiées)"],
+      "notCoded": ["autres articles fiscaux", "crédits par mission/programme/action", "dépenses fiscales", "exécution par programme"]
+    },
+    {
+      "id": "lfss-2026",
+      "title": "Loi de financement de la Sécurité sociale 2026 et annexes",
+      "url": "https://www.securite-sociale.fr/home/la-secu-en-detail/loi-de-financement/annees-passees/plfss-2026.html",
+      "coded": [],
+      "notCoded": ["taux et assiettes de cotisations", "exonérations", "barèmes de prestations", "ONDAM par sous-objectif", "comptes par branche"]
+    },
+    {
+      "id": "cgi-permanent",
+      "title": "Règles fiscales permanentes et documentation DGFiP",
+      "urls": [
+        "https://www.impots.gouv.fr/particulier/calcul-de-lifi",
+        "https://www.impots.gouv.fr/particulier/questions/comment-dois-je-calculer-les-droits-de-succession"
+      ],
+      "coded": ["barème IFI et décote d'entrée", "succession en ligne directe sans donations antérieures"],
+      "notCoded": ["IFI : réductions et plafonnement", "succession : parenté, donations antérieures, assurance-vie", "crédits et décote IR"]
+    },
+    {
+      "id": "wealth-floor-proposal",
+      "title": "Proposition d'impôt plancher de 2 % sur les patrimoines de plus de 100 M€",
+      "url": "https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html",
+      "lawStatus": "proposition_non_en_vigueur",
+      "coded": ["plancher différentiel illustratif sur patrimoine net"],
+      "notCoded": ["assiette complète", "imputations exactes", "évaluation des actifs non cotés", "réactions et mobilité"]
+    }
+  ]
+}

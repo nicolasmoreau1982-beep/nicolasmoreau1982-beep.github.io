@@ -1,0 +1,609 @@
+{
+  "sourcePage": "https://www.insee.fr/fr/statistiques/8988845",
+  "sourceFile": "https://www.insee.fr/fr/statistiques/fichier/8988845/t_3215_fr.xlsx",
+  "sourceSha256": "e797d519dd7a7e1a226f56bb79d8102d02f9aa3171eb7ceb53f573946396154a",
+  "published": "2026-08-28",
+  "unit": "Md EUR courants par an",
+  "accountingBasis": "SEC 2010, base 2020, tableau 3.215",
+  "warning": "Les sous-secteurs incluent les transferts entre administrations ; leurs dépenses et recettes ne s'additionnent pas avant consolidation.",
+  "rows": [
+    {
+      "year": 2003,
+      "state": {
+        "spending": 369.1144,
+        "revenue": 307.6188
+      },
+      "centralAgencies": {
+        "spending": 71.8057,
+        "revenue": 71.4017
+      },
+      "local": {
+        "spending": 163.6191,
+        "revenue": 163.8316
+      },
+      "socialSecurity": {
+        "spending": 387.2832,
+        "revenue": 382.6533
+      },
+      "consolidated": {
+        "spending": 881.7856,
+        "revenue": 815.4686
+      },
+      "intraGovernmentTransfersSpending": 110.0368,
+      "intraGovernmentTransfersRevenue": 110.0368,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2004,
+      "state": {
+        "spending": 391.2669,
+        "revenue": 338.0364
+      },
+      "centralAgencies": {
+        "spending": 70.6136,
+        "revenue": 77.9756
+      },
+      "local": {
+        "spending": 178.0015,
+        "revenue": 175.0315
+      },
+      "socialSecurity": {
+        "spending": 407.094,
+        "revenue": 395.6327
+      },
+      "consolidated": {
+        "spending": 915.9064,
+        "revenue": 855.6066
+      },
+      "intraGovernmentTransfersSpending": 131.0696,
+      "intraGovernmentTransfersRevenue": 131.0696,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2005,
+      "state": {
+        "spending": 403.1222,
+        "revenue": 349.4387
+      },
+      "centralAgencies": {
+        "spending": 75.4565,
+        "revenue": 80.2091
+      },
+      "local": {
+        "spending": 186.6377,
+        "revenue": 183.0528
+      },
+      "socialSecurity": {
+        "spending": 427.6881,
+        "revenue": 418.4025
+      },
+      "consolidated": {
+        "spending": 956.1425,
+        "revenue": 894.3411
+      },
+      "intraGovernmentTransfersSpending": 136.762,
+      "intraGovernmentTransfersRevenue": 136.762,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2006,
+      "state": {
+        "spending": 401.2623,
+        "revenue": 347.578
+      },
+      "centralAgencies": {
+        "spending": 76.8658,
+        "revenue": 84.4678
+      },
+      "local": {
+        "spending": 197.5017,
+        "revenue": 193.4189
+      },
+      "socialSecurity": {
+        "spending": 441.2975,
+        "revenue": 442.4
+      },
+      "consolidated": {
+        "spending": 992.2408,
+        "revenue": 943.1782
+      },
+      "intraGovernmentTransfersSpending": 124.6865,
+      "intraGovernmentTransfersRevenue": 124.6865,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2007,
+      "state": {
+        "spending": 406.4593,
+        "revenue": 360.6976
+      },
+      "centralAgencies": {
+        "spending": 85.9424,
+        "revenue": 79.7986
+      },
+      "local": {
+        "spending": 211.8944,
+        "revenue": 203.6197
+      },
+      "socialSecurity": {
+        "spending": 463.7182,
+        "revenue": 465.9627
+      },
+      "consolidated": {
+        "spending": 1039.2876,
+        "revenue": 981.3519
+      },
+      "intraGovernmentTransfersSpending": 128.7267,
+      "intraGovernmentTransfersRevenue": 128.7267,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2008,
+      "state": {
+        "spending": 427.6621,
+        "revenue": 358.237
+      },
+      "centralAgencies": {
+        "spending": 83.0571,
+        "revenue": 80.9512
+      },
+      "local": {
+        "spending": 221.7412,
+        "revenue": 211.6104
+      },
+      "socialSecurity": {
+        "spending": 476.8463,
+        "revenue": 488.818
+      },
+      "consolidated": {
+        "spending": 1080.2205,
+        "revenue": 1010.5304
+      },
+      "intraGovernmentTransfersSpending": 129.0862,
+      "intraGovernmentTransfersRevenue": 129.0862,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2009,
+      "state": {
+        "spending": 439.432,
+        "revenue": 320.4185
+      },
+      "centralAgencies": {
+        "spending": 90.178,
+        "revenue": 89.9544
+      },
+      "local": {
+        "spending": 229.1879,
+        "revenue": 222.7286
+      },
+      "socialSecurity": {
+        "spending": 498.6148,
+        "revenue": 481.4773
+      },
+      "consolidated": {
+        "spending": 1122.6072,
+        "revenue": 979.7733
+      },
+      "intraGovernmentTransfersSpending": 134.8055,
+      "intraGovernmentTransfersRevenue": 134.8055,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2010,
+      "state": {
+        "spending": 491.1496,
+        "revenue": 364.1461
+      },
+      "centralAgencies": {
+        "spending": 98.5543,
+        "revenue": 110.7229
+      },
+      "local": {
+        "spending": 229.1212,
+        "revenue": 226.9835
+      },
+      "socialSecurity": {
+        "spending": 517.3166,
+        "revenue": 491.5287
+      },
+      "consolidated": {
+        "spending": 1151.9618,
+        "revenue": 1009.2013
+      },
+      "intraGovernmentTransfersSpending": 184.1799,
+      "intraGovernmentTransfersRevenue": 184.1799,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2011,
+      "state": {
+        "spending": 452.7873,
+        "revenue": 360.2054
+      },
+      "centralAgencies": {
+        "spending": 99.1417,
+        "revenue": 98.484
+      },
+      "local": {
+        "spending": 234.0015,
+        "revenue": 232.5201
+      },
+      "socialSecurity": {
+        "spending": 533.8749,
+        "revenue": 519.2104
+      },
+      "consolidated": {
+        "spending": 1175.7047,
+        "revenue": 1066.3192
+      },
+      "intraGovernmentTransfersSpending": 144.1007,
+      "intraGovernmentTransfersRevenue": 144.1007,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2012,
+      "state": {
+        "spending": 460.7745,
+        "revenue": 375.0647
+      },
+      "centralAgencies": {
+        "spending": 99.5663,
+        "revenue": 96.5343
+      },
+      "local": {
+        "spending": 241.5526,
+        "revenue": 236.8524
+      },
+      "socialSecurity": {
+        "spending": 551.4472,
+        "revenue": 536.902
+      },
+      "consolidated": {
+        "spending": 1208.9531,
+        "revenue": 1100.9659
+      },
+      "intraGovernmentTransfersSpending": 144.3875,
+      "intraGovernmentTransfersRevenue": 144.3875,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2013,
+      "state": {
+        "spending": 477.1626,
+        "revenue": 392.7558
+      },
+      "centralAgencies": {
+        "spending": 104.4851,
+        "revenue": 103.2781
+      },
+      "local": {
+        "spending": 249.5774,
+        "revenue": 241.2964
+      },
+      "socialSecurity": {
+        "spending": 563.7422,
+        "revenue": 552.9252
+      },
+      "consolidated": {
+        "spending": 1242.3578,
+        "revenue": 1137.646
+      },
+      "intraGovernmentTransfersSpending": 152.6095,
+      "intraGovernmentTransfersRevenue": 152.6095,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2014,
+      "state": {
+        "spending": 481.5501,
+        "revenue": 397.7661
+      },
+      "centralAgencies": {
+        "spending": 107.2054,
+        "revenue": 107.2984
+      },
+      "local": {
+        "spending": 249.8682,
+        "revenue": 244.1862
+      },
+      "socialSecurity": {
+        "spending": 575.8547,
+        "revenue": 566.7237
+      },
+      "consolidated": {
+        "spending": 1257.6492,
+        "revenue": 1159.1452
+      },
+      "intraGovernmentTransfersSpending": 156.8292,
+      "intraGovernmentTransfersRevenue": 156.8292,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2015,
+      "state": {
+        "spending": 476.8168,
+        "revenue": 402.0448
+      },
+      "centralAgencies": {
+        "spending": 108.0864,
+        "revenue": 103.2744
+      },
+      "local": {
+        "spending": 246.1611,
+        "revenue": 245.7251
+      },
+      "socialSecurity": {
+        "spending": 578.1187,
+        "revenue": 572.4577
+      },
+      "consolidated": {
+        "spending": 1268.0078,
+        "revenue": 1182.3268
+      },
+      "intraGovernmentTransfersSpending": 141.1752,
+      "intraGovernmentTransfersRevenue": 141.1752,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2016,
+      "state": {
+        "spending": 483.8242,
+        "revenue": 406.665
+      },
+      "centralAgencies": {
+        "spending": 100.636,
+        "revenue": 95.897
+      },
+      "local": {
+        "spending": 245.2957,
+        "revenue": 247.5537
+      },
+      "socialSecurity": {
+        "spending": 585.9871,
+        "revenue": 581.6021
+      },
+      "consolidated": {
+        "spending": 1280.6482,
+        "revenue": 1196.623
+      },
+      "intraGovernmentTransfersSpending": 135.0948,
+      "intraGovernmentTransfersRevenue": 135.0948,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2017,
+      "state": {
+        "spending": 505.466,
+        "revenue": 427.2223
+      },
+      "centralAgencies": {
+        "spending": 103.7405,
+        "revenue": 100.1085
+      },
+      "local": {
+        "spending": 250.7708,
+        "revenue": 252.1808
+      },
+      "socialSecurity": {
+        "spending": 598.1367,
+        "revenue": 601.5447
+      },
+      "consolidated": {
+        "spending": 1321.4446,
+        "revenue": 1244.3869
+      },
+      "intraGovernmentTransfersSpending": 136.6694,
+      "intraGovernmentTransfersRevenue": 136.6694,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2018,
+      "state": {
+        "spending": 494.6456,
+        "revenue": 431.8354
+      },
+      "centralAgencies": {
+        "spending": 102.0616,
+        "revenue": 99.2646
+      },
+      "local": {
+        "spending": 256.0307,
+        "revenue": 257.8067
+      },
+      "socialSecurity": {
+        "spending": 610.3218,
+        "revenue": 619.5368
+      },
+      "consolidated": {
+        "spending": 1327.6324,
+        "revenue": 1273.0162
+      },
+      "intraGovernmentTransfersSpending": 135.4273,
+      "intraGovernmentTransfersRevenue": 135.4273,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2019,
+      "state": {
+        "spending": 483.8464,
+        "revenue": 417.9843
+      },
+      "centralAgencies": {
+        "spending": 112.2617,
+        "revenue": 110.3553
+      },
+      "local": {
+        "spending": 268.69,
+        "revenue": 266.1462
+      },
+      "socialSecurity": {
+        "spending": 623.4936,
+        "revenue": 635.5804
+      },
+      "consolidated": {
+        "spending": 1346.1547,
+        "revenue": 1287.9292
+      },
+      "intraGovernmentTransfersSpending": 142.137,
+      "intraGovernmentTransfersRevenue": 142.137,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2020,
+      "state": {
+        "spending": 562.7923,
+        "revenue": 385.7925
+      },
+      "centralAgencies": {
+        "spending": 119.5256,
+        "revenue": 141.6029
+      },
+      "local": {
+        "spending": 266.2978,
+        "revenue": 262.4395
+      },
+      "socialSecurity": {
+        "spending": 661.8263,
+        "revenue": 613.5227
+      },
+      "consolidated": {
+        "spending": 1430.357,
+        "revenue": 1223.2726
+      },
+      "intraGovernmentTransfersSpending": 180.085,
+      "intraGovernmentTransfersRevenue": 180.085,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2021,
+      "state": {
+        "spending": 567.736,
+        "revenue": 423.6758
+      },
+      "centralAgencies": {
+        "spending": 129.9782,
+        "revenue": 129.4917
+      },
+      "local": {
+        "spending": 279.4507,
+        "revenue": 278.559
+      },
+      "socialSecurity": {
+        "spending": 685.8762,
+        "revenue": 666.1653
+      },
+      "consolidated": {
+        "spending": 1491.3811,
+        "revenue": 1326.2318
+      },
+      "intraGovernmentTransfersSpending": 171.66,
+      "intraGovernmentTransfersRevenue": 171.66,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2022,
+      "state": {
+        "spending": 608.7094,
+        "revenue": 460.587
+      },
+      "centralAgencies": {
+        "spending": 133.4475,
+        "revenue": 148.3229
+      },
+      "local": {
+        "spending": 294.9598,
+        "revenue": 293.8106
+      },
+      "socialSecurity": {
+        "spending": 706.6717,
+        "revenue": 715.1721
+      },
+      "consolidated": {
+        "spending": 1550.3314,
+        "revenue": 1424.4356
+      },
+      "intraGovernmentTransfersSpending": 193.457,
+      "intraGovernmentTransfersRevenue": 193.457,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2023,
+      "state": {
+        "spending": 597.717,
+        "revenue": 444.801
+      },
+      "centralAgencies": {
+        "spending": 137.6495,
+        "revenue": 136.7465
+      },
+      "local": {
+        "spending": 315.7209,
+        "revenue": 305.774
+      },
+      "socialSecurity": {
+        "spending": 737.0174,
+        "revenue": 748.863
+      },
+      "consolidated": {
+        "spending": 1608.2708,
+        "revenue": 1456.3505
+      },
+      "intraGovernmentTransfersSpending": 179.834,
+      "intraGovernmentTransfersRevenue": 179.834,
+      "consolidationResidual": 0.0
+    },
+    {
+      "year": 2024,
+      "state": {
+        "spending": 600.7015,
+        "revenue": 449.63
+      },
+      "centralAgencies": {
+        "spending": 142.6307,
+        "revenue": 141.2379
+      },
+      "local": {
+        "spending": 330.484,
+        "revenue": 312.6901
+      },
+      "socialSecurity": {
+        "spending": 777.288,
+        "revenue": 778.4281
+      },
+      "consolidated": {
+        "spending": 1672.7082,
+        "revenue": 1503.4711
+      },
+      "intraGovernmentTransfersSpending": 178.396,
+      "intraGovernmentTransfersRevenue": 178.515,
+      "consolidationResidual": -0.119
+    },
+    {
+      "year": 2025,
+      "state": {
+        "spending": 607.73,
+        "revenue": 479.6272
+      },
+      "centralAgencies": {
+        "spending": 142.2659,
+        "revenue": 140.1141
+      },
+      "local": {
+        "spending": 335.4818,
+        "revenue": 319.9269
+      },
+      "socialSecurity": {
+        "spending": 803.164,
+        "revenue": 797.3815
+      },
+      "consolidated": {
+        "spending": 1714.1117,
+        "revenue": 1562.5197
+      },
+      "intraGovernmentTransfersSpending": 174.53,
+      "intraGovernmentTransfersRevenue": 174.53,
+      "consolidationResidual": 0.0
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "sourcePage": "https://www.insee.fr/fr/statistiques/8988861",
+  "sourceFile": "https://www.insee.fr/fr/statistiques/fichier/8988861/TES_17_2024_fr.xlsx",
+  "sourceSha256": "8b9d702dfed4de997da3c1cbfed6c92c2cf1e60b5a847f166f549956cc99eb05",
+  "published": "2026-08-05",
+  "referenceYear": 2024,
+  "unit": "Md EUR courants, branches de produits niveau 17",
+  "warning": "La part d'importation dans les ressources d'un produit n'est pas la fuite marginale d'une dépense publique ni un multiplicateur ; aucune correspondance COFOG→produit n'est imposée.",
+  "rows": [
+    {
+      "product": "AZ",
+      "label": "Agriculture, sylviculture et pêche",
+      "domesticProductionBn": 92.491,
+      "importsBn": 19.046,
+      "importShareOfProductResourcesPct": 17.08
+    },
+    {
+      "product": "DE",
+      "label": "Industries extractives, énergie, eau, gestion des déchets et dépollution",
+      "domesticProductionBn": 255.006,
+      "importsBn": 59.583,
+      "importShareOfProductResourcesPct": 18.94
+    },
+    {
+      "product": "C1",
+      "label": "Fabrication de denrées alimentaires, de boissons et de produits à base de tabac",
+      "domesticProductionBn": 213.801,
+      "importsBn": 59.307,
+      "importShareOfProductResourcesPct": 21.72
+    },
+    {
+      "product": "C2",
+      "label": "Cokéfaction et raffinage",
+      "domesticProductionBn": 39.289,
+      "importsBn": 39.453,
+      "importShareOfProductResourcesPct": 50.1
+    },
+    {
+      "product": "C3",
+      "label": "Fabrication d'équipements électriques, électroniques, informatiques ; fabrication de machines",
+      "domesticProductionBn": 103.233,
+      "importsBn": 145.698,
+      "importShareOfProductResourcesPct": 58.53
+    },
+    {
+      "product": "C4",
+      "label": "Fabrication de matériels de transport",
+      "domesticProductionBn": 198.138,
+      "importsBn": 125.243,
+      "importShareOfProductResourcesPct": 38.73
+    },
+    {
+      "product": "C5",
+      "label": "Fabrication d'autres produits industriels",
+      "domesticProductionBn": 422.869,
+      "importsBn": 279.496,
+      "importShareOfProductResourcesPct": 39.79
+    },
+    {
+      "product": "FZ",
+      "label": "Construction",
+      "domesticProductionBn": 405.338,
+      "importsBn": 2.455,
+      "importShareOfProductResourcesPct": 0.6
+    },
+    {
+      "product": "GZ",
+      "label": "Commerce ; réparation d'automobiles et de motocycles",
+      "domesticProductionBn": 529.754,
+      "importsBn": 8.557,
+      "importShareOfProductResourcesPct": 1.59
+    },
+    {
+      "product": "HZ",
+      "label": "Transports et entreposage",
+      "domesticProductionBn": 288.652,
+      "importsBn": 56.417,
+      "importShareOfProductResourcesPct": 16.35
+    },
+    {
+      "product": "IZ",
+      "label": "Hébergement et restauration",
+      "domesticProductionBn": 155.121,
+      "importsBn": 0.0,
+      "importShareOfProductResourcesPct": 0.0
+    },
+    {
+      "product": "JZ",
+      "label": "Information et communication",
+      "domesticProductionBn": 305.492,
+      "importsBn": 35.458,
+      "importShareOfProductResourcesPct": 10.4
+    },
+    {
+      "product": "KZ",
+      "label": "Activités financières et d'assurance",
+      "domesticProductionBn": 287.22,
+      "importsBn": 31.365,
+      "importShareOfProductResourcesPct": 9.85
+    },
+    {
+      "product": "LZ",
+      "label": "Activités immobilières",
+      "domesticProductionBn": 423.433,
+      "importsBn": 0.0,
+      "importShareOfProductResourcesPct": 0.0
+    },
+    {
+      "product": "MN",
+      "label": "Activités spécialisées, scientifiques et techniques et activités de services administratifs et de soutien",
+      "domesticProductionBn": 778.56,
+      "importsBn": 104.683,
+      "importShareOfProductResourcesPct": 11.85
+    },
+    {
+      "product": "OQ",
+      "label": "Administration publique, enseignement, santé humaine et action sociale",
+      "domesticProductionBn": 742.125,
+      "importsBn": 0.952,
+      "importShareOfProductResourcesPct": 0.13
+    },
+    {
+      "product": "RU",
+      "label": "Autres activités de services",
+      "domesticProductionBn": 145.445,
+      "importsBn": 4.272,
+      "importShareOfProductResourcesPct": 2.85
+    }
+  ]
+}

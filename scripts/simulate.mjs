@@ -4,6 +4,9 @@ import vm from "node:vm";
 const root = new URL("../", import.meta.url);
 const dataContext = { window: {} };
 vm.runInNewContext(fs.readFileSync(new URL("dist/data.js", root), "utf8"), dataContext);
+vm.runInNewContext(fs.readFileSync(new URL("dist/history.js", root), "utf8"), dataContext);
+vm.runInNewContext(fs.readFileSync(new URL("dist/insee-projection.js", root), "utf8"), dataContext);
+vm.runInNewContext(fs.readFileSync(new URL("dist/fiscal.js", root), "utf8"), dataContext);
 const appSource = fs.readFileSync(new URL("dist/app.js", root), "utf8");
 const start = appSource.indexOf("(() => {") + "(() => {".length;
 const end = appSource.indexOf("  function initializeControls()");
@@ -25,6 +28,24 @@ for (const [key, choices] of [
   if (!Object.hasOwn(choices, input[key])) throw new Error(`Valeur inconnue pour ${key}: ${input[key]}`);
   state[key] = input[key];
 }
+if (input.policyStartQuarter !== undefined) {
+  if (![1, 2, 3, 4].includes(input.policyStartQuarter)) {
+    throw new Error("policyStartQuarter doit être un entier de 1 à 4");
+  }
+  state.policyStartQuarter = input.policyStartQuarter;
+}
+if (input.policyStartQuarters !== undefined) {
+  if (!input.policyStartQuarters || typeof input.policyStartQuarters !== "object" || Array.isArray(input.policyStartQuarters)) {
+    throw new Error("policyStartQuarters doit être un objet");
+  }
+  const categories = new Map([...D.spending, ...D.revenue].map((item) => [item.id, item]));
+  for (const [id, quarter] of Object.entries(input.policyStartQuarters)) {
+    if (!categories.has(id) || categories.get(id).locked || ![1, 2, 3, 4].includes(quarter)) {
+      throw new Error(`Trimestre invalide pour ${id}`);
+    }
+    state.policyStartQuarters[id] = quarter;
+  }
+}
 
 function applyControls(key, definitions) {
   if (input[key] === undefined) return;
@@ -41,6 +62,12 @@ function applyControls(key, definitions) {
 }
 applyControls("structural", D.structural.controls);
 applyControls("engines", D.policyEngines.controls);
+if (input.fiscal !== undefined) {
+  if (!input.fiscal || typeof input.fiscal !== "object" || Array.isArray(input.fiscal)) {
+    throw new Error("fiscal doit être un objet");
+  }
+  state.fiscal = dataContext.window.ECOSIM_FISCAL.validate({ ...state.fiscal, ...input.fiscal });
+}
 
 if (input.changes !== undefined) {
   if (!input.changes || typeof input.changes !== "object" || Array.isArray(input.changes)) throw new Error("changes doit être un objet");
@@ -63,7 +90,9 @@ const output = {
   assumptions: {
     model: state.model, euMode: state.euMode, cycle: state.cycle,
     monetary: state.monetary, confidence: state.confidence,
-    structural: state.structural, engines: state.engines, changes: state.changes
+    policyStartQuarter: state.policyStartQuarter,
+    policyStartQuarters: state.policyStartQuarters,
+    structural: state.structural, engines: state.engines, fiscal: state.fiscal, changes: state.changes
   },
   baseline: projection.baseline,
   scenario: projection.scenario
