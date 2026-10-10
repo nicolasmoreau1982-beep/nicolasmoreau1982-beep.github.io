@@ -9,7 +9,11 @@ import {originSnapshot} from "./historical-engine.mjs";
 const root = new URL("../", import.meta.url);
 const read = (path) => fs.readFileSync(new URL(path, root), "utf8");
 const frozen = JSON.parse(read("research/insee-validation-annual.json"));
+const annualNature = JSON.parse(read("research/insee-annual-nature.json"));
 const historicalPolicy = JSON.parse(read("research/historical-policy-timeline.json"));
+if (annualNature.sourceSha256 !== frozen.sources.accounts.sha256) {
+  throw new Error("Millésimes Insee 3.201 incompatibles entre totaux et postes par nature");
+}
 const dataSource = read("dist/data.js");
 const historySource = read("dist/history.js");
 const populationSource = read("dist/insee-projection.js");
@@ -25,6 +29,7 @@ const unemployment = new Map(historyContext.window.ECOSIM_HISTORY.rows.map((row)
 export const accounts = frozen.rows.map(([year, gdp, realGrowth, spending, revenue, debt, officialStockFlow]) => ({
   year, gdp, realGrowth, spending, revenue, debt, officialStockFlow, unemployment: unemployment.get(year)
 }));
+export const natureAccounts = annualNature.rows;
 
 const median = (numbers) => {
   const ordered = [...numbers].sort((a, b) => a - b);
@@ -33,8 +38,10 @@ const median = (numbers) => {
 };
 const meanAbsolute = (values) => values.reduce((sum, value) => sum + Math.abs(value), 0) / values.length;
 
-export function runCoreOrigin({originYear, horizon, observations = accounts, changes = {}, accountingFlows = {}}) {
+export function runCoreOrigin({originYear, horizon, observations = accounts, changes = {}, accountingFlows = {},
+  baselineMode = "aggregate", natureObservations = natureAccounts}) {
   if (!Number.isInteger(horizon) || horizon < 1 || horizon > 10) throw new Error("Horizon invalide (1–10 ans)");
+  if (!["aggregate", "nature_median_share"].includes(baselineMode)) throw new Error("Référence historique inconnue");
   if (!changes || typeof changes !== "object" || Array.isArray(changes)) throw new Error("Réformes invalides");
   if (!accountingFlows || typeof accountingFlows !== "object" || Array.isArray(accountingFlows)) {
     throw new Error("Flux comptables invalides");
@@ -56,6 +63,34 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
   const realGrowth = median(past.map((row) => row.realGrowth));
   const deflator = origin.assumedInflation * 100;
   const originDeficitRatio = (origin.spending - origin.revenue) / origin.gdp * 100;
+  let referenceSpendingShare = origin.spending / origin.gdp;
+  let referenceRevenueShare = origin.revenue / origin.gdp;
+  let categoryShares = null;
+  if (baselineMode === "nature_median_share") {
+    const observedByYear = new Map(observations.filter((row) => row.year <= originYear)
+      .map((row) => [row.year, row]));
+    const natureByYear = new Map(natureObservations.filter((row) => row.year <= originYear)
+      .map((row) => [row.year, row]));
+    const training = origin.trainingYears.map((year) => {
+      const account = observedByYear.get(year);
+      const nature = natureByYear.get(year);
+      if (!nature || !account || Math.abs(nature.totalSpendingBn - account.spending) > 0.00011
+        || Math.abs(nature.totalRevenueBn - account.revenue) > 0.00011) {
+        throw new Error(`Postes par nature incompatibles avec les comptes en ${year}`);
+      }
+      return {account, nature};
+    });
+    const shares = (side, categories) => Object.fromEntries(categories.map(({id}) => {
+      const values = training.map(({account, nature}) => nature[side][id] / account.gdp);
+      if (values.some((value) => !Number.isFinite(value))) throw new Error(`Catégorie historique absente : ${id}`);
+      return [id, median(values)];
+    }));
+    categoryShares = {spending: shares("spending", annualNature.spendingCategories),
+      revenue: shares("revenue", annualNature.revenueCategories)};
+    referenceSpendingShare = Object.values(categoryShares.spending).reduce((sum, value) => sum + value, 0);
+    referenceRevenueShare = Object.values(categoryShares.revenue).reduce((sum, value) => sum + value, 0);
+  }
+  const referenceDeficitRatio = (referenceSpendingShare - referenceRevenueShare) * 100;
 
   // Charger une copie isolée des mêmes fichiers et des mêmes fonctions que
   // scripts/simulate.mjs ; seules les données d'entrée sont remplacées.
@@ -79,7 +114,7 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
   D.baseline = {...D.baseline,
     realGrowth: Array(horizon).fill(realGrowth), inflation: Array(horizon).fill(deflator),
     unemployment: Array(horizon).fill(origin.unemployment),
-    deficitRatio: Array(horizon).fill(originDeficitRatio), policyRate: Array(horizon).fill(0)};
+    deficitRatio: Array(horizon).fill(referenceDeficitRatio), policyRate: Array(horizon).fill(0)};
   // Faute de cohortes historiques, la démographie projetée 2026 est décalée
   // uniquement pour satisfaire les entrées du moteur. Elle n'est pas évaluée.
   context.window.ECOSIM_INSEE_PROJECTION = {
@@ -118,7 +153,10 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
       deficitRatio: source.deficitRatio - actual.deficitRatio,
       debtRatio: source.debtRatio - actual.debtRatio,
       unemployment: source.unemployment - actual.unemployment});
-    return {year: observed.year, actual, predicted: {
+    return {year: observed.year, actual,
+    referenceAccounts: {spendingBn: naive[index].gdp * referenceSpendingShare,
+      revenueBn: naive[index].gdp * referenceRevenueShare},
+    predicted: {
       gdp: point.gdp, deficitRatio: point.deficitRatio, debtRatio: point.debtRatio,
       unemployment: point.unemployment, directRevenueChangeBn: point.revenueChange,
       directSpendingChangeBn: point.spendingChange, deficitBn: point.deficit, debtBn: point.debt},
@@ -132,7 +170,8 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
   return {originYear, horizon, inputs: {trainingYears: origin.trainingYears,
     assumedRealGrowthPct: realGrowth, assumedDeflatorPct: deflator,
     initialDeficitRatio: originDeficitRatio, initialUnemploymentPct: origin.unemployment,
-    initialDebtBn: origin.debt, changes, accountingFlows}, rows};
+    initialDebtBn: origin.debt, referenceDeficitRatio, baselineMode,
+    referenceSpendingShare, referenceRevenueShare, categoryShares, changes, accountingFlows}, rows};
 }
 
 // Seul cas actuellement traduisible sans inventer d'assiette ou de calendrier :
@@ -191,6 +230,50 @@ export function runPayroll2019AccountingSensitivity({observations = accounts} = 
       withoutFlowError: reference.error}};
 }
 
+// Deux références simples sont éprouvées sur les mêmes origines. La médiane
+// des parts de PIB par poste n'est PAS une estimation d'effet de politique.
+export function runNatureCandidateBacktest({observations = accounts, natureObservations = natureAccounts,
+  origins = [2005, 2010, 2013, 2015, 2018, 2020], horizons = [1, 3, 5, 10]} = {}) {
+  const latest = Math.max(...observations.map((row) => row.year));
+  const cases = origins.flatMap((originYear) => horizons
+    .filter((horizon) => originYear + horizon <= latest)
+    .map((horizon) => ({originYear, horizon,
+      aggregate: runCoreOrigin({originYear, horizon, observations}),
+      nature: runCoreOrigin({originYear, horizon, observations,
+        natureObservations, baselineMode: "nature_median_share"})})));
+  const error = (row, metric) => {
+    if (metric === "spendingBn") return row.referenceAccounts.spendingBn - row.actual.spendingBn;
+    if (metric === "revenueBn") return row.referenceAccounts.revenueBn - row.actual.revenueBn;
+    return row.error[metric];
+  };
+  const metrics = ["spendingBn", "revenueBn", "deficitRatio", "debtRatio"];
+  const table = horizons.map((horizon) => {
+    const selected = cases.filter((item) => item.horizon === horizon);
+    const score = (mode) => Object.fromEntries(metrics.map((metric) => [metric,
+      selected.length ? meanAbsolute(selected.map((item) => error(item[mode].rows.at(-1), metric))) : null]));
+    return {horizon, n: selected.length, aggregateMae: score("aggregate"), natureMae: score("nature")};
+  });
+  const oneYear = cases.filter((item) => item.horizon === 1);
+  const observedNature = new Map(natureObservations.map((row) => [row.year, row]));
+  const categoryErrors = [
+    ...annualNature.spendingCategories.map((item) => ({...item, side: "spending"})),
+    ...annualNature.revenueCategories.map((item) => ({...item, side: "revenue"}))
+  ].map(({id, label, side}) => {
+    const errors = oneYear.map((item) => {
+      const actual = observedNature.get(item.originYear + 1);
+      if (!actual || !Number.isFinite(actual[side][id])) throw new Error(`Cible par nature absente : ${id}`);
+      const point = item.nature.rows[0];
+      return point.predicted.gdp * item.nature.inputs.categoryShares[side][id] - actual[side][id];
+    });
+    return {id, label, side, n: errors.length, maeBn: meanAbsolute(errors)};
+  }).sort((left, right) => right.maeBn - left.maeBn);
+  return {status: "exploratory_reference_candidate_not_adopted",
+    method: "median of each 3.201 transaction share of nominal GDP over origin's past 3–6 years; projected with the same GDP path",
+    sourceSha256: annualNature.sourceSha256,
+    limitation: "revised 2026 accounts, no historical vintages, categories by nature not COFOG, no policy or shock attribution",
+    table, topCategoryErrors1Year: categoryErrors.slice(0, 8), cases};
+}
+
 export function runCoreBacktest({observations = accounts, origins = [2005, 2010, 2013, 2015, 2018, 2020],
   horizons = [1, 3, 5, 10]} = {}) {
   const latest = Math.max(...observations.map((row) => row.year));
@@ -221,7 +304,8 @@ export function runCoreBacktest({observations = accounts, origins = [2005, 2010,
     rateAssumption: "policyRate=0 for baseline comparison; debt stock-flow adjustments not modelled",
     debtAccountingMethod: "debt error Bn = cumulative simulated-minus-observed deficit Bn - cumulative implied observed stock-flow Bn; implied stock-flow uses same frozen GDP/accounts/debt tables, official series shown separately",
     scoreEligibility: "diagnostic_only_not_out_of_sample_or_causal_validation",
-    table, debtDecomposition, cases, vat2014: runVat2014Sensitivity({observations}),
+    table, debtDecomposition, cases, natureReference: runNatureCandidateBacktest({observations, origins, horizons}),
+    vat2014: runVat2014Sensitivity({observations}),
     payroll2019: runPayroll2019AccountingSensitivity({observations})};
 }
 
@@ -240,6 +324,13 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === fs.realpathSync(proces
       process.stdout.write(`${String(row.horizon).padStart(3)} ${String(row.n).padStart(2)}  `
         + `${row.debtErrorMaeBn?.toFixed(1) ?? "–"} / ${row.cumulativeDeficitErrorMaeBn?.toFixed(1) ?? "–"} / `
         + `${row.unmodelledStockFlowMaeBn?.toFixed(1) ?? "–"}\n`);
+    }
+    const nature = result.natureReference;
+    process.stdout.write("Référence par nature (MAE agrégée / par nature), dépenses Md€ / recettes Md€ / déficit pt\n");
+    for (const row of nature.table) {
+      const pair = (metric) => `${row.aggregateMae[metric]?.toFixed(1) ?? "–"}/${row.natureMae[metric]?.toFixed(1) ?? "–"}`;
+      process.stdout.write(`${String(row.horizon).padStart(3)} ${String(row.n).padStart(2)}  `
+        + `${pair("spendingBn")} / ${pair("revenueBn")} / ${pair("deficitRatio")}\n`);
     }
     const vat = result.vat2014.rows[0];
     process.stdout.write(`TVA 2014, sensibilité : ${result.vat2014.amountBn.toFixed(1)} Md€ ex ante ; `

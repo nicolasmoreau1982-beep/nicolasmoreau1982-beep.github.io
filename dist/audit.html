@@ -190,6 +190,20 @@
             </tbody>
           </table></div>
           <p class="audit-caption">Ces moyennes de valeurs absolues <strong>ne s’additionnent pas</strong> : les composantes peuvent se compenser selon les années et les départs. Par exemple, en 2013→2014, +40,3 Md€ d’écart de dette = +7,9 Md€ d’erreur de déficit − (−32,3 Md€ de stock-flux impliqué par les comptes assemblés). Le tableau Insee 3.105 donne −31,7 Md€ : sa différence de −0,638 Md€ avec l’identité issue des autres tableaux est conservée dans le JSON, pas effacée. Il faut une hypothèse de stock-flux disponible dès l’origine avant de l’intégrer à une prévision.</p>
+          <h4 id="nature-historique">Catégories historiques par nature · candidate non adoptée</h4>
+          <p>Le tableau <a href="https://www.insee.fr/fr/statistiques/8988845">Insee 3.201</a> donne 14 postes de dépenses et 14 postes de recettes par <strong>nature économique</strong> pour 2003–2025 : rémunérations (D1), intérêts (D41), prestations (D62), investissement (P51g), grandes familles d’impôts et cotisations, etc. Ils se réconcilient avec les totaux du même classeur, sans compter deux fois les lignes parentes. Ces postes ne sont <strong>ni les fonctions COFOG ni les missions budgétaires</strong> ; D62 et D2 restent trop larges pour reproduire une réforme précise.</p>
+          <p>Une candidate simple projette chaque poste comme sa part médiane du PIB sur les années disponibles <em>avant</em> le départ, avec la même trajectoire de PIB que la référence agrégée. Le tableau donne l’erreur absolue moyenne « référence agrégée / candidate par nature » ; les années futures ne servent qu’au calcul de l’erreur.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric" id="core-nature-comparison">
+            <caption>Références historiques, agrégée / par nature · Md€ pour les niveaux, points pour le déficit/PIB</caption>
+            <thead><tr><th>Horizon</th><th>Départs</th><th>Dépenses</th><th>Recettes</th><th>Déficit/PIB</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1 an</th><td>6</td><td>10,7 / 41,3</td><td>19,6 / 21,0</td><td>0,9 / 1,6</td></tr>
+              <tr><th scope="row">3 ans</th><td>6</td><td>42,7 / 49,5</td><td>29,8 / 34,2</td><td>2,1 / 1,9</td></tr>
+              <tr><th scope="row">5 ans</th><td>6</td><td>73,5 / 71,8</td><td>76,3 / 76,1</td><td>3,6 / 2,5</td></tr>
+              <tr><th scope="row">10 ans</th><td>4</td><td>181,8 / 161,0</td><td>160,4 / 175,3</td><td>0,9 / 1,5</td></tr>
+            </tbody>
+          </table></div>
+          <p class="audit-caption"><strong>Candidate non adoptée.</strong> Elle détériore nettement la dépense à un an ; les améliorations de certaines lignes à cinq ou dix ans sur peu de départs ne justifient pas son emploi dans le site. Les plus fortes erreurs absolues par poste à un an sont les prestations D62 (15,0 Md€), les cotisations D61 (14,7 Md€), les impôts D2 (13,2 Md€) et les subventions D3 (11,3 Md€). Ces erreurs par poste peuvent se compenser et ne s’additionnent pas. Le gel <code>research/insee-annual-nature.json</code>, l’importateur avec contrôle SHA-256 et la comparaison détaillée sont reproductibles depuis le dépôt. Il manque encore les millésimes disponibles à l’époque et une correspondance légale mesure → assiette → ligne comptable.</p>
           <div class="audit-warning"><strong>Premier raccord de mesure : TVA 2014.</strong><p>Les rendements <em>ex ante</em> des deux relèvements, 2,5 et 4,2 Md€, datés avant le départ 2013, alimentent ensemble le levier <code>R_TVA</code> du moteur principal dès 2014. À T+1, l’écart de PIB nominal simulé moins Insee est de <strong>−0,04 % avec</strong> cette TVA, contre <strong>+0,06 % sans</strong>. Ce rapprochement n’identifie pas l’effet de la TVA : autres réformes et chocs manquent, et la réponse macro utilisée vient de Mésange 2017, donc n’était pas connue en 2013. Le CICE et la baisse de cotisations 2019 ne sont pas injectés comme un simple curseur agrégé. Le détail des événements admis et exclus est dans la sortie <code>--json</code> et le dossier d’audit.</p></div>
           <div class="audit-warning"><strong>Flux comptable isolé : cotisations 2019.</strong><p>Le chiffrage <em>ex ante</em> connu en 2018 (−20,4 Md€ de recettes en 2019) est passé au moteur principal par une entrée datée sans canal PIB/emploi estimé. À T+1, l’écart de déficit/PIB simulé moins Insee vaut <strong>+0,78 point avec</strong> ce flux, contre <strong>−0,08 point sans</strong> ; le PIB et le chômage simulés ne changent pas. Le coût du CICE n’est pas ajouté en niveau, puisqu’il était déjà partiellement présent dans les comptes 2018 de départ : ce serait un double compte potentiel. Il manque aussi les autres mesures simultanées. Il ne s’agit donc <strong>ni du bilan complet de la réforme, ni d’une estimation causale</strong>. Le catalogue source et les exclusions figurent dans la sortie <code>--json</code>.</p></div>
           <h3>Rejeu daté du moteur : premier diagnostic, entrées incomplètes</h3>
@@ -352,7 +366,7 @@
           <div class="audit-section-heading"><span>07</span><h2 id="reproduire-title">Vérifier soi-même</h2></div>
           <p>Le site est statique : le navigateur reçoit les mêmes fichiers que ceux utilisés par l’interface Python. Les hypothèses et montants sont dans <a href="data.js">data.js</a>, la projection Insee condensée dans <a href="insee-projection.js">insee-projection.js</a>, l’historique dans <a href="history.js">history.js</a> et le moteur dans <a href="app.js">app.js</a>. Les scripts suivants sont dans le dépôt source du projet, pas dans le dossier web publié.</p>
           <pre class="audit-code"><code>node scripts/backtest.mjs           # témoin historique : MAE et P80
-node scripts/core-historical-backtest.mjs --json # moteur principal sans réforme
+node scripts/core-historical-backtest.mjs --json # moteur principal, postes par nature et sensibilités
 node scripts/check-history.mjs      # dérive éventuelle des séries Eurostat, sans écriture
 node scripts/vintage-audit.mjs      # prévisions BDF datées vs réalisations
 node scripts/benchmark-research.mjs # variantes Mésange et écarts
@@ -363,10 +377,12 @@ node scripts/historical-replay.mjs --ablate # avec / sans mesures codées
 node scripts/historical-replay.mjs --blind # entrées connues à l'origine uniquement
 node scripts/comparable-insee-benchmark.mjs --json # comptes Insee communs, cas partiels
 python3 scripts/verify-insee-validation.py # vérifie les quatre classeurs figés
+python3 scripts/import-insee-annual-nature.py --check # SHA-256 et totaux du 3.201
 node scripts/export-historical-audit.mjs # régénère le tableau de cette page
 node scripts/export-insee-projection.mjs # régénère la référence démographique du site
 python3 scripts/import-insee-observations.py # rafraîchit les classeurs (xlrd requis)
 node tests/insee-observations.mjs # réconciliation des nouvelles séries
+node tests/insee-annual-nature.mjs # 28 postes, candidat et anti-fuite
 node tests/historical-replay.mjs    # calendriers, comptes et anti-fuite
 node tests/history-backtest.mjs     # garde-fou anti-fuite des années futures</code></pre>
           <p>Les mesures du rejeu et leurs liens primaires figurent dans <code>research/historical-policy-timeline.json</code> ; <code>research/policy-events.json</code> documente séparément la variante de choc TVA du moteur principal. Une modification de donnée ou de coefficient doit conserver son origine, son millésime, sa formule de transformation et un test de non-régression. Les exports du simulateur permettent de conserver les réglages et trajectoires d’un scénario, mais ne figent pas encore automatiquement une empreinte de version du moteur.</p>

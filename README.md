@@ -133,6 +133,10 @@ Le protocole, les chiffres, les exclusions et le mandat proposé à un expert ex
 
 Le rapport décompose désormais l'écart de dette **année par année** : erreur de dette en Md€ = somme des erreurs de déficit − somme des ajustements stock-flux observés. Ceux-ci ne sont lus qu'après le calcul, pour expliquer l'écart, jamais pour améliorer la prévision. Pour 2013→2014 : +40,3 Md€ d'écart de dette = +7,9 Md€ d'erreur de déficit − (−32,3 Md€ de stock-flux impliqué). Le tableau Insee 3.105 donne −31,7 Md€ pour ce dernier poste ; le décalage de −0,638 Md€ entre sources est conservé. Les moyennes d'erreurs absolues de ces composantes ne s'additionnent pas, car leurs signes peuvent se compenser. [Tableau dans l'audit](dist/audit.html#core-debt-reconciliation).
 
+`research/insee-annual-nature.json` fige désormais **14 postes de dépenses et 14 postes de recettes par nature économique** du tableau [Insee 3.201](https://www.insee.fr/fr/statistiques/8988845), pour 2003–2025. `python3 scripts/import-insee-annual-nature.py --check` vérifie l'empreinte du classeur officiel et la concordance avec les totaux déjà gelés ; `--write` régénère le fichier uniquement pour ce millésime. Ce ne sont **pas** les fonctions COFOG ni les missions votées : D62 regroupe plusieurs prestations, D2 plusieurs impôts. Les lignes parentes et les sous-lignes « dont » ne sont pas additionnées une seconde fois ; les petits écarts d'arrondi restent visibles.
+
+Le banc compare, à données de départ identiques, la référence agrégée actuelle avec une **candidate non adoptée** : médiane des parts de PIB de chacun de ces 28 postes sur les années antérieures. À un an, l'erreur absolue moyenne de dépenses passe de **10,7 à 41,3 Md€** et celle de déficit/PIB de **0,9 à 1,6 point** ; certains horizons plus longs s'améliorent, d'autres non. Les plus gros écarts par poste à un an concernent D62 (prestations sociales), D61 (cotisations) et D2 (impôts production/importation). Le test vérifie qu'aucune valeur de poste observée après l'origine n'entre dans la projection. **Aucun paramètre du site n'est modifié par cette candidate** : elle ne constitue ni un modèle de politique publique ni un test sur les millésimes disponibles à l'époque. Comparaison complète dans l'[audit](dist/audit.html#nature-historique) et dans `node scripts/core-historical-backtest.mjs --json`.
+
 Le même banc ajoute **séparément** une sensibilité TVA 2014 : les deux rendements *ex ante* datés de 2012 (2,5 et 4,2 Md€) sont sommés en `R_TVA` pour un départ 2013. À T+1, l'écart de PIB nominal simulé moins Insee est −0,04 % avec TVA contre +0,06 % sans elle ; ces chiffres ne sont **ni l'effet causal observé de la TVA ni une prévision émise en 2013**. La réponse PIB/IPC du moteur provient de Mésange 2017, la catégorie TVA est agrégée et les autres réformes/chocs de 2014 manquent.
 
 Un troisième calcul isole **la baisse de cotisations annoncée pour 2019** (−20,4 Md€ de recettes, chiffrage connu en 2018) comme flux comptable daté : à T+1, l'écart de déficit/PIB est +0,78 point avec ce flux contre −0,08 point sans lui. Le PIB et le chômage simulés restent identiques, car aucun effet macro n'est estimé. Le coût CICE n'est **pas ajouté en niveau** : la dépense existait déjà dans le déficit 2018 de départ, et la superposer créerait un risque de double compte. Ce calcul à un an ne représente donc pas la réforme complète ni son effet causal. Le moteur web ne reçoit aucun flux comptable externe en usage normal ; l'option est réservée au banc historique. Sources, exclusions et hypothèses sont dans la sortie `--json` et dans l'[annexe d'audit](dist/audit.html#histoire).
@@ -203,6 +207,7 @@ research/historical-policy-timeline.json calendrier TVA/CICE/bascule du rejeu
 research/historical-parameters.json hypothèses du rejeu daté
 research/historical-event-inventory.json mesures historiques identifiées non chiffrées
 research/insee-*.json comptes trimestriels, sous-secteurs, population, travail et TES
+research/insee-annual-nature.json 28 postes APU par nature, 2003–2025
 research/legal-coverage-2026.json inventaire partiel de couverture LFI/LFSS et droit fiscal
 scripts/
   simulate.mjs adaptateur du moteur web pour Python et scripts
@@ -216,6 +221,8 @@ scripts/
   historical-replay.mjs diagnostics datés 5/10/15/20 ans
   insee-observations.mjs rapprochement des comptes Insee observés
   import-insee-observations.py import traçable des classeurs officiels
+  import-insee-annual-nature.py import/vérification des postes du 3.201
+  core-historical-backtest.mjs moteur principal sur origines historiques et références comparées
   export-insee-projection.mjs projection condensée pour le simulateur
   export-historical-audit.mjs export des tableaux observé/simulé pour le site statique
 .openai/
@@ -229,6 +236,7 @@ tests/
   test_python_smoke.py vérification de l'interface Python
   historical-replay.mjs tests du rejeu daté et anti-fuite
   insee-observations.mjs contrôle des nouvelles séries Insee
+  insee-annual-nature.mjs contrôle des postes, totaux et anti-fuite
 ```
 
 ## Limites

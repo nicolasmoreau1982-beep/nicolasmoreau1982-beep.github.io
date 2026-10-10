@@ -66,6 +66,16 @@ for (const row of coreReport.debtDecomposition) {
   }
 }
 assert.ok(page.includes("−0,638 Md€"));
+assert.match(page, /id="nature-historique"/);
+assert.match(page, /id="core-nature-comparison"/);
+for (const row of coreReport.natureReference.table) {
+  for (const metric of ["spendingBn", "revenueBn", "deficitRatio"]) {
+    const aggregate = row.aggregateMae[metric].toFixed(1).replace(".", ",");
+    const byNature = row.natureMae[metric].toFixed(1).replace(".", ",");
+    assert.ok(page.includes(`${aggregate} / ${byNature}`),
+      `Comparaison par nature absente : ${row.horizon} ans, ${metric}`);
+  }
+}
 const coreVat = runVat2014Sensitivity().rows[0];
 for (const value of [coreVat.withVatError.gdpPct, coreVat.withoutVatError.gdpPct]) {
   const formatted = `${value < 0 ? "−" : "+"}${Math.abs(value).toFixed(2).replace(".", ",")} %`;
