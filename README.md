@@ -61,6 +61,8 @@ La version 4.2 simplifie l’utilisation avec un parcours en quatre étapes, une
 
 La version 4.3 ajoute un moteur d’emploi par cohortes : recrutements des trois fonctions publiques, titulaires et contractuels, coût employeur annuel, engagement actualisé à quarante ans, formation, accompagnement et viviers de main-d’œuvre. Les populations BIT, France Travail, halo et sous-emploi restent séparées pour éviter les doubles comptes.
 
+La version 4.4 distingue les recrutements et carrières des armées, de la Police nationale, de la Gendarmerie, des juridictions, du pénitentiaire, de la justice des mineurs, de l’éducation-recherche, des autres administrations de l’État, des hôpitaux publics, des sapeurs-pompiers professionnels et des autres services territoriaux. Les militaires sont séparés des titulaires civils ; les réservistes et pompiers volontaires ne sont pas comptés comme emplois publics permanents.
+
 ## Structure
 
 ```text

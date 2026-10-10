@@ -112,6 +112,46 @@ window.ECOSIM_DATA = (() => {
       note: "5,877 millions d’agents : 2,587 M dans l’État, 2,039 M dans la territoriale et 1,250 M dans l’hospitalière ; 24 % de contractuels."
     },
     {
+      id: "defense-workforce-2025",
+      publisher: "Ministère des Armées",
+      title: "Chiffres clés de la Défense 2025",
+      date: "octobre 2025",
+      url: "https://www.defense.gouv.fr/chiffres-cles-defense-2025",
+      note: "264 000 personnels en 2024, dont près de 200 000 militaires et 64 000 civils ; réservistes comptés séparément."
+    },
+    {
+      id: "police-workforce-2026",
+      publisher: "Police nationale",
+      title: "Effectifs de la Police nationale",
+      date: "6 mars 2026",
+      url: "https://www.police-nationale.interieur.gouv.fr/actualite/8-mars-legalite-professionnelle-femmeshommes-priorite-dans-police-nationale",
+      note: "152 197 agents, tous corps confondus : actifs, administratifs, techniques, scientifiques et contractuels."
+    },
+    {
+      id: "gendarmerie-workforce-2025",
+      publisher: "Gendarmerie nationale",
+      title: "Chiffres clés de la Gendarmerie nationale",
+      date: "31 juillet 2025",
+      url: "https://www.gendarmerie.interieur.gouv.fr/content/download/57235/file/dossier-GN-2025.pdf",
+      note: "101 748 personnels d’active et civils, plus 38 622 réservistes opérationnels ; les réservistes ne sont pas assimilés à des emplois publics permanents."
+    },
+    {
+      id: "justice-workforce-2025",
+      publisher: "Ministère de la Justice",
+      title: "Références statistiques Justice 2025",
+      date: "29 avril 2026",
+      url: "https://www.justice.gouv.fr/documentation/etudes-et-statistiques/references-statistiques-justice-2025",
+      note: "93 128 ETP fin 2024 : 37 308 en justice judiciaire, 43 949 dans le pénitentiaire et 9 179 à la protection judiciaire de la jeunesse."
+    },
+    {
+      id: "firefighters-workforce-2025",
+      publisher: "Sécurité civile",
+      title: "Statistiques des services d’incendie et de secours 2025",
+      date: "20 avril 2026",
+      url: "https://www.securite-civile.interieur.gouv.fr/actualites/actualites/statistiques-des-services-dincendie-et-de-secours",
+      note: "44 303 professionnels, 13 377 militaires et 200 961 volontaires ; seul l’emploi professionnel est intégré comme poste public permanent."
+    },
+    {
       id: "insee-labour-market-2025",
       publisher: "Insee",
       title: "Une photographie du marché du travail en 2025",
@@ -745,6 +785,19 @@ window.ECOSIM_DATA = (() => {
         c: { label: "Catégorie C · exécution", share: 37.4, costWeight: 0.78 },
         unknown: { label: "Catégorie indéterminée", share: 2.0, costWeight: 1.0 }
       },
+      publicOccupations: {
+        military: { label: "Militaires des armées", short: "ARM", versant: "fpe", baseline: 200.0, employerCost: 0.090, retention: 0.94, careerYears: 18, pensionRate: 0.36, permanentShare: 0, military: true, categoryMix: false },
+        police: { label: "Police nationale", short: "POL", versant: "fpe", baseline: 152.2, employerCost: 0.078, retention: 0.975, careerYears: 25, pensionRate: 0.31, permanentShare: 0.88, categoryMix: false },
+        gendarmerie: { label: "Gendarmerie active", short: "GEN", versant: "fpe", baseline: 101.7, employerCost: 0.085, retention: 0.97, careerYears: 22, pensionRate: 0.35, permanentShare: 0, military: true, categoryMix: false },
+        judiciary: { label: "Magistrats, greffes et juridictions", short: "JUD", versant: "fpe", baseline: 37.3, employerCost: 0.083, retention: 0.985, careerYears: 30, pensionRate: 0.28, permanentShare: 0.91, categoryMix: true },
+        prison: { label: "Administration pénitentiaire", short: "PEN", versant: "fpe", baseline: 43.9, employerCost: 0.067, retention: 0.97, careerYears: 25, pensionRate: 0.31, permanentShare: 0.90, categoryMix: false },
+        youthJustice: { label: "Protection judiciaire de la jeunesse", short: "PJJ", versant: "fpe", baseline: 9.2, employerCost: 0.064, retention: 0.975, careerYears: 27, pensionRate: 0.28, permanentShare: 0.82, categoryMix: true },
+        education: { label: "Éducation, supérieur et recherche", short: "EDU", versant: "fpe", baseline: 1144.0, employerCost: 0.061, retention: 0.985, careerYears: 30, pensionRate: 0.28, permanentShare: 0.72, categoryMix: true },
+        stateAdmin: { label: "Autres administrations et opérateurs de l’État", short: "ADM", versant: "fpe", baseline: 899.1, employerCost: 0.066, retention: 0.985, careerYears: 30, pensionRate: 0.28, permanentShare: 0.70, categoryMix: true },
+        hospital: { label: "Hôpitaux et établissements médico-sociaux publics", short: "HOP", versant: "fph", baseline: 1249.9, employerCost: 0.064, retention: 0.982, careerYears: 28, pensionRate: 0.29, permanentShare: 0.66, categoryMix: true },
+        firefighters: { label: "Sapeurs-pompiers professionnels", short: "SPP", versant: "fpt", baseline: 44.3, employerCost: 0.070, retention: 0.975, careerYears: 25, pensionRate: 0.31, permanentShare: 0.94, categoryMix: false },
+        territorial: { label: "Autres services territoriaux", short: "TER", versant: "fpt", baseline: 1995.1, employerCost: 0.055, retention: 0.985, careerYears: 30, pensionRate: 0.28, permanentShare: 0.69, categoryMix: true }
+      },
       employmentTypes: [
         { id: "privatePermanent", label: "Salariés privés en CDI", value: 17.0, note: "estimation cohérente avec l’enquête Emploi" },
         { id: "privateLimited", label: "CDD et intérim privés", value: 2.8, note: "emplois à durée limitée" },
@@ -789,7 +842,18 @@ window.ECOSIM_DATA = (() => {
       publicCategoryB: { label: "Part de catégorie B dans les flux", min: 5, max: 50, step: 1, value: 22, unit: " %" },
       trainingEntries: { label: "Entrées en formation supplémentaires", min: -400, max: 600, step: 25, value: 0, unit: " k/an" },
       trainingMatch: { label: "Accès à l’emploi après formation", min: 35, max: 80, step: 1, value: 61, unit: " %" },
-      activationPlaces: { label: "Accompagnement intensif supplémentaire", min: -300, max: 600, step: 25, value: 0, unit: " k/an" }
+      activationPlaces: { label: "Accompagnement intensif supplémentaire", min: -300, max: 600, step: 25, value: 0, unit: " k/an" },
+      jobsMilitary: { label: "Recrutements — armées", min: -8, max: 30, step: 1, value: 0, unit: " k/an" },
+      jobsPolice: { label: "Recrutements — Police nationale", min: -5, max: 20, step: 1, value: 0, unit: " k/an" },
+      jobsGendarmerie: { label: "Recrutements — Gendarmerie", min: -4, max: 20, step: 1, value: 0, unit: " k/an" },
+      jobsJudiciary: { label: "Recrutements — magistrats et greffes", min: -1, max: 8, step: 0.5, value: 0, unit: " k/an" },
+      jobsPrison: { label: "Recrutements — pénitentiaire", min: -2, max: 12, step: 0.5, value: 0, unit: " k/an" },
+      jobsYouthJustice: { label: "Recrutements — justice des mineurs", min: -0.25, max: 4, step: 0.25, value: 0, unit: " k/an" },
+      jobsEducation: { label: "Recrutements — éducation et recherche", min: -40, max: 80, step: 5, value: 0, unit: " k/an" },
+      jobsStateAdmin: { label: "Recrutements — autres services de l’État", min: -35, max: 80, step: 5, value: 0, unit: " k/an" },
+      jobsHospital: { label: "Recrutements — hôpitaux publics", min: -40, max: 100, step: 5, value: 0, unit: " k/an" },
+      jobsFirefighters: { label: "Recrutements — pompiers professionnels", min: -2, max: 12, step: 0.5, value: 0, unit: " k/an" },
+      jobsTerritorial: { label: "Recrutements — autres services territoriaux", min: -60, max: 100, step: 5, value: 0, unit: " k/an" }
     }
   };
 
@@ -1161,7 +1225,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.3.0"
+      version: "4.4.0"
     }
   };
 })();

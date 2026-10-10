@@ -194,7 +194,21 @@
     const baselineBirthCohorts = [];
     const scenarioBirthCohorts = [];
     const publicCohorts = [];
+    const occupationCohorts = [];
     const trainingCohorts = [];
+    const occupationControlIds = {
+      military: "jobsMilitary",
+      police: "jobsPolice",
+      gendarmerie: "jobsGendarmerie",
+      judiciary: "jobsJudiciary",
+      prison: "jobsPrison",
+      youthJustice: "jobsYouthJustice",
+      education: "jobsEducation",
+      stateAdmin: "jobsStateAdmin",
+      hospital: "jobsHospital",
+      firefighters: "jobsFirefighters",
+      territorial: "jobsTerritorial"
+    };
     const rawCategoryA = values.publicCategoryA / 100;
     const rawCategoryB = values.publicCategoryB / 100;
     const categoryScale = rawCategoryA + rawCategoryB > 0.95 ? 0.95 / (rawCategoryA + rawCategoryB) : 1;
@@ -259,12 +273,20 @@
         permanentShare: values.publicPermanentShare / 100,
         fpe: values.publicFpeNet,
         fpt: values.publicFptNet,
-        fph: values.publicFphNet + (index === 0 ? Number(state.engines.healthWorkforce || 0) : 0)
+        fph: values.publicFphNet
       });
+      const missionRecruitments = Object.fromEntries(Object.entries(occupationControlIds)
+        .map(([occupation, controlId]) => [occupation, Number(values[controlId] || 0)]));
+      if (index === 0) missionRecruitments.hospital += Number(state.engines.healthWorkforce || 0);
+      occupationCohorts.push({ start: index, jobs: missionRecruitments });
       trainingCohorts.push({ start: index, training: values.trainingEntries, activation: values.activationPlaces });
       const publicByVersant = { fpe: 0, fpt: 0, fph: 0 };
+      const publicMissionById = Object.fromEntries(Object.keys(workforce.publicOccupations).map((id) => [id, 0]));
       let publicPermanentDelta = 0;
       let publicContractDelta = 0;
+      let publicMilitaryDelta = 0;
+      let genericPayrollCost = 0;
+      let missionPayrollCost = 0;
       let lifetimeCommitment = 0;
       publicCohorts.forEach((cohort) => {
         const yearsPresent = index - cohort.start;
@@ -278,6 +300,7 @@
           publicPermanentDelta += position.permanent;
           publicContractDelta += position.contract;
           const annualEmployerCost = position.total * workforce.publicService[key].employerCost * categoryCostMultiplier;
+          genericPayrollCost += annualEmployerCost;
           const remainingCareer = Math.max(0, workforce.pension.averageRemainingCareer - yearsPresent);
           const rate = workforce.pension.discountRate;
           const careerFactor = remainingCareer ? (1 - (1 + rate) ** -remainingCareer) / rate : 0;
@@ -285,8 +308,29 @@
           lifetimeCommitment += annualEmployerCost * (careerFactor + pensionFactor);
         });
       });
+      occupationCohorts.forEach((cohort) => {
+        const yearsPresent = index - cohort.start;
+        Object.entries(workforce.publicOccupations).forEach(([id, occupation]) => {
+          const position = cohort.jobs[id] * occupation.retention ** yearsPresent;
+          publicMissionById[id] += position;
+          publicByVersant[occupation.versant] += position;
+          if (occupation.military) publicMilitaryDelta += position;
+          else {
+            publicPermanentDelta += position * occupation.permanentShare;
+            publicContractDelta += position * (1 - occupation.permanentShare);
+          }
+          const mixMultiplier = occupation.categoryMix ? categoryCostMultiplier : 1;
+          const annualEmployerCost = position * occupation.employerCost * mixMultiplier;
+          missionPayrollCost += annualEmployerCost;
+          const remainingCareer = Math.max(0, occupation.careerYears - yearsPresent);
+          const rate = workforce.pension.discountRate;
+          const careerFactor = remainingCareer ? (1 - (1 + rate) ** -remainingCareer) / rate : 0;
+          const pensionFactor = occupation.pensionRate * 18 / ((1 + rate) ** Math.max(1, remainingCareer));
+          lifetimeCommitment += annualEmployerCost * (careerFactor + pensionFactor);
+        });
+      });
       const publicEmploymentDelta = Object.values(publicByVersant).reduce((sum, value) => sum + value, 0);
-      const publicPayrollCost = Object.entries(publicByVersant).reduce((sum, [key, jobs]) => sum + jobs * workforce.publicService[key].employerCost * categoryCostMultiplier, 0);
+      const publicPayrollCost = genericPayrollCost + missionPayrollCost;
 
       let trainingEmploymentDelta = 0;
       let trainingPipeline = 0;
@@ -333,9 +377,11 @@
         employedDelta,
         laborGdp,
         publicByVersant,
+        publicMissionById,
         publicEmploymentDelta,
         publicPermanentDelta,
         publicContractDelta,
+        publicMilitaryDelta,
         publicCategoryMix,
         categoryCostMultiplier,
         publicPayrollCost,
@@ -944,9 +990,11 @@
     return {
       demography: ["fertility", "lifeExpectancy"],
       migration: ["economicMigration", "otherMigration", "integration"],
-      employment: ["publicFpeNet", "publicFptNet", "publicFphNet", "publicPermanentShare", "publicCategoryA", "publicCategoryB", "trainingEntries", "trainingMatch", "activationPlaces"],
+      employment: ["trainingEntries", "trainingMatch", "activationPlaces"],
+      securityJobs: ["jobsMilitary", "jobsPolice", "jobsGendarmerie", "jobsJudiciary", "jobsPrison", "jobsYouthJustice"],
+      serviceJobs: ["jobsEducation", "jobsStateAdmin", "jobsHospital", "jobsFirefighters", "jobsTerritorial", "publicPermanentShare", "publicCategoryA", "publicCategoryB"],
       energy: ["nuclear", "renewables", "efficiency", "fossilPrice", "carbonTax"]
-    }[tab];
+    }[tab] || [];
   }
 
   function renderStructuralControls() {
@@ -963,7 +1011,9 @@
     const notes = {
       demography: "La fécondité modifie immédiatement les naissances et les dépenses familiales. Son effet sur la population active ne commence qu’après 18 ans ; à 20–30 ans, il devient visible mais reste très incertain.",
       migration: "Les deux flux sont des hypothèses de solde net, pas des nombres de titres de séjour. « Autres motifs » regroupe ici famille, études et humanitaire. Le résultat dépend de l’emploi, pas d’une valeur attribuée aux personnes.",
-      employment: "Les recrutements publics sont des flux annuels supplémentaires suivis par cohorte. Une valeur négative signifie des recrutements évités ou des non-remplacements, pas des licenciements. La catégorie C est le solde des parts A et B, normalisées si leur somme dépasse 95 %. L’engagement à 40 ans est informatif et n’est pas compté immédiatement dans le déficit.",
+      employment: "Formation et accompagnement mobilisent progressivement les viviers disponibles. Chômage BIT, inscrits à France Travail, halo et sous-emploi se recouvrent : le modèle ne les additionne jamais comme des personnes immédiatement interchangeables.",
+      securityJobs: "Armées, police, gendarmerie, juridictions, pénitentiaire et justice des mineurs ont chacun un coût, une durée de carrière et un taux de maintien propres. Une valeur négative représente des recrutements ou remplacements évités, jamais un licenciement automatique. Les réservistes sont exclus des emplois permanents.",
+      serviceJobs: "Chaque réglage est un flux annuel supplémentaire suivi par cohorte. Les militaires restent séparés des titulaires civils ; les parts de titulaires et de catégories A/B/C s’appliquent aux missions civiles compatibles. L’engagement à 40 ans est patrimonial et n’est pas une dépense immédiate.",
       energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. Le coût public, le calendrier industriel et la baisse des importations sont des ordres de grandeur sensibles aux technologies."
     };
     $("#structural-disclaimer").textContent = notes[state.activeStructuralTab];
@@ -992,7 +1042,7 @@
     const migrationText = `Les cohortes simulées génèrent ${money(structure.migrationRevenue)} de prélèvements et ${money(structure.migrationCost)} de services, transferts et intégration cette année, soit un solde de ${signed(structure.migrationNet, " Md€")}.`;
     const publicText = Math.abs(structure.publicEmploymentDelta) < 0.1
       ? "Les effectifs publics suivent la référence : les départs et recrutements ordinaires sont implicitement remplacés."
-      : `${signed(structure.publicEmploymentDelta, " k")} agents présents par rapport à la référence : ${signed(structure.publicPermanentDelta, " k")} titulaires et ${signed(structure.publicContractDelta, " k")} contractuels. Coût employeur annuel : ${signed(structure.publicPayrollCost, " Md€")}.`;
+      : `${signed(structure.publicEmploymentDelta, " k")} agents présents par rapport à la référence : ${signed(structure.publicMilitaryDelta, " k")} militaires, ${signed(structure.publicPermanentDelta, " k")} titulaires civils et ${signed(structure.publicContractDelta, " k")} contractuels. Coût employeur annuel : ${signed(structure.publicPayrollCost, " Md€")}.`;
     const energyDirection = structure.importBillChange > 0.05 ? "alourdit" : structure.importBillChange < -0.05 ? "allège" : "laisse presque inchangée";
     const energyText = `Le scénario ${energyDirection} la facture énergétique de ${money(Math.abs(structure.importBillChange))} et modifie les émissions de ${signed(structure.emissionsChange, " MtCO₂e")}.`;
     $("#story-reasons").innerHTML = `
@@ -1018,6 +1068,11 @@
       const delta = structure.publicByVersant[key];
       return `<div class="workforce-row"><span><strong>${item.short} · ${item.label}</strong><small>${fmt1.format(item.headcount / 1000)} M observés · coût calibré ${fmt0.format(item.employerCost * 1000)} k€/emploi</small></span><strong class="${classFor(delta)}">${signed(delta, " k")}</strong></div>`;
     }).join("");
+    const missionRows = Object.entries(workforce.publicOccupations).map(([key, item]) => {
+      const delta = structure.publicMissionById[key];
+      const status = item.military ? "statut militaire" : `${fmt0.format(item.permanentShare * 100)} % de titulaires dans les flux`;
+      return `<div class="workforce-row"><span><strong>${item.short} · ${item.label}</strong><small>${fmt1.format(item.baseline)} k observés · ${status} · carrière calibrée ${item.careerYears} ans</small></span><strong class="${classFor(delta)}">${signed(delta, " k")}</strong></div>`;
+    }).join("");
     const employmentRows = workforce.employmentTypes.map((item) => `<div class="workforce-row"><span><strong>${item.label}</strong><small>${item.note}</small></span><strong>${fmt1.format(item.value)} M</strong></div>`).join("");
     const categoryRows = [
       ["Catégorie A · conception/direction", structure.publicCategoryMix.a],
@@ -1034,7 +1089,7 @@
       ["Emploi issu des migrations", `${fmt0.format(point.labor.fromMigration)} k`, "part des cohortes employées"]
     ].map(([label, value, note]) => `<div class="workforce-row"><span><strong>${label}</strong><small>${note}</small></span><strong>${value}</strong></div>`).join("");
     $("#workforce-detail").innerHTML = `
-      <article class="workforce-panel"><h3>Trois fonctions publiques</h3><p>Effectifs observés fin 2024. Le chiffre à droite est l’écart simulé au ${point.year}, y compris les soignants réglés dans le moteur Santé.</p>${publicRows}${categoryRows}<div class="workforce-commitment"><small>Engagement actualisé à 40 ans</small><strong>${signed(structure.lifetimeCommitment, " Md€")}</strong><span>Rémunérations et droits futurs des cohortes ajoutées ou évitées. Indicateur patrimonial, non dépense immédiate.</span></div></article>
+      <article class="workforce-panel workforce-panel-wide"><h3>Armées, sécurité, justice et services publics</h3><p>Effectifs de référence en milliers. À droite : écart simulé au ${point.year}. Les réservistes et les pompiers volontaires sont affichés dans les sources mais ne sont pas assimilés à des emplois publics permanents.</p><div class="public-mission-grid">${missionRows}</div><div class="public-summary-grid"><div>${publicRows}</div><div>${categoryRows}<div class="workforce-row"><span><strong>Militaires</strong><small>armées et gendarmerie, hors titulaires civils</small></span><strong class="${classFor(structure.publicMilitaryDelta)}">${signed(structure.publicMilitaryDelta, " k")}</strong></div></div><div class="workforce-commitment"><small>Engagement actualisé à 40 ans</small><strong>${signed(structure.lifetimeCommitment, " Md€")}</strong><span>Rémunérations et droits futurs des cohortes ajoutées ou évitées. Indicateur patrimonial, non dépense immédiate.</span></div></div></article>
       <article class="workforce-panel"><h3>Types d’emploi</h3><p>Photographie 2025 reconstituée. Les catégories publiques sont séparées des contrats privés.</p>${employmentRows}</article>
       <article class="workforce-panel"><h3>Viviers et transitions</h3><p>Les sources ne sont pas additives : le modèle applique des taux de disponibilité et d’appariement.</p>${allocationRows}</article>`;
   }
@@ -1536,8 +1591,20 @@
       agents_etat_ecart_milliers: round(item.structural.publicByVersant.fpe, 1),
       agents_territoriaux_ecart_milliers: round(item.structural.publicByVersant.fpt, 1),
       agents_hospitaliers_ecart_milliers: round(item.structural.publicByVersant.fph, 1),
+      militaires_publics_ecart_milliers: round(item.structural.publicMilitaryDelta, 1),
       titulaires_publics_ecart_milliers: round(item.structural.publicPermanentDelta, 1),
       contractuels_publics_ecart_milliers: round(item.structural.publicContractDelta, 1),
+      armees_ecart_milliers: round(item.structural.publicMissionById.military, 1),
+      police_nationale_ecart_milliers: round(item.structural.publicMissionById.police, 1),
+      gendarmerie_ecart_milliers: round(item.structural.publicMissionById.gendarmerie, 1),
+      juridictions_ecart_milliers: round(item.structural.publicMissionById.judiciary, 1),
+      administration_penitentiaire_ecart_milliers: round(item.structural.publicMissionById.prison, 1),
+      justice_des_mineurs_ecart_milliers: round(item.structural.publicMissionById.youthJustice, 1),
+      education_recherche_ecart_milliers: round(item.structural.publicMissionById.education, 1),
+      autres_administrations_etat_ecart_milliers: round(item.structural.publicMissionById.stateAdmin, 1),
+      hopitaux_publics_ecart_milliers: round(item.structural.publicMissionById.hospital, 1),
+      pompiers_professionnels_ecart_milliers: round(item.structural.publicMissionById.firefighters, 1),
+      autres_services_territoriaux_ecart_milliers: round(item.structural.publicMissionById.territorial, 1),
       recrutements_publics_categorie_a_pct: round(item.structural.publicCategoryMix.a * 100, 1),
       recrutements_publics_categorie_b_pct: round(item.structural.publicCategoryMix.b * 100, 1),
       recrutements_publics_categorie_c_pct: round(item.structural.publicCategoryMix.c * 100, 1),

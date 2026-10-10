@@ -270,7 +270,9 @@
             <div class="lab-tabs" role="tablist" aria-label="Thèmes structurels">
               <button class="is-active" data-structural-tab="demography">Démographie</button>
               <button data-structural-tab="migration">Immigration</button>
-              <button data-structural-tab="employment">Emploi</button>
+              <button data-structural-tab="employment">Viviers</button>
+              <button data-structural-tab="securityJobs">Régalien</button>
+              <button data-structural-tab="serviceJobs">Services publics</button>
               <button data-structural-tab="energy">Énergie</button>
             </div>
             <div id="structural-control-list"></div>
@@ -470,7 +472,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 4.3 · octobre 2026</span>
+      <span>Version 4.4 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -495,9 +497,9 @@
           <h3>6. Lecture des résultats</h3>
           <p>Les résultats sont des écarts par rapport à une trajectoire de référence compatible avec les dernières projections macroéconomiques et avec une correction budgétaire graduelle. Une mesure « favorable au PIB » peut rester défavorable à la dette, et inversement.</p>
           <h3>7. Démographie, emploi, immigration et énergie</h3>
-          <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Le module d’emploi distingue les trois versants publics, titulaires et contractuels, salariés privés, indépendants, chômage BIT, halo, sous-emploi et formation. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
+          <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Le module d’emploi distingue les trois versants publics, les missions — armées, police, gendarmerie, justice, pénitentiaire, éducation, hôpital, pompiers et autres services —, les statuts, les salariés privés, les indépendants et les viviers. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
           <h3>8. Emploi public et engagements longs</h3>
-          <p>Chaque flux supplémentaire de recrutement public crée une cohorte suivie séparément. Sa présence, son coût employeur et son engagement actualisé de rémunération et de retraite évoluent selon le versant, le statut et la catégorie A, B ou C. Un titulaire bénéficie de la permanence de son statut, pas de la garantie absolue de conserver le même poste ; les contractuels ne sont pas titulaires. L’engagement à quarante ans est affiché mais n’est pas passé en dépense immédiate : les comptes publics enregistrent les rémunérations et cotisations au fil du temps. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
+          <p>Chaque flux supplémentaire de recrutement public crée une cohorte suivie séparément. Sa présence, son coût employeur et son engagement actualisé de rémunération et de retraite évoluent selon la mission, le versant, le statut et, lorsque c’est pertinent, la catégorie A, B ou C. Les militaires des armées et de la gendarmerie sont distingués des titulaires civils ; leurs carrières sont calibrées séparément. Les réservistes et pompiers volontaires ne sont pas traités comme des emplois publics permanents. Un titulaire bénéficie de la permanence de son statut, pas de la garantie absolue de conserver le même poste. L’engagement à quarante ans est affiché mais n’est pas passé en dépense immédiate. Une baisse de recrutement représente des postes non créés ou non remplacés, pas un licenciement automatique.</p>
           <h3>9. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
           <h3>10. Programmes politiques</h3>

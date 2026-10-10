@@ -42,7 +42,25 @@ const baseline = calculateProjection();
 assert.equal(baseline.scenario.length, 30);
 assert.ok(baseline.scenario.every((row) => [row.gdp, row.debt, row.deficit, row.unemployment].every(finite)));
 assert.ok(baseline.scenario.every((row) => Math.abs(row.structural.publicEmploymentDelta) < 1e-9));
+assert.equal(
+  Number(Object.values(data.structural.workforce.publicOccupations).reduce((sum, item) => sum + item.baseline, 0).toFixed(1)),
+  Number((data.structural.workforce.publicEmployment * 1000).toFixed(1)),
+  "Le détail par mission doit se recaler sur l'emploi public total"
+);
 
+resetStructural();
+state.structural.jobsMilitary = 10;
+state.structural.jobsPolice = 5;
+state.structural.jobsPrison = 1;
+const securityHiring = calculateProjection();
+const securityYear10 = securityHiring.scenario[9].structural;
+assert.ok(securityYear10.publicMissionById.military > securityYear10.publicMissionById.police);
+assert.ok(securityYear10.publicMissionById.police > securityYear10.publicMissionById.prison);
+assert.ok(securityYear10.publicMilitaryDelta > 0);
+assert.ok(securityYear10.publicPermanentDelta > securityYear10.publicContractDelta);
+assert.ok(securityYear10.publicPayrollCost > 0 && securityYear10.lifetimeCommitment > 0);
+
+resetStructural();
 state.structural.publicFpeNet = 40;
 state.structural.publicFptNet = 20;
 state.structural.publicFphNet = 25;
@@ -70,6 +88,7 @@ resetStructural();
 state.engines.healthWorkforce = 50;
 const healthHiring = calculateProjection();
 assert.ok(healthHiring.scenario[0].structural.publicByVersant.fph >= 49.9);
+assert.ok(healthHiring.scenario[0].structural.publicMissionById.hospital >= 49.9);
 assert.ok(healthHiring.scenario[0].spendingChange > 3 && healthHiring.scenario[0].spendingChange < 4.5, "Les soignants ne doivent pas être comptés deux fois");
 
 for (const family of Object.values(data.politicalScenarios)) {
