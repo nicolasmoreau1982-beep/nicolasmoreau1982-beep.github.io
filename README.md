@@ -38,6 +38,13 @@ Le moteur est semi-structurel et déterministe. Il combine :
 
 Cinq paramétrages économiques sont proposés : consensus empirique, lecture keynésienne, politique de l’offre, lecture libérale et réindustrialisation ciblée. Ils utilisent la même comptabilité et ne diffèrent que par des paramètres affichés et documentés.
 
+La version 1.1 ajoute :
+
+- une comparaison simultanée des cinq modèles ;
+- trois hypothèses conjoncturelles réglables : position dans le cycle, réaction de la BCE et confiance financière ;
+- la décomposition 2025 entre État, opérateurs centraux, administrations locales et Sécurité sociale ;
+- une vérification explicite de la consolidation des soldes des sous-secteurs.
+
 ## Structure
 
 ```text

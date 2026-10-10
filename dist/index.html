@@ -91,6 +91,28 @@
           </div>
           <p class="model-description" id="model-description"></p>
 
+          <details class="advanced-controls">
+            <summary>
+              <span>Hypothèses conjoncturelles</span>
+              <small>avancé</small>
+            </summary>
+            <div class="advanced-grid">
+              <label>
+                <span class="field-label">Position dans le cycle</span>
+                <select id="cycle-select"></select>
+              </label>
+              <label>
+                <span class="field-label">Réaction monétaire</span>
+                <select id="monetary-select"></select>
+              </label>
+              <label>
+                <span class="field-label">Confiance financière</span>
+                <select id="confidence-select"></select>
+              </label>
+            </div>
+            <p id="assumption-description"></p>
+          </details>
+
           <div class="field-label label-with-help">
             Point de départ rapide
             <button class="help-dot" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
@@ -184,6 +206,14 @@
               <div><small>Mécanisme dominant</small><strong id="mechanism-status">—</strong><p id="mechanism-detail">—</p></div>
             </article>
           </div>
+
+          <article class="model-comparison">
+            <div class="comparison-heading">
+              <div><small>Pluralisme des modèles</small><h3>Une mesure, cinq lectures</h3></div>
+              <span id="comparison-horizon">Horizon 3 ans</span>
+            </div>
+            <div class="comparison-table" id="comparison-table"></div>
+          </article>
         </div>
       </section>
 
@@ -222,10 +252,25 @@
         </div>
       </section>
 
+      <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
+        <div class="section-intro">
+          <div>
+            <span class="section-number">04</span>
+            <h2 id="sectors-title">Qui porte les comptes publics&nbsp;?</h2>
+          </div>
+          <p>Le budget de l’État n’est qu’une partie des finances publiques. Voici les quatre sous-secteurs comptables observés en 2025.</p>
+        </div>
+        <div class="sector-overview">
+          <div class="sector-visual" id="sector-visual" aria-label="Soldes publics par sous-secteur"></div>
+          <div class="sector-grid" id="sector-grid"></div>
+        </div>
+        <p class="sector-footnote">Les dépenses et recettes brutes des sous-secteurs ne s’additionnent pas : les transferts entre administrations seraient comptés deux fois. En revanche, leurs soldes s’additionnent après consolidation.</p>
+      </section>
+
       <section class="methodology" id="methodology" aria-labelledby="method-title">
         <div class="method-heading">
           <div>
-            <span class="section-number light">04</span>
+            <span class="section-number light">05</span>
             <h2 id="method-title">Un modèle qui montre ses coutures.</h2>
           </div>
           <p>Nous ne choisissons pas une école économique à votre place. Cinq lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
@@ -261,7 +306,7 @@
 
       <section class="sources-section" id="sources" aria-labelledby="sources-title">
         <div class="section-intro">
-          <div><span class="section-number">05</span><h2 id="sources-title">Données & sources</h2></div>
+          <div><span class="section-number">06</span><h2 id="sources-title">Données & sources</h2></div>
           <p>Chaque chiffre a un millésime. Les observations, calibrages et hypothèses sont distingués.</p>
         </div>
         <div class="source-grid" id="source-grid"></div>
@@ -271,7 +316,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 1.0 · octobre 2026</span>
+      <span>Version 1.1 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

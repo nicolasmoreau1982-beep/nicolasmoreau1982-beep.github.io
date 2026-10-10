@@ -29,7 +29,7 @@ window.ECOSIM_DATA = (() => {
       title: "Dépenses et recettes des administrations publiques en 2025",
       date: "28 août 2026",
       url: "https://www.insee.fr/fr/statistiques/8988845",
-      note: "Comptes nationaux, base 2020 — totaux et recettes par nature."
+      note: "Comptes nationaux, base 2020 — totaux, recettes par nature et sous-secteurs."
     },
     {
       id: "insee-deficit",
@@ -361,6 +361,84 @@ window.ECOSIM_DATA = (() => {
     }
   };
 
+  const assumptions = {
+    cycle: {
+      recession: {
+        label: "Activité déprimée",
+        description: "Capacités inutilisées et ménages davantage contraints.",
+        spendScale: 1.24,
+        taxScale: 1.14,
+        inflationScale: 0.72,
+        supplyScale: 1.02
+      },
+      normal: {
+        label: "Cycle normal",
+        description: "Économie proche de son rythme potentiel.",
+        spendScale: 1,
+        taxScale: 1,
+        inflationScale: 1,
+        supplyScale: 1
+      },
+      tension: {
+        label: "Capacités sous tension",
+        description: "Une part plus forte de l’impulsion se transmet aux prix et aux importations.",
+        spendScale: 0.72,
+        taxScale: 0.88,
+        inflationScale: 1.42,
+        supplyScale: 1.08
+      }
+    },
+    monetary: {
+      accommodative: {
+        label: "BCE accommodante",
+        description: "Les taux réagissent peu à l’impulsion budgétaire.",
+        spendScale: 1.16,
+        taxScale: 1.06,
+        decayScale: 1.08,
+        rateShock: -0.18
+      },
+      neutral: {
+        label: "BCE neutre",
+        description: "Réaction monétaire conforme au scénario central.",
+        spendScale: 1,
+        taxScale: 1,
+        decayScale: 1,
+        rateShock: 0
+      },
+      restrictive: {
+        label: "BCE restrictive",
+        description: "Hausse des taux et éviction plus marquée de la demande privée.",
+        spendScale: 0.80,
+        taxScale: 1.08,
+        decayScale: 0.90,
+        rateShock: 0.42
+      }
+    },
+    confidence: {
+      trusted: {
+        label: "Confiance élevée",
+        description: "Trajectoire jugée crédible par les prêteurs et les agents privés.",
+        riskShock: -0.15,
+        investmentScale: 1.08,
+        uncertainty: -0.06
+      },
+      stable: {
+        label: "Confiance stable",
+        description: "Pas de choc autonome de confiance.",
+        riskShock: 0,
+        investmentScale: 1,
+        uncertainty: 0
+      },
+      fragile: {
+        label: "Confiance fragile",
+        description: "Attentisme privé et prime de risque supplémentaire.",
+        riskShock: 0.38,
+        investmentScale: 0.86,
+        uncertainty: 0.22
+      }
+    }
+  };
+
   const euModes = {
     current: {
       label: "Cadre européen actuel",
@@ -455,6 +533,49 @@ window.ECOSIM_DATA = (() => {
     }
   ];
 
+  const sectors = [
+    {
+      id: "state",
+      code: "S13111",
+      label: "État",
+      spending: 607.730,
+      revenue: 479.6272,
+      balance: -128.1028,
+      color: "#4055bf",
+      description: "Ministères, budget général, budgets annexes et comptes spéciaux dans le périmètre des comptes nationaux."
+    },
+    {
+      id: "odac",
+      code: "S13112",
+      label: "Opérateurs centraux",
+      spending: 142.2659,
+      revenue: 140.1141,
+      balance: -2.1518,
+      color: "#7d62c7",
+      description: "Universités, organismes de recherche, France Compétences et autres organismes divers d’administration centrale."
+    },
+    {
+      id: "local",
+      code: "S1313",
+      label: "Administrations locales",
+      spending: 335.4818,
+      revenue: 319.9269,
+      balance: -15.5549,
+      color: "#268f88",
+      description: "Communes, intercommunalités, départements, régions et organismes locaux."
+    },
+    {
+      id: "social",
+      code: "S1314",
+      label: "Sécurité sociale",
+      spending: 803.1640,
+      revenue: 797.3815,
+      balance: -5.7825,
+      color: "#d85e55",
+      description: "Régimes d’assurance sociale, hôpitaux et organismes dépendant des assurances sociales."
+    }
+  ];
+
   return {
     BASE,
     sources,
@@ -463,9 +584,11 @@ window.ECOSIM_DATA = (() => {
     revenueGroups,
     revenue,
     models,
+    assumptions,
     euModes,
     baseline,
     presets,
+    sectors,
     metadata: {
       snapshotDate: "10 octobre 2026",
       spendingDetailObservedYear: 2024,
@@ -473,7 +596,7 @@ window.ECOSIM_DATA = (() => {
       revenueObservedYear: 2025,
       projectionStart: 2026,
       projectionEnd: 2035,
-      version: "1.0.0"
+      version: "1.1.0"
     }
   };
 })();

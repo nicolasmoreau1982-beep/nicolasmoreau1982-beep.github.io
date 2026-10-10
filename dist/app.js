@@ -11,6 +11,9 @@
     changes: {},
     model: "consensus",
     euMode: "current",
+    cycle: "normal",
+    monetary: "neutral",
+    confidence: "stable",
     horizon: 3,
     activeBudget: "spending",
     chartMetric: "deficitRatio",
@@ -51,6 +54,9 @@
       name: state.name,
       model: state.model,
       euMode: state.euMode,
+      cycle: state.cycle,
+      monetary: state.monetary,
+      confidence: state.confidence,
       changes: Object.fromEntries(Object.entries(state.changes).filter(([, value]) => Math.abs(value) > 0.0001))
     };
   }
@@ -59,6 +65,9 @@
     if (!payload || typeof payload !== "object") return false;
     if (D.models[payload.model]) state.model = payload.model;
     if (D.euModes[payload.euMode]) state.euMode = payload.euMode;
+    if (D.assumptions.cycle[payload.cycle]) state.cycle = payload.cycle;
+    if (D.assumptions.monetary[payload.monetary]) state.monetary = payload.monetary;
+    if (D.assumptions.confidence[payload.confidence]) state.confidence = payload.confidence;
     if (typeof payload.name === "string") state.name = payload.name.slice(0, 60);
     if (payload.changes && typeof payload.changes === "object") {
       state.changes = {};
@@ -115,6 +124,23 @@
     return result;
   }
 
+  function effectiveProfile(modelKey = state.model) {
+    const base = D.models[modelKey];
+    const cycle = D.assumptions.cycle[state.cycle];
+    const monetary = D.assumptions.monetary[state.monetary];
+    const confidence = D.assumptions.confidence[state.confidence];
+    return {
+      ...base,
+      spendScale: base.spendScale * cycle.spendScale * monetary.spendScale,
+      taxScale: base.taxScale * cycle.taxScale * monetary.taxScale,
+      supplyScale: base.supplyScale * cycle.supplyScale * confidence.investmentScale,
+      decay: clamp(base.decay * monetary.decayScale, 0.42, 0.92),
+      inflationBoost: (base.inflationBoost || 1) * cycle.inflationScale,
+      assumptionRate: monetary.rateShock + confidence.riskShock,
+      uncertainty: Math.max(0.18, base.uncertainty + confidence.uncertainty)
+    };
+  }
+
   function categoryPolicyImpact(category, delta, index, priceIndex, profile) {
     const ramp = index === 0 ? category.lag : Math.min(1, category.lag + index * 0.28);
     const persistentDemand = category.type === "spending" ? 0.55 : 0.45;
@@ -133,9 +159,9 @@
     return { demand, supply, inflation, amount };
   }
 
-  function calculateProjection() {
+  function calculateProjection(modelKey = state.model) {
     const baseline = baselineTrajectory();
-    const profile = D.models[state.model];
+    const profile = effectiveProfile(modelKey);
     const eu = D.euModes[state.euMode];
     const scenario = [];
     let scenarioDebt = D.BASE.debt;
@@ -188,7 +214,7 @@
       const debtDifferencePrevious = scenarioDebt - baselineDebtPrevious;
       const previousBaselineRatio = index === 0 ? D.BASE.debtRatio : baseline[index - 1].debtRatio;
       const debtRisk = Math.max(0, lastDebtRatio - previousBaselineRatio) * 0.045 * profile.debtSensitivity;
-      const riskPremium = eu.rateShock + debtRisk;
+      const riskPremium = Math.max(-0.20, eu.rateShock + profile.assumptionRate + debtRisk);
       const transmission = Math.min(1, 0.18 * (index + 1));
       const extraInterest = debtDifferencePrevious * 0.021 + scenarioDebt * riskPremium / 100 * transmission;
       const directBalanceCost = spendingChange - revenueChange;
@@ -244,10 +270,22 @@
     const euSelect = $("#eu-select");
     euSelect.innerHTML = Object.entries(D.euModes).map(([id, mode]) => `<option value="${id}">${mode.label}</option>`).join("");
     euSelect.value = state.euMode;
+    const assumptionSelects = [
+      ["cycle-select", "cycle"],
+      ["monetary-select", "monetary"],
+      ["confidence-select", "confidence"]
+    ];
+    assumptionSelects.forEach(([elementId, key]) => {
+      const select = $(`#${elementId}`);
+      select.innerHTML = Object.entries(D.assumptions[key]).map(([id, item]) => `<option value="${id}">${item.label}</option>`).join("");
+      select.value = state[key];
+    });
     $("#scenario-name").value = state.name;
     renderPresets();
     renderSources();
+    renderSectors();
     updateModelDescription();
+    updateAssumptionDescription();
   }
 
   function renderPresets() {
@@ -277,15 +315,38 @@
     $("#model-description").textContent = `${model.description} ${eu.description}`;
   }
 
+  function updateAssumptionDescription() {
+    const items = [
+      D.assumptions.cycle[state.cycle],
+      D.assumptions.monetary[state.monetary],
+      D.assumptions.confidence[state.confidence]
+    ];
+    $("#assumption-description").textContent = items.map((item) => item.description).join(" ");
+  }
+
   function pushUndo() {
-    state.undoStack.push({ changes: { ...state.changes }, model: state.model, euMode: state.euMode });
+    state.undoStack.push({
+      changes: { ...state.changes },
+      model: state.model,
+      euMode: state.euMode,
+      cycle: state.cycle,
+      monetary: state.monetary,
+      confidence: state.confidence
+    });
     if (state.undoStack.length > 30) state.undoStack.shift();
     $("#undo-button").disabled = false;
   }
 
   function captureEditSnapshot() {
     if (!state.editSnapshot) {
-      state.editSnapshot = { changes: { ...state.changes }, model: state.model, euMode: state.euMode };
+      state.editSnapshot = {
+        changes: { ...state.changes },
+        model: state.model,
+        euMode: state.euMode,
+        cycle: state.cycle,
+        monetary: state.monetary,
+        confidence: state.confidence
+      };
     }
   }
 
@@ -325,6 +386,7 @@
     updateResults();
     renderChart();
     updateDiagnostics();
+    renderModelComparison();
     if (refreshList) renderCategories();
   }
 
@@ -441,7 +503,7 @@
       </svg>
       <div class="chart-tooltip"></div>
     `;
-    $("#chart-caption").textContent = `${config.label} · ${config.unit}. Bande de sensibilité du modèle « ${D.models[state.model].label} », élargie avec l’horizon.`;
+    $("#chart-caption").textContent = `${config.label} · ${config.unit}. Bande de sensibilité du modèle « ${D.models[state.model].label} », ajustée au cycle, à la BCE et à la confiance.`;
 
     const tooltip = $(".chart-tooltip", $("#chart-wrap"));
     $$(".chart-point", $("#chart-wrap")).forEach((point) => {
@@ -475,7 +537,7 @@
       euDetail.textContent = `Écart de ${fmt1.format(point2029.deficitRatio - 3)} point(s) au seuil de 3 % en 2029.`;
     }
 
-    const uncertainty = D.models[state.model].uncertainty + D.euModes[state.euMode].uncertainty;
+    const uncertainty = effectiveProfile().uncertainty + D.euModes[state.euMode].uncertainty;
     $("#risk-status").textContent = uncertainty < 0.45 ? "Modérée" : uncertainty < 0.95 ? "Élevée" : "Très élevée";
     $("#risk-detail").textContent = `À dix ans, la dette centrale est ${percent(point2035.debtRatio)} avec une sensibilité d’environ ±${fmt1.format(point2035.bands.debtRatio)} points.`;
 
@@ -498,9 +560,62 @@
     }
   }
 
+  function renderModelComparison() {
+    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const colors = ["#4055bf", "#d85e55", "#168b80", "#7d62c7", "#d89a38"];
+    const rows = Object.entries(D.models).map(([id, model], modelIndex) => {
+      const point = calculateProjection(id).scenario[index];
+      const growthWidth = clamp((point.growth + 1.5) / 4 * 100, 4, 100);
+      const deficitWidth = clamp(point.deficitRatio / 8 * 100, 4, 100);
+      const debtWidth = clamp((point.debtRatio - 80) / 70 * 100, 4, 100);
+      return `
+        <div class="comparison-row ${id === state.model ? "is-selected" : ""}" style="--model-color:${colors[modelIndex]}">
+          <div class="comparison-model"><i></i><span>${model.label}</span></div>
+          <div class="comparison-cell"><small>Croissance</small><span>${percent(point.growth)}</span><span class="comparison-bar"><i style="--bar-width:${growthWidth}%"></i></span></div>
+          <div class="comparison-cell"><small>Déficit</small><span>−${percent(point.deficitRatio)}</span><span class="comparison-bar"><i style="--bar-width:${deficitWidth}%"></i></span></div>
+          <div class="comparison-cell"><small>Dette</small><span>${percent(point.debtRatio)}</span><span class="comparison-bar"><i style="--bar-width:${debtWidth}%"></i></span></div>
+        </div>
+      `;
+    });
+    $("#comparison-table").innerHTML = rows.join("");
+    $("#comparison-horizon").textContent = `Horizon ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
+  }
+
+  function renderSectors() {
+    const totalDeficit = -D.sectors.reduce((sum, sector) => sum + sector.balance, 0);
+    const maxDeficit = Math.max(...D.sectors.map((sector) => Math.abs(sector.balance)));
+    $("#sector-visual").innerHTML = `
+      <div class="sector-visual-header">
+        <small>Déficit consolidé 2025</small>
+        <strong>−${money(totalDeficit)}</strong>
+        <span>Somme des soldes des quatre sous-secteurs</span>
+      </div>
+      <div class="sector-bars">
+        ${D.sectors.map((sector) => `
+          <div class="sector-bar-row" style="--sector-color:${sector.color};--bar-width:${Math.max(2, Math.abs(sector.balance) / maxDeficit * 100)}%">
+            <span>${sector.label}</span>
+            <span class="sector-bar-track"><i></i></span>
+            <strong>${signed(sector.balance, " Md€")}</strong>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    $("#sector-grid").innerHTML = D.sectors.map((sector) => `
+      <article class="sector-card" style="--sector-color:${sector.color}">
+        <div class="sector-card-heading"><h3>${sector.label}</h3><span>${sector.code}</span></div>
+        <p>${sector.description}</p>
+        <div class="sector-numbers">
+          <div><small>Dépenses</small><strong>${money(sector.spending)}</strong></div>
+          <div><small>Recettes</small><strong>${money(sector.revenue)}</strong></div>
+          <div class="sector-balance"><small>Solde</small><strong>${signed(sector.balance, " Md€")}</strong></div>
+        </div>
+      </article>
+    `).join("");
+  }
+
   function categoryEffectLabel(category, delta) {
     if (!delta) return `×${fmt1.format(category.multiplier)}`;
-    const profile = D.models[state.model];
+    const profile = effectiveProfile();
     const impact = categoryPolicyImpact(category, delta, 2, 1.05, profile);
     const value = impact.demand + impact.supply;
     return `PIB ${signed(value, " Md€")}`;
@@ -522,7 +637,7 @@
       const effect = allChildren.reduce((sum, category) => {
         const change = changeFor(category.id);
         if (!change) return sum;
-        const impact = categoryPolicyImpact(category, change, 2, 1.05, D.models[state.model]);
+        const impact = categoryPolicyImpact(category, change, 2, 1.05, effectiveProfile());
         return sum + impact.demand + impact.supply;
       }, 0);
       const collapsed = state.collapsed.has(group.id) && !query;
@@ -582,9 +697,16 @@
     state.changes = {};
     state.model = "consensus";
     state.euMode = "current";
+    state.cycle = "normal";
+    state.monetary = "neutral";
+    state.confidence = "stable";
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
+    $("#cycle-select").value = state.cycle;
+    $("#monetary-select").value = state.monetary;
+    $("#confidence-select").value = state.confidence;
     updateModelDescription();
+    updateAssumptionDescription();
     refreshAll(true);
     showToast("Scénario réinitialisé");
   }
@@ -595,10 +717,17 @@
     state.changes = previous.changes;
     state.model = previous.model;
     state.euMode = previous.euMode;
+    state.cycle = previous.cycle || "normal";
+    state.monetary = previous.monetary || "neutral";
+    state.confidence = previous.confidence || "stable";
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
+    $("#cycle-select").value = state.cycle;
+    $("#monetary-select").value = state.monetary;
+    $("#confidence-select").value = state.confidence;
     $("#undo-button").disabled = state.undoStack.length === 0;
     updateModelDescription();
+    updateAssumptionDescription();
     refreshAll(true);
   }
 
@@ -675,6 +804,14 @@
       updateModelDescription();
       refreshAll();
     });
+    [["cycle-select", "cycle"], ["monetary-select", "monetary"], ["confidence-select", "confidence"]].forEach(([elementId, key]) => {
+      $(`#${elementId}`).addEventListener("change", (event) => {
+        pushUndo();
+        state[key] = event.target.value;
+        updateAssumptionDescription();
+        refreshAll(true);
+      });
+    });
     $("#scenario-name").addEventListener("input", (event) => { state.name = event.target.value; });
     $("#preset-list").addEventListener("click", (event) => {
       const preset = event.target.closest("[data-preset]");
@@ -687,6 +824,7 @@
       state.horizon = Number(button.dataset.horizon);
       $$("[data-horizon]").forEach((item) => item.classList.toggle("is-active", item === button));
       updateResults();
+      renderModelComparison();
     }));
     $("#metric-switch").addEventListener("click", (event) => {
       const button = event.target.closest("[data-chart]");
