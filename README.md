@@ -41,14 +41,13 @@ Le moteur est semi-structurel et déterministe. Il combine :
 
 Cinq paramétrages économiques sont proposés : consensus empirique, lecture keynésienne, politique de l’offre, lecture libérale et réindustrialisation ciblée. Ils utilisent la même comptabilité et ne diffèrent que par des paramètres affichés et documentés.
 
-La version 2.0 ajoute :
+La version 3.0 ajoute :
 
-- une trajectoire de population, de naissances et de vieillissement sur dix ans ;
-- deux hypothèses de solde migratoire et un réglage de l’intégration dans l’emploi ;
-- une comptabilité explicite des recettes, services publics et coûts d’intégration des cohortes simulées ;
-- une politique énergétique réglable : nucléaire, renouvelables, efficacité, prix fossiles et signal carbone ;
-- une narration automatique qui explique les résultats et les principaux mécanismes ;
-- des exports enrichis avec les indicateurs démographiques et énergétiques.
+- douze moteurs reliés : travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance ;
+- trente-six leviers opérationnels avec coût direct, demande, offre, emploi, inflation, commerce extérieur, émissions et pauvreté ;
+- des interactions institutionnelles, notamment pour la politique commerciale européenne et les garanties publiques ;
+- une lecture automatique des mécanismes dominants et des risques de double comptage ;
+- des exports enrichis avec les résultats des moteurs publics.
 
 ## Structure
 

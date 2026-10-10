@@ -24,6 +24,78 @@ window.ECOSIM_DATA = (() => {
 
   const sources = [
     {
+      id: "cor-2026",
+      publisher: "COR",
+      title: "Évolutions et perspectives des retraites",
+      date: "juin 2026",
+      url: "https://www.cor-retraites.fr/rapports-du-cor/rapport-annuel-cor-juin-2026-evolutions-perspectives-retraites-france",
+      note: "Hypothèses démographiques, dépenses, ressources et solde du système de retraite."
+    },
+    {
+      id: "drees-health-2024",
+      publisher: "DREES",
+      title: "Les dépenses de santé en 2024",
+      date: "septembre 2025",
+      url: "https://data.drees.solidarites-sante.gouv.fr/explore/dataset/comptes_de_la_sante_partage_volume_prix/table/",
+      note: "Comptes de la santé et 8,7 Md€ de dépenses de prévention en 2024."
+    },
+    {
+      id: "education-2024",
+      publisher: "DEPP",
+      title: "La dépense intérieure d’éducation en 2024",
+      date: "23 septembre 2025",
+      url: "https://www.education.gouv.fr/depp/en-2024-1971-milliards-d-euros-consacres-l-education-soit-68-du-pib-452853",
+      note: "197,1 Md€, soit 6,8 % du PIB ; coût par élève et répartition des financeurs."
+    },
+    {
+      id: "housing-2025",
+      publisher: "SDES",
+      title: "Rapport du compte du logement 2025",
+      date: "14 septembre 2026",
+      url: "https://www.statistiques.developpement-durable.gouv.fr/rapport-du-compte-du-logement-2025?dossier=1055&rubrique=",
+      note: "621 Md€ de dépense de logement et construction neuve toujours dégradée en 2025."
+    },
+    {
+      id: "trade-2025",
+      publisher: "Insee",
+      title: "Solde des échanges extérieurs en 2025",
+      date: "29 mai 2026",
+      url: "https://www.insee.fr/fr/statistiques/2830252",
+      note: "Solde extérieur de −14,4 Md€ : énergie −44,4 Md€, services +60,6 Md€."
+    },
+    {
+      id: "productivity-2026",
+      publisher: "Insee",
+      title: "Les gains de productivité français",
+      date: "juin 2026",
+      url: "https://blog.insee.fr/les-gains-de-productivite-francais-en-partie-retrouves/",
+      note: "Productivité encore sous sa tendance d’avant-crise et retard manufacturier de 5,6 points en 2025."
+    },
+    {
+      id: "climate-2025",
+      publisher: "Ministère de la Transition écologique",
+      title: "Baromètre des émissions 2025",
+      date: "13 janvier 2026",
+      url: "https://www.ecologie.gouv.fr/presse/barometre-citepa-baisse-emissions-gaz-effet-serre-france-se-poursuit-2025-laction-climatique",
+      note: "Estimation de 363,4 MtCO₂e hors puits en 2025 ; baisse annuelle estimée à 1,6 %."
+    },
+    {
+      id: "public-service-2025",
+      publisher: "DGAFP",
+      title: "Rapport annuel sur l’état de la fonction publique",
+      date: "23 octobre 2025",
+      url: "https://www.fonction-publique.gouv.fr/toutes-les-publications/rapport-annuel-sur-letat-de-la-fonction-publique-edition-2025",
+      note: "Effectifs, rémunérations, temps de travail, mobilité et santé des trois versants."
+    },
+    {
+      id: "poverty-2024",
+      publisher: "Insee",
+      title: "Pauvreté et redistribution",
+      date: "9 juillet 2026",
+      url: "https://www.insee.fr/fr/statistiques/5759045",
+      note: "Taux de pauvreté de 15,4 % en 2024 ; les prestations le réduisent de 6,9 points."
+    },
+    {
       id: "insee-demography-2025",
       publisher: "Insee",
       title: "Bilan démographique 2025",
@@ -571,6 +643,72 @@ window.ECOSIM_DATA = (() => {
     }
   };
 
+  const policyEngines = {
+    groups: [
+      { id: "work", label: "Travail", icon: "EMP", description: "Participation, productivité et salaires." },
+      { id: "pensions", label: "Retraites", icon: "RET", description: "Âge, indexation et cotisations." },
+      { id: "health", label: "Santé", icon: "SAN", description: "Prévention, efficience et soignants." },
+      { id: "education", label: "Éducation", icon: "EDU", description: "École, formation et petite enfance." },
+      { id: "housing", label: "Logement", icon: "LOG", description: "Offre, logement social et aides." },
+      { id: "industry", label: "Industrie", icon: "IND", description: "Investissement, contenu local et commerce." },
+      { id: "climate", label: "Climat", icon: "CLI", description: "Adaptation, agriculture et puits carbone." },
+      { id: "defense", label: "Défense", icon: "DEF", description: "Capacités, sécurité et achats domestiques." },
+      { id: "administration", label: "Administration", icon: "ADM", description: "Rémunérations, numérique et fraude." },
+      { id: "social", label: "Solidarités", icon: "SOC", description: "Transferts ciblés et inclusion." },
+      { id: "innovation", label: "Innovation", icon: "R&D", description: "Recherche, transport et diffusion numérique." },
+      { id: "finance", label: "Finance", icon: "FIN", description: "Garanties et banque publique." }
+    ],
+    controls: {
+      laborParticipation: { group: "work", label: "Taux d’activité", min: -5, max: 8, step: 0.5, value: 0, unit: " pt", effects: { fiscal: -4.5, demand: 0.8, supply: 11.5, jobs: 180, poverty: -0.10, lag: 0.50 } },
+      productivity: { group: "work", label: "Productivité annuelle", min: -1, max: 2.5, step: 0.1, value: 0, unit: " pt/an", effects: { fiscal: 0, demand: 0, supply: 22, jobs: -8, inflation: -0.12, trade: 2.4, lag: 0.30 } },
+      minimumWage: { group: "work", label: "Salaire minimum réel", min: -10, max: 20, step: 1, value: 0, unit: " %", effects: { fiscal: -0.04, demand: 0.38, supply: -0.10, jobs: -3, inflation: 0.025, poverty: -0.035, lag: 0.85, uncertainty: 0.18 } },
+
+      retirementAge: { group: "pensions", label: "Âge effectif de départ", min: -3, max: 3, step: 0.5, value: 0, unit: " an", effects: { fiscal: -6.2, demand: -0.6, supply: 7.5, jobs: 75, poverty: 0.03, lag: 0.55 } },
+      pensionIndex: { group: "pensions", label: "Indexation au-dessus des prix", min: -4, max: 4, step: 0.5, value: 0, unit: " pt", effects: { fiscal: 4.1, demand: 2.4, supply: 0, inflation: 0.025, poverty: -0.07, lag: 0.95 } },
+      pensionContribution: { group: "pensions", label: "Cotisation retraite", min: -3, max: 5, step: 0.5, value: 0, unit: " pt", effects: { fiscal: -9.5, demand: -2.4, supply: -2.2, jobs: -18, inflation: 0.03, poverty: 0.02, lag: 0.90 } },
+
+      prevention: { group: "health", label: "Prévention supplémentaire", min: 0, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.78, supply: 0.22, jobs: 7, poverty: -0.015, lag: 0.45 } },
+      careEfficiency: { group: "health", label: "Efficience des soins", min: -10, max: 15, step: 1, value: 0, unit: " %", effects: { fiscal: -1.25, demand: -0.18, supply: 0.22, jobs: -1.5, lag: 0.35, uncertainty: 0.12 } },
+      healthWorkforce: { group: "health", label: "Soignants supplémentaires", min: -30, max: 80, step: 5, value: 0, unit: " k", effects: { fiscal: 0.055, demand: 0.048, supply: 0.016, jobs: 1, lag: 0.70 } },
+
+      teacherResources: { group: "education", label: "Moyens scolaires", min: -15, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.86, supply: 0.24, jobs: 10, poverty: -0.02, lag: 0.55 } },
+      vocationalTraining: { group: "education", label: "Formation professionnelle", min: -5, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.72, supply: 0.42, jobs: 13, poverty: -0.03, lag: 0.42 } },
+      childcarePlaces: { group: "education", label: "Places de garde supplémentaires", min: 0, max: 300, step: 10, value: 0, unit: " k", effects: { fiscal: 0.018, demand: 0.018, supply: 0.038, jobs: 0.8, poverty: -0.004, lag: 0.62 } },
+
+      housingBuild: { group: "housing", label: "Logements supplémentaires", min: -100, max: 350, step: 10, value: 0, unit: " k/an", effects: { fiscal: 0.035, demand: 0.12, supply: 0.03, jobs: 1.1, inflation: -0.003, poverty: -0.002, lag: 0.55 } },
+      socialHousing: { group: "housing", label: "Dont logements sociaux", min: 0, max: 150, step: 5, value: 0, unit: " k/an", effects: { fiscal: 0.075, demand: 0.10, supply: 0.022, jobs: 1.25, inflation: -0.003, poverty: -0.009, lag: 0.48 } },
+      housingAid: { group: "housing", label: "Aides au logement", min: -10, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.68, supply: -0.03, inflation: 0.018, poverty: -0.08, lag: 0.94 } },
+
+      industrialInvestment: { group: "industry", label: "Investissement industriel public", min: -10, max: 40, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.88, supply: 0.38, jobs: 7, emissions: -0.04, trade: 0.20, lag: 0.48 } },
+      localContent: { group: "industry", label: "Contenu France/UE des achats", min: 0, max: 60, step: 5, value: 0, unit: " %", effects: { fiscal: 0.025, demand: 0.11, supply: 0.035, jobs: 0.9, inflation: 0.003, trade: 0.055, lag: 0.70 } },
+      tradeProtection: { group: "industry", label: "Protection commerciale supplémentaire", min: 0, max: 20, step: 1, value: 0, unit: " %", effects: { fiscal: -0.32, demand: 0.12, supply: -0.22, jobs: -2, inflation: 0.06, trade: -0.22, lag: 0.72, uncertainty: 0.30 } },
+
+      adaptation: { group: "climate", label: "Adaptation climatique", min: 0, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.82, supply: 0.16, jobs: 6, emissions: -0.02, lag: 0.52 } },
+      agricultureTransition: { group: "climate", label: "Transition agricole", min: -5, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.70, supply: 0.12, jobs: 5, emissions: -0.45, trade: 0.06, lag: 0.48 } },
+      carbonSinks: { group: "climate", label: "Puits carbone additionnels", min: -10, max: 30, step: 1, value: 0, unit: " MtCO₂e/an", effects: { fiscal: 0.25, demand: 0.12, supply: 0.025, jobs: 1.5, emissions: -1, lag: 0.30 } },
+
+      defenseCapacity: { group: "defense", label: "Capacités militaires", min: -15, max: 35, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.66, supply: 0.09, jobs: 5, trade: 0.05, lag: 0.64 } },
+      publicSafety: { group: "defense", label: "Sécurité et justice", min: -10, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.76, supply: 0.06, jobs: 10, lag: 0.72 } },
+      domesticDefense: { group: "defense", label: "Achats de défense domestiques", min: 0, max: 80, step: 5, value: 0, unit: " %", effects: { fiscal: 0.018, demand: 0.095, supply: 0.03, jobs: 0.7, inflation: 0.002, trade: 0.045, lag: 0.68 } },
+
+      publicPayroll: { group: "administration", label: "Rémunération publique réelle", min: -8, max: 15, step: 0.5, value: 0, unit: " %", effects: { fiscal: 3.5, demand: 2.1, supply: 0.10, inflation: 0.035, poverty: -0.025, lag: 0.94 } },
+      digitalAdministration: { group: "administration", label: "Transformation numérique", min: 0, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: 0.72, demand: 0.62, supply: 0.28, jobs: -2, lag: 0.38 } },
+      fraudRecovery: { group: "administration", label: "Recouvrement fraude et erreurs", min: 0, max: 25, step: 1, value: 0, unit: " Md€/an ciblés", effects: { fiscal: -0.70, demand: -0.16, supply: -0.03, lag: 0.80, uncertainty: 0.25 } },
+
+      targetedTransfers: { group: "social", label: "Transferts sociaux ciblés", min: -15, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.78, supply: 0.02, inflation: 0.012, poverty: -0.11, lag: 0.96 } },
+      disabilityInclusion: { group: "social", label: "Autonomie et handicap", min: -5, max: 20, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.58, supply: 0.26, jobs: 6, poverty: -0.05, lag: 0.62 } },
+      youthIntegration: { group: "social", label: "Insertion des jeunes", min: -5, max: 15, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.64, supply: 0.34, jobs: 12, poverty: -0.045, lag: 0.52 } },
+
+      publicResearch: { group: "innovation", label: "Recherche publique", min: -10, max: 30, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.82, supply: 0.58, jobs: 5, trade: 0.11, lag: 0.34 } },
+      transportInfrastructure: { group: "innovation", label: "Infrastructures de transport", min: -10, max: 35, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 1.02, supply: 0.36, jobs: 8, emissions: -0.06, trade: 0.08, lag: 0.45 } },
+      digitalDiffusion: { group: "innovation", label: "Diffusion numérique et IA", min: 0, max: 25, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 1, demand: 0.80, supply: 0.48, jobs: -1, trade: 0.10, lag: 0.36, uncertainty: 0.16 } },
+
+      publicGuarantees: { group: "finance", label: "Garanties publiques nouvelles", min: 0, max: 150, step: 5, value: 0, unit: " Md€", effects: { fiscal: 0.02, demand: 0.12, supply: 0.06, jobs: 1.2, lag: 0.52, uncertainty: 0.35 } },
+      developmentBank: { group: "finance", label: "Financement public long terme", min: -10, max: 50, step: 1, value: 0, unit: " Md€/an", effects: { fiscal: 0.30, demand: 0.42, supply: 0.32, jobs: 4, trade: 0.05, lag: 0.42 } },
+      bankLevy: { group: "finance", label: "Prélèvement financier", min: -5, max: 15, step: 0.5, value: 0, unit: " Md€/an", effects: { fiscal: -1, demand: -0.22, supply: -0.12, jobs: -1, lag: 0.82, uncertainty: 0.12 } }
+    }
+  };
+
   const presets = [
     {
       id: "investment",
@@ -669,6 +807,7 @@ window.ECOSIM_DATA = (() => {
     euModes,
     baseline,
     structural,
+    policyEngines,
     presets,
     sectors,
     metadata: {
@@ -678,7 +817,7 @@ window.ECOSIM_DATA = (() => {
       revenueObservedYear: 2025,
       projectionStart: 2026,
       projectionEnd: 2035,
-      version: "2.0.0"
+      version: "3.0.0"
     }
   };
 })();

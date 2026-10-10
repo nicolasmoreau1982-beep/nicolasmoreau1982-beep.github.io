@@ -16,6 +16,8 @@
     confidence: "stable",
     structural: Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value])),
     activeStructuralTab: "demography",
+    engines: Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value])),
+    activeEngine: "work",
     horizon: 3,
     activeBudget: "spending",
     chartMetric: "deficitRatio",
@@ -60,6 +62,7 @@
       monetary: state.monetary,
       confidence: state.confidence,
       structural: { ...state.structural },
+      engines: { ...state.engines },
       changes: Object.fromEntries(Object.entries(state.changes).filter(([, value]) => Math.abs(value) > 0.0001))
     };
   }
@@ -76,6 +79,12 @@
       Object.entries(D.structural.controls).forEach(([id, control]) => {
         const value = Number(payload.structural[id]);
         if (Number.isFinite(value)) state.structural[id] = clamp(value, control.min, control.max);
+      });
+    }
+    if (payload.engines && typeof payload.engines === "object") {
+      Object.entries(D.policyEngines.controls).forEach(([id, control]) => {
+        const value = Number(payload.engines[id]);
+        if (Number.isFinite(value)) state.engines[id] = clamp(value, control.min, control.max);
       });
     }
     if (payload.changes && typeof payload.changes === "object") {
@@ -252,11 +261,72 @@
     return rows;
   }
 
+  function calculatePolicyEngineTrajectory(profile) {
+    const rows = [];
+    for (let index = 0; index < 10; index += 1) {
+      const age = index + 1;
+      const totals = {
+        fiscalCost: 0,
+        demand: 0,
+        supply: 0,
+        jobs: 0,
+        inflation: 0,
+        emissions: 0,
+        trade: 0,
+        poverty: 0,
+        uncertainty: 0,
+        contributions: {}
+      };
+      Object.entries(D.policyEngines.controls).forEach(([id, control]) => {
+        const delta = Number(state.engines[id]) - control.value;
+        if (Math.abs(delta) < 0.0001) return;
+        const effect = control.effects;
+        const ramp = Math.min(1, (effect.lag ?? 0.6) + index * 0.16);
+        const demandPersistence = 0.58 + 0.42 * profile.decay ** index;
+        const supplyMaturity = 1 - Math.exp(-age / 3.2);
+        const cumulativeScale = id === "productivity" ? 0.55 + age * 0.24 : 1;
+        let demand = delta * (effect.demand || 0) * profile.spendScale * ramp * demandPersistence;
+        let supply = delta * (effect.supply || 0) * profile.supplyScale * supplyMaturity * cumulativeScale;
+        let trade = delta * (effect.trade || 0) * ramp;
+        let uncertainty = Math.abs(delta) * (effect.uncertainty || 0.04);
+        if (id === "tradeProtection" && !["breach", "euroExit"].includes(state.euMode)) {
+          supply -= delta * 0.34 * supplyMaturity;
+          trade -= delta * 0.28 * ramp;
+          uncertainty += delta * 0.20;
+        }
+        if (id === "publicGuarantees") {
+          uncertainty += delta * 0.025 * age;
+        }
+        const contribution = {
+          fiscalCost: delta * (effect.fiscal || 0),
+          demand,
+          supply,
+          jobs: delta * (effect.jobs || 0) * ramp,
+          inflation: delta * (effect.inflation || 0) * ramp,
+          emissions: delta * (effect.emissions || 0) * ramp,
+          trade,
+          poverty: delta * (effect.poverty || 0) * ramp,
+          uncertainty
+        };
+        contribution.gdpImpact = contribution.demand + contribution.supply;
+        totals.contributions[id] = contribution;
+        Object.keys(contribution).forEach((key) => {
+          if (key !== "gdpImpact" && key in totals) totals[key] += contribution[key];
+        });
+      });
+      totals.gdpImpact = totals.demand + totals.supply;
+      totals.year = D.metadata.projectionStart + index;
+      rows.push(totals);
+    }
+    return rows;
+  }
+
   function calculateProjection(modelKey = state.model) {
     const baseline = baselineTrajectory();
     const profile = effectiveProfile(modelKey);
     const eu = D.euModes[state.euMode];
     const structural = calculateStructuralTrajectory(profile);
+    const engines = calculatePolicyEngineTrajectory(profile);
     const scenario = [];
     let scenarioDebt = D.BASE.debt;
     let baselineDebtPrevious = D.BASE.debt;
@@ -277,6 +347,7 @@
       let demandContribution = 0;
       let supplyContribution = 0;
       const structure = structural[index];
+      const engine = engines[index];
 
       Object.entries(state.changes).forEach(([id, deltaValue]) => {
         const delta = Number(deltaValue);
@@ -297,8 +368,13 @@
       supplyContribution += structure.energySupply + structure.laborGdp;
       spendingChange += structure.publicEnergyInvestment + structure.demographyFiscalCost;
       revenueChange += structure.carbonRevenue + structure.migrationFiscalDelta;
+      policyGdp += engine.gdpImpact;
+      demandContribution += engine.demand;
+      supplyContribution += engine.supply;
+      if (engine.fiscalCost >= 0) spendingChange += engine.fiscalCost;
+      else revenueChange += -engine.fiscalCost;
 
-      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation, -4.5, 6.5);
+      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation + engine.inflation, -4.5, 6.5);
       institutionPriceFactor *= 1 + (eu.inflationShock[index] + extraInflation) / 100;
       const scenarioGdp = Math.max(
         baseline[index].gdp * institutionRealFactor * institutionPriceFactor + policyGdp,
@@ -308,7 +384,7 @@
       const growth = D.baseline.realGrowth[index] + outputGap - previousOutputGap;
       previousOutputGap = outputGap;
       const inflation = D.baseline.inflation[index] + eu.inflationShock[index] + extraInflation;
-      const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap, 3.2, 18);
+      const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap - engine.jobs / 310, 3.2, 18);
       const revenueFeedback = (scenarioGdp - baseline[index].gdp) * 0.48;
       const cyclicalSpending = (unemployment - D.baseline.unemployment[index]) * 3.1;
 
@@ -325,7 +401,7 @@
       const deficitRatio = deficit / scenarioGdp * 100;
 
       const policySize = Math.abs(demandContribution) + Math.abs(supplyContribution) + Math.abs(directBalanceCost) * 0.22;
-      const uncertaintyScale = profile.uncertainty * (1 + index * 0.07) + eu.uncertainty * (1 + index * 0.09);
+      const uncertaintyScale = profile.uncertainty * (1 + index * 0.07) + eu.uncertainty * (1 + index * 0.09) + Math.min(1.2, engine.uncertainty / 240);
       const gdpBand = Math.max(1.4, policySize * uncertaintyScale + baseline[index].gdp * eu.uncertainty * 0.006);
       const deficitBand = Math.max(0.08, (Math.abs(directBalanceCost) * profile.uncertainty + eu.uncertainty * 12) / scenarioGdp * 100 * (1 + index * 0.08));
       const debtBand = Math.max(0.25, (gdpBand / scenarioGdp * 100 + deficitBand) * Math.sqrt(index + 1));
@@ -350,6 +426,7 @@
         outputGap,
         riskPremium,
         structural: structure,
+        engines: engine,
         bands: {
           gdp: gdpBand,
           deficitRatio: deficitBand,
@@ -362,7 +439,7 @@
       lastDebtRatio = debtRatio;
     }
 
-    return { baseline, scenario, profile, eu, structural };
+    return { baseline, scenario, profile, eu, structural, engines };
   }
 
   function initializeControls() {
@@ -387,6 +464,8 @@
     renderSources();
     renderSectors();
     renderStructuralControls();
+    renderEngineSelector();
+    renderEngineControls();
     updateModelDescription();
     updateAssumptionDescription();
   }
@@ -435,7 +514,8 @@
       cycle: state.cycle,
       monetary: state.monetary,
       confidence: state.confidence,
-      structural: { ...state.structural }
+      structural: { ...state.structural },
+      engines: { ...state.engines }
     });
     if (state.undoStack.length > 30) state.undoStack.shift();
     $("#undo-button").disabled = false;
@@ -450,7 +530,8 @@
         cycle: state.cycle,
         monetary: state.monetary,
         confidence: state.confidence,
-        structural: { ...state.structural }
+        structural: { ...state.structural },
+        engines: { ...state.engines }
       };
     }
   }
@@ -493,6 +574,7 @@
     updateDiagnostics();
     renderModelComparison();
     updateStructuralLab();
+    updateEngineRoom();
     if (refreshList) renderCategories();
   }
 
@@ -506,7 +588,10 @@
       else revenue += Number(value);
     });
     const structuralYear = state.projection?.structural?.[0];
-    const cost = spending - revenue + (structuralYear ? structuralYear.energyFiscalCost - structuralYear.migrationFiscalDelta : 0);
+    const engineYear = state.projection?.engines?.[0];
+    const cost = spending - revenue
+      + (structuralYear ? structuralYear.energyFiscalCost - structuralYear.migrationFiscalDelta + structuralYear.demographyFiscalCost : 0)
+      + (engineYear ? engineYear.fiscalCost : 0);
     const balance = -cost;
     $("#direct-balance").textContent = `${balance >= 0 ? "+" : "−"}${money(Math.abs(balance))}`;
     $("#direct-balance").style.color = balance > 0 ? "var(--teal)" : balance < 0 ? "var(--coral)" : "";
@@ -595,6 +680,84 @@
       ["Émissions", signed(structure.emissionsChange, " Mt"), "CO₂e vs réf."]
     ];
     $("#structural-outcomes").innerHTML = outcomes.map(([label, value, note]) => `<div class="structural-outcome"><small>${label}</small><strong>${value}</strong><span>${note}</span></div>`).join("");
+  }
+
+  function engineControlText(id, value) {
+    const control = D.policyEngines.controls[id];
+    const digits = control.step < 1 ? 1 : 0;
+    return `${new Intl.NumberFormat("fr-FR", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value)}${control.unit}`;
+  }
+
+  function renderEngineSelector() {
+    $("#engine-selector").innerHTML = D.policyEngines.groups.map((group) => `
+      <button class="engine-tab ${group.id === state.activeEngine ? "is-active" : ""}" data-engine-tab="${group.id}" role="tab" aria-selected="${group.id === state.activeEngine}">
+        <i>${group.icon}</i><span><strong>${group.label}</strong><small>${group.description}</small></span>
+      </button>`).join("");
+  }
+
+  function renderEngineControls() {
+    const group = D.policyEngines.groups.find((item) => item.id === state.activeEngine);
+    const controls = Object.entries(D.policyEngines.controls).filter(([, control]) => control.group === state.activeEngine);
+    $("#engine-kicker").textContent = `Moteur ${group.icon}`;
+    $("#engine-active-title").textContent = group.label;
+    $("#engine-description").textContent = group.description;
+    $("#engine-control-list").innerHTML = controls.map(([id, control]) => `
+      <div class="engine-control">
+        <div class="engine-control-head"><label for="engine-${id}">${control.label}</label><output id="engine-output-${id}">${engineControlText(id, state.engines[id])}</output></div>
+        <input id="engine-${id}" data-engine-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.engines[id]}" />
+        <div class="engine-control-scale"><span>${engineControlText(id, control.min)}</span><span>réf. ${engineControlText(id, control.value)}</span><span>${engineControlText(id, control.max)}</span></div>
+      </div>`).join("");
+  }
+
+  function updateEngineRoom() {
+    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const point = state.projection.scenario[index];
+    const engine = point.engines;
+    const active = Object.entries(D.policyEngines.controls).filter(([id, control]) => Math.abs(state.engines[id] - control.value) > 0.0001);
+    const selectedIds = Object.entries(D.policyEngines.controls).filter(([, control]) => control.group === state.activeEngine).map(([id]) => id);
+    const selected = selectedIds.map((id) => engine.contributions[id]).filter(Boolean);
+    const selectedFiscal = selected.reduce((sum, item) => sum + item.fiscalCost, 0);
+    const selectedGdp = selected.reduce((sum, item) => sum + item.gdpImpact, 0);
+    const group = D.policyEngines.groups.find((item) => item.id === state.activeEngine);
+    $("#engine-active-count").textContent = `${active.length} levier${active.length > 1 ? "s" : ""} actif${active.length > 1 ? "s" : ""}`;
+    $("#engine-story-title").textContent = active.length
+      ? `${group.label} : les effets directs et les retours se séparent.`
+      : "Le budget seul ne raconte pas toute l’histoire.";
+    $("#engine-story-lead").textContent = selected.length
+      ? `À ${state.horizon} an${state.horizon > 1 ? "s" : ""}, le moteur ${group.label.toLowerCase()} modifie directement le solde de ${signed(-selectedFiscal, " Md€/an")} et le niveau du PIB d’environ ${signed(selectedGdp, " Md€")}. Les autres moteurs actifs continuent d’agir en parallèle.`
+      : active.length
+        ? `Aucun réglage n’est actif dans ${group.label.toLowerCase()}, mais ${active.length} levier${active.length > 1 ? "s agissent" : " agit"} ailleurs dans le modèle.`
+        : "Activez un levier pour distinguer son coût comptable immédiat, son effet de demande, sa montée en puissance productive et ses externalités.";
+
+    const ranked = active.map(([id, control]) => ({ id, control, impact: engine.contributions[id] }))
+      .filter((item) => item.impact)
+      .sort((a, b) => (Math.abs(b.impact.gdpImpact) + Math.abs(b.impact.fiscalCost) * 0.4) - (Math.abs(a.impact.gdpImpact) + Math.abs(a.impact.fiscalCost) * 0.4))
+      .slice(0, 4);
+    $("#engine-mechanisms").innerHTML = ranked.length ? ranked.map(({ id, control, impact }) => {
+      const meta = D.policyEngines.groups.find((item) => item.id === control.group);
+      return `<div class="engine-mechanism"><i>${meta.icon}</i><div><strong>${control.label}</strong><span>Demande ${signed(impact.demand, " Md€")} · offre ${signed(impact.supply, " Md€")} · budget ${signed(-impact.fiscalCost, " Md€")}</span></div><b>PIB ${signed(impact.gdpImpact, " Md€")}</b></div>`;
+    }).join("") : `<div class="engine-mechanism"><i>↗</i><div><strong>Chaînes causales prêtes</strong><span>Les résultats apparaîtront ici, classés par importance.</span></div><b>référence</b></div>`;
+
+    let alert = "Le résultat central ne valorise pas directement la qualité du service public, la sécurité, le bien-être ou les pertes évitées : ces dimensions restent à lire avec les indicateurs physiques et l’incertitude.";
+    if (state.engines.tradeProtection > 0 && !["breach", "euroExit"].includes(state.euMode)) {
+      alert = "Alerte UE : une protection commerciale nationale est incompatible avec la politique commerciale commune. Le modèle ajoute contentieux, représailles et incertitude tant que le cadre européen n’est pas renégocié ou rompu.";
+    } else if (state.engines.publicGuarantees > 0) {
+      alert = "Les garanties ne sont pas une dépense immédiate complète : le modèle comptabilise une perte attendue. En crise, l’appel de garantie peut toutefois transformer rapidement l’exposition en dette publique.";
+    } else if (active.length >= 8) {
+      alert = "De nombreux moteurs sont activés simultanément : contraintes de main-d’œuvre, capacités administratives et risques de double comptage élargissent fortement la plage d’incertitude.";
+    }
+    $("#engine-alert").textContent = alert;
+
+    const outcomes = [
+      ["Solde public direct", signed(-engine.fiscalCost, " Md€"), "par an"],
+      ["Niveau du PIB", signed(engine.gdpImpact, " Md€"), `en ${point.year}`],
+      ["Emploi", signed(engine.jobs, " k"), "effet modélisé"],
+      ["Inflation", signed(engine.inflation, " pt"), "écart annuel"],
+      ["Solde extérieur", signed(engine.trade, " Md€"), "écart annuel"],
+      ["Émissions", signed(engine.emissions, " Mt"), "CO₂e par an"],
+      ["Pauvreté", percent(15.4 + engine.poverty), `${signed(engine.poverty, " pt")} vs 2024`]
+    ];
+    $("#engine-outcomes").innerHTML = outcomes.map(([label, value, note]) => `<div class="engine-outcome"><small>${label}</small><strong>${value}</strong><span>${note}</span></div>`).join("");
   }
 
   function updateMetricDelta(element, value, inverse = false, suffix = "") {
@@ -726,7 +889,8 @@
     const supply = Math.abs(point.supplyContribution);
     const interest = Math.abs(point.extraInterest);
     const structureUnchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
-    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged) {
+    const enginesUnchanged = Object.entries(D.policyEngines.controls).every(([id, control]) => Math.abs(state.engines[id] - control.value) < 0.001);
+    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged && enginesUnchanged) {
       $("#mechanism-status").textContent = "Scénario de référence";
       $("#mechanism-detail").textContent = "Aucune mesure n’est appliquée : la trajectoire centrale reproduit exactement la référence.";
     } else if (interest > demand && interest > supply) {
@@ -873,6 +1037,14 @@
     return String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
   }
 
+  function resetPolicyEngines() {
+    pushUndo();
+    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
+    renderEngineControls();
+    refreshAll(false);
+    showToast("Moteurs de politique publique réinitialisés");
+  }
+
   function resetScenario() {
     pushUndo();
     state.changes = {};
@@ -882,6 +1054,7 @@
     state.monetary = "neutral";
     state.confidence = "stable";
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
+    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -890,6 +1063,7 @@
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
+    renderEngineControls();
     refreshAll(true);
     showToast("Scénario réinitialisé");
   }
@@ -904,6 +1078,7 @@
     state.monetary = previous.monetary || "neutral";
     state.confidence = previous.confidence || "stable";
     state.structural = previous.structural ? { ...previous.structural } : Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
+    state.engines = previous.engines ? { ...previous.engines } : Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -913,6 +1088,7 @@
     updateModelDescription();
     updateAssumptionDescription();
     renderStructuralControls();
+    renderEngineControls();
     refreshAll(true);
   }
 
@@ -942,6 +1118,13 @@
       solde_fiscal_cohortes_milliards: round(item.structural.migrationNet, 2),
       facture_energetique_ecart_milliards: round(item.structural.importBillChange, 2),
       emissions_ecart_mtco2e: round(item.structural.emissionsChange, 2),
+      moteurs_solde_direct_milliards: round(-item.engines.fiscalCost, 2),
+      moteurs_pib_milliards: round(item.engines.gdpImpact, 2),
+      moteurs_emploi_milliers: round(item.engines.jobs, 1),
+      moteurs_inflation_points: round(item.engines.inflation, 2),
+      moteurs_solde_exterieur_milliards: round(item.engines.trade, 2),
+      moteurs_emissions_mtco2e: round(item.engines.emissions, 2),
+      moteurs_pauvrete_points: round(item.engines.poverty, 2),
       reference_deficit_pct_pib: round(state.projection.baseline[index].deficitRatio, 2),
       reference_dette_pct_pib: round(state.projection.baseline[index].debtRatio, 2)
     }));
@@ -1016,6 +1199,7 @@
       updateResults();
       renderModelComparison();
       updateStructuralLab();
+      updateEngineRoom();
     }));
     $(".lab-tabs").addEventListener("click", (event) => {
       const button = event.target.closest("[data-structural-tab]");
@@ -1039,6 +1223,33 @@
       if (!event.target.dataset.structuralControl) return;
       commitEditSnapshot();
     });
+    $("#engine-selector").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-engine-tab]");
+      if (!button) return;
+      state.activeEngine = button.dataset.engineTab;
+      renderEngineSelector();
+      renderEngineControls();
+      updateEngineRoom();
+    });
+    $("#engine-control-list").addEventListener("pointerdown", (event) => {
+      if (event.target.dataset.engineControl) captureEditSnapshot();
+    });
+    $("#engine-control-list").addEventListener("focusin", (event) => {
+      if (event.target.dataset.engineControl) captureEditSnapshot();
+    });
+    $("#engine-control-list").addEventListener("input", (event) => {
+      const id = event.target.dataset.engineControl;
+      if (!id) return;
+      state.engines[id] = Number(event.target.value);
+      const output = $(`#engine-output-${id}`);
+      if (output) output.textContent = engineControlText(id, state.engines[id]);
+      refreshAll(false);
+    });
+    $("#engine-control-list").addEventListener("change", (event) => {
+      if (!event.target.dataset.engineControl) return;
+      commitEditSnapshot();
+    });
+    $("#reset-engines").addEventListener("click", resetPolicyEngines);
     $("#metric-switch").addEventListener("click", (event) => {
       const button = event.target.closest("[data-chart]");
       if (!button) return;
