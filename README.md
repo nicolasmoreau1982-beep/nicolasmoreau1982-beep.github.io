@@ -159,7 +159,13 @@ L'IHM et l'interface Python acceptent `policyStartQuarter` (1 à 4, défaut 1) p
 
 L'IHM web peut maintenant **réimporter** le JSON qu'elle exporte, ainsi qu'un objet de réglages EcoSim sans enveloppe. L'import vérifie la structure, refuse les fichiers de plus de 2 Mo, repart des valeurs par défaut avant d'appliquer les réglages et signale un autre numéro de version. Il n'enregistre pas automatiquement la copie importée : utilisez « Sauvegarder » pour la garder dans ce navigateur. Si un ancien lien `#scenario=` était ouvert, le chargement d'un autre scénario retire ce fragment pour éviter qu'un rafraîchissement ne rétablisse silencieusement les anciens réglages.
 
-La navigation mobile permet d'accéder à toutes les rubriques, à l'export et au changement de thème. Un tableau de repères donne les valeurs du graphique sans survol, notamment sur téléphone ou au clavier. Le thème choisi est repris dans le simulateur, l'audit et la page de confidentialité ; l'audit ne déborde plus horizontalement sur téléphone. Les anciens liens canoniques et le sitemap pointant vers Sites ont été retirés, car aucun domaine de production n'a été choisi. Cette passe ne constitue **pas** le rétrotest du moteur principal, toujours à réaliser.
+La navigation mobile permet d'accéder à toutes les rubriques, à l'export et au changement de thème. Un tableau de repères donne les valeurs du graphique sans survol, notamment sur téléphone ou au clavier. Le thème choisi est repris dans le simulateur, l'audit et la page de confidentialité ; l'audit ne déborde plus horizontalement sur téléphone. Les anciens liens canoniques et le sitemap pointant vers Sites ont été retirés lors de cette passe. Cette passe ne constitue **pas** le rétrotest du moteur principal, toujours à réaliser.
+
+### Référencement de la publication GitHub Pages
+
+Les URL canoniques et le sitemap pointent désormais vers `https://nicolasmoreau1982-beep.github.io/`. Le dépôt renommé publie `dist/` à la racine via GitHub Actions ; `dist/robots.txt` y devient le fichier de contrôle de l'hôte et indique le sitemap. La page d'accueil décrit en HTML les scénarios politiques présents, avec leurs noms et leur caractère expérimental ; elle n'utilise pas de balise `meta keywords`, ignorée par Google. Soumettre le sitemap dans Search Console et vérifier le rendu des pages ; voir [PUBLICATION.md](PUBLICATION.md). Aucun classement ni délai d'indexation n'est garanti.
+
+EcoSim vise aussi à aider à préparer la **présidentielle 2027**, mais la version actuelle ne compare pas encore les programmes propres aux candidats : elle explore des groupes et familles politiques. Un futur mode « candidats » devra lier chaque mesure à un programme ou une déclaration datée, expliciter sa traduction dans les paramètres, distinguer les mesures non simulables et mettre à jour le statut des candidatures sans anticiper la liste officielle.
 
 ## Structure
 
@@ -174,7 +180,7 @@ dist/
   insee-projection.js projection démographique Insee condensée pour le navigateur
   fiscal.js    moteur fiscal expérimental : règles datées et foyers-types
   app.js       moteur de projection et interactions
-  confidentialite.html, robots.txt                confidentialité et référencement
+  confidentialite.html, robots.txt, sitemap.xml  confidentialité et référencement
 ecosim.py      interface Python en ligne de commande et importable
 PUBLICATION.md guide de mise en ligne, référencement, audience et publicité
 MODEL_AUDIT.md références scientifiques, benchmarks et limites

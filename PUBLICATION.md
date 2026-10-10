@@ -2,16 +2,26 @@
 
 ## Adresse et hébergement
 
-Le nom retenu est **EcoSim France**. Aucun domaine ni hébergeur public de production n'est défini dans ce dépôt. L'ancienne adresse Sites n'est plus utilisée : l'utilisateur a écarté cet hébergement. Le dossier `dist/` est statique et peut être servi par un hébergeur choisi ultérieurement. Un domaine personnalisé réellement possédé par le projet implique généralement des frais annuels de registre ; « DNS gratuit » ne signifie pas « domaine gratuit ».
+Le nom retenu est **EcoSim France**. L'adresse publique du dépôt renommé est `https://nicolasmoreau1982-beep.github.io/`, publiée par GitHub Pages depuis `dist/` via `.github/workflows/static.yml`. L'ancienne adresse Sites n'est plus utilisée. Un domaine personnalisé réellement possédé par le projet implique généralement des frais annuels de registre ; « DNS gratuit » ne signifie pas « domaine gratuit ».
 
 ## Référencement
 
-Le site contient un titre descriptif, une description, des liens HTML et un `robots.txt`. Il ne publie plus d'adresse canonique ni de sitemap pointant vers l'ancien hébergeur. Une fois le domaine de production choisi et le site réellement ouvert :
+Le site contient des titres et descriptions descriptifs, des liens HTML, une liste visible des formations effectivement modélisées, des URL canoniques et un `sitemap.xml` portant les trois pages publiques. Les noms de partis sont placés dans le contenu utile : Google ignore la balise `meta keywords`. Les programmes sont traduits partiellement par EcoSim, et non repris comme chiffrages officiels.
 
-1. créer un compte Google Search Console et vérifier l'adresse du site ;
-2. générer un `sitemap.xml` avec les URL absolues du domaine retenu, l'ajouter au `robots.txt`, puis le soumettre ;
-3. demander l'inspection de la page d'accueil, puis suivre les rapports d'indexation ;
-4. publier une page de méthodologie et des mises à jour réellement utiles, obtenir des liens éditoriaux pertinents et corriger les erreurs d'indexation.
+L'objectif éditorial est d'aider à préparer la **présidentielle 2027** en comparant les conséquences budgétaires de choix politiques. À ce stade, les scénarios représentent des groupes et familles politiques, **pas les programmes individuels des candidats**. Ne pas référencer une fiche sous le nom d'un candidat avant d'avoir vérifié sa déclaration, daté et sourcé ses mesures, distingué les annonces des hypothèses EcoSim et signalé les mesures non représentables. La liste officielle des candidats relève du Conseil constitutionnel.
+
+Le dépôt porte désormais le nom spécial `nicolasmoreau1982-beep.github.io` : le site est servi à la racine du domaine, où `dist/robots.txt` devient le véritable `/robots.txt`. Il autorise l'exploration et indique `/sitemap.xml`. Cela facilite la découverte des pages sans garantir leur indexation ni leur classement.
+
+Pour demander l'indexation du déploiement actuel :
+
+1. vérifier `https://nicolasmoreau1982-beep.github.io/` dans Google Search Console en tant que propriété de préfixe d'URL ;
+2. soumettre `https://nicolasmoreau1982-beep.github.io/sitemap.xml` dans Search Console ;
+3. inspecter l'URL d'accueil et l'audit, puis suivre les rapports d'indexation et le rendu JavaScript ;
+4. publier des mises à jour réellement utiles, obtenir des liens éditoriaux pertinents et corriger les erreurs d'indexation.
+
+Si l'adresse publique change, mettre à jour ensemble les URL canoniques des trois pages, `dist/sitemap.xml`, `dist/robots.txt`, les liens sociaux et ce guide avant le déploiement suivant.
+
+L'ancienne adresse Pages sous `/EcoSimFrance/` n'est pas automatiquement redirigée après le renommage du dépôt. Corriger les liens externes maîtrisés et surveiller les éventuelles anciennes URL dans Search Console ; ne pas supposer qu'un renommage du dépôt effectue une redirection HTTP du site.
 
 L'indexation et le classement ne sont pas garantis. La page principale est du contenu statique lisible sans attendre le calcul JavaScript.
 

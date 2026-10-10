@@ -29,6 +29,6 @@ assert.match(auditStyles, /grid-template-columns: minmax\(0, 1fr\)/);
 assert.match(privacy, /id="privacy-share-title"/);
 assert.match(audit, /href="confidentialite\.html"/);
 assert.doesNotMatch(read("../dist/robots.txt"), /sleekmouse9\.chatgpt\.site/);
-assert.equal(fs.existsSync(new URL("../dist/sitemap.xml", import.meta.url)), false);
+assert.equal(fs.existsSync(new URL("../dist/sitemap.xml", import.meta.url)), true);
 
 console.log("Parcours UX : navigation mobile, import, thèmes, audit et confidentialité contrôlés.");
