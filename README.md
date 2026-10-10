@@ -209,4 +209,3 @@ tests/
 ## Limites
 
 Ce simulateur produit des scénarios de sensibilité, pas des prévisions. Les coefficients sectoriels sont des hypothèses explicites et n'ont pas été estimés conjointement ni validés par rétrospective historique. Les fourchettes ne sont pas des intervalles de confiance statistiques. La référence démographique suit une pyramide des âges Insee, mais les écarts induits par les politiques ne sont pas encore recalculés âge par âge ; l'énergie n'est pas simulée heure par heure. Les capacités de recrutement et les pensions publiques sont des proxys transparents, pas des comptes actuariels. Le diagnostic européen ne vérifie pas la trajectoire de dépense nette. Les réactions de la BCE, des marchés, des partenaires commerciaux, des ménages et des entreprises ne peuvent pas être anticipées avec précision. À 20 ou 30 ans, la plage de sensibilité est plus informative que le point central.
-
