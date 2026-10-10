@@ -34,5 +34,15 @@ assert.doesNotMatch(sitemap, /EcoSimFrance\//);
 
 const workflow = read("../.github/workflows/static.yml");
 assert.match(workflow, /path:\s*['"]?\.\/dist['"]?/);
+for (const [oldPath, url] of [
+  ["../dist/EcoSimFrance/index.html", base],
+  ["../dist/EcoSimFrance/audit.html", `${base}audit.html`],
+  ["../dist/EcoSimFrance/confidentialite.html", `${base}confidentialite.html`]
+]) {
+  const redirect = read(oldPath);
+  assert.ok(redirect.includes(`href="${url}"`));
+  assert.match(redirect, /name="robots" content="noindex,follow"/);
+  assert.match(redirect, /location\.search \+ location\.hash/);
+}
 
 console.log("SEO : pages canoniques, sitemap et formations politiques visibles contrôlés.");

@@ -21,7 +21,7 @@ Pour demander l'indexation du déploiement actuel :
 
 Si l'adresse publique change, mettre à jour ensemble les URL canoniques des trois pages, `dist/sitemap.xml`, `dist/robots.txt`, les liens sociaux et ce guide avant le déploiement suivant.
 
-L'ancienne adresse Pages sous `/EcoSimFrance/` n'est pas automatiquement redirigée après le renommage du dépôt. Corriger les liens externes maîtrisés et surveiller les éventuelles anciennes URL dans Search Console ; ne pas supposer qu'un renommage du dépôt effectue une redirection HTTP du site.
+L'ancienne adresse Pages sous `/EcoSimFrance/` n'est pas automatiquement redirigée après le renommage du dépôt. Les trois anciennes pages principales disposent donc d'une redirection HTML/JavaScript vers leurs nouvelles URL, avec conservation des fragments de scénario lorsque JavaScript est disponible. Ce n'est **pas** une redirection HTTP 301 : corriger les liens externes maîtrisés et surveiller les anciennes URL dans Search Console.
 
 L'indexation et le classement ne sont pas garantis. La page principale est du contenu statique lisible sans attendre le calcul JavaScript.
 
