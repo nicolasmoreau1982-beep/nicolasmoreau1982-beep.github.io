@@ -46,7 +46,7 @@ assert.match(read("../dist/confidentialite.html"), /<title>Confidentialité — 
 assert.match(read("../dist/comprendre-budget-france.html"), /valeurs affichées pour 2026 résultent de la projection/);
 assert.match(read("../dist/comprendre-budget-france.html"), /Budget de l'État<\/dt>/);
 assert.match(read("../dist/comprendre-budget-france.html"), /Déficit public<\/dt>/);
-assert.match(home, /href="comprendre-budget-france\.html">Je découvre le budget/);
+assert.match(home, /class="discovery-path" href="comprendre-budget-france\.html"/);
 for (const [, url] of pages.slice(3)) {
   assert.ok(home.includes(`href="${url.slice(base.length)}"`), `${url} absent des liens HTML d’accueil`);
 }

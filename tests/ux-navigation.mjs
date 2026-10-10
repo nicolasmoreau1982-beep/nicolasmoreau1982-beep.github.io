@@ -16,6 +16,16 @@ for (const page of [home, audit, privacy]) {
 }
 assert.match(home, /id="mobile-nav-toggle"[^>]*aria-controls="main-nav"[^>]*aria-expanded="false"/);
 assert.match(home, /id="mobile-export-button"/);
+assert.match(home, /id="quick-example" data-quick-preset="investment"/);
+assert.match(home, /id="scenario-options"/);
+assert.ok(home.indexOf('id="preset-list"') < home.indexOf('id="scenario-options"'), "Les exemples doivent précéder les options avancées");
+assert.match(home, /class="results-panel" id="results"/);
+assert.match(home, /id="results-title" tabindex="-1"/);
+assert.match(home, /id="results-context"/);
+assert.match(app, /\$\("#results-context"\)\.textContent = `Résultats/);
+assert.match(home, /<details class="model-comparison">/);
+assert.match(app, /\$\("#quick-example"\)\.addEventListener\("click"/);
+assert.match(app, /state\.horizon = 1;[\s\S]*?applyPreset\(event\.currentTarget\.dataset\.quickPreset\)/);
 assert.match(home, /href="confidentialite\.html"/);
 assert.match(home, /id="politics-model-select"[^>]*aria-describedby="politics-model-note"/);
 assert.match(app, /politicsModelSelect\.innerHTML = modelSelect\.innerHTML/);

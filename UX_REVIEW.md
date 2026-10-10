@@ -1,6 +1,6 @@
 # Revue UX d'EcoSim — règles classiques
 
-Cette grille remplace le protocole de test avec des participants. Elle applique les [dix heuristiques d'utilisabilité de Nielsen](https://www.nngroup.com/articles/ten-usability-heuristics/) à la première visite d'EcoSim. C'est une **revue du code et des contenus**, pas un test avec des personnes, une mesure de réussite des tâches ou une certification d'accessibilité. Les constats ci-dessous sont vérifiables dans `dist/index.html`, `dist/app.js` et `dist/styles.css` ; le rendu visuel sur appareils réels reste à contrôler.
+Cette grille remplace le protocole de test avec des participants. Elle applique les [dix heuristiques d'utilisabilité de Nielsen](https://www.nngroup.com/articles/ten-usability-heuristics/) à la première visite d'EcoSim. C'est une **revue du code et des contenus**, pas un test avec des personnes, une mesure de réussite des tâches ou une certification d'accessibilité. Les constats ci-dessous sont vérifiables dans `dist/index.html`, `dist/app.js` et `dist/styles.css`. Des captures Firefox en affichages ordinateur et téléphone ont été inspectées ; elles ne remplacent pas un contrôle interactif sur appareils réels.
 
 ## Parcours visé
 
@@ -16,10 +16,10 @@ Un visiteur doit pouvoir comprendre ce que simule le site, faire **un seul chang
 | 4. Cohérence et conventions | Navigation en quatre étapes, mêmes familles de couleurs et de boutons, pages de guides reliées au simulateur. | Garder les mêmes mots pour une même grandeur sur les cartes, tableaux, graphiques et guides ; ne pas confondre « budget de l'État » et « finances publiques ». |
 | 5. Prévention des erreurs | Bornes des contrôles et validation des scénarios importés. | Décrire les bornes et unités avant saisie ; vérifier qu'un lien de scénario illisible ou une importation refusée laisse les réglages précédents intacts et donne une explication utile. |
 | 6. Reconnaissance plutôt que mémorisation | Préréglages, libellés, guide d'entrée et aides « ? » ouvrables par clic, toucher, Entrée ou Espace. Le panneau possède un bouton « Fermer » et se ferme avec Échap. | Vérifier son annonce et son ordre de focus avec un lecteur d'écran sur appareil réel. |
-| 7. Souplesse et efficacité | Premier réglage simple, puis catégories détaillées et options avancées repliées. | Conserver un chemin court pour débuter sans retirer les options expertes ; vérifier que les liens des guides ouvrent bien l'outil au bon endroit. |
-| 8. Esthétique et sobriété | L'accueil met en avant une action principale et le guide « Je découvre » ; une partie des réglages est masquée au départ. Les textes secondaires clés ont été relevés à 12 px sur téléphone. | Vérifier visuellement la lisibilité et les débordements sur petits écrans ; les tableaux denses et certains micro-libellés restent à examiner. |
+| 7. Souplesse et efficacité | Trois entrées initiales : exemple modifiable, comparaison politique, guide. L'exemple affiche les résultats à un an. Les préréglages précèdent les options avancées, repliées. | Vérifier au clavier et sur téléphone que le passage exemple → résultats et l'accès aux options expertes sont fluides. |
+| 8. Esthétique et sobriété | La première action est visible dans un trio de cartes ; sauvegarde, hypothèses et comparaison des neuf profils sont repliées. Les libellés et résumés essentiels ont été agrandis. | Vérifier les petits écrans réels, les tableaux denses et les micro-libellés encore présents dans les sections expertes. |
 | 9. Reconnaître et corriger les erreurs | Les imports invalides, liens de scénario illisibles et erreurs de stockage/copie affichent un bandeau persistant avec une action conseillée ; il reste jusqu'à fermeture. | Vérifier à la main les chemins d'erreur dans les navigateurs ciblés et la restitution du message par lecteur d'écran. |
-| 10. Aide et documentation | Guides thématiques, audit, sources et page « À propos ». | Depuis chaque résultat important, permettre d'accéder à l'explication correspondante en un lien, sans exiger la lecture de tout l'audit. |
+| 10. Aide et documentation | Guides thématiques, audit, sources et page « À propos ». Le résumé du résultat renvoie au budget détaillé et à l'explication de l'incertitude. | Étendre ces liens contextuels aux résultats des autres moteurs sans noyer l'écran. |
 
 ## Accessibilité : contrôle complémentaire
 
@@ -27,7 +27,7 @@ Les [WCAG 2.2 du W3C](https://www.w3.org/WAI/WCAG22/quickref/) complètent ces h
 
 ## Ordre de correction recommandé
 
-Les trois premières corrections issues de cette revue sont **implémentées dans le code** : augmentation ciblée des tailles sur mobile, erreurs persistantes, aides « ? » actionnables sans survol. Il reste à :
+Les corrections implémentées comprennent la lisibilité mobile ciblée, les erreurs persistantes, les aides « ? » actionnables sans survol et le parcours d'entrée raccourci. Il reste à :
 
 1. Contrôler le rendu réel sur petits téléphones, notamment les tableaux et les libellés encore très compacts.
 2. Parcourir les erreurs d'import, de lien, de stockage et de copie dans les navigateurs ciblés.

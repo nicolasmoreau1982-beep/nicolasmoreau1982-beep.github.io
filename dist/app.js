@@ -1644,6 +1644,7 @@
     const index = projectionIndex(state.horizon);
     const item = state.projection.scenario[index];
     const baseline = state.projection.baseline[index];
+    $("#results-context").textContent = `Résultats ${item.year} comparés à la trajectoire de référence · profil économique : ${D.models[state.model].label}.`;
     const longRunNote = $("#long-run-note");
     longRunNote.hidden = state.horizon <= 10;
     longRunNote.textContent = state.horizon > 10
@@ -2421,6 +2422,13 @@
     $("#preset-list").addEventListener("click", (event) => {
       const preset = event.target.closest("[data-preset]");
       if (preset) applyPreset(preset.dataset.preset);
+    });
+    $("#quick-example").addEventListener("click", (event) => {
+      state.horizon = 1;
+      $$("[data-horizon]").forEach((button) => button.classList.toggle("is-active", Number(button.dataset.horizon) === 1));
+      applyPreset(event.currentTarget.dataset.quickPreset);
+      $("#results-title").focus({ preventScroll: true });
+      $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
     });
     $("#reset-button").addEventListener("click", resetScenario);
     $("#mobile-controls-toggle").addEventListener("click", () => {

@@ -71,17 +71,20 @@
         <div class="hero-grid">
           <div>
             <h1>Et si vous simuliez<br /><em>le budget de la France&nbsp;?</em></h1>
-            <p class="hero-copy">
-              Simulez le budget de l’État et des autres administrations publiques : modifiez les dépenses, les recettes, l’emploi public, la formation et l’énergie. Testez aussi des contextes démographiques et migratoires.
-              Observez les effets estimés sur le déficit, la dette, le chômage et les naissances — sans cacher l’incertitude. Avant la présidentielle 2027, comparez les orientations des formations politiques ; les programmes personnels des candidats seront distingués lorsqu’ils seront publiés et sourcés.
-            </p>
+            <p class="hero-copy">Choisissez une mesure ou une orientation politique, puis voyez ce qu’EcoSim calcule pour le déficit, la dette et l’emploi. Vous pouvez ensuite affiner le budget, la population et l’énergie.</p>
             <p class="hero-reference-note">La base observée est 2025 ; les résultats pour 2026 et les années suivantes sont des simulations, pas des comptes publics constatés.</p>
-            <div class="hero-actions">
-              <button class="button button-dark" data-scroll="workspace">Commencer la simulation</button>
-              <button class="button button-ghost" data-scroll="politics">Comparer les programmes</button>
+            <div class="discovery-paths" aria-label="Choisir un point de départ">
+              <button type="button" class="discovery-path" id="quick-example" data-quick-preset="investment">
+                <span>01 · Essai immédiat</span><strong>Tester un scénario</strong><small>Charger un exemple modifiable et lire ses effets à 1 an →</small>
+              </button>
+              <button type="button" class="discovery-path" data-scroll="politics">
+                <span>02 · Comparaison</span><strong>Voir les orientations politiques</strong><small>Comparer les groupes dans le même modèle →</small>
+              </button>
+              <a class="discovery-path" href="comprendre-budget-france.html">
+                <span>03 · Découverte</span><strong>Comprendre les bases</strong><small>Budget, déficit et dette en deux minutes →</small>
+              </a>
             </div>
-            <a class="hero-start-link" href="comprendre-budget-france.html">Je découvre le budget : les bases en 2 minutes →</a>
-            <a class="hero-audit-link" href="audit.html">Comment vérifier les hypothèses et les résultats ? ↗</a>
+            <a class="hero-audit-link" href="audit.html">Sources, méthode et incertitude : consulter l’audit ↗</a>
           </div>
           <div class="hero-stamp" aria-label="Périmètre de la simulation">
             <span>Périmètre</span>
@@ -112,15 +115,25 @@
             </div>
           </div>
 
-          <label class="field-label" for="scenario-name">Nom du scénario</label>
-          <input class="text-input" id="scenario-name" value="Mon scénario" maxlength="60" />
-          <div class="saved-scenarios">
-            <label class="field-label" for="saved-scenarios">Scénarios enregistrés dans ce navigateur</label>
-            <div><select id="saved-scenarios"><option value="">Aucun scénario enregistré</option></select><button type="button" id="load-scenario" disabled>Charger</button><button type="button" id="delete-scenario" disabled>Supprimer</button></div>
-            <button type="button" class="text-button import-scenario-button" id="import-scenario">Importer un scénario JSON…</button>
-            <input id="import-scenario-file" class="visually-hidden" type="file" accept=".json,application/json" aria-label="Choisir un scénario EcoSim au format JSON" />
-            <div class="saved-comparison" id="saved-comparison" hidden></div>
+          <p class="scenario-first-step" id="scenario-first-step">Pour commencer, choisissez un exemple. Il reste entièrement modifiable et vous pourrez annuler cette action.</p>
+          <div class="field-label label-with-help">
+            Exemples à modifier
+            <button type="button" class="help-dot" aria-label="Aide sur les préréglages" aria-controls="help-panel" aria-expanded="false" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
           </div>
+          <div class="preset-list" id="preset-list"></div>
+
+          <details class="scenario-options" id="scenario-options">
+            <summary>Nom, sauvegarde et hypothèses avancées</summary>
+            <p>Ces options ne sont pas nécessaires pour un premier essai.</p>
+            <label class="field-label" for="scenario-name">Nom du scénario</label>
+            <input class="text-input" id="scenario-name" value="Mon scénario" maxlength="60" />
+            <div class="saved-scenarios">
+              <label class="field-label" for="saved-scenarios">Scénarios enregistrés dans ce navigateur</label>
+              <div><select id="saved-scenarios"><option value="">Aucun scénario enregistré</option></select><button type="button" id="load-scenario" disabled>Charger</button><button type="button" id="delete-scenario" disabled>Supprimer</button></div>
+              <button type="button" class="text-button import-scenario-button" id="import-scenario">Importer un scénario JSON…</button>
+              <input id="import-scenario-file" class="visually-hidden" type="file" accept=".json,application/json" aria-label="Choisir un scénario EcoSim au format JSON" />
+              <div class="saved-comparison" id="saved-comparison" hidden></div>
+            </div>
 
           <div class="two-fields">
             <label>
@@ -172,11 +185,7 @@
             <p id="assumption-description"></p>
           </details>
 
-          <div class="field-label label-with-help">
-            Point de départ rapide
-            <button type="button" class="help-dot" aria-label="Aide sur les préréglages" aria-controls="help-panel" aria-expanded="false" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
-          </div>
-          <div class="preset-list" id="preset-list"></div>
+          </details>
 
           <div class="scenario-balance">
             <div>
@@ -193,11 +202,11 @@
           </div>
         </aside>
 
-        <div class="results-panel">
+        <div class="results-panel" id="results">
           <div class="results-header">
             <div>
               <span class="section-number">02</span>
-              <h2>Trajectoire simulée</h2>
+              <h2 id="results-title" tabindex="-1">Trajectoire simulée</h2>
             </div>
             <div class="horizon-switch" role="group" aria-label="Horizon de projection">
               <button data-horizon="1">1 an</button>
@@ -208,6 +217,7 @@
               <button data-horizon="30">30 ans</button>
             </div>
           </div>
+          <p class="results-context" id="results-context">Comparaison à la trajectoire de référence · profil économique : central.</p>
           <p class="long-run-note" id="long-run-note" hidden>Horizon structurel : au-delà de 2035, l’écart d’incertitude compte davantage que le point central.</p>
 
           <div class="impact-cards" id="impact-cards">
@@ -241,6 +251,7 @@
             <span>Lecture en 20 secondes</span>
             <h3 id="plain-summary-title">Votre scénario suit la référence.</h3>
             <p id="plain-summary-text"></p>
+            <div class="plain-summary-actions"><button type="button" data-scroll="budget">Modifier un poste du budget</button><a href="audit.html#incertitude">Pourquoi cette fourchette ? ↗</a></div>
           </article>
 
           <article class="chart-card">
@@ -284,13 +295,14 @@
             </article>
           </div>
 
-          <article class="model-comparison">
-            <div class="comparison-heading">
-              <div><small>Pluralisme des modèles</small><h3 id="comparison-title">Une mesure, neuf lectures</h3></div>
+          <details class="model-comparison">
+            <summary class="comparison-heading">
+              <span><small>Analyse avancée</small><strong id="comparison-title">Une mesure, neuf lectures économiques</strong></span>
               <span id="comparison-horizon">Horizon 3 ans</span>
-            </div>
+            </summary>
+            <p>Chaque profil modifie les hypothèses de transmission, pas la mesure elle-même. Ces écarts ne sont pas des probabilités.</p>
             <div class="comparison-table" id="comparison-table"></div>
-          </article>
+          </details>
         </div>
       </section>
 
