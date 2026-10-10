@@ -9,6 +9,7 @@ import {originSnapshot} from "./historical-engine.mjs";
 const root = new URL("../", import.meta.url);
 const read = (path) => fs.readFileSync(new URL(path, root), "utf8");
 const frozen = JSON.parse(read("research/insee-validation-annual.json"));
+const historicalPolicy = JSON.parse(read("research/historical-policy-timeline.json"));
 const dataSource = read("dist/data.js");
 const historySource = read("dist/history.js");
 const populationSource = read("dist/insee-projection.js");
@@ -32,8 +33,9 @@ const median = (numbers) => {
 };
 const meanAbsolute = (values) => values.reduce((sum, value) => sum + Math.abs(value), 0) / values.length;
 
-export function runCoreOrigin({originYear, horizon, observations = accounts}) {
+export function runCoreOrigin({originYear, horizon, observations = accounts, changes = {}}) {
   if (!Number.isInteger(horizon) || horizon < 1 || horizon > 10) throw new Error("Horizon invalide (1–10 ans)");
+  if (!changes || typeof changes !== "object" || Array.isArray(changes)) throw new Error("Réformes invalides");
   const origin = originSnapshot(observations, originYear, 5);
   const targetRows = observations.filter((row) => row.year > originYear && row.year <= originYear + horizon);
   if (targetRows.length !== horizon || targetRows.some((row, index) => row.year !== originYear + index + 1)) {
@@ -52,6 +54,10 @@ export function runCoreOrigin({originYear, horizon, observations = accounts}) {
     ["dist/insee-projection.js", populationSource], ["dist/fiscal.js", fiscalSource]
   ]) vm.runInNewContext(source, context, {filename: name});
   const D = context.window.ECOSIM_DATA;
+  const categoryIds = new Set([...D.spending, ...D.revenue].filter((item) => !item.locked).map((item) => item.id));
+  for (const [id, amount] of Object.entries(changes)) {
+    if (!categoryIds.has(id) || !Number.isFinite(amount)) throw new Error(`Réforme non représentable : ${id}`);
+  }
   const demographicRows = context.window.ECOSIM_INSEE_PROJECTION.rows;
   D.BASE = {...D.BASE, year: originYear, gdp: origin.gdp, spending: origin.spending,
     revenue: origin.revenue, deficit: origin.spending - origin.revenue, debt: origin.debt,
@@ -74,8 +80,8 @@ export function runCoreOrigin({originYear, horizon, observations = accounts}) {
   const fiscal = context.window.ECOSIM_FISCAL;
   context.window.ECOSIM_FISCAL = {...fiscal,
     simulate: (config, year, priceFactor) => fiscal.simulate(config, Math.max(2026, year), priceFactor)};
-  const modelContext = {window: context.window, console, TextEncoder, TextDecoder, URL};
-  vm.runInNewContext(`${appSource.slice(start, end)}\nglobalThis.coreResult = calculateProjection();`,
+  const modelContext = {window: context.window, console, TextEncoder, TextDecoder, URL, historicalChanges: changes};
+  vm.runInNewContext(`${appSource.slice(start, end)}\nObject.assign(state.changes, historicalChanges);\nglobalThis.coreResult = calculateProjection();`,
     modelContext, {filename: "dist/app.js (moteur principal)"});
   const prediction = modelContext.coreResult.scenario;
   const naive = modelContext.coreResult.baseline;
@@ -89,12 +95,36 @@ export function runCoreOrigin({originYear, horizon, observations = accounts}) {
       unemployment: source.unemployment - actual.unemployment});
     return {year: observed.year, actual, predicted: {
       gdp: point.gdp, deficitRatio: point.deficitRatio, debtRatio: point.debtRatio,
-      unemployment: point.unemployment}, error: error(point), naiveError: error(naive[index])};
+      unemployment: point.unemployment, directRevenueChangeBn: point.revenueChange,
+      directSpendingChangeBn: point.spendingChange}, error: error(point), naiveError: error(naive[index])};
   });
   return {originYear, horizon, inputs: {trainingYears: origin.trainingYears,
     assumedRealGrowthPct: realGrowth, assumedDeflatorPct: deflator,
     initialDeficitRatio: originDeficitRatio, initialUnemploymentPct: origin.unemployment,
-    initialDebtBn: origin.debt}, rows};
+    initialDebtBn: origin.debt, changes}, rows};
+}
+
+// Seul cas actuellement traduisible sans inventer d'assiette ou de calendrier :
+// les deux hausses de TVA entrées au T1 2014, connues ex ante en 2013.
+export function runVat2014Sensitivity({observations = accounts} = {}) {
+  const events = historicalPolicy.events.filter((event) => event.instrument === "vat"
+    && event.effectiveYear === 2014 && event.effectiveQuarter === 1
+    && event.amountInformationYear <= 2013 && event.fiscalSide === "revenue");
+  if (events.length !== 2 || events.some((event) => !Number.isFinite(event.amountBn))) {
+    throw new Error("Catalogue TVA 2014 incomplet ou non daté");
+  }
+  const totalBn = events.reduce((sum, event) => sum + event.amountBn, 0);
+  const firstYearDeflator = 1 + originSnapshot(observations, 2013, 5).assumedInflation;
+  const withVat = runCoreOrigin({originYear: 2013, horizon: 3, observations,
+    changes: {R_TVA: totalBn / firstYearDeflator}});
+  const withoutVat = runCoreOrigin({originYear: 2013, horizon: 3, observations});
+  return {status: "retrospective_sensitivity_not_causal_validation",
+    eventIds: events.map((event) => event.id), amountBn: totalBn,
+    mapping: "R_TVA, 6.7 nominal in first year 2014; then indexed by assumed deflator under engine convention",
+    limitation: "2017 Mésange VAT response not available at 2013 origin; other simultaneous reforms and shocks absent",
+    rows: withVat.rows.map((row, index) => ({year: row.year, observed: row.actual,
+      withVat: row.predicted, withoutVat: withoutVat.rows[index].predicted,
+      withVatError: row.error, withoutVatError: withoutVat.rows[index].error}))};
 }
 
 export function runCoreBacktest({observations = accounts, origins = [2005, 2010, 2013, 2015, 2018, 2020],
@@ -115,11 +145,11 @@ export function runCoreBacktest({observations = accounts, origins = [2005, 2010,
     asOf: frozen.asOf,
     informationSet: "revised_2026_observations_at_origin; not original publication vintages",
     calibration: "No adapter coefficients fitted to target years; main-engine coefficients may reflect later history",
-    policyCoverage: "none; historical fiscal and spending policies not translated to dated categories",
+    policyCoverage: "baseline none; separate VAT 2014 sensitivity only; other policies not translated",
     demographicCoverage: "2026 reference shifted for no-policy runtime only; no historical cohort validation",
     rateAssumption: "policyRate=0 for baseline comparison; debt stock-flow adjustments not modelled",
     scoreEligibility: "diagnostic_only_not_out_of_sample_or_causal_validation",
-    table, cases};
+    table, cases, vat2014: runVat2014Sensitivity({observations})};
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === fs.realpathSync(process.argv[1])) {
@@ -132,6 +162,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === fs.realpathSync(proces
       const pair = (metric) => `${row.coreMae[metric]?.toFixed(2) ?? "–"}/${row.naiveMae[metric]?.toFixed(2) ?? "–"}`;
       process.stdout.write(`${String(row.horizon).padStart(3)} ${String(row.n).padStart(2)}  ${pair("gdpPct")}  ${pair("deficitRatio")}  ${pair("debtRatio")}  ${pair("unemployment")}\n`);
     }
-    process.stdout.write("Attention : données révisées 2026, politiques absentes, pas de test causal ni de vrai hors-échantillon.\n");
+    const vat = result.vat2014.rows[0];
+    process.stdout.write(`TVA 2014, sensibilité : ${result.vat2014.amountBn.toFixed(1)} Md€ ex ante ; `
+      + `écart de PIB 2014 avec/sans : ${vat.withVatError.gdpPct.toFixed(2)}/${vat.withoutVatError.gdpPct.toFixed(2)} %.\n`);
+    process.stdout.write("Attention : données révisées 2026, autres politiques absentes, pas de test causal ni de vrai hors-échantillon.\n");
   }
 }

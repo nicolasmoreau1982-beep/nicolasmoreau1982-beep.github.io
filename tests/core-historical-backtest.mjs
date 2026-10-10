@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {accounts, runCoreBacktest, runCoreOrigin} from "../scripts/core-historical-backtest.mjs";
+import {accounts, runCoreBacktest, runCoreOrigin, runVat2014Sensitivity} from "../scripts/core-historical-backtest.mjs";
 
 const one = runCoreOrigin({originYear: 2013, horizon: 3});
 assert.deepEqual(Array.from(one.rows, (row) => row.year), [2014, 2015, 2016]);
@@ -29,4 +29,17 @@ for (const row of report.table) {
   }
 }
 assert.throws(() => runCoreOrigin({originYear: 2025, horizon: 1}), /incomplètes/);
+assert.throws(() => runCoreOrigin({originYear: 2013, horizon: 1, changes: {R_UNKNOWN: 4}}), /non représentable/);
+const vat = runVat2014Sensitivity();
+assert.equal(vat.amountBn, 6.7);
+assert.deepEqual(vat.eventIds, ["vat_normal_2014", "vat_intermediate_2014"]);
+assert.ok(Math.abs(vat.rows[0].withVat.directRevenueChangeBn - 6.7) < 1e-8,
+  "Le rendement ex ante de 2014 doit entrer dans le moteur à 6,7 Md€ nominaux");
+assert.ok(vat.rows[0].withVat.deficitRatio < vat.rows[0].withoutVat.deficitRatio,
+  "La hausse de TVA doit réduire le déficit simulé la première année");
+assert.ok(vat.rows[0].withVat.gdp < vat.rows[0].withoutVat.gdp,
+  "La hausse de TVA doit activer le canal PIB du moteur principal");
+const vatChangedFuture = runVat2014Sensitivity({observations: changedFuture});
+assert.equal(vatChangedFuture.rows[0].withVat.gdp, vat.rows[0].withVat.gdp,
+  "Le rendement ex ante ne doit pas être ajusté avec le PIB futur observé");
 console.log("Rétrotest du moteur principal : origine, absence de fuite et scores vérifiés.");
