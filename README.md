@@ -20,6 +20,9 @@ Puis ouvrir `http://localhost:4173`.
 - Détail fonctionnel des dépenses : COFOG Eurostat 2024, recalé proportionnellement sur le total Insee 2025.
 - Ancrage 2026–2028 : projections macroéconomiques de la Banque de France de septembre 2026.
 - Trajectoire européenne : procédure concernant les déficits excessifs et recommandation du Conseil.
+- Population, natalité et vieillissement : bilan démographique 2025 de l’Insee.
+- Emploi des immigrés : enquête Emploi 2025 de l’Insee ; motifs de séjour 2025 du ministère de l’Intérieur.
+- Énergie : bilan énergétique 2024 du SDES et bilan électrique 2025 de RTE.
 
 Toutes les sources cliquables, leurs dates et le statut des valeurs sont visibles dans l’application.
 
@@ -38,12 +41,14 @@ Le moteur est semi-structurel et déterministe. Il combine :
 
 Cinq paramétrages économiques sont proposés : consensus empirique, lecture keynésienne, politique de l’offre, lecture libérale et réindustrialisation ciblée. Ils utilisent la même comptabilité et ne diffèrent que par des paramètres affichés et documentés.
 
-La version 1.1 ajoute :
+La version 2.0 ajoute :
 
-- une comparaison simultanée des cinq modèles ;
-- trois hypothèses conjoncturelles réglables : position dans le cycle, réaction de la BCE et confiance financière ;
-- la décomposition 2025 entre État, opérateurs centraux, administrations locales et Sécurité sociale ;
-- une vérification explicite de la consolidation des soldes des sous-secteurs.
+- une trajectoire de population, de naissances et de vieillissement sur dix ans ;
+- deux hypothèses de solde migratoire et un réglage de l’intégration dans l’emploi ;
+- une comptabilité explicite des recettes, services publics et coûts d’intégration des cohortes simulées ;
+- une politique énergétique réglable : nucléaire, renouvelables, efficacité, prix fossiles et signal carbone ;
+- une narration automatique qui explique les résultats et les principaux mécanismes ;
+- des exports enrichis avec les indicateurs démographiques et énergétiques.
 
 ## Structure
 

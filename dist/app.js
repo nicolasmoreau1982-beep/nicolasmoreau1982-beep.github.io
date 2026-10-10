@@ -14,6 +14,8 @@
     cycle: "normal",
     monetary: "neutral",
     confidence: "stable",
+    structural: Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value])),
+    activeStructuralTab: "demography",
     horizon: 3,
     activeBudget: "spending",
     chartMetric: "deficitRatio",
@@ -57,6 +59,7 @@
       cycle: state.cycle,
       monetary: state.monetary,
       confidence: state.confidence,
+      structural: { ...state.structural },
       changes: Object.fromEntries(Object.entries(state.changes).filter(([, value]) => Math.abs(value) > 0.0001))
     };
   }
@@ -69,6 +72,12 @@
     if (D.assumptions.monetary[payload.monetary]) state.monetary = payload.monetary;
     if (D.assumptions.confidence[payload.confidence]) state.confidence = payload.confidence;
     if (typeof payload.name === "string") state.name = payload.name.slice(0, 60);
+    if (payload.structural && typeof payload.structural === "object") {
+      Object.entries(D.structural.controls).forEach(([id, control]) => {
+        const value = Number(payload.structural[id]);
+        if (Number.isFinite(value)) state.structural[id] = clamp(value, control.min, control.max);
+      });
+    }
     if (payload.changes && typeof payload.changes === "object") {
       state.changes = {};
       Object.entries(payload.changes).forEach(([id, value]) => {
@@ -159,10 +168,95 @@
     return { demand, supply, inflation, amount };
   }
 
+  function calculateStructuralTrajectory(profile) {
+    const defaults = D.structural.demographics;
+    const values = state.structural;
+    const rows = [];
+    let baselinePopulation = defaults.population;
+    let population = defaults.population;
+    const baselineCohorts = [];
+    const scenarioCohorts = [];
+
+    for (let index = 0; index < 10; index += 1) {
+      const age = index + 1;
+      const baselineBirths = defaults.births * (1 - index * 0.004);
+      const baselineDeaths = defaults.deaths * (1 + index * 0.0035);
+      const deaths = baselineDeaths * (1 - values.lifeExpectancy * 0.018);
+      const births = baselineBirths * (values.fertility / defaults.fertility) * (population / Math.max(defaults.population, baselinePopulation));
+      baselinePopulation += (baselineBirths - baselineDeaths + defaults.netMigration) / 1000;
+      population += (births - deaths + values.economicMigration + values.otherMigration) / 1000;
+
+      baselineCohorts.push({ economic: defaults.economicMigration, other: defaults.otherMigration });
+      scenarioCohorts.push({ economic: values.economicMigration, other: values.otherMigration });
+      const cohortAccounting = (cohorts, targetIntegration) => cohorts.reduce((acc, cohort, cohortIndex) => {
+        const yearsPresent = index - cohortIndex + 1;
+        const economicEmployment = 0.78 + 0.04 * (1 - Math.exp(-yearsPresent / 2));
+        const otherEmployment = 0.33 + (targetIntegration / 100 - 0.33) * (1 - Math.exp(-yearsPresent / 3));
+        acc.people += cohort.economic + cohort.other;
+        acc.other += cohort.other;
+        acc.employed += cohort.economic * economicEmployment + cohort.other * otherEmployment;
+        acc.integrationCost += cohort.other * 0.004 * Math.exp(-(yearsPresent - 1) / 3);
+        return acc;
+      }, { people: 0, other: 0, employed: 0, integrationCost: 0 });
+      const baseMigration = cohortAccounting(baselineCohorts, defaults.immigrantEmployment);
+      const scenarioMigration = cohortAccounting(scenarioCohorts, values.integration);
+      const migrationRevenue = scenarioMigration.employed * 0.025;
+      const migrationCost = scenarioMigration.people * 0.014 + scenarioMigration.integrationCost;
+      const baselineMigrationNet = baseMigration.employed * 0.025 - (baseMigration.people * 0.014 + baseMigration.integrationCost);
+      const migrationNet = migrationRevenue - migrationCost;
+      const migrationFiscalDelta = migrationNet - baselineMigrationNet;
+      const employedDelta = scenarioMigration.employed - baseMigration.employed;
+      const laborGdp = employedDelta * 0.085 * profile.supplyScale;
+
+      const ramp = age / 10;
+      const publicEnergyInvestment = values.efficiency + values.nuclear * 0.45 + values.renewables * 0.10;
+      const carbonRevenue = values.carbonTax * 0.30;
+      const importBillChange = values.fossilPrice / 100 * D.structural.energy.importBill
+        - values.nuclear * ramp * 0.18
+        - values.renewables * ramp * 0.08
+        - values.efficiency * age * 0.16;
+      const energyDemand = publicEnergyInvestment * profile.spendScale * (0.9 * profile.decay ** index + 0.18);
+      const energySupply = (-importBillChange * 0.24 + values.efficiency * ramp * 0.12) * profile.supplyScale;
+      const energyInflation = values.fossilPrice * 0.018 + values.carbonTax * 0.004
+        - values.nuclear * ramp * 0.009 - values.renewables * ramp * 0.004 - values.efficiency * ramp * 0.012;
+      const emissionsChange = -values.nuclear * ramp * 1.35 - values.renewables * ramp * 0.72
+        - values.efficiency * age * 0.55 - values.fossilPrice * 0.10;
+      const demographyFiscalCost = (births - baselineBirths) * 0.012 + values.lifeExpectancy * age * 0.22;
+
+      rows.push({
+        year: D.metadata.projectionStart + index,
+        population,
+        baselinePopulation,
+        births,
+        baselineBirths,
+        age65Share: defaults.age65Share + age * 0.23 + values.lifeExpectancy * 0.18 - (population - baselinePopulation) / population * 20,
+        cumulativeMigration: scenarioMigration.people,
+        migrationRevenue,
+        migrationCost,
+        migrationNet,
+        migrationFiscalDelta,
+        demographyFiscalCost,
+        employedDelta,
+        laborGdp,
+        publicEnergyInvestment,
+        carbonRevenue,
+        energyFiscalCost: publicEnergyInvestment - carbonRevenue,
+        importBillChange,
+        energyDemand,
+        energySupply,
+        energyInflation,
+        emissionsChange,
+        gdpImpact: laborGdp + energyDemand + energySupply
+      });
+    }
+    return rows;
+  }
+
   function calculateProjection(modelKey = state.model) {
     const baseline = baselineTrajectory();
     const profile = effectiveProfile(modelKey);
     const eu = D.euModes[state.euMode];
+    const structural = calculateStructuralTrajectory(profile);
     const scenario = [];
     let scenarioDebt = D.BASE.debt;
     let baselineDebtPrevious = D.BASE.debt;
@@ -182,6 +276,7 @@
       let revenueChange = 0;
       let demandContribution = 0;
       let supplyContribution = 0;
+      const structure = structural[index];
 
       Object.entries(state.changes).forEach(([id, deltaValue]) => {
         const delta = Number(deltaValue);
@@ -197,7 +292,13 @@
         else revenueChange += impact.amount;
       });
 
-      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100, -2.5, 2.5);
+      policyGdp += structure.gdpImpact;
+      demandContribution += structure.energyDemand;
+      supplyContribution += structure.energySupply + structure.laborGdp;
+      spendingChange += structure.publicEnergyInvestment + structure.demographyFiscalCost;
+      revenueChange += structure.carbonRevenue + structure.migrationFiscalDelta;
+
+      const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation, -4.5, 6.5);
       institutionPriceFactor *= 1 + (eu.inflationShock[index] + extraInflation) / 100;
       const scenarioGdp = Math.max(
         baseline[index].gdp * institutionRealFactor * institutionPriceFactor + policyGdp,
@@ -248,6 +349,7 @@
         supplyContribution,
         outputGap,
         riskPremium,
+        structural: structure,
         bands: {
           gdp: gdpBand,
           deficitRatio: deficitBand,
@@ -260,7 +362,7 @@
       lastDebtRatio = debtRatio;
     }
 
-    return { baseline, scenario, profile, eu };
+    return { baseline, scenario, profile, eu, structural };
   }
 
   function initializeControls() {
@@ -284,6 +386,7 @@
     renderPresets();
     renderSources();
     renderSectors();
+    renderStructuralControls();
     updateModelDescription();
     updateAssumptionDescription();
   }
@@ -331,7 +434,8 @@
       euMode: state.euMode,
       cycle: state.cycle,
       monetary: state.monetary,
-      confidence: state.confidence
+      confidence: state.confidence,
+      structural: { ...state.structural }
     });
     if (state.undoStack.length > 30) state.undoStack.shift();
     $("#undo-button").disabled = false;
@@ -345,7 +449,8 @@
         euMode: state.euMode,
         cycle: state.cycle,
         monetary: state.monetary,
-        confidence: state.confidence
+        confidence: state.confidence,
+        structural: { ...state.structural }
       };
     }
   }
@@ -387,6 +492,7 @@
     renderChart();
     updateDiagnostics();
     renderModelComparison();
+    updateStructuralLab();
     if (refreshList) renderCategories();
   }
 
@@ -399,7 +505,8 @@
       if (category.type === "spending") spending += Number(value);
       else revenue += Number(value);
     });
-    const cost = spending - revenue;
+    const structuralYear = state.projection?.structural?.[0];
+    const cost = spending - revenue + (structuralYear ? structuralYear.energyFiscalCost - structuralYear.migrationFiscalDelta : 0);
     const balance = -cost;
     $("#direct-balance").textContent = `${balance >= 0 ? "+" : "−"}${money(Math.abs(balance))}`;
     $("#direct-balance").style.color = balance > 0 ? "var(--teal)" : balance < 0 ? "var(--coral)" : "";
@@ -415,6 +522,79 @@
         : "Scénario inchangé par rapport à la référence";
     const count = Object.values(state.changes).filter((value) => Math.abs(value) > 0.01).length;
     $("#changed-count").textContent = `${count} poste${count > 1 ? "s" : ""} modifié${count > 1 ? "s" : ""}`;
+  }
+
+  function controlText(id, value) {
+    const control = D.structural.controls[id];
+    const digits = control.step < 1 ? 2 : 0;
+    const formatted = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
+    return `${formatted}${control.unit}`;
+  }
+
+  function structuralIdsForTab(tab) {
+    return {
+      demography: ["fertility", "lifeExpectancy"],
+      migration: ["economicMigration", "otherMigration", "integration"],
+      energy: ["nuclear", "renewables", "efficiency", "fossilPrice", "carbonTax"]
+    }[tab];
+  }
+
+  function renderStructuralControls() {
+    const ids = structuralIdsForTab(state.activeStructuralTab);
+    $("#structural-control-list").innerHTML = ids.map((id) => {
+      const control = D.structural.controls[id];
+      return `
+        <div class="structural-control">
+          <div class="structural-control-heading"><label for="structural-${id}">${control.label}</label><output id="output-${id}">${controlText(id, state.structural[id])}</output></div>
+          <input id="structural-${id}" data-structural-control="${id}" type="range" min="${control.min}" max="${control.max}" step="${control.step}" value="${state.structural[id]}" />
+          <div class="structural-control-scale"><span>${controlText(id, control.min)}</span><span>réf. ${controlText(id, control.value)}</span><span>${controlText(id, control.max)}</span></div>
+        </div>`;
+    }).join("");
+    const notes = {
+      demography: "La fécondité modifie immédiatement les naissances, mais les enfants n’entrent pas dans la population active avant l’horizon de dix ans. Le vieillissement reste donc dominant sur cette période.",
+      migration: "Les deux flux sont des hypothèses de solde net, pas des nombres de titres de séjour. « Autres motifs » regroupe ici famille, études et humanitaire. Le résultat dépend de l’emploi, pas d’une valeur attribuée aux personnes.",
+      energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. Le coût public, le calendrier industriel et la baisse des importations sont des ordres de grandeur sensibles aux technologies."
+    };
+    $("#structural-disclaimer").textContent = notes[state.activeStructuralTab];
+  }
+
+  function updateStructuralLab() {
+    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const point = state.projection.scenario[index];
+    const structure = point.structural;
+    const baseline = state.projection.baseline[index];
+    const popDelta = structure.population - structure.baselinePopulation;
+    const birthDelta = structure.births - structure.baselineBirths;
+    const netBudget = structure.migrationFiscalDelta - structure.energyFiscalCost - structure.demographyFiscalCost;
+    const gdpDelta = point.gdp - baseline.gdp;
+    const unchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
+
+    $("#story-horizon").textContent = `à ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
+    $("#story-lead").textContent = unchanged && !Object.keys(state.changes).length && state.euMode === "current"
+      ? "Vous êtes sur la trajectoire de référence : la population progresse encore grâce au solde migratoire, tandis que le vieillissement pèse progressivement sur la population active."
+      : `À cet horizon, votre scénario porte le PIB à ${money(point.gdp)} (${signed(gdpDelta, " Md€")} face à la référence) et modifie le solde public direct d’environ ${signed(netBudget, " Md€/an")}.`;
+
+    const populationText = Math.abs(birthDelta) < 1
+      ? `La natalité reste proche de la référence. La population atteint ${fmt1.format(structure.population)} millions.`
+      : `${signed(birthDelta, " k")} naissances par an par rapport à la référence ; la population atteint ${fmt1.format(structure.population)} millions (${signed(popDelta, " M")}). Les services liés aux âges changent de ${signed(structure.demographyFiscalCost, " Md€/an")}.`;
+    const migrationText = `Les cohortes simulées génèrent ${money(structure.migrationRevenue)} de prélèvements et ${money(structure.migrationCost)} de services, transferts et intégration cette année, soit un solde de ${signed(structure.migrationNet, " Md€")}.`;
+    const energyDirection = structure.importBillChange > 0.05 ? "alourdit" : structure.importBillChange < -0.05 ? "allège" : "laisse presque inchangée";
+    const energyText = `Le scénario ${energyDirection} la facture énergétique de ${money(Math.abs(structure.importBillChange))} et modifie les émissions de ${signed(structure.emissionsChange, " MtCO₂e")}.`;
+    $("#story-reasons").innerHTML = `
+      <div class="story-reason"><i>POP</i><div><strong>Population et âges</strong><span>${populationText}</span></div></div>
+      <div class="story-reason"><i>EMP</i><div><strong>Emploi et finances publiques</strong><span>${migrationText}</span></div></div>
+      <div class="story-reason"><i>ENE</i><div><strong>Énergie, prix et importations</strong><span>${energyText}</span></div></div>`;
+    $("#story-caveat").textContent = "Les comportements familiaux, la composition des arrivées, les salaires, les délais de construction et les prix mondiaux peuvent déplacer fortement ces résultats. Les montants migratoires sont une comptabilité de scénario, pas une mesure causale par origine ou statut.";
+
+    const outcomes = [
+      ["Population", `${fmt1.format(structure.population)} M`, `${signed(popDelta, " M")} vs réf.`],
+      ["Naissances annuelles", `${fmt0.format(structure.births)} k`, `${signed(birthDelta, " k")} vs réf.`],
+      ["Part des 65 ans +", percent(structure.age65Share), "projection simplifiée"],
+      ["Solde fiscal des cohortes", signed(structure.migrationNet, " Md€"), `${money(structure.migrationRevenue)} recettes`],
+      ["Facture énergétique", signed(structure.importBillChange, " Md€"), "variation vs réf."],
+      ["Émissions", signed(structure.emissionsChange, " Mt"), "CO₂e vs réf."]
+    ];
+    $("#structural-outcomes").innerHTML = outcomes.map(([label, value, note]) => `<div class="structural-outcome"><small>${label}</small><strong>${value}</strong><span>${note}</span></div>`).join("");
   }
 
   function updateMetricDelta(element, value, inverse = false, suffix = "") {
@@ -545,7 +725,8 @@
     const demand = Math.abs(point.demandContribution);
     const supply = Math.abs(point.supplyContribution);
     const interest = Math.abs(point.extraInterest);
-    if (!Object.keys(state.changes).length && state.euMode === "current") {
+    const structureUnchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
+    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged) {
       $("#mechanism-status").textContent = "Scénario de référence";
       $("#mechanism-detail").textContent = "Aucune mesure n’est appliquée : la trajectoire centrale reproduit exactement la référence.";
     } else if (interest > demand && interest > supply) {
@@ -700,6 +881,7 @@
     state.cycle = "normal";
     state.monetary = "neutral";
     state.confidence = "stable";
+    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -707,6 +889,7 @@
     $("#confidence-select").value = state.confidence;
     updateModelDescription();
     updateAssumptionDescription();
+    renderStructuralControls();
     refreshAll(true);
     showToast("Scénario réinitialisé");
   }
@@ -720,6 +903,7 @@
     state.cycle = previous.cycle || "normal";
     state.monetary = previous.monetary || "neutral";
     state.confidence = previous.confidence || "stable";
+    state.structural = previous.structural ? { ...previous.structural } : Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -728,6 +912,7 @@
     $("#undo-button").disabled = state.undoStack.length === 0;
     updateModelDescription();
     updateAssumptionDescription();
+    renderStructuralControls();
     refreshAll(true);
   }
 
@@ -752,6 +937,11 @@
       deficit_pct_pib: round(item.deficitRatio, 2),
       dette_milliards: round(item.debt, 2),
       dette_pct_pib: round(item.debtRatio, 2),
+      population_millions: round(item.structural.population, 3),
+      naissances_milliers: round(item.structural.births, 1),
+      solde_fiscal_cohortes_milliards: round(item.structural.migrationNet, 2),
+      facture_energetique_ecart_milliards: round(item.structural.importBillChange, 2),
+      emissions_ecart_mtco2e: round(item.structural.emissionsChange, 2),
       reference_deficit_pct_pib: round(state.projection.baseline[index].deficitRatio, 2),
       reference_dette_pct_pib: round(state.projection.baseline[index].debtRatio, 2)
     }));
@@ -825,7 +1015,30 @@
       $$("[data-horizon]").forEach((item) => item.classList.toggle("is-active", item === button));
       updateResults();
       renderModelComparison();
+      updateStructuralLab();
     }));
+    $(".lab-tabs").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-structural-tab]");
+      if (!button) return;
+      state.activeStructuralTab = button.dataset.structuralTab;
+      $$("[data-structural-tab]").forEach((item) => item.classList.toggle("is-active", item === button));
+      renderStructuralControls();
+    });
+    $("#structural-control-list").addEventListener("pointerdown", (event) => {
+      if (event.target.dataset.structuralControl) captureEditSnapshot();
+    });
+    $("#structural-control-list").addEventListener("input", (event) => {
+      const id = event.target.dataset.structuralControl;
+      if (!id) return;
+      state.structural[id] = Number(event.target.value);
+      const output = $(`#output-${id}`);
+      if (output) output.textContent = controlText(id, state.structural[id]);
+      refreshAll(false);
+    });
+    $("#structural-control-list").addEventListener("change", (event) => {
+      if (!event.target.dataset.structuralControl) return;
+      commitEditSnapshot();
+    });
     $("#metric-switch").addEventListener("click", (event) => {
       const button = event.target.closest("[data-chart]");
       if (!button) return;

@@ -24,6 +24,54 @@ window.ECOSIM_DATA = (() => {
 
   const sources = [
     {
+      id: "insee-demography-2025",
+      publisher: "Insee",
+      title: "Bilan démographique 2025",
+      date: "janvier 2026",
+      url: "https://www.insee.fr/fr/statistiques/8719824",
+      note: "69,1 millions d’habitants au 1er janvier 2026, 645 000 naissances, fécondité à 1,56 et 22 % de 65 ans ou plus."
+    },
+    {
+      id: "insee-immigrant-employment",
+      publisher: "Insee",
+      title: "Emploi des immigrés en 2025",
+      date: "22 juin 2026",
+      url: "https://www.insee.fr/fr/statistiques/4195420",
+      note: "Taux d’emploi observé de 61,9 % pour les immigrés de 15 à 64 ans ; résultats très variables selon âge, diplôme et durée de séjour."
+    },
+    {
+      id: "interior-immigration-2025",
+      publisher: "Ministère de l’Intérieur",
+      title: "Titres de séjour en 2025",
+      date: "juillet 2026",
+      url: "https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/titres-de-sejour-en-2025-protections-subsidiaires-ont-plus-que-double.html",
+      note: "Primo-délivrances par motif. Un titre de séjour est un flux administratif, pas un solde migratoire."
+    },
+    {
+      id: "oecd-fiscal-migration",
+      publisher: "OCDE",
+      title: "Impact budgétaire de l’immigration",
+      date: "2021",
+      url: "https://www.oecd.org/fr/publications/2021/10/international-migration-outlook-2021_ea4f9277/full-report/component-8.html",
+      note: "Méthodes de ventilation des recettes et dépenses ; l’impact dépend d’abord de l’âge, de l’emploi, des salaires et des conventions comptables."
+    },
+    {
+      id: "energy-balance-2024",
+      publisher: "SDES",
+      title: "Bilan énergétique de la France 2024",
+      date: "4 mars 2026",
+      url: "https://www.statistiques.developpement-durable.gouv.fr/bilan-energetique-de-la-france-pour-2024",
+      note: "Indépendance énergétique de 61 % et facture énergétique extérieure de 57,7 Md€."
+    },
+    {
+      id: "rte-2025",
+      publisher: "RTE",
+      title: "Bilan électrique 2025",
+      date: "février 2026",
+      url: "https://analysesetdonnees.rte-france.com/bilan-electrique-2025/synthese",
+      note: "Production électrique, capacités, échanges et intensité carbone de 19,6 gCO₂e/kWh."
+    },
+    {
       id: "insee-accounts",
       publisher: "Insee",
       title: "Dépenses et recettes des administrations publiques en 2025",
@@ -490,6 +538,39 @@ window.ECOSIM_DATA = (() => {
     policyRate: [2.5, 2.3, 2.2, 2.2, 2.25, 2.3, 2.3, 2.3, 2.3, 2.3]
   };
 
+  const structural = {
+    demographics: {
+      population: 69.1,
+      fertility: 1.56,
+      births: 645,
+      deaths: 651,
+      age65Share: 22,
+      netMigration: 180,
+      economicMigration: 55,
+      otherMigration: 125,
+      immigrantEmployment: 62,
+      totalEmployment: 69.3
+    },
+    energy: {
+      independence: 61,
+      importBill: 57.7,
+      electricityCarbonIntensity: 19.6,
+      lifecycleElectricityEmissions: 15.7
+    },
+    controls: {
+      fertility: { label: "Fécondité", min: 1.0, max: 2.4, step: 0.01, value: 1.56, unit: " enfant/femme" },
+      lifeExpectancy: { label: "Écart d’espérance de vie", min: -3, max: 5, step: 0.5, value: 0, unit: " an" },
+      economicMigration: { label: "Solde migratoire économique", min: -50, max: 300, step: 5, value: 55, unit: " k/an" },
+      otherMigration: { label: "Autres motifs — proxy", min: -100, max: 300, step: 5, value: 125, unit: " k/an" },
+      integration: { label: "Emploi après intégration", min: 40, max: 80, step: 1, value: 62, unit: " %" },
+      nuclear: { label: "Nucléaire supplémentaire en 2035", min: -10, max: 20, step: 1, value: 0, unit: " GW" },
+      renewables: { label: "Renouvelables supplémentaires en 2035", min: -20, max: 80, step: 2, value: 0, unit: " GW" },
+      efficiency: { label: "Rénovation et efficacité publiques", min: 0, max: 30, step: 1, value: 0, unit: " Md€/an" },
+      fossilPrice: { label: "Choc sur les prix fossiles importés", min: -40, max: 100, step: 5, value: 0, unit: " %" },
+      carbonTax: { label: "Signal-prix carbone supplémentaire", min: -30, max: 100, step: 5, value: 0, unit: " €/t" }
+    }
+  };
+
   const presets = [
     {
       id: "investment",
@@ -587,6 +668,7 @@ window.ECOSIM_DATA = (() => {
     assumptions,
     euModes,
     baseline,
+    structural,
     presets,
     sectors,
     metadata: {
@@ -596,7 +678,7 @@ window.ECOSIM_DATA = (() => {
       revenueObservedYear: 2025,
       projectionStart: 2026,
       projectionEnd: 2035,
-      version: "1.1.0"
+      version: "2.0.0"
     }
   };
 })();

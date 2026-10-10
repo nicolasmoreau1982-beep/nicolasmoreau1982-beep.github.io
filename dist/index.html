@@ -46,8 +46,8 @@
           <div>
             <h1>Et si vous teniez<br /><em>les cordons de la bourse&nbsp;?</em></h1>
             <p class="hero-copy">
-              Modifiez les dépenses et les recettes publiques. Observez les effets estimés sur le déficit,
-              la dette, la croissance et l’emploi — sans cacher les hypothèses ni l’incertitude.
+              Modifiez le budget, la démographie, l’immigration et l’énergie. Observez les effets estimés sur le déficit,
+              la dette, la croissance, l’emploi et les émissions — sans cacher les hypothèses ni l’incertitude.
             </p>
           </div>
           <div class="hero-stamp" aria-label="Périmètre de la simulation">
@@ -217,10 +217,52 @@
         </div>
       </section>
 
-      <section class="budget-editor" aria-labelledby="budget-title">
+      <section class="structural-lab" id="structural" aria-labelledby="structural-title">
         <div class="section-intro">
           <div>
             <span class="section-number">03</span>
+            <h2 id="structural-title">Population, immigration & énergie</h2>
+          </div>
+          <p>Réglez les transformations lentes. Chaque curseur modifie la trajectoire budgétaire, le PIB et les indicateurs physiques.</p>
+        </div>
+
+        <div class="structural-baseline" aria-label="Repères observés">
+          <div><small>Population 2026</small><strong>69,1 M</strong><span>Insee</span></div>
+          <div><small>Fécondité 2025</small><strong>1,56</strong><span>645 000 naissances</span></div>
+          <div><small>65 ans ou plus</small><strong>22 %</strong><span>presque autant que les −20 ans</span></div>
+          <div><small>Indépendance énergétique</small><strong>61 %</strong><span>2024 · SDES</span></div>
+          <div><small>Facture énergétique</small><strong>57,7 Md€</strong><span>solde extérieur 2024</span></div>
+        </div>
+
+        <div class="structural-grid">
+          <div class="structural-controls">
+            <div class="lab-tabs" role="tablist" aria-label="Thèmes structurels">
+              <button class="is-active" data-structural-tab="demography">Démographie</button>
+              <button data-structural-tab="migration">Immigration</button>
+              <button data-structural-tab="energy">Énergie</button>
+            </div>
+            <div id="structural-control-list"></div>
+            <div class="lab-disclaimer" id="structural-disclaimer"></div>
+          </div>
+
+          <article class="story-panel" aria-live="polite">
+            <div class="story-heading">
+              <div><small>Lecture automatique</small><h3 id="story-title">Ce que votre scénario provoquerait</h3></div>
+              <span id="story-horizon">à 3 ans</span>
+            </div>
+            <p class="story-lead" id="story-lead"></p>
+            <div class="story-reasons" id="story-reasons"></div>
+            <div class="story-caveat"><strong>Pourquoi ce n’est pas une certitude</strong><span id="story-caveat"></span></div>
+          </article>
+        </div>
+
+        <div class="structural-outcomes" id="structural-outcomes"></div>
+      </section>
+
+      <section class="budget-editor" aria-labelledby="budget-title">
+        <div class="section-intro">
+          <div>
+            <span class="section-number">04</span>
             <h2 id="budget-title">Réglez le budget</h2>
             <p>Chaque variation est permanente à partir de 2026, en euros constants 2025. Les effets indirects sont calculés séparément.</p>
           </div>
@@ -255,7 +297,7 @@
       <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">04</span>
+            <span class="section-number">05</span>
             <h2 id="sectors-title">Qui porte les comptes publics&nbsp;?</h2>
           </div>
           <p>Le budget de l’État n’est qu’une partie des finances publiques. Voici les quatre sous-secteurs comptables observés en 2025.</p>
@@ -270,7 +312,7 @@
       <section class="methodology" id="methodology" aria-labelledby="method-title">
         <div class="method-heading">
           <div>
-            <span class="section-number light">05</span>
+            <span class="section-number light">06</span>
             <h2 id="method-title">Un modèle qui montre ses coutures.</h2>
           </div>
           <p>Nous ne choisissons pas une école économique à votre place. Cinq lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
@@ -299,14 +341,14 @@
         </div>
         <div class="method-callout">
           <strong>Ce que ce simulateur ne prétend pas faire</strong>
-          <p>Prédire les crises, les décisions futures de la BCE, les réactions politiques étrangères ou le comportement exact de 68 millions de personnes. Au-delà de trois ans, l’intervalle compte davantage que le point central.</p>
+          <p>Prédire les crises, les décisions futures de la BCE, les réactions politiques étrangères ou le comportement exact de 69 millions de personnes. Au-delà de trois ans, l’intervalle compte davantage que le point central.</p>
           <button class="button button-light" id="method-modal-button">Lire la méthode complète</button>
         </div>
       </section>
 
       <section class="sources-section" id="sources" aria-labelledby="sources-title">
         <div class="section-intro">
-          <div><span class="section-number">06</span><h2 id="sources-title">Données & sources</h2></div>
+          <div><span class="section-number">07</span><h2 id="sources-title">Données & sources</h2></div>
           <p>Chaque chiffre a un millésime. Les observations, calibrages et hypothèses sont distingués.</p>
         </div>
         <div class="source-grid" id="source-grid"></div>
@@ -316,7 +358,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 1.1 · octobre 2026</span>
+      <span>Version 2.0 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -340,6 +382,8 @@
           <p>La bande affichée combine incertitude sur les multiplicateurs, horizon de projection et risque institutionnel. Elle ne constitue pas un intervalle de confiance statistique au sens strict ; c’est une plage de sensibilité destinée à empêcher une fausse précision.</p>
           <h3>6. Lecture des résultats</h3>
           <p>Les résultats sont des écarts par rapport à une trajectoire de référence compatible avec les dernières projections macroéconomiques et avec une correction budgétaire graduelle. Une mesure « favorable au PIB » peut rester défavorable à la dette, et inversement.</p>
+          <h3>7. Démographie, immigration et énergie</h3>
+          <p>Le module démographique suit population, naissances, vieillissement et population active. Le module migratoire raisonne par cohortes : emploi, prélèvements et services publics évoluent avec la durée d’installation. Les motifs ne déterminent pas une contribution intrinsèque. Le module énergétique combine investissement, facture d’importation, prix et émissions. Ces calibrages sont des scénarios transparents, pas des comptes individuels ni des prévisions.</p>
         </div>
         <div class="modal-footer"><button class="button button-dark" value="close">J’ai compris</button></div>
       </form>
