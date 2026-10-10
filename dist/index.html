@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1ea" />
+    <meta
+      name="description"
+      content="EcoSim France — laboratoire transparent et pluraliste des finances publiques françaises."
+    />
+    <title>EcoSim France — Simulateur des finances publiques</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller au simulateur</a>
+
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="EcoSim France — accueil">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>EcoSim <b>France</b></span>
+      </a>
+      <nav aria-label="Navigation principale">
+        <button class="nav-link is-active" data-scroll="simulator">Simulateur</button>
+        <button class="nav-link" data-scroll="methodology">Méthode</button>
+        <button class="nav-link" data-scroll="sources">Sources</button>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" id="theme-toggle" aria-label="Changer de thème" title="Changer de thème">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+        </button>
+        <button class="button button-ghost" id="export-button">Exporter</button>
+        <button class="button button-dark" id="save-button">Sauvegarder</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="simulator">
+        <div class="eyebrow"><span class="live-dot"></span>Données arrêtées au 10 octobre 2026</div>
+        <div class="hero-grid">
+          <div>
+            <h1>Et si vous teniez<br /><em>les cordons de la bourse&nbsp;?</em></h1>
+            <p class="hero-copy">
+              Modifiez les dépenses et les recettes publiques. Observez les effets estimés sur le déficit,
+              la dette, la croissance et l’emploi — sans cacher les hypothèses ni l’incertitude.
+            </p>
+          </div>
+          <div class="hero-stamp" aria-label="Périmètre de la simulation">
+            <span>Périmètre</span>
+            <strong>Toutes APU</strong>
+            <small>État · Sécurité sociale<br />Collectivités · Organismes</small>
+          </div>
+        </div>
+
+        <div class="baseline-strip" aria-label="Situation de référence 2025">
+          <div><span>Dépenses</span><strong>1 714,1 Md€</strong><small>57,3 % du PIB</small></div>
+          <div><span>Recettes</span><strong>1 562,5 Md€</strong><small>52,2 % du PIB</small></div>
+          <div class="negative"><span>Déficit</span><strong>−151,6 Md€</strong><small>−5,1 % du PIB</small></div>
+          <div><span>Dette</span><strong>3 460,5 Md€</strong><small>115,6 % du PIB</small></div>
+          <div class="baseline-source"><span>Référence</span><strong>Exécution 2025</strong><small>Comptes nationaux Insee</small></div>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Espace de simulation">
+        <aside class="control-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="section-number">01</span>
+              <h2>Votre scénario</h2>
+            </div>
+            <button class="text-button" id="reset-button">Tout réinitialiser</button>
+          </div>
+
+          <label class="field-label" for="scenario-name">Nom du scénario</label>
+          <input class="text-input" id="scenario-name" value="Mon scénario" maxlength="60" />
+
+          <div class="two-fields">
+            <label>
+              <span class="field-label">Cadre économique</span>
+              <select id="model-select"></select>
+            </label>
+            <label>
+              <span class="field-label">Cadre européen</span>
+              <select id="eu-select"></select>
+            </label>
+          </div>
+          <p class="model-description" id="model-description"></p>
+
+          <div class="field-label label-with-help">
+            Point de départ rapide
+            <button class="help-dot" data-tooltip="Les préréglages restent entièrement modifiables.">?</button>
+          </div>
+          <div class="preset-list" id="preset-list"></div>
+
+          <div class="scenario-balance">
+            <div>
+              <span>Effort budgétaire direct</span>
+              <strong id="direct-balance">0,0 Md€</strong>
+            </div>
+            <div class="mini-bar" aria-hidden="true"><i id="balance-bar"></i></div>
+            <small id="balance-caption">Scénario inchangé par rapport à la référence</small>
+          </div>
+
+          <div class="panel-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5m0 3.5v.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            <p>Une simulation n’est pas une prévision. Les fourchettes s’élargissent avec le temps et lors des ruptures institutionnelles.</p>
+          </div>
+        </aside>
+
+        <div class="results-panel">
+          <div class="results-header">
+            <div>
+              <span class="section-number">02</span>
+              <h2>Trajectoire simulée</h2>
+            </div>
+            <div class="horizon-switch" role="group" aria-label="Horizon de projection">
+              <button data-horizon="1">1 an</button>
+              <button data-horizon="3" class="is-active">3 ans</button>
+              <button data-horizon="5">5 ans</button>
+              <button data-horizon="10">10 ans</button>
+            </div>
+          </div>
+
+          <div class="impact-cards" id="impact-cards">
+            <article class="impact-card" data-metric="deficit">
+              <div class="metric-label"><span class="metric-dot coral"></span>Déficit public <button class="help-dot" data-tooltip="Besoin de financement de toutes les administrations publiques.">?</button></div>
+              <strong id="metric-deficit">—</strong>
+              <span class="metric-delta" id="delta-deficit">—</span>
+              <small id="sub-deficit">—</small>
+            </article>
+            <article class="impact-card" data-metric="debt">
+              <div class="metric-label"><span class="metric-dot navy"></span>Dette publique</div>
+              <strong id="metric-debt">—</strong>
+              <span class="metric-delta" id="delta-debt">—</span>
+              <small id="sub-debt">—</small>
+            </article>
+            <article class="impact-card" data-metric="growth">
+              <div class="metric-label"><span class="metric-dot teal"></span>Croissance réelle</div>
+              <strong id="metric-growth">—</strong>
+              <span class="metric-delta" id="delta-growth">—</span>
+              <small id="sub-growth">—</small>
+            </article>
+            <article class="impact-card" data-metric="unemployment">
+              <div class="metric-label"><span class="metric-dot violet"></span>Chômage</div>
+              <strong id="metric-unemployment">—</strong>
+              <span class="metric-delta" id="delta-unemployment">—</span>
+              <small id="sub-unemployment">—</small>
+            </article>
+          </div>
+
+          <article class="chart-card">
+            <div class="chart-toolbar">
+              <div>
+                <h3>Projection sur dix ans</h3>
+                <div class="chart-legend"><span><i class="solid"></i>Votre scénario</span><span><i class="dashed"></i>Référence</span><span><i class="band"></i>Fourchette</span></div>
+              </div>
+              <div class="metric-switch" id="metric-switch" role="group" aria-label="Indicateur du graphique">
+                <button data-chart="deficitRatio" class="is-active">Déficit</button>
+                <button data-chart="debtRatio">Dette</button>
+                <button data-chart="gdp">PIB</button>
+                <button data-chart="unemployment">Chômage</button>
+              </div>
+            </div>
+            <div class="chart-wrap" id="chart-wrap" aria-label="Graphique de projection"></div>
+            <p class="chart-caption" id="chart-caption"></p>
+          </article>
+
+          <div class="diagnostics-grid">
+            <article class="diagnostic" id="eu-diagnostic">
+              <span class="diagnostic-icon" aria-hidden="true">EU</span>
+              <div><small>Cadre européen</small><strong id="eu-status">—</strong><p id="eu-detail">—</p></div>
+            </article>
+            <article class="diagnostic" id="risk-diagnostic">
+              <span class="diagnostic-icon" aria-hidden="true">σ</span>
+              <div><small>Incertitude</small><strong id="risk-status">—</strong><p id="risk-detail">—</p></div>
+            </article>
+            <article class="diagnostic" id="mechanism-diagnostic">
+              <span class="diagnostic-icon" aria-hidden="true">↗</span>
+              <div><small>Mécanisme dominant</small><strong id="mechanism-status">—</strong><p id="mechanism-detail">—</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="budget-editor" aria-labelledby="budget-title">
+        <div class="section-intro">
+          <div>
+            <span class="section-number">03</span>
+            <h2 id="budget-title">Réglez le budget</h2>
+            <p>Chaque variation est permanente à partir de 2026, en euros constants 2025. Les effets indirects sont calculés séparément.</p>
+          </div>
+          <div class="editor-summary">
+            <span id="changed-count">0 poste modifié</span>
+            <button class="button button-ghost small" id="undo-button" disabled>Annuler</button>
+          </div>
+        </div>
+
+        <div class="editor-card">
+          <div class="editor-toolbar">
+            <div class="budget-tabs" role="tablist" aria-label="Type de budget">
+              <button role="tab" aria-selected="true" data-budget-tab="spending" class="is-active">Dépenses <span>1 714,1 Md€</span></button>
+              <button role="tab" aria-selected="false" data-budget-tab="revenue">Recettes <span>1 562,5 Md€</span></button>
+            </div>
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.5-4.5m2-5A7 7 0 1 1 4.5 11.5a7 7 0 0 1 14 0Z"/></svg>
+              <input id="category-search" type="search" placeholder="Rechercher un poste…" />
+            </div>
+          </div>
+          <div class="table-head" aria-hidden="true">
+            <span>Poste budgétaire</span><span>Référence</span><span>Variation</span><span>Nouveau montant</span><span>Effet 3 ans</span>
+          </div>
+          <div id="category-list" class="category-list"></div>
+          <div class="table-footer">
+            <p id="editor-footnote">Détail COFOG 2024 recalé sur le total de dépenses 2025.</p>
+            <button class="text-button" id="expand-all">Tout déplier</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="methodology" id="methodology" aria-labelledby="method-title">
+        <div class="method-heading">
+          <div>
+            <span class="section-number light">04</span>
+            <h2 id="method-title">Un modèle qui montre ses coutures.</h2>
+          </div>
+          <p>Nous ne choisissons pas une école économique à votre place. Cinq lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
+        </div>
+        <div class="method-grid">
+          <article>
+            <span>01</span>
+            <h3>Impulsion directe</h3>
+            <p>Chaque dépense ou prélèvement reçoit un multiplicateur propre, un délai d’exécution et une fuite par les importations.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Boucles macroéconomiques</h3>
+            <p>Le PIB modifie les recettes, le chômage et certaines dépenses. La dette modifie progressivement la charge d’intérêts.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Effets d’offre</h3>
+            <p>Recherche, éducation, santé, transport et fiscalité productive agissent avec retard sur la capacité de production.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Institutions et risques</h3>
+            <p>Euro, règles européennes, prime de risque, change et inflation sont traités par scénarios, avec une incertitude explicite.</p>
+          </article>
+        </div>
+        <div class="method-callout">
+          <strong>Ce que ce simulateur ne prétend pas faire</strong>
+          <p>Prédire les crises, les décisions futures de la BCE, les réactions politiques étrangères ou le comportement exact de 68 millions de personnes. Au-delà de trois ans, l’intervalle compte davantage que le point central.</p>
+          <button class="button button-light" id="method-modal-button">Lire la méthode complète</button>
+        </div>
+      </section>
+
+      <section class="sources-section" id="sources" aria-labelledby="sources-title">
+        <div class="section-intro">
+          <div><span class="section-number">05</span><h2 id="sources-title">Données & sources</h2></div>
+          <p>Chaque chiffre a un millésime. Les observations, calibrages et hypothèses sont distingués.</p>
+        </div>
+        <div class="source-grid" id="source-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
+      <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
+      <span>Version 1.0 · octobre 2026</span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="method-dialog" class="modal">
+      <form method="dialog" class="modal-shell">
+        <div class="modal-header">
+          <div><span class="eyebrow">Documentation</span><h2>Méthode de simulation</h2></div>
+          <button class="icon-button" value="close" aria-label="Fermer">×</button>
+        </div>
+        <div class="modal-body">
+          <h3>1. Périmètre et année de référence</h3>
+          <p>Le simulateur consolide les administrations publiques (APU) : État, organismes divers d’administration centrale, administrations locales et administrations de sécurité sociale. La référence comptable est l’exécution 2025 de l’Insee.</p>
+          <h3>2. Détail des dépenses</h3>
+          <p>La dernière ventilation fonctionnelle COFOG disponible pour la France porte sur 2024. Chaque poste est multiplié par le rapport entre le total Insee 2025 et le total COFOG 2024. Les montants détaillés sont donc des estimations 2025 calibrées, tandis que leur somme correspond au total observé.</p>
+          <h3>3. Moteur macro-budgétaire</h3>
+          <p>Le moteur est semi-structurel. Il applique des multiplicateurs différenciés, une décroissance de l’effet de demande, des effets d’offre retardés, une élasticité des recettes au PIB, une réponse du chômage inspirée de la loi d’Okun et une charge d’intérêts dépendant du stock de dette.</p>
+          <h3>4. Pluralisme</h3>
+          <p>Les cinq cadres ne sont pas des caricatures doctrinales : ils modifient des paramètres identifiables — multiplicateurs de dépense, sensibilité des prélèvements, effets d’offre, persistance et prime de risque. Aucun résultat n’est masqué ou sélectionné selon sa conclusion.</p>
+          <h3>5. Incertitude</h3>
+          <p>La bande affichée combine incertitude sur les multiplicateurs, horizon de projection et risque institutionnel. Elle ne constitue pas un intervalle de confiance statistique au sens strict ; c’est une plage de sensibilité destinée à empêcher une fausse précision.</p>
+          <h3>6. Lecture des résultats</h3>
+          <p>Les résultats sont des écarts par rapport à une trajectoire de référence compatible avec les dernières projections macroéconomiques et avec une correction budgétaire graduelle. Une mesure « favorable au PIB » peut rester défavorable à la dette, et inversement.</p>
+        </div>
+        <div class="modal-footer"><button class="button button-dark" value="close">J’ai compris</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="export-dialog" class="modal compact">
+      <form method="dialog" class="modal-shell">
+        <div class="modal-header"><div><span class="eyebrow">Exporter</span><h2>Emporter le scénario</h2></div><button class="icon-button" value="close" aria-label="Fermer">×</button></div>
+        <div class="modal-body export-options">
+          <button type="button" data-export="json"><strong>JSON complet</strong><span>Hypothèses, mesures et projections</span></button>
+          <button type="button" data-export="csv"><strong>CSV des projections</strong><span>Compatible tableur</span></button>
+          <button type="button" data-export="link"><strong>Copier un lien local</strong><span>Scénario encodé dans l’URL</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
