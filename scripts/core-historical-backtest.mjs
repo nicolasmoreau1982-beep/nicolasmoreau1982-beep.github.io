@@ -118,8 +118,16 @@ export function runVat2014Sensitivity({observations = accounts} = {}) {
   const withVat = runCoreOrigin({originYear: 2013, horizon: 3, observations,
     changes: {R_TVA: totalBn / firstYearDeflator}});
   const withoutVat = runCoreOrigin({originYear: 2013, horizon: 3, observations});
+  const excludedEvents = historicalPolicy.events.filter((event) => {
+    const startYear = event.effectiveYear ?? event.year;
+    return startYear >= 2014 && startYear <= 2016 && !events.includes(event);
+  }).map((event) => ({id: event.id, label: event.label, source: event.source,
+    reason: event.warning || "Mesure non traduite dans le moteur principal"}));
   return {status: "retrospective_sensitivity_not_causal_validation",
     eventIds: events.map((event) => event.id), amountBn: totalBn,
+    includedEvents: events.map((event) => ({id: event.id, label: event.label,
+      amountBn: event.amountBn, amountStatus: event.amountStatus, source: event.source})),
+    excludedEvents,
     mapping: "R_TVA, 6.7 nominal in first year 2014; then indexed by assumed deflator under engine convention",
     limitation: "2017 Mésange VAT response not available at 2013 origin; other simultaneous reforms and shocks absent",
     rows: withVat.rows.map((row, index) => ({year: row.year, observed: row.actual,

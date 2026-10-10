@@ -33,6 +33,9 @@ assert.throws(() => runCoreOrigin({originYear: 2013, horizon: 1, changes: {R_UNK
 const vat = runVat2014Sensitivity();
 assert.equal(vat.amountBn, 6.7);
 assert.deepEqual(vat.eventIds, ["vat_normal_2014", "vat_intermediate_2014"]);
+assert.equal(vat.includedEvents.length, 2);
+assert.ok(vat.includedEvents.every((event) => event.source.startsWith("https://")));
+assert.ok(vat.excludedEvents.some((event) => event.id === "cice_accounts_2014_2022"));
 assert.ok(Math.abs(vat.rows[0].withVat.directRevenueChangeBn - 6.7) < 1e-8,
   "Le rendement ex ante de 2014 doit entrer dans le moteur à 6,7 Md€ nominaux");
 assert.ok(vat.rows[0].withVat.deficitRatio < vat.rows[0].withoutVat.deficitRatio,
