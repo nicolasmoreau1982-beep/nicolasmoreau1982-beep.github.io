@@ -2,7 +2,7 @@
 
 ## Verdict
 
-EcoSim est un **bac à scénarios macro-budgétaires**, pas un modèle de prévision validé. Il couvre davantage de domaines que certains simulateurs citoyens, mais sa profondeur empirique est inférieure à celle des modèles de recherche. On ne doit pas classer les programmes politiques sur la seule base de ses chiffres à 10–30 ans.
+EcoSim est un **bac à scénarios macro-budgétaires**, pas un modèle de prévision validé. Il couvre davantage de domaines que certains simulateurs citoyens, mais sa profondeur empirique est inférieure à celle des modèles de recherche. On ne doit pas classer les programmes politiques sur la seule base de ses chiffres à 10–30 ans. Le comparateur applique désormais un profil économique commun sélectionnable à tous les groupes et affiche, pour le scénario choisi, la plage de déficit et de dette obtenue sous les neuf profils. Cette plage est une sensibilité paramétrique, non un intervalle de confiance ou un test de robustesse des sources partisanes.
 
 ### Millésime de la base 2025 vérifié
 

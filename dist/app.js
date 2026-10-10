@@ -29,6 +29,7 @@
     fiscal: { ...F.defaults },
     activeEngine: "work",
     politicsView: "current",
+    politicsModel: "consensus",
     politicsHorizon: 3,
     selectedPolitics: "technical",
     horizon: 3,
@@ -940,6 +941,9 @@
     const modelSelect = $("#model-select");
     modelSelect.innerHTML = Object.entries(D.models).map(([id, model]) => `<option value="${id}">${model.label}</option>`).join("");
     modelSelect.value = state.model;
+    const politicsModelSelect = $("#politics-model-select");
+    politicsModelSelect.innerHTML = modelSelect.innerHTML;
+    politicsModelSelect.value = state.politicsModel;
     const euSelect = $("#eu-select");
     euSelect.innerHTML = Object.entries(D.euModes).map(([id, mode]) => `<option value="${id}">${mode.label}</option>`).join("");
     euSelect.value = state.euMode;
@@ -1008,8 +1012,25 @@
     return politicalScenarioList().find((item) => item.id === id) || politicalScenarioList()[0];
   }
 
-  function calculatePoliticalProjection(scenario) {
-    const cached = politicalProjectionCache.get(scenario.id);
+  function politicalScenarioInputs(scenario, modelKey = state.politicsModel) {
+    return {
+      changes: { ...scenario.changes },
+      model: modelKey,
+      euMode: scenario.euMode,
+      cycle: "normal",
+      monetary: "neutral",
+      confidence: "stable",
+      policyStartQuarter: 1,
+      policyStartQuarters: {},
+      structural: Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, scenario.structural[id] ?? control.value])),
+      engines: Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, scenario.engines[id] ?? control.value])),
+      fiscal: { ...F.defaults }
+    };
+  }
+
+  function calculatePoliticalProjection(scenario, modelKey = state.politicsModel) {
+    const cacheKey = `${scenario.id}:${modelKey}`;
+    const cached = politicalProjectionCache.get(cacheKey);
     if (cached) return cached;
     const snapshot = {
       changes: state.changes,
@@ -1024,27 +1045,26 @@
       engines: state.engines,
       fiscal: state.fiscal
     };
-    state.changes = { ...scenario.changes };
-    state.model = "consensus";
-    state.euMode = scenario.euMode;
-    state.cycle = "normal";
-    state.monetary = "neutral";
-    state.confidence = "stable";
-    state.policyStartQuarter = 1;
-    state.policyStartQuarters = {};
-    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, scenario.structural[id] ?? control.value]));
-    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, scenario.engines[id] ?? control.value]));
-    state.fiscal = { ...F.defaults };
-    const projection = calculateProjection();
-    Object.assign(state, snapshot);
-    politicalProjectionCache.set(scenario.id, projection);
+    Object.assign(state, politicalScenarioInputs(scenario, modelKey));
+    let projection;
+    try { projection = calculateProjection(); }
+    finally { Object.assign(state, snapshot); }
+    politicalProjectionCache.set(cacheKey, projection);
     return projection;
   }
 
-  function politicalPoint(scenario) {
+  function politicalPoint(scenario, modelKey = state.politicsModel) {
     const index = projectionIndex(state.politicsHorizon);
-    const projection = calculatePoliticalProjection(scenario);
+    const projection = calculatePoliticalProjection(scenario, modelKey);
     return { point: projection.scenario[index], baseline: projection.baseline[index] };
+  }
+
+  function politicalSensitivity(scenario) {
+    const points = Object.keys(D.models).map((modelKey) => politicalPoint(scenario, modelKey).point);
+    return {
+      deficit: [Math.min(...points.map((point) => point.deficitRatio)), Math.max(...points.map((point) => point.deficitRatio))],
+      debt: [Math.min(...points.map((point) => point.debtRatio)), Math.max(...points.map((point) => point.debtRatio))]
+    };
   }
 
   function politicalTranslationRows(scenario) {
@@ -1086,6 +1106,7 @@
     const scenario = politicalScenarioById();
     if (!scenario) return;
     const { point, baseline } = politicalPoint(scenario);
+    const sensitivity = politicalSensitivity(scenario);
     const emissions = point.structural.emissionsChange + point.engines.emissions;
     const poverty = 15.4 + point.engines.poverty;
     const translationUncertainty = { high: 1, medium: 1.25, low: 1.6 }[scenario.confidenceKey] || 1;
@@ -1109,6 +1130,7 @@
         <div><small>Émissions</small><strong>${signed(emissions, " Mt")}</strong><span>écart CO₂e</span></div>
         <div><small>Pauvreté</small><strong>${percent(poverty)}</strong><span>${signed(point.engines.poverty, " pt")}</span></div>
       </div>
+      <div class="politics-sensitivity"><strong>Écart entre les neuf lectures économiques</strong><p>Déficit : ${percent(sensitivity.deficit[0])} à ${percent(sensitivity.deficit[1])} du PIB · Dette : ${percent(sensitivity.debt[0])} à ${percent(sensitivity.debt[1])} du PIB. Ce sont des résultats sous hypothèses alternatives, pas un intervalle de confiance.</p></div>
       <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}${horizonCaveat}</p></div>
       <details class="politics-mapping"><summary>Voir la traduction exacte (${rows.length} réglages)</summary><div>${rows.length ? rows.map((row) => `<span>${row}</span>`).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
       <div class="politics-actions">
@@ -1119,7 +1141,7 @@
 
   function renderPoliticsComparison() {
     const scenarios = politicalScenarioList();
-    $("#politics-comparison-title").textContent = `Comparaison à ${state.politicsHorizon} an${state.politicsHorizon > 1 ? "s" : ""}`;
+    $("#politics-comparison-title").textContent = `Comparaison à ${state.politicsHorizon} an${state.politicsHorizon > 1 ? "s" : ""} · ${D.models[state.politicsModel].label}`;
     const header = `<div class="politics-compare-row is-head"><span>Scénario</span><span>Déficit</span><span>Dette</span><span>PIB vs réf.</span><span>Chômage</span><span>CO₂e</span></div>`;
     const body = scenarios.map((scenario) => {
       const { point, baseline } = politicalPoint(scenario);
@@ -1143,17 +1165,7 @@
     const scenario = politicalScenarioById(id);
     if (!scenario) return;
     pushUndo();
-    state.changes = { ...scenario.changes };
-    state.policyStartQuarter = 1;
-    state.policyStartQuarters = {};
-    state.model = "consensus";
-    state.euMode = scenario.euMode;
-    state.cycle = "normal";
-    state.monetary = "neutral";
-    state.confidence = "stable";
-    state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([key, control]) => [key, scenario.structural[key] ?? control.value]));
-    state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([key, control]) => [key, scenario.engines[key] ?? control.value]));
-    state.fiscal = { ...F.defaults };
+    Object.assign(state, politicalScenarioInputs(scenario));
     state.name = scenario.name;
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
@@ -2492,6 +2504,12 @@
       renderPoliticsDetail();
       renderPoliticsComparison();
     }));
+    $("#politics-model-select").addEventListener("change", (event) => {
+      if (!D.models[event.target.value]) return;
+      state.politicsModel = event.target.value;
+      renderPoliticsDetail();
+      renderPoliticsComparison();
+    });
     $("#politics").addEventListener("click", (event) => {
       const apply = event.target.closest("[data-apply-politics]");
       if (apply) {

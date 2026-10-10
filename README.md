@@ -79,6 +79,8 @@ La version 4.0 comprend :
 - une comparaison à 1, 3, 5, 10, 20 et 30 ans avec sources et confiance de traduction séparée des hypothèses économiques ;
 - une extrapolation 2036–2055 explicitement structurelle, fondée sur les projections démographiques Insee/COR et assortie d’une incertitude accélérée.
 
+Dans le comparateur politique, le lecteur choisit maintenant une des neuf lectures économiques **commune à tous les programmes**. Le détail d'un programme montre aussi la plage de déficit et de dette obtenue sous les neuf profils ; ce n'est pas un intervalle de confiance. « Appliquer au simulateur » reprend le profil affiché et les mêmes mesures que l'aperçu. Les anciens champs `model` propres aux partis, jamais utilisés dans le calcul, ont été retirés pour ne pas suggérer qu'une théorie économique différente serait imposée à chaque groupe. Cela ne rend ni les chiffrages des programmes ni les coefficients du moteur empiriquement validés.
+
 La version 4.2 simplifie l’utilisation avec un parcours en quatre étapes, une lecture automatique en langage courant, des réglages mobiles repliables, un budget compact par défaut et un filtre des seuls postes modifiés.
 
 La version 4.3 ajoute un moteur d’emploi par cohortes : recrutements des trois fonctions publiques, titulaires et contractuels, coût employeur annuel, engagement actualisé à quarante ans, formation, accompagnement et viviers de main-d’œuvre. Les populations BIT, France Travail, halo et sous-emploi restent séparées pour éviter les doubles comptes.

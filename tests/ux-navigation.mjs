@@ -17,6 +17,9 @@ for (const page of [home, audit, privacy]) {
 assert.match(home, /id="mobile-nav-toggle"[^>]*aria-controls="main-nav"[^>]*aria-expanded="false"/);
 assert.match(home, /id="mobile-export-button"/);
 assert.match(home, /href="confidentialite\.html"/);
+assert.match(home, /id="politics-model-select"[^>]*aria-describedby="politics-model-note"/);
+assert.match(app, /politicsModelSelect\.innerHTML = modelSelect\.innerHTML/);
+assert.match(app, /state\.politicsModel = event\.target\.value/);
 assert.match(home, /id="visit-counter" hidden/);
 assert.match(styles, /\.visit-counter\[hidden\] \{ display: none; \}/);
 assert.match(home, /id="import-scenario-file"[^>]*accept="\.json,application\/json"/);

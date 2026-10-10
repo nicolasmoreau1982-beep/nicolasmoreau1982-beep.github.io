@@ -14,11 +14,18 @@ const appSource = fs.readFileSync(new URL("dist/app.js", root), "utf8");
 const start = appSource.indexOf("(() => {") + "(() => {".length;
 const end = appSource.indexOf("  function initializeControls()");
 assert.ok(start > 0 && end > start, "Le moteur doit pouvoir être isolé avant le rendu DOM");
+const politicsStart = appSource.indexOf("  const politicalProjectionCache = new Map();");
+const politicsEnd = appSource.indexOf("  function updateModelDescription()", politicsStart);
+assert.ok(politicsStart > end && politicsEnd > politicsStart, "La comparaison politique doit rester isolable pour les tests");
 
 const modelSource = `${appSource.slice(start, end)}
+${appSource.slice(politicsStart, politicsEnd)}
   globalThis.__ecosimTest = {
     state,
     calculateProjection,
+    politicalScenarioInputs,
+    calculatePoliticalProjection,
+    politicalSensitivity,
     parseScenarioImport,
     resetStructural() {
       state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
@@ -38,7 +45,7 @@ const modelContext = {
 };
 vm.runInNewContext(modelSource, modelContext, { filename: "app-model.js" });
 
-const { state, calculateProjection, parseScenarioImport, resetStructural } = modelContext.__ecosimTest;
+const { state, calculateProjection, politicalScenarioInputs, calculatePoliticalProjection, politicalSensitivity, parseScenarioImport, resetStructural } = modelContext.__ecosimTest;
 const data = dataContext.window.ECOSIM_DATA;
 const finite = (value) => Number.isFinite(value);
 
@@ -264,6 +271,7 @@ assert.ok(healthHiring.scenario.every((row) => Math.abs(row.directBalanceCost - 
 
 for (const family of Object.values(data.politicalScenarios)) {
   for (const scenario of family) {
+    assert.equal(scenario.model, undefined, "Un parti ne doit pas imposer sa propre théorie économique");
     resetStructural();
     state.changes = { ...scenario.changes };
     state.model = "consensus";
@@ -274,6 +282,30 @@ for (const family of Object.values(data.politicalScenarios)) {
     assert.ok(projection.scenario.every((row) => [row.gdp, row.debtRatio, row.deficitRatio, row.unemployment, row.labor.realizationRate].every(finite)), `${scenario.id} produit une valeur non finie`);
   }
 }
+
+const selectedParty = data.politicalScenarios.current.find((scenario) => scenario.id === "lfi");
+resetStructural();
+state.model = "consensus";
+state.politicsModel = "consensus";
+const previewCentral = calculatePoliticalProjection(selectedParty);
+const previewKeynesian = calculatePoliticalProjection(selectedParty, "keynesian");
+assert.equal(state.model, "consensus", "L'aperçu politique ne doit pas modifier le simulateur personnel");
+assert.notEqual(previewCentral.scenario[2].gdp, previewKeynesian.scenario[2].gdp,
+  "Changer la lecture économique doit modifier le résultat politique");
+assert.equal(calculatePoliticalProjection(selectedParty, "consensus"), previewCentral,
+  "Le cache doit réutiliser le même programme et le même profil");
+const inputs = politicalScenarioInputs(selectedParty, "keynesian");
+assert.equal(inputs.model, "keynesian");
+assert.equal(inputs.changes.R_IR, selectedParty.changes.R_IR);
+Object.assign(state, inputs);
+const applied = calculateProjection();
+assert.ok(Math.abs(applied.scenario[2].gdp - previewKeynesian.scenario[2].gdp) < 1e-7,
+  "L'aperçu et le scénario appliqué doivent utiliser exactement les mêmes entrées");
+const sensitivity = politicalSensitivity(selectedParty);
+assert.ok(sensitivity.debt[0] <= sensitivity.debt[1]);
+assert.ok(sensitivity.deficit[0] <= sensitivity.deficit[1]);
+assert.ok(sensitivity.debt[0] <= previewKeynesian.scenario[2].debtRatio
+  && sensitivity.debt[1] >= previewKeynesian.scenario[2].debtRatio);
 
 console.log(JSON.stringify({
   years: baseline.scenario.length,

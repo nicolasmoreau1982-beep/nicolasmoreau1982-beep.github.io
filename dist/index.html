@@ -410,6 +410,10 @@
             <button class="is-active" data-politics-view="current" role="tab" aria-selected="true">Groupes actuels</button>
             <button data-politics-view="historical" role="tab" aria-selected="false">Noyaux récurrents sur 20 ans</button>
           </div>
+          <label class="politics-model" for="politics-model-select">
+            <span>Lecture économique commune</span>
+            <select id="politics-model-select" aria-describedby="politics-model-note"></select>
+          </label>
           <div class="politics-horizon" role="group" aria-label="Horizon de comparaison politique">
             <span>Comparer à</span>
             <button data-politics-horizon="1">1 an</button>
@@ -420,6 +424,7 @@
             <button data-politics-horizon="30">30 ans</button>
           </div>
         </div>
+        <p class="politics-model-note" id="politics-model-note">Le même profil est appliqué à tous les scénarios. Les écarts entre profils testent des hypothèses, pas la probabilité d’un résultat.</p>
         <div class="politics-grid">
           <div>
             <div class="politics-list" id="politics-list"></div>
@@ -621,7 +626,7 @@
           <h3>9. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
           <h3>10. Programmes politiques</h3>
-          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
+          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Un profil économique commun, sélectionnable parmi neuf lectures, s’applique à tous les programmes ; la plage affichée sur le déficit et la dette montre la sensibilité à ces lectures, sans constituer un intervalle de confiance. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
           <h3>11. Moteur fiscal expérimental</h3>
           <p>Un module séparé applique des barèmes IR, IFI et succession simplifiés à des foyers-types pondérés selon revenu et patrimoine ; il peut aussi tester un impôt plancher proposé, désactivé par défaut. Ses écarts de recettes et les gains/pertes simulés alimentent le budget et une réponse de consommation hypothétique. Les foyers-types ne sont pas un échantillon représentatif, les recettes calculées ne sont pas réconciliées avec les comptes et les règles LFSS individuelles ne sont pas codées : ces résultats ne sont pas des prévisions fiscales.</p>
           <h3>12. Réactions sociales et vote</h3>
