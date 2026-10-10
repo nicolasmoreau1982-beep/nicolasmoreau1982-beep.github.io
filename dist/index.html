@@ -146,8 +146,11 @@
               <button data-horizon="3" class="is-active">3 ans</button>
               <button data-horizon="5">5 ans</button>
               <button data-horizon="10">10 ans</button>
+              <button data-horizon="20">20 ans</button>
+              <button data-horizon="30">30 ans</button>
             </div>
           </div>
+          <p class="long-run-note" id="long-run-note" hidden>Horizon structurel : au-delà de 2035, l’écart d’incertitude compte davantage que le point central.</p>
 
           <div class="impact-cards" id="impact-cards">
             <article class="impact-card" data-metric="deficit">
@@ -179,7 +182,7 @@
           <article class="chart-card">
             <div class="chart-toolbar">
               <div>
-                <h3>Projection sur dix ans</h3>
+                <h3>Projection sur trente ans</h3>
                 <div class="chart-legend"><span><i class="solid"></i>Votre scénario</span><span><i class="dashed"></i>Référence</span><span><i class="band"></i>Fourchette</span></div>
               </div>
               <div class="metric-switch" id="metric-switch" role="group" aria-label="Indicateur du graphique">
@@ -314,6 +317,8 @@
             <button data-politics-horizon="3" class="is-active">3 ans</button>
             <button data-politics-horizon="5">5 ans</button>
             <button data-politics-horizon="10">10 ans</button>
+            <button data-politics-horizon="20">20 ans</button>
+            <button data-politics-horizon="30">30 ans</button>
           </div>
         </div>
         <div class="politics-grid">
@@ -332,7 +337,7 @@
         </article>
         <div class="politics-warning">
           <strong>Règle de lecture</strong>
-          <p>Un programme incomplet ou contradictoire n’est pas « complété » silencieusement : la convention EcoSim est affichée et la confiance abaissée. Sur vingt ans, les promesses incompatibles entre deux élections sont exclues au lieu d’être additionnées.</p>
+          <p>Un programme incomplet ou contradictoire n’est pas « complété » silencieusement : la convention EcoSim est affichée et la confiance abaissée. Sur vingt ans, les promesses incompatibles sont exclues. À 20–30 ans, la bande d’incertitude prime sur le chiffre central.</p>
         </div>
       </section>
 
@@ -435,7 +440,7 @@
     <footer>
       <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>EcoSim <b>France</b></span></div>
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
-      <span>Version 4.0 · octobre 2026</span>
+      <span>Version 4.1 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -465,6 +470,8 @@
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
           <h3>9. Programmes politiques</h3>
           <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Sources, date, conventions et niveau de confiance sont affichés. Le module ne prédit ni les coalitions, ni la capacité parlementaire à voter les mesures, ni leur conformité juridique exacte. Le « gouvernement technique » est une convention de continuité, pas l’absence de valeurs.</p>
+          <h3>10. Horizons 20 et 30 ans</h3>
+          <p>Après 2035, la trajectoire n’est plus une prévision conjoncturelle : elle prolonge des hypothèses structurelles de productivité, inflation, chômage, vieillissement, migrations et coût de la dette. Les nouvelles générations n’affectent l’offre de travail qu’après 18 ans. L’incertitude augmente volontairement plus vite au-delà de dix ans.</p>
         </div>
         <div class="modal-footer"><button class="button button-dark" value="close">J’ai compris</button></div>
       </form>

@@ -32,6 +32,22 @@ window.ECOSIM_DATA = (() => {
       note: "Hypothèses démographiques, dépenses, ressources et solde du système de retraite."
     },
     {
+      id: "insee-population-2070",
+      publisher: "Insee",
+      title: "Projections de population 2026–2070",
+      date: "juin 2026",
+      url: "https://www.insee.fr/fr/information/6536990",
+      note: "Scénarios de population, vieillissement et population active utilisés pour encadrer les horizons 20 et 30 ans."
+    },
+    {
+      id: "ec-dsm-2025",
+      publisher: "Commission européenne",
+      title: "Debt Sustainability Monitor 2025",
+      date: "12 février 2026",
+      url: "https://economy-finance.ec.europa.eu/publications/debt-sustainability-monitor-2025_en",
+      note: "Méthode de soutenabilité et scénarios de dette à politique inchangée ; la France est classée à risque moyen terme élevé."
+    },
+    {
       id: "drees-health-2024",
       publisher: "DREES",
       title: "Les dépenses de santé en 2024",
@@ -642,12 +658,18 @@ window.ECOSIM_DATA = (() => {
     }
   };
 
+  const longRunYears = 20;
   const baseline = {
-    realGrowth: [0.4, 0.9, 1.2, 1.2, 1.15, 1.1, 1.1, 1.05, 1.05, 1.0],
-    inflation: [2.3, 1.9, 1.6, 1.8, 1.8, 1.8, 1.8, 1.8, 1.8, 1.8],
-    unemployment: [8.3, 8.3, 8.0, 7.9, 7.8, 7.7, 7.6, 7.6, 7.5, 7.5],
-    deficitRatio: [5.0, 4.4, 3.6, 2.9, 2.8, 2.7, 2.6, 2.6, 2.5, 2.5],
-    policyRate: [2.5, 2.3, 2.2, 2.2, 2.25, 2.3, 2.3, 2.3, 2.3, 2.3]
+    realGrowth: [0.4, 0.9, 1.2, 1.2, 1.15, 1.1, 1.1, 1.05, 1.05, 1.0,
+      ...Array.from({ length: longRunYears }, (_, index) => Math.max(0.58, 0.92 - index * 0.018))],
+    inflation: [2.3, 1.9, 1.6, 1.8, 1.8, 1.8, 1.8, 1.8, 1.8, 1.8,
+      ...Array.from({ length: longRunYears }, (_, index) => Math.min(2, 1.82 + index * 0.01))],
+    unemployment: [8.3, 8.3, 8.0, 7.9, 7.8, 7.7, 7.6, 7.6, 7.5, 7.5,
+      ...Array.from({ length: longRunYears }, (_, index) => Math.max(7.1, 7.48 - index * 0.02))],
+    deficitRatio: [5.0, 4.4, 3.6, 2.9, 2.8, 2.7, 2.6, 2.6, 2.5, 2.5,
+      ...Array.from({ length: longRunYears }, (_, index) => 2.5 + index * 0.035)],
+    policyRate: [2.5, 2.3, 2.2, 2.2, 2.25, 2.3, 2.3, 2.3, 2.3, 2.3,
+      ...Array.from({ length: longRunYears }, () => 2.4)]
   };
 
   const structural = {
@@ -657,9 +679,9 @@ window.ECOSIM_DATA = (() => {
       births: 645,
       deaths: 651,
       age65Share: 22,
-      netMigration: 180,
-      economicMigration: 55,
-      otherMigration: 125,
+      netMigration: 150,
+      economicMigration: 50,
+      otherMigration: 100,
       immigrantEmployment: 62,
       totalEmployment: 69.3
     },
@@ -672,8 +694,8 @@ window.ECOSIM_DATA = (() => {
     controls: {
       fertility: { label: "Fécondité", min: 1.0, max: 2.4, step: 0.01, value: 1.56, unit: " enfant/femme" },
       lifeExpectancy: { label: "Écart d’espérance de vie", min: -3, max: 5, step: 0.5, value: 0, unit: " an" },
-      economicMigration: { label: "Solde migratoire économique", min: -50, max: 300, step: 5, value: 55, unit: " k/an" },
-      otherMigration: { label: "Autres motifs — proxy", min: -100, max: 300, step: 5, value: 125, unit: " k/an" },
+      economicMigration: { label: "Solde migratoire économique", min: -50, max: 300, step: 5, value: 50, unit: " k/an" },
+      otherMigration: { label: "Autres motifs — proxy", min: -100, max: 300, step: 5, value: 100, unit: " k/an" },
       integration: { label: "Emploi après intégration", min: 40, max: 80, step: 1, value: 62, unit: " %" },
       nuclear: { label: "Nucléaire supplémentaire en 2035", min: -10, max: 20, step: 1, value: 0, unit: " GW" },
       renewables: { label: "Renouvelables supplémentaires en 2035", min: -20, max: 80, step: 2, value: 0, unit: " GW" },
@@ -1048,8 +1070,10 @@ window.ECOSIM_DATA = (() => {
       spendingDetailCalibratedYear: 2025,
       revenueObservedYear: 2025,
       projectionStart: 2026,
-      projectionEnd: 2035,
-      version: "4.0.0"
+      projectionEnd: 2055,
+      projectionYears: 30,
+      longRunStart: 2036,
+      version: "4.1.0"
     }
   };
 })();

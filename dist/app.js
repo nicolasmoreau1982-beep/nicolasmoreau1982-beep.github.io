@@ -40,6 +40,7 @@
   const money = (value, digits = 1) => `${digits ? fmt1.format(value) : fmt0.format(value)} Md€`;
   const percent = (value) => `${fmt1.format(value)} %`;
   const changeFor = (id) => Number(state.changes[id] || 0);
+  const projectionIndex = (horizon) => clamp(Number(horizon) - 1, 0, D.metadata.projectionYears - 1);
 
   function encodeState(payload) {
     const bytes = new TextEncoder().encode(JSON.stringify(payload));
@@ -125,7 +126,7 @@
     const result = [];
     let gdp = D.BASE.gdp;
     let debt = D.BASE.debt;
-    for (let index = 0; index < 10; index += 1) {
+    for (let index = 0; index < D.metadata.projectionYears; index += 1) {
       const nominalGrowth = (1 + D.baseline.realGrowth[index] / 100) * (1 + D.baseline.inflation[index] / 100) - 1;
       gdp *= 1 + nominalGrowth;
       const deficit = gdp * D.baseline.deficitRatio[index] / 100;
@@ -188,8 +189,10 @@
     let population = defaults.population;
     const baselineCohorts = [];
     const scenarioCohorts = [];
+    const baselineBirthCohorts = [];
+    const scenarioBirthCohorts = [];
 
-    for (let index = 0; index < 10; index += 1) {
+    for (let index = 0; index < D.metadata.projectionYears; index += 1) {
       const age = index + 1;
       const baselineBirths = defaults.births * (1 - index * 0.004);
       const baselineDeaths = defaults.deaths * (1 + index * 0.0035);
@@ -197,6 +200,8 @@
       const births = baselineBirths * (values.fertility / defaults.fertility) * (population / Math.max(defaults.population, baselinePopulation));
       baselinePopulation += (baselineBirths - baselineDeaths + defaults.netMigration) / 1000;
       population += (births - deaths + values.economicMigration + values.otherMigration) / 1000;
+      baselineBirthCohorts.push(baselineBirths);
+      scenarioBirthCohorts.push(births);
 
       baselineCohorts.push({ economic: defaults.economicMigration, other: defaults.otherMigration });
       scenarioCohorts.push({ economic: values.economicMigration, other: values.otherMigration });
@@ -217,10 +222,13 @@
       const baselineMigrationNet = baseMigration.employed * 0.025 - (baseMigration.people * 0.014 + baseMigration.integrationCost);
       const migrationNet = migrationRevenue - migrationCost;
       const migrationFiscalDelta = migrationNet - baselineMigrationNet;
-      const employedDelta = scenarioMigration.employed - baseMigration.employed;
+      const youthWorkerDelta = index >= 18
+        ? scenarioBirthCohorts.slice(0, index - 17).reduce((sum, cohort, cohortIndex) => sum + (cohort - baselineBirthCohorts[cohortIndex]) * 0.70, 0)
+        : 0;
+      const employedDelta = scenarioMigration.employed - baseMigration.employed + youthWorkerDelta;
       const laborGdp = employedDelta * 0.085 * profile.supplyScale;
 
-      const ramp = age / 10;
+      const ramp = Math.min(1, age / 10);
       const publicEnergyInvestment = values.efficiency + values.nuclear * 0.45 + values.renewables * 0.10;
       const carbonRevenue = values.carbonTax * 0.30;
       const importBillChange = values.fossilPrice / 100 * D.structural.energy.importBill
@@ -266,7 +274,7 @@
 
   function calculatePolicyEngineTrajectory(profile) {
     const rows = [];
-    for (let index = 0; index < 10; index += 1) {
+    for (let index = 0; index < D.metadata.projectionYears; index += 1) {
       const age = index + 1;
       const totals = {
         fiscalCost: 0,
@@ -339,9 +347,9 @@
     let previousOutputGap = 0;
     let lastDebtRatio = D.BASE.debtRatio;
 
-    for (let index = 0; index < 10; index += 1) {
+    for (let index = 0; index < D.metadata.projectionYears; index += 1) {
       priceIndex *= 1 + D.baseline.inflation[index] / 100;
-      institutionRealFactor *= 1 + eu.growthShock[index] / 100;
+      institutionRealFactor *= 1 + (eu.growthShock[index] || 0) / 100;
 
       let policyGdp = 0;
       let policyInflationBillions = 0;
@@ -378,7 +386,7 @@
       else revenueChange += -engine.fiscalCost;
 
       const extraInflation = clamp(policyInflationBillions / baseline[index].gdp * 100 + structure.energyInflation + engine.inflation, -4.5, 6.5);
-      institutionPriceFactor *= 1 + (eu.inflationShock[index] + extraInflation) / 100;
+      institutionPriceFactor *= 1 + ((eu.inflationShock[index] || 0) + extraInflation) / 100;
       const scenarioGdp = Math.max(
         baseline[index].gdp * institutionRealFactor * institutionPriceFactor + policyGdp,
         baseline[index].gdp * 0.62
@@ -386,7 +394,7 @@
       const outputGap = (institutionRealFactor - 1) * 100 + policyGdp / baseline[index].gdp * 100;
       const growth = D.baseline.realGrowth[index] + outputGap - previousOutputGap;
       previousOutputGap = outputGap;
-      const inflation = D.baseline.inflation[index] + eu.inflationShock[index] + extraInflation;
+      const inflation = D.baseline.inflation[index] + (eu.inflationShock[index] || 0) + extraInflation;
       const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap - engine.jobs / 310, 3.2, 18);
       const revenueFeedback = (scenarioGdp - baseline[index].gdp) * 0.48;
       const cyclicalSpending = (unemployment - D.baseline.unemployment[index]) * 3.1;
@@ -404,9 +412,11 @@
       const deficitRatio = deficit / scenarioGdp * 100;
 
       const policySize = Math.abs(demandContribution) + Math.abs(supplyContribution) + Math.abs(directBalanceCost) * 0.22;
-      const uncertaintyScale = profile.uncertainty * (1 + index * 0.07) + eu.uncertainty * (1 + index * 0.09) + Math.min(1.2, engine.uncertainty / 240);
-      const gdpBand = Math.max(1.4, policySize * uncertaintyScale + baseline[index].gdp * eu.uncertainty * 0.006);
-      const deficitBand = Math.max(0.08, (Math.abs(directBalanceCost) * profile.uncertainty + eu.uncertainty * 12) / scenarioGdp * 100 * (1 + index * 0.08));
+      const longRunUncertainty = index < 10 ? 1 : 1 + (index - 9) * 0.065;
+      const uncertaintyScale = (profile.uncertainty * (1 + index * 0.07) + eu.uncertainty * (1 + index * 0.09) + Math.min(1.2, engine.uncertainty / 240)) * longRunUncertainty;
+      const baselineMacroRisk = index < 10 ? 0.001 + index * 0.0003 : 0.004 + (index - 9) * 0.0016;
+      const gdpBand = Math.max(baseline[index].gdp * baselineMacroRisk, policySize * uncertaintyScale + baseline[index].gdp * eu.uncertainty * 0.006);
+      const deficitBand = Math.max(0.08 + Math.max(0, index - 9) * 0.07, (Math.abs(directBalanceCost) * profile.uncertainty + eu.uncertainty * 12) / scenarioGdp * 100 * (1 + index * 0.08));
       const debtBand = Math.max(0.25, (gdpBand / scenarioGdp * 100 + deficitBand) * Math.sqrt(index + 1));
 
       scenario.push({
@@ -533,7 +543,7 @@
   }
 
   function politicalPoint(scenario) {
-    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.politicsHorizon];
+    const index = projectionIndex(state.politicsHorizon);
     const projection = calculatePoliticalProjection(scenario);
     return { point: projection.scenario[index], baseline: projection.baseline[index] };
   }
@@ -580,6 +590,9 @@
     const emissions = point.structural.emissionsChange + point.engines.emissions;
     const poverty = 15.4 + point.engines.poverty;
     const translationUncertainty = { high: 1, medium: 1.25, low: 1.6 }[scenario.confidenceKey] || 1;
+    const horizonCaveat = state.politicsHorizon > 10
+      ? " À cet horizon structurel, une alternance, une crise, une innovation ou une modification des traités peut inverser la trajectoire."
+      : "";
     const rows = politicalTranslationRows(scenario);
     $("#politics-detail").innerHTML = `
       <div class="politics-detail-head" style="--party-color:${scenario.color}">
@@ -597,7 +610,7 @@
         <div><small>Émissions</small><strong>${signed(emissions, " Mt")}</strong><span>écart CO₂e</span></div>
         <div><small>Pauvreté</small><strong>${percent(poverty)}</strong><span>${signed(point.engines.poverty, " pt")}</span></div>
       </div>
-      <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}</p></div>
+      <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}${horizonCaveat}</p></div>
       <details class="politics-mapping"><summary>Voir la traduction exacte (${rows.length} réglages)</summary><div>${rows.length ? rows.map((row) => `<span>${row}</span>`).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
       <div class="politics-actions">
         <button class="button button-dark" data-apply-politics="${scenario.id}">Appliquer au simulateur</button>
@@ -800,7 +813,7 @@
         </div>`;
     }).join("");
     const notes = {
-      demography: "La fécondité modifie immédiatement les naissances, mais les enfants n’entrent pas dans la population active avant l’horizon de dix ans. Le vieillissement reste donc dominant sur cette période.",
+      demography: "La fécondité modifie immédiatement les naissances et les dépenses familiales. Son effet sur la population active ne commence qu’après 18 ans ; à 20–30 ans, il devient visible mais reste très incertain.",
       migration: "Les deux flux sont des hypothèses de solde net, pas des nombres de titres de séjour. « Autres motifs » regroupe ici famille, études et humanitaire. Le résultat dépend de l’emploi, pas d’une valeur attribuée aux personnes.",
       energy: "Les capacités sont additionnelles à la trajectoire déjà engagée. Le coût public, le calendrier industriel et la baisse des importations sont des ordres de grandeur sensibles aux technologies."
     };
@@ -808,7 +821,7 @@
   }
 
   function updateStructuralLab() {
-    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const index = projectionIndex(state.horizon);
     const point = state.projection.scenario[index];
     const structure = point.structural;
     const baseline = state.projection.baseline[index];
@@ -874,7 +887,7 @@
   }
 
   function updateEngineRoom() {
-    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const index = projectionIndex(state.horizon);
     const point = state.projection.scenario[index];
     const engine = point.engines;
     const active = Object.entries(D.policyEngines.controls).filter(([id, control]) => Math.abs(state.engines[id] - control.value) > 0.0001);
@@ -933,9 +946,14 @@
   }
 
   function updateResults() {
-    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const index = projectionIndex(state.horizon);
     const item = state.projection.scenario[index];
     const baseline = state.projection.baseline[index];
+    const longRunNote = $("#long-run-note");
+    longRunNote.hidden = state.horizon <= 10;
+    longRunNote.textContent = state.horizon > 10
+      ? `Horizon structurel ${item.year} : ce n’est plus une prévision conjoncturelle. La fourchette et les hypothèses démographiques dominent le chiffre central.`
+      : "";
     $("#metric-deficit").textContent = percent(-item.deficitRatio);
     updateMetricDelta($("#delta-deficit"), -(item.deficitRatio - baseline.deficitRatio), false, " pt");
     $("#sub-deficit").textContent = `${money(-item.deficit)} en ${item.year}`;
@@ -970,6 +988,7 @@
     const padding = { top: 18, right: 20, bottom: 32, left: 54 };
     const plotWidth = width - padding.left - padding.right;
     const plotHeight = height - padding.top - padding.bottom;
+    const lastIndex = scenario.length - 1;
     const values = scenario.flatMap((item, index) => [
       item[metric] - (item.bands[metric] || 0),
       item[metric] + (item.bands[metric] || 0),
@@ -981,12 +1000,12 @@
     const margin = Math.max((max - min) * 0.13, metric === "gdp" ? 40 : 0.4);
     min -= margin;
     max += margin;
-    const x = (index) => padding.left + index * (plotWidth / 9);
+    const x = (index) => padding.left + index * (plotWidth / Math.max(1, lastIndex));
     const y = (value) => padding.top + (max - value) / (max - min || 1) * plotHeight;
     const path = (items, getter) => items.map((item, index) => `${index ? "L" : "M"}${x(index).toFixed(1)},${y(getter(item, index)).toFixed(1)}`).join(" ");
     const top = scenario.map((item, index) => `${index ? "L" : "M"}${x(index).toFixed(1)},${y(item[metric] + (item.bands[metric] || 0)).toFixed(1)}`).join(" ");
     const bottom = [...scenario].reverse().map((item, reverseIndex) => {
-      const index = 9 - reverseIndex;
+      const index = lastIndex - reverseIndex;
       return `L${x(index).toFixed(1)},${y(item[metric] - (item.bands[metric] || 0)).toFixed(1)}`;
     }).join(" ");
     const ticks = Array.from({ length: 5 }, (_, index) => min + index * (max - min) / 4);
@@ -994,14 +1013,14 @@
       <line class="chart-grid" x1="${padding.left}" y1="${y(tick)}" x2="${width - padding.right}" y2="${y(tick)}" />
       <text class="chart-axis-label" x="${padding.left - 9}" y="${y(tick) + 3}" text-anchor="end">${metric === "gdp" ? fmt0.format(tick) : fmt1.format(metric === "deficitRatio" ? -tick : tick)}</text>
     `).join("");
-    const years = scenario.map((item, index) => index % 2 === 0 || index === 9 ? `<text class="chart-axis-label" x="${x(index)}" y="${height - 8}" text-anchor="middle">${item.year}</text>` : "").join("");
+    const years = scenario.map((item, index) => index % 5 === 0 || index === lastIndex ? `<text class="chart-axis-label" x="${x(index)}" y="${height - 8}" text-anchor="middle">${item.year}</text>` : "").join("");
     const ruleLine = metric === "deficitRatio" && 3 >= min && 3 <= max
       ? `<line class="chart-zero" x1="${padding.left}" y1="${y(3)}" x2="${width - padding.right}" y2="${y(3)}" /><text class="chart-axis-label" x="${width - padding.right}" y="${y(3) - 5}" text-anchor="end">seuil −3 %</text>`
       : "";
     const points = scenario.map((item, index) => `<circle class="chart-point" data-point="${index}" cx="${x(index)}" cy="${y(item[metric])}" r="3.5" tabindex="0"><title>${item.year} · ${config.format(item[metric])}</title></circle>`).join("");
 
     $("#chart-wrap").innerHTML = `
-      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${config.label}, scénario comparé à la référence de 2026 à 2035">
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${config.label}, scénario comparé à la référence de 2026 à ${D.metadata.projectionEnd}">
         ${grid}${ruleLine}
         <path class="chart-band" d="${top} ${bottom} Z" />
         <path class="chart-baseline" d="${path(baseline, (item) => item[metric])}" />
@@ -1031,6 +1050,7 @@
   function updateDiagnostics() {
     const point2029 = state.projection.scenario[3];
     const point2035 = state.projection.scenario[9];
+    const point2055 = state.projection.scenario[29];
     const euStatus = $("#eu-status");
     const euDetail = $("#eu-detail");
     if (["breach", "euroExit"].includes(state.euMode)) {
@@ -1046,7 +1066,7 @@
 
     const uncertainty = effectiveProfile().uncertainty + D.euModes[state.euMode].uncertainty;
     $("#risk-status").textContent = uncertainty < 0.45 ? "Modérée" : uncertainty < 0.95 ? "Élevée" : "Très élevée";
-    $("#risk-detail").textContent = `À dix ans, la dette centrale est ${percent(point2035.debtRatio)} avec une sensibilité d’environ ±${fmt1.format(point2035.bands.debtRatio)} points.`;
+    $("#risk-detail").textContent = `Dette centrale : ${percent(point2035.debtRatio)} à 10 ans, ${percent(point2055.debtRatio)} à 30 ans ; sensibilité longue ±${fmt1.format(point2055.bands.debtRatio)} points.`;
 
     const point = state.projection.scenario[2];
     const demand = Math.abs(point.demandContribution);
@@ -1070,7 +1090,7 @@
   }
 
   function renderModelComparison() {
-    const index = ({ 1: 0, 3: 2, 5: 4, 10: 9 })[state.horizon];
+    const index = projectionIndex(state.horizon);
     const colors = ["#4055bf", "#d85e55", "#168b80", "#7d62c7", "#d89a38"];
     const rows = Object.entries(D.models).map(([id, model], modelIndex) => {
       const point = calculateProjection(id).scenario[index];

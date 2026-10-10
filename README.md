@@ -51,7 +51,8 @@ La version 4.0 comprend :
 - un banc d’essai des onze groupes politiques de la XVIIe législature et d’un gouvernement technique conventionnel ;
 - sept scénarios de familles politiques construits à partir des engagements récurrents de 2007 à 2026 ;
 - une traduction intégralement visible des programmes vers les postes budgétaires, la démographie, l’énergie et les moteurs publics ;
-- une comparaison à 1, 3, 5 et 10 ans avec sources et confiance de traduction séparée des hypothèses économiques.
+- une comparaison à 1, 3, 5, 10, 20 et 30 ans avec sources et confiance de traduction séparée des hypothèses économiques ;
+- une extrapolation 2036–2055 explicitement structurelle, fondée sur les projections démographiques Insee/COR et assortie d’une incertitude accélérée.
 
 ## Structure
 
@@ -67,5 +68,5 @@ dist/
 
 ## Limites
 
-Ce simulateur produit des scénarios de sensibilité, pas des prévisions. Les fourchettes ne sont pas des intervalles de confiance statistiques. Les réactions de la BCE, des marchés, des partenaires commerciaux, des ménages et des entreprises ne peuvent pas être anticipées avec précision, particulièrement à dix ans ou en cas de rupture institutionnelle.
+Ce simulateur produit des scénarios de sensibilité, pas des prévisions. Les fourchettes ne sont pas des intervalles de confiance statistiques. Les réactions de la BCE, des marchés, des partenaires commerciaux, des ménages et des entreprises ne peuvent pas être anticipées avec précision. À 20 ou 30 ans, la plage de sensibilité est plus informative que le point central.
 

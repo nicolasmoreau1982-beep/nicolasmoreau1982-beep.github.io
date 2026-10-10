@@ -166,6 +166,8 @@ h3 { margin: 0; }
 .horizon-switch, .metric-switch { display: inline-flex; background: var(--paper-2); border-radius: 9px; padding: 3px; }
 .horizon-switch button, .metric-switch button { border: 0; background: transparent; padding: 7px 10px; border-radius: 7px; font-size: 10px; color: var(--ink-2); font-weight: 700; }
 .horizon-switch button.is-active, .metric-switch button.is-active { background: var(--card); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+.long-run-note { margin: 14px 0 -10px; padding: 9px 12px; border-radius: 8px; border-left: 3px solid var(--gold); background: color-mix(in srgb, var(--gold) 11%, var(--card)); color: var(--ink-2); font-size: 9px; }
+.long-run-note[hidden] { display: none; }
 .impact-cards { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 26px; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
 .impact-card { padding: 17px; border-right: 1px solid var(--line); min-width: 0; }
 .impact-card:last-child { border-right: 0; }
