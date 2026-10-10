@@ -20,6 +20,15 @@ for (const id of ["verdict","provenance","methode","histoire","recherche","incer
   assert.match(page, new RegExp(`id="${id}"`));
   assert.match(page, new RegExp(`href="#${id}"`));
 }
+for (const id of ["modele", "profils", "politique", "fiscalite"]) {
+  assert.match(page, new RegExp(`id="${id}"`));
+}
+assert.match(page, /Un simulateur conditionnel, pas une prévision officielle/);
+assert.match(page, /Trois exercices distincts figurent ci-dessous/);
+assert.match(page, /Aucune revue indépendante de ce banc n’a été réalisée/);
+assert.match(page, /La couverture probabiliste des fourchettes EcoSim n’est pas établie/);
+assert.match(page, /audit-status-explainer/);
+assert.doesNotMatch(page, /\b(?:désormais|maintenant|auparavant|nouveaux contrôles)\b/i);
 assert.ok(page.indexOf('src="history.js"') < page.indexOf('src="audit.js"'));
 assert.ok(page.indexOf('src="historical-audit-data.js"') < page.indexOf('src="audit.js"'));
 assert.match(page, /id="audit-year-body"/);
@@ -41,7 +50,7 @@ assert.match(page, /id="fiscalite"/);
 assert.match(page, /moteur fiscal expérimental/i);
 assert.match(page, /paramètres légaux individuels non calculés/i);
 assert.match(page, /id="banc-insee"/);
-assert.match(page, /Aucun expert extérieur n'a encore revu ce banc/);
+assert.match(page, /n’a pas fait l’objet d’une revue externe/);
 for (const id of ["audit-triplet", "audit-comparable-case", "audit-comparable-year",
   "audit-comparable-origin", "audit-comparable-policies", "audit-comparable-missing",
   "audit-comparable-results", "audit-comparable-summary"]) {
@@ -49,7 +58,6 @@ for (const id of ["audit-triplet", "audit-comparable-case", "audit-comparable-ye
 }
 assert.match(home, /audit\.html#audit-triplet/);
 assert.match(home, /audit\.html#incertitude/);
-assert.match(page, /Ce test complet n’est pas encore réalisé pour EcoSim/);
 assert.match(page, /id="moteur-principal-historique"/);
 const coreReport = runCoreBacktest();
 for (const row of coreReport.table) {

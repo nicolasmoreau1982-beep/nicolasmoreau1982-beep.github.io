@@ -19,6 +19,7 @@
 .audit-hero > p { max-width: 760px; font-size: 16px; color: var(--ink-2); line-height: 1.75; }
 .audit-status-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 31px; }
 .audit-status-row span { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 99px; background: var(--card); padding: 7px 12px; font-size: 11px; }
+.audit-hero .audit-status-explainer { max-width: 740px; margin: 12px 0 0; font-size: 12px; line-height: 1.6; }
 .audit-quick-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 22px; font-size: 12px; }
 .audit-quick-links a { color: var(--blue); text-underline-offset: 3px; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
