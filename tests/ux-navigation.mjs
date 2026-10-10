@@ -40,6 +40,8 @@ assert.match(app, /\$\("#chart-data-body"\)\.replaceChildren/);
 assert.match(app, /function clearScenarioLink\(\)/);
 assert.match(app, /history\.replaceState\(null, "", location\.pathname \+ location\.search\)/);
 assert.match(styles, /\.topbar nav\.is-open/);
+assert.match(styles, /\.top-actions \.mobile-nav-toggle, \.mobile-nav-action \{ display: none; \}/);
+assert.match(styles, /@media \(max-width: 760px\)[\s\S]*?\.top-actions \.mobile-nav-toggle \{ display: grid;/);
 assert.match(auditStyles, /grid-template-columns: minmax\(0, 1fr\)/);
 assert.match(privacy, /id="privacy-share-title"/);
 assert.match(privacy, /id="analytics-status"/);
