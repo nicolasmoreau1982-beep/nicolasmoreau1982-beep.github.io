@@ -6,6 +6,7 @@ import {auditPolicyHistory} from "../scripts/policy-history.mjs";
 import {vintageAudit} from "../scripts/vintage-audit.mjs";
 import {runHistoricalDiagnostics} from "../scripts/historical-replay.mjs";
 import {runComparableBenchmark} from "../scripts/comparable-insee-benchmark.mjs";
+import {runCoreBacktest} from "../scripts/core-historical-backtest.mjs";
 
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), "utf8");
 const page = read("../dist/audit.html");
@@ -47,7 +48,14 @@ for (const id of ["audit-triplet", "audit-comparable-case", "audit-comparable-ye
 }
 assert.match(home, /audit\.html#audit-triplet/);
 assert.match(home, /audit\.html#incertitude/);
-assert.match(page, /Ce calcul n’est pas encore réalisé pour EcoSim/);
+assert.match(page, /Ce test complet n’est pas encore réalisé pour EcoSim/);
+assert.match(page, /id="moteur-principal-historique"/);
+for (const row of runCoreBacktest().table) {
+  const format = (value) => value.toFixed(2).replace(".", ",");
+  for (const metric of ["gdpPct", "deficitRatio", "debtRatio", "unemployment"]) {
+    assert.ok(page.includes(format(row.coreMae[metric])), `MAE moteur principal absente : ${row.horizon} ans, ${metric}`);
+  }
+}
 assert.match(page, /Aucun effet causal ni intervalle par levier/);
 assert.match(script, /data\.cases\.find/);
 const comparable = runComparableBenchmark();

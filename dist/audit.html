@@ -164,6 +164,19 @@
           </table></div>
           <noscript><p>Activez JavaScript pour recalculer le tableau à partir de <a href="history.js">history.js</a>, ou lancez <code>node scripts/backtest.mjs</code> depuis le dépôt.</p></noscript>
           <p class="audit-caption"><strong>MAE</strong> : moyenne des erreurs absolues ; <strong>P80</strong> : 80e centile de ces erreurs sur les cas observés, et non probabilité de couverture future. À 10 ans il ne reste que neuf cas, dont les horizons se chevauchent. Les séries utilisées sont révisées a posteriori : ce n’est pas un véritable test sur les seules données disponibles à chaque date.</p>
+          <h3 id="moteur-principal-historique">Moteur principal · premier rejeu sans réforme</h3>
+          <p>Un nouvel adaptateur exécute la même fonction <code>calculateProjection</code> que le simulateur sur des comptes de départ historiques Insee. La référence prolonge la croissance réelle et le déflateur médians des années précédant chaque départ ; déficit/PIB et chômage restent à leur niveau initial. Aucune politique historique n’est injectée. Sans réforme, le moteur central suit exactement cette référence : il ne surpasse donc pas le témoin naïf.</p>
+          <div class="audit-table-wrap"><table class="audit-table audit-numeric" id="core-history-table">
+            <caption>Erreur absolue moyenne du moteur principal sans réforme, identique au témoin · observations révisées en 2026</caption>
+            <thead><tr><th>Horizon</th><th>Départs</th><th>PIB nominal</th><th>Déficit/PIB</th><th>Dette/PIB</th><th>Chômage</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1 an</th><td>6</td><td>1,46 %</td><td>0,94 pt</td><td>2,83 pt</td><td>0,20 pt</td></tr>
+              <tr><th scope="row">3 ans</th><td>6</td><td>3,53 %</td><td>2,13 pt</td><td>8,31 pt</td><td>0,98 pt</td></tr>
+              <tr><th scope="row">5 ans</th><td>6</td><td>7,30 %</td><td>3,58 pt</td><td>12,44 pt</td><td>1,18 pt</td></tr>
+              <tr><th scope="row">10 ans</th><td>4</td><td>16,68 %</td><td>0,94 pt</td><td>10,21 pt</td><td>2,08 pt</td></tr>
+            </tbody>
+          </table></div>
+          <p class="audit-caption">Départs 2005, 2010, 2013, 2015, 2018 et 2020, selon les années cibles disponibles. Les cibles futures servent seulement au score : un test modifiant ces cibles laisse la prévision inchangée. Ce n’est <strong>pas un vrai test hors-échantillon</strong> : données révisées, paramètres actuels possiblement informés par les années testées, cohortes historiques absentes. Le moteur fiscal est neutre avant 2026, la référence démographique 2026 est simplement décalée pour l’exécution, le taux de financement additionnel est fixé à zéro et aucun ajustement stock-flux de dette n’est modélisé. Aucun effet de réforme ni intervalle de confiance n’est validé par ce tableau. Reproduire avec <code>node scripts/core-historical-backtest.mjs --json</code>.</p>
           <h3>Rejeu daté du moteur : premier diagnostic, entrées incomplètes</h3>
           <p>Ce module de rejeu <strong>séparé du moteur principal</strong> part des comptes APU en 2005, 2010, 2015 ou 2020 et compare chaque année son résultat aux séries historiques. Il inclut les deux changements de TVA de 2014 (rendements <em>ex ante</em> de 2,5 et 4,2 Md€), la dépense CICE en comptabilité nationale selon le PLF 2019 et l’allègement de cotisations chiffré pour 2019. Le total TVA estimé de 6,7 Md€ est à rapprocher du rendement global de 6,5 Md€ <a href="https://www.insee.fr/fr/statistiques/fichier/1288733/ECOFRA15.pdf">rapporté par l’Insee</a> ; ce contrôle ne prouve pas les effets sur la croissance.</p>
           <h3 id="banc-insee">Banc à données communes Insee · revue externe en attente</h3>
@@ -302,12 +315,12 @@
 
         <section class="audit-section" id="incertitude" aria-labelledby="incertitude-title">
           <div class="audit-section-heading"><span>06</span><h2 id="incertitude-title">Comment lire les fourchettes</h2></div>
-          <p class="audit-intro"><strong>Oui, comparer T → T+1 permet de mesurer une erreur de prévision.</strong> Répéter ce test avec le moteur principal figé, les informations disponibles à chaque T et des années non utilisées pour régler ses coefficients permettrait d’estimer un biais, une erreur typique et la fréquence réelle de couverture de ses fourchettes. <strong>Ce calcul n’est pas encore réalisé pour EcoSim.</strong></p>
+          <p class="audit-intro"><strong>Oui, comparer T → T+1 permet de mesurer une erreur rétrospective.</strong> Le premier rejeu du moteur principal sans réforme mesure maintenant cette erreur brute. Pour parler de prévision hors-échantillon et vérifier la couverture de ses fourchettes, il faudrait encore figer le moteur, utiliser les informations disponibles à chaque T et des années non employées pour régler les coefficients. <strong>Ce test complet n’est pas encore réalisé pour EcoSim.</strong></p>
           <div class="audit-table-wrap"><table class="audit-table">
             <caption>Trois notions différentes derrière le mot « incertitude »</caption>
             <thead><tr><th>Question</th><th>Ce que l’on peut calculer</th><th>Statut actuel</th></tr></thead>
             <tbody>
-              <tr><th scope="row">Erreur de prévision globale</th><td>Sur plusieurs départs T, comparer observé − simulé séparément pour PIB, dépenses, recettes, déficit et dette ; publier biais, erreur absolue et couverture des bandes, par horizon.</td><td><span class="tag assumed">Pas pour le moteur principal</span> Le tableau historique concerne un témoin ; le banc Insee concerne un prototype incomplet.</td></tr>
+              <tr><th scope="row">Erreur de prévision globale</th><td>Sur plusieurs départs T, comparer observé − simulé séparément pour PIB, dépenses, recettes, déficit et dette ; publier biais, erreur absolue et couverture des bandes, par horizon.</td><td><span class="tag assumed">Diagnostic partiel</span> La référence sans réforme du moteur principal est comparée au témoin ; dépenses/recettes, réformes et couverture des bandes ne sont pas encore évaluées.</td></tr>
               <tr><th scope="row">Effet d’une réforme</th><td>Comparer la réforme à un contrefactuel crédible, en isolant chocs et politiques simultanées. La différence « avec / sans mesure » dans le code n’est qu’une ablation.</td><td><span class="tag unavailable">Non identifié</span> Aucun effet causal ni intervalle par levier n’est déduit de ces écarts.</td></tr>
               <tr><th scope="row">Horizon 10–30 ans</th><td>Tester les scénarios structurels et publier plusieurs trajectoires conditionnelles ; les quelques départs historiques longs se chevauchent.</td><td><span class="tag unavailable">Stress exploratoire</span> Pas de probabilité de réalisation démontrée.</td></tr>
             </tbody>
@@ -324,6 +337,7 @@
           <div class="audit-section-heading"><span>07</span><h2 id="reproduire-title">Vérifier soi-même</h2></div>
           <p>Le site est statique : le navigateur reçoit les mêmes fichiers que ceux utilisés par l’interface Python. Les hypothèses et montants sont dans <a href="data.js">data.js</a>, la projection Insee condensée dans <a href="insee-projection.js">insee-projection.js</a>, l’historique dans <a href="history.js">history.js</a> et le moteur dans <a href="app.js">app.js</a>. Les scripts suivants sont dans le dépôt source du projet, pas dans le dossier web publié.</p>
           <pre class="audit-code"><code>node scripts/backtest.mjs           # témoin historique : MAE et P80
+node scripts/core-historical-backtest.mjs --json # moteur principal sans réforme
 node scripts/check-history.mjs      # dérive éventuelle des séries Eurostat, sans écriture
 node scripts/vintage-audit.mjs      # prévisions BDF datées vs réalisations
 node scripts/benchmark-research.mjs # variantes Mésange et écarts
