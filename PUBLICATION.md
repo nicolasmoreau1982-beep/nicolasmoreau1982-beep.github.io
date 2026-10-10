@@ -29,17 +29,15 @@ Des outils proches existent déjà : France Budget (`https://francebudget.fr/`, 
 
 ## Audience et publicité
 
-Le site prépare une intégration **GoatCounter**, mais elle reste désactivée tant que `GOATCOUNTER_SITE` est vide dans `dist/analytics.js`. Aucun script d'audience ni compteur n'est chargé ou affiché dans cet état. Aucune publicité n'est chargée non plus.
+Le code du site GoatCounter **`nicolasmoreau1982-beep`** est renseigné dans `dist/analytics.js`. Une fois déployé, le script `https://gc.zgo.at/count.js` enverra les visites du domaine public vers `https://nicolasmoreau1982-beep.goatcounter.com/count`. Le total réel sera affiché discrètement en pied de page si le compteur public est autorisé ; sinon il restera masqué. Aucune publicité n'est chargée.
 
-Pour activer un vrai compteur après ouverture d'un compte :
+Pour finaliser et vérifier le compteur :
 
-1. créer son site sur `https://www.goatcounter.com/` avec le domaine `nicolasmoreau1982-beep.github.io` et conserver le **code du site**, par exemple `ecosimfrance` pour `https://ecosimfrance.goatcounter.com` ;
-2. vérifier les réglages de confidentialité et la conformité de la configuration aux critères de la CNIL ; l'absence de cookies ne suffit pas, à elle seule, à garantir une exemption de consentement ;
-3. dans les réglages du site GoatCounter, activer « Allow adding visitor counts on your website », désactivé par défaut ;
-4. renseigner uniquement le code du site dans `const GOATCOUNTER_SITE = "...";` de `dist/analytics.js`, puis déployer le site ;
-5. ouvrir la page publique et vérifier une requête vers `gc.zgo.at/count.js`, une requête de comptage vers `CODE.goatcounter.com/count` et, si le compteur public est autorisé, l'affichage du total dans le pied de page. Le tableau de bord GoatCounter donne les visites par page et les référents ; le compteur public affiche un total agrégé, potentiellement mis en cache jusqu'à quatre heures.
+1. vérifier les réglages de confidentialité et la conformité de la configuration aux critères de la CNIL ; l'absence de cookies ne suffit pas, à elle seule, à garantir une exemption de consentement ;
+2. dans les réglages du site GoatCounter, activer « Allow adding visitor counts on your website », désactivé par défaut ;
+3. déployer le site, puis ouvrir la page publique et vérifier une requête vers `gc.zgo.at/count.js`, une requête de comptage vers `nicolasmoreau1982-beep.goatcounter.com/count` et, si le compteur public est autorisé, l'affichage du total dans le pied de page. Le tableau de bord GoatCounter donne les visites par page et les référents ; le compteur public affiche un total agrégé, potentiellement mis en cache jusqu'à quatre heures.
 
-Le code ne charge l'outil que sur le domaine public exact, pas en prévisualisation locale. Il n'envoie ni le fragment contenant le scénario partagé ni les paramètres d'URL ; les référents entrants sont réduits à leur domaine. Si le compteur public ou le réseau échoue, il reste masqué, sans chiffre inventé. La page `confidentialite.html` décrit le service et affiche son état de configuration. Après activation, vérifier aussi les mentions de confidentialité, la durée de conservation et les obligations d'information applicables au projet.
+Le code ne charge l'outil que sur le domaine public exact, pas en prévisualisation locale. Il n'envoie ni le fragment contenant le scénario partagé ni les paramètres d'URL ; les référents entrants sont réduits à leur domaine. Si le compteur public ou le réseau échoue, il reste masqué, sans chiffre inventé. La page `confidentialite.html` décrit le service et affiche son état de configuration. Vérifier aussi les mentions de confidentialité, la durée de conservation et les obligations d'information applicables au projet. Pour désactiver immédiatement la mesure dans une prochaine publication, remettre `GOATCOUNTER_SITE` à une chaîne vide.
 
 Pour une publicité discrète, réserver au maximum un bloc clairement marqué « Publicité » après les résultats et loin des curseurs, boutons et exports ; pas d'interstitiel ni de publicité collante. Ne rien injecter avant l'ouverture d'un compte, la validation par la régie et la mise à jour de la page de confidentialité. L'admissibilité d'un futur domaine à AdSense devra être vérifiée auprès de la régie au moment de la demande.
 

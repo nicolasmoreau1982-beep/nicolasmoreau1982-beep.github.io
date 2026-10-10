@@ -167,7 +167,7 @@ Les URL canoniques et le sitemap pointent désormais vers `https://nicolasmoreau
 
 EcoSim vise aussi à aider à préparer la **présidentielle 2027**, mais la version actuelle ne compare pas encore les programmes propres aux candidats : elle explore des groupes et familles politiques. Un futur mode « candidats » devra lier chaque mesure à un programme ou une déclaration datée, expliciter sa traduction dans les paramètres, distinguer les mesures non simulables et mettre à jour le statut des candidatures sans anticiper la liste officielle.
 
-Un compteur de visites discret est préparé dans le pied de page. Il est **désactivé par défaut** : sans compte GoatCounter et sans son code dans `dist/analytics.js`, il n'émet aucune requête et n'affiche aucun chiffre. La création du compte, la vérification CNIL et les étapes d'activation figurent dans [PUBLICATION.md](PUBLICATION.md#audience-et-publicité). La [page de confidentialité](dist/confidentialite.html) indique l'état de configuration et les services contactés.
+Le compte GoatCounter `nicolasmoreau1982-beep` est configuré pour mesurer les visites sur le domaine public. Un compteur discret apparaît dans le pied de page si le total réel est accessible ; il reste masqué en cas d'échec et aucune mesure n'est chargée en prévisualisation locale. Le réglage du compteur public et la vérification CNIL figurent dans [PUBLICATION.md](PUBLICATION.md#audience-et-publicité). La [page de confidentialité](dist/confidentialite.html) indique l'état de configuration et les services contactés.
 
 ## Structure
 
@@ -182,7 +182,7 @@ dist/
   insee-projection.js projection démographique Insee condensée pour le navigateur
   fiscal.js    moteur fiscal expérimental : règles datées et foyers-types
   app.js       moteur de projection et interactions
-  analytics.js intégration GoatCounter facultative, désactivée par défaut
+  analytics.js intégration GoatCounter limitée au domaine public
   confidentialite.html, robots.txt, sitemap.xml  confidentialité et référencement
 ecosim.py      interface Python en ligne de commande et importable
 PUBLICATION.md guide de mise en ligne, référencement, audience et publicité

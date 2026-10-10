@@ -1,7 +1,7 @@
-// Facultatif : renseigner le code du site GoatCounter après création du compte
-// et vérification de la configuration de confidentialité (voir PUBLICATION.md).
-// Un code vide ne charge aucun service de mesure d'audience.
-const GOATCOUNTER_SITE = "";
+// Compte GoatCounter du site public ; voir PUBLICATION.md pour les réglages
+// du compteur public et les vérifications de confidentialité.
+// Remettre une chaîne vide ici désactive entièrement la mesure d'audience.
+const GOATCOUNTER_SITE = "nicolasmoreau1982-beep";
 const ECOSIM_PUBLIC_HOST = "nicolasmoreau1982-beep.github.io";
 
 (function initAudienceMeasurement() {
@@ -16,6 +16,8 @@ const ECOSIM_PUBLIC_HOST = "nicolasmoreau1982-beep.github.io";
   // Les réglages du scénario sont dans le fragment de l'URL : ne jamais le
   // transmettre à l'outil d'audience, ni transmettre les paramètres de requête.
   window.goatcounter = {
+    no_onload: true,
+    no_events: true,
     path: () => location.pathname,
     referrer: () => {
       try { return document.referrer ? new URL(document.referrer).origin : ""; }
@@ -25,9 +27,22 @@ const ECOSIM_PUBLIC_HOST = "nicolasmoreau1982-beep.github.io";
 
   const script = document.createElement("script");
   script.async = true;
+  script.referrerPolicy = "origin";
   script.src = "https://gc.zgo.at/count.js";
   script.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
   script.addEventListener("load", async () => {
+    // count.js ajoute toujours location.search au champ q, y compris quand
+    // path() retire la requête. Le chargement automatique est donc désactivé ;
+    // on supprime q avant l'unique comptage manuel.
+    if (typeof window.goatcounter.get_data !== "function" || typeof window.goatcounter.count !== "function") return;
+    const getData = window.goatcounter.get_data;
+    window.goatcounter.get_data = function withoutQuery(vars) {
+      const data = getData(vars);
+      delete data.q;
+      return data;
+    };
+    window.goatcounter.count();
+
     const counter = document.getElementById("visit-counter");
     const count = document.getElementById("visit-counter-count");
     if (!counter || !count) return;
