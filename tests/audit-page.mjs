@@ -51,12 +51,21 @@ assert.match(home, /audit\.html#audit-triplet/);
 assert.match(home, /audit\.html#incertitude/);
 assert.match(page, /Ce test complet n’est pas encore réalisé pour EcoSim/);
 assert.match(page, /id="moteur-principal-historique"/);
-for (const row of runCoreBacktest().table) {
+const coreReport = runCoreBacktest();
+for (const row of coreReport.table) {
   const format = (value) => value.toFixed(2).replace(".", ",");
   for (const metric of ["gdpPct", "deficitRatio", "debtRatio", "unemployment"]) {
     assert.ok(page.includes(format(row.coreMae[metric])), `MAE moteur principal absente : ${row.horizon} ans, ${metric}`);
   }
 }
+assert.match(page, /id="core-debt-reconciliation"/);
+for (const row of coreReport.debtDecomposition) {
+  for (const key of ["debtErrorMaeBn", "cumulativeDeficitErrorMaeBn", "unmodelledStockFlowMaeBn"]) {
+    assert.ok(page.includes(row[key].toFixed(1).replace(".", ",")),
+      `Décomposition de dette absente : ${row.horizon} ans, ${key}`);
+  }
+}
+assert.ok(page.includes("−0,638 Md€"));
 const coreVat = runVat2014Sensitivity().rows[0];
 for (const value of [coreVat.withVatError.gdpPct, coreVat.withoutVatError.gdpPct]) {
   const formatted = `${value < 0 ? "−" : "+"}${Math.abs(value).toFixed(2).replace(".", ",")} %`;

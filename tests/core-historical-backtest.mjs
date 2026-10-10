@@ -17,11 +17,24 @@ assert.deepEqual(JSON.parse(JSON.stringify(altered.rows.map((row) => row.predict
   JSON.parse(JSON.stringify(one.rows.map((row) => row.predicted))),
   "Modifier les observations futures ne doit pas modifier la prévision");
 assert.notDeepEqual(JSON.stringify(altered.rows.map((row) => row.error)), JSON.stringify(one.rows.map((row) => row.error)));
+for (const row of one.rows) {
+  const debt = row.debtAccounting;
+  assert.ok(Math.abs(debt.debtErrorBn - debt.cumulativeDeficitErrorBn
+    + debt.cumulativeObservedStockFlowBn) < 1e-8);
+  assert.ok(Math.abs(debt.identityResidualBn) < 1e-8);
+}
+assert.equal(altered.rows[0].predicted.debtBn, one.rows[0].predicted.debtBn,
+  "Le stock-flux observé futur ne doit pas entrer dans la dette simulée");
+const year2014 = one.rows[0].debtAccounting;
+assert.ok(Math.abs(year2014.officialSourceGapBn + 0.638) < 1e-8,
+  "La discordance 2014 entre les tableaux Insee ne doit pas être effacée");
 
 const report = runCoreBacktest();
 assert.equal(report.status, "core_engine_retrospective_baseline_only_not_validated");
 assert.deepEqual(report.table.map((row) => row.horizon), [1, 3, 5, 10]);
 assert.deepEqual(report.table.map((row) => row.n), [6, 6, 6, 4]);
+assert.deepEqual(report.debtDecomposition.map((row) => row.n), [6, 6, 6, 4]);
+assert.ok(report.debtDecomposition.every((row) => row.unmodelledStockFlowMaeBn > 0));
 for (const row of report.table) {
   for (const key of ["gdpPct", "deficitRatio", "debtRatio", "unemployment"]) {
     assert.ok(Number.isFinite(row.coreMae[key]));

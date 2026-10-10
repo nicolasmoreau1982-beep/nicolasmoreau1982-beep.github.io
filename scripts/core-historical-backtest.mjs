@@ -97,10 +97,23 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
     modelContext, {filename: "dist/app.js (moteur principal)"});
   const prediction = modelContext.coreResult.scenario;
   const naive = modelContext.coreResult.baseline;
+  let previousObservedDebt = origin.debt;
+  let cumulativeDeficitErrorBn = 0;
+  let cumulativeObservedStockFlowBn = 0;
   const rows = prediction.map((point, index) => {
     const observed = targetRows[index];
+    const observedDeficitBn = observed.spending - observed.revenue;
+    const impliedStockFlowBn = observed.debt - previousObservedDebt - observedDeficitBn;
+    previousObservedDebt = observed.debt;
+    cumulativeDeficitErrorBn += point.deficit - observedDeficitBn;
+    cumulativeObservedStockFlowBn += impliedStockFlowBn;
+    const debtErrorBn = point.debt - observed.debt;
+    const debtIdentityResidualBn = debtErrorBn - cumulativeDeficitErrorBn + cumulativeObservedStockFlowBn;
+    if (Math.abs(debtIdentityResidualBn) > 1e-6) throw new Error(`Identité de dette rompue en ${observed.year}`);
     const actual = {gdp: observed.gdp, deficitRatio: (observed.spending - observed.revenue) / observed.gdp * 100,
-      debtRatio: observed.debt / observed.gdp * 100, unemployment: observed.unemployment};
+      debtRatio: observed.debt / observed.gdp * 100, unemployment: observed.unemployment,
+      spendingBn: observed.spending, revenueBn: observed.revenue, deficitBn: observedDeficitBn,
+      debtBn: observed.debt};
     const error = (source) => ({gdpPct: (source.gdp / actual.gdp - 1) * 100,
       deficitRatio: source.deficitRatio - actual.deficitRatio,
       debtRatio: source.debtRatio - actual.debtRatio,
@@ -108,7 +121,13 @@ export function runCoreOrigin({originYear, horizon, observations = accounts, cha
     return {year: observed.year, actual, predicted: {
       gdp: point.gdp, deficitRatio: point.deficitRatio, debtRatio: point.debtRatio,
       unemployment: point.unemployment, directRevenueChangeBn: point.revenueChange,
-      directSpendingChangeBn: point.spendingChange}, error: error(point), naiveError: error(naive[index])};
+      directSpendingChangeBn: point.spendingChange, deficitBn: point.deficit, debtBn: point.debt},
+    debtAccounting: {debtErrorBn, cumulativeDeficitErrorBn, cumulativeObservedStockFlowBn,
+      impliedStockFlowBn, officialStockFlowBn: observed.officialStockFlow,
+      officialSourceGapBn: Number.isFinite(observed.officialStockFlow)
+        ? impliedStockFlowBn - observed.officialStockFlow : null,
+      identityResidualBn: debtIdentityResidualBn},
+    error: error(point), naiveError: error(naive[index])};
   });
   return {originYear, horizon, inputs: {trainingYears: origin.trainingYears,
     assumedRealGrowthPct: realGrowth, assumedDeflatorPct: deflator,
@@ -185,6 +204,13 @@ export function runCoreBacktest({observations = accounts, origins = [2005, 2010,
       [metric, selected.length ? meanAbsolute(selected.map((item) => item.rows.at(-1)[key][metric])) : null]));
     return {horizon, n: selected.length, coreMae: score("error"), naiveMae: score("naiveError")};
   });
+  const debtDecomposition = horizons.map((horizon) => {
+    const endpoints = cases.filter((item) => item.horizon === horizon).map((item) => item.rows.at(-1).debtAccounting);
+    const mae = (key) => endpoints.length ? meanAbsolute(endpoints.map((item) => item[key])) : null;
+    return {horizon, n: endpoints.length, debtErrorMaeBn: mae("debtErrorBn"),
+      cumulativeDeficitErrorMaeBn: mae("cumulativeDeficitErrorBn"),
+      unmodelledStockFlowMaeBn: mae("cumulativeObservedStockFlowBn")};
+  });
   return {status: "core_engine_retrospective_baseline_only_not_validated",
     engine: "dist/app.js:calculateProjection (same function as web and Python)",
     asOf: frozen.asOf,
@@ -193,8 +219,9 @@ export function runCoreBacktest({observations = accounts, origins = [2005, 2010,
     policyCoverage: "baseline none; separate VAT 2014 sensitivity only; other policies not translated",
     demographicCoverage: "2026 reference shifted for no-policy runtime only; no historical cohort validation",
     rateAssumption: "policyRate=0 for baseline comparison; debt stock-flow adjustments not modelled",
+    debtAccountingMethod: "debt error Bn = cumulative simulated-minus-observed deficit Bn - cumulative implied observed stock-flow Bn; implied stock-flow uses same frozen GDP/accounts/debt tables, official series shown separately",
     scoreEligibility: "diagnostic_only_not_out_of_sample_or_causal_validation",
-    table, cases, vat2014: runVat2014Sensitivity({observations}),
+    table, debtDecomposition, cases, vat2014: runVat2014Sensitivity({observations}),
     payroll2019: runPayroll2019AccountingSensitivity({observations})};
 }
 
@@ -207,6 +234,12 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === fs.realpathSync(proces
     for (const row of result.table) {
       const pair = (metric) => `${row.coreMae[metric]?.toFixed(2) ?? "–"}/${row.naiveMae[metric]?.toFixed(2) ?? "–"}`;
       process.stdout.write(`${String(row.horizon).padStart(3)} ${String(row.n).padStart(2)}  ${pair("gdpPct")}  ${pair("deficitRatio")}  ${pair("debtRatio")}  ${pair("unemployment")}\n`);
+    }
+    process.stdout.write("Dette (Md€), MAE par horizon : écart final / erreurs de déficit cumulées / stock-flux observés non prévus\n");
+    for (const row of result.debtDecomposition) {
+      process.stdout.write(`${String(row.horizon).padStart(3)} ${String(row.n).padStart(2)}  `
+        + `${row.debtErrorMaeBn?.toFixed(1) ?? "–"} / ${row.cumulativeDeficitErrorMaeBn?.toFixed(1) ?? "–"} / `
+        + `${row.unmodelledStockFlowMaeBn?.toFixed(1) ?? "–"}\n`);
     }
     const vat = result.vat2014.rows[0];
     process.stdout.write(`TVA 2014, sensibilité : ${result.vat2014.amountBn.toFixed(1)} Md€ ex ante ; `
