@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#f4f1ea" />
     <meta
       name="description"
@@ -588,7 +589,8 @@
       <p>Un outil d’exploration civique — pas un conseil financier, juridique ou électoral.</p>
       <a href="confidentialite.html">Confidentialité</a>
       <a href="audit.html">Audit du modèle</a>
-      <span>Version 4.15 · octobre 2026</span>
+      <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
+      <span class="footer-version">Version 4.15 · octobre 2026</span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -647,5 +649,6 @@
     <script src="insee-projection.js"></script>
     <script src="fiscal.js"></script>
     <script src="app.js"></script>
+    <script src="analytics.js"></script>
   </body>
 </html>

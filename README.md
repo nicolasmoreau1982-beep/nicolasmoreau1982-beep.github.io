@@ -147,7 +147,7 @@ Le calcul reproductible est `node scripts/fiscal-backtest.mjs` (`--json` pour le
 
 `research/insee-labour-2025.json` ventile chômage BIT, halo et sous-emploi par âge, et chômage par diplôme, issus de l'enquête Emploi 2025. Les totaux tous âges sont 2 451,2 ; 1 925,6 ; 1 293,4 milliers de personnes. Le plafond indicatif de recrutement utilise les effectifs **15–64 ans** après retrait explicite des 65 ans ou plus (2 425,7 ; 1 870,0 ; 1 260,4 k) ; les inscrits en formation à France Travail ne sont plus ajoutés comme quatrième stock indépendant, car ils peuvent recouper les précédents. Les croisements fins servent à l'audit, **pas** encore à déterminer qui peut devenir policier, soignant ou enseignant. `research/insee-tes-2024.json` conserve production et importations de 17 produits. Sa part d'importations est descriptive, non un multiplicateur ou une fuite marginale imputable automatiquement à un poste COFOG.
 
-Pour rafraîchir ces copies figées depuis les classeurs officiels, installer `xlrd` uniquement pour l'import XLS (`python3 -m pip install xlrd`), puis lancer `python3 scripts/import-insee-observations.py`, `node scripts/export-insee-projection.mjs` et `node scripts/export-historical-audit.mjs`. Les empreintes SHA-256 des fichiers sources sont conservées dans les JSON. **Comparer les différences et la date de publication avant d'accepter un nouveau millésime** ; le site et l'interface Python n'ont aucune dépendance réseau à l'exécution.
+Pour rafraîchir ces copies figées depuis les classeurs officiels, installer `xlrd` uniquement pour l'import XLS (`python3 -m pip install xlrd`), puis lancer `python3 scripts/import-insee-observations.py`, `node scripts/export-insee-projection.mjs` et `node scripts/export-historical-audit.mjs`. Les empreintes SHA-256 des fichiers sources sont conservées dans les JSON. **Comparer les différences et la date de publication avant d'accepter un nouveau millésime** ; le moteur de calcul et l'interface Python n'ont aucune dépendance réseau à l'exécution. Les pages web chargent par ailleurs des polices externes et peuvent, après configuration explicite, charger GoatCounter pour les statistiques de visite.
 
 ### Mesures, hypothèses et résultats (version 4.10)
 
@@ -167,6 +167,8 @@ Les URL canoniques et le sitemap pointent désormais vers `https://nicolasmoreau
 
 EcoSim vise aussi à aider à préparer la **présidentielle 2027**, mais la version actuelle ne compare pas encore les programmes propres aux candidats : elle explore des groupes et familles politiques. Un futur mode « candidats » devra lier chaque mesure à un programme ou une déclaration datée, expliciter sa traduction dans les paramètres, distinguer les mesures non simulables et mettre à jour le statut des candidatures sans anticiper la liste officielle.
 
+Un compteur de visites discret est préparé dans le pied de page. Il est **désactivé par défaut** : sans compte GoatCounter et sans son code dans `dist/analytics.js`, il n'émet aucune requête et n'affiche aucun chiffre. La création du compte, la vérification CNIL et les étapes d'activation figurent dans [PUBLICATION.md](PUBLICATION.md#audience-et-publicité). La [page de confidentialité](dist/confidentialite.html) indique l'état de configuration et les services contactés.
+
 ## Structure
 
 ```text
@@ -180,6 +182,7 @@ dist/
   insee-projection.js projection démographique Insee condensée pour le navigateur
   fiscal.js    moteur fiscal expérimental : règles datées et foyers-types
   app.js       moteur de projection et interactions
+  analytics.js intégration GoatCounter facultative, désactivée par défaut
   confidentialite.html, robots.txt, sitemap.xml  confidentialité et référencement
 ecosim.py      interface Python en ligne de commande et importable
 PUBLICATION.md guide de mise en ligne, référencement, audience et publicité

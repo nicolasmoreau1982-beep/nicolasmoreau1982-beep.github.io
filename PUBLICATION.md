@@ -29,7 +29,17 @@ Des outils proches existent déjà : France Budget (`https://francebudget.fr/`, 
 
 ## Audience et publicité
 
-Au lancement, aucune mesure d'audience ni publicité n'est chargée. L'option simple pour un tableau de bord de visites est Cloudflare Web Analytics ; l'activation nécessite un compte et le snippet fourni par le tableau de bord. Google Analytics 4 est une autre option, plus riche mais qui nécessite une configuration de confidentialité et de consentement adaptée. Vérifier la configuration choisie à l'aide des critères de la CNIL avant de prétendre à une exemption de consentement.
+Le site prépare une intégration **GoatCounter**, mais elle reste désactivée tant que `GOATCOUNTER_SITE` est vide dans `dist/analytics.js`. Aucun script d'audience ni compteur n'est chargé ou affiché dans cet état. Aucune publicité n'est chargée non plus.
+
+Pour activer un vrai compteur après ouverture d'un compte :
+
+1. créer son site sur `https://www.goatcounter.com/` avec le domaine `nicolasmoreau1982-beep.github.io` et conserver le **code du site**, par exemple `ecosimfrance` pour `https://ecosimfrance.goatcounter.com` ;
+2. vérifier les réglages de confidentialité et la conformité de la configuration aux critères de la CNIL ; l'absence de cookies ne suffit pas, à elle seule, à garantir une exemption de consentement ;
+3. dans les réglages du site GoatCounter, activer « Allow adding visitor counts on your website », désactivé par défaut ;
+4. renseigner uniquement le code du site dans `const GOATCOUNTER_SITE = "...";` de `dist/analytics.js`, puis déployer le site ;
+5. ouvrir la page publique et vérifier une requête vers `gc.zgo.at/count.js`, une requête de comptage vers `CODE.goatcounter.com/count` et, si le compteur public est autorisé, l'affichage du total dans le pied de page. Le tableau de bord GoatCounter donne les visites par page et les référents ; le compteur public affiche un total agrégé, potentiellement mis en cache jusqu'à quatre heures.
+
+Le code ne charge l'outil que sur le domaine public exact, pas en prévisualisation locale. Il n'envoie ni le fragment contenant le scénario partagé ni les paramètres d'URL ; les référents entrants sont réduits à leur domaine. Si le compteur public ou le réseau échoue, il reste masqué, sans chiffre inventé. La page `confidentialite.html` décrit le service et affiche son état de configuration. Après activation, vérifier aussi les mentions de confidentialité, la durée de conservation et les obligations d'information applicables au projet.
 
 Pour une publicité discrète, réserver au maximum un bloc clairement marqué « Publicité » après les résultats et loin des curseurs, boutons et exports ; pas d'interstitiel ni de publicité collante. Ne rien injecter avant l'ouverture d'un compte, la validation par la régie et la mise à jour de la page de confidentialité. L'admissibilité d'un futur domaine à AdSense devra être vérifiée auprès de la régie au moment de la demande.
 
@@ -40,6 +50,8 @@ La publicité ciblée et de nombreux traceurs publicitaires exigent un consentem
 - Google Search Central : `https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap`
 - Google Search Console : `https://search.google.com/search-console/about`
 - Cloudflare Web Analytics : `https://developers.cloudflare.com/web-analytics/about/`
+- GoatCounter, compteur public et JSON : `https://www.goatcounter.com/help/visitor-counter`
+- GoatCounter, données et confidentialité : `https://www.goatcounter.com/help/privacy`
 - Cloudflare Pages : `https://developers.cloudflare.com/pages/platform/limits/`
 - AdSense : `https://support.google.com/adsense/answer/2784438`
 - CNIL : `https://www.cnil.fr/fr/cookies-et-autres-traceurs/regles/cookies-solutions-pour-les-outils-de-mesure-daudience`

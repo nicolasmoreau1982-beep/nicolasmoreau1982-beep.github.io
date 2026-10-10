@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#f4f1ea" />
-    <meta name="description" content="Confidentialité d’EcoSim France : scénarios locaux, liens partagés, polices externes et absence de publicité ou d’analytics." />
+    <meta name="description" content="Confidentialité d’EcoSim France : scénarios locaux, liens partagés, polices externes et état de la mesure d’audience facultative." />
     <link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/confidentialite.html" />
     <title>Confidentialité — EcoSim France</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,7 +30,7 @@
       <p class="privacy-lead">EcoSim calcule localement. Nous ne recevons pas les réglages que vous saisissez. Voici ce qui reste sur votre appareil et les rares services contactés lors de la consultation.</p>
       <div class="privacy-summary" aria-label="Résumé de confidentialité">
         <article><span>Scénarios</span><strong>Stockage local</strong><p>Les sauvegardes et le thème restent dans ce navigateur jusqu’à leur suppression ou l’effacement de ses données.</p></article>
-        <article><span>Audience et publicité</span><strong>Non intégrées</strong><p>Cette version n’embarque ni outil de mesure d’audience ni régie publicitaire.</p></article>
+        <article><span>Audience</span><strong id="analytics-status">Mesure désactivée</strong><p>Le suivi GoatCounter ne se charge que si l’éditeur configure son compte. Aucun compteur n’est affiché sans donnée réelle.</p></article>
         <article><span>Services externes</span><strong>Polices Google</strong><p>Les pages du site chargent leurs polices depuis Google Fonts ; votre navigateur contacte alors Google.</p></article>
       </div>
       <section aria-labelledby="privacy-share-title">
@@ -38,10 +39,16 @@
       </section>
       <section aria-labelledby="privacy-host-title">
         <h2 id="privacy-host-title">Hébergement</h2>
-        <p>L’hébergeur que vous choisissez peut tenir des journaux techniques ou utiliser des protections contre les robots. Leur contenu et leur durée de conservation dépendent de cet hébergeur ; EcoSim ne les contrôle pas. Toute publicité ou mesure d’audience ajoutée à l’avenir devra être annoncée ici avant activation.</p>
+        <p>L’hébergeur que vous choisissez peut tenir des journaux techniques ou utiliser des protections contre les robots. Leur contenu et leur durée de conservation dépendent de cet hébergeur ; EcoSim ne les contrôle pas.</p>
+      </section>
+      <section aria-labelledby="privacy-audience-title">
+        <h2 id="privacy-audience-title">Mesure d’audience facultative</h2>
+        <p>Si l’état ci-dessus indique « GoatCounter configuré », votre navigateur contacte <code>gc.zgo.at</code> pour charger le script de mesure et un sous-domaine <code>goatcounter.com</code> pour enregistrer la visite. Sur la page d’accueil, le total affiché provient de ce même service. Le chemin de la page est transmis sans les paramètres ni le fragment du scénario ; seul le domaine d’origine d’un lien entrant est transmis comme référent. GoatCounter décrit son fonctionnement et sa conservation dans sa <a href="https://www.goatcounter.com/help/privacy" rel="noopener noreferrer">documentation de confidentialité</a>. Le code source distribué par défaut ne configure aucun compte.</p>
+        <p>Nous ne chargeons aucune régie publicitaire. L’éventuelle exemption de consentement pour la mesure d’audience doit être vérifiée selon les <a href="https://www.cnil.fr/fr/cookies-et-autres-traceurs/regles/cookies-solutions-pour-les-outils-de-mesure-daudience" rel="noopener noreferrer">conditions de la CNIL</a> avant activation.</p>
       </section>
       <div class="privacy-actions"><a class="button button-dark" href="index.html#workspace">Revenir à mon scénario</a><a class="button button-ghost" href="audit.html#provenance">Voir les sources du modèle</a></div>
       <p class="privacy-updated">Mise à jour : 10 octobre 2026.</p>
     </main>
+    <script src="analytics.js"></script>
   </body>
 </html>
