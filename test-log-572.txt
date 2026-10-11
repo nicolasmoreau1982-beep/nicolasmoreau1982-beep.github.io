@@ -1,0 +1,8 @@
+EXÉCUTEUR 5.7.2 : structure, périmètre, 5 rejets et câblage fictif OK (OpenFisca réel non lancé).
+VÉRIFICATEUR 5.7.2 : 56 cas, empreintes, complétude, 8 groupes, 11 rejets et écarts synthétiques OK. Aucun calcul OpenFisca réel.
+SOURCE 5.4 OK : 9 modules historiques inchangés (hormis étiquette version dans data.js).
+GOLDEN 5.4 OK : 6 scénarios, 1980 valeurs 2026–2055, référence 5.3.1, corruption détectée.
+IR INDIVIDUEL 5.7 : 59 tests (barème, décote, plafonnement QF, domaines, finitude) OK. Pas de microsimulation nationale.
+MICRODONNEES 5.7.1 : agrégation et reforme vérifiées; données fictives jamais dites représentatives.
+MICRO 5.7.2 : masses faibles et déséquilibrées testées ; conservation des poids et moyennes finies.
+EcoSim 5.7.2 : contrôles locaux et manifest OK. OpenFisca réel : NON EXÉCUTÉ.

@@ -1,0 +1,45 @@
+name: EcoSim - confrontation OpenFisca 5.7.2 (revue requise)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verifier-fiscalite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Installer le vrai moteur OpenFisca-France
+        run: python -m pip install --disable-pip-version-check openfisca-france
+      - name: Archiver les versions installées et l'empreinte du jeu de cas
+        run: |
+          python -m pip freeze > versions-dependances-572.txt
+          sha256sum validation/fiscal-individuel-570.json > empreinte-cas-572.txt
+      - name: Exécuter OpenFisca sur les 56 foyers
+        run: >-
+          python openfisca-validation/run_openfisca_572.py
+          --cases validation/fiscal-individuel-570.json
+          --out sortie-openfisca-reelle-572.json
+      - name: Vérifier source / empreinte / 56 cas et analyser les écarts
+        run: >-
+          node scripts/verifier-openfisca-572.mjs
+          validation/fiscal-individuel-570.json
+          sortie-openfisca-reelle-572.json
+          rapport-confrontation-openfisca-572.json
+      - name: Préserver résultats et versions (même en cas d'échec)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosim-confrontation-openfisca-572
+          if-no-files-found: warn
+          path: |
+            versions-dependances-572.txt
+            empreinte-cas-572.txt
+            sortie-openfisca-reelle-572.json
+            rapport-confrontation-openfisca-572.json
