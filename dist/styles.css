@@ -847,3 +847,8 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 .politics-grid > *, .politics-detail { min-width: 0; }
 .politics-robustness { min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box; }
 .politics-robustness-scroll { display: block; width: 100%; min-width: 0; max-width: 100%; overflow-x: auto; }
+
+/* 5.3.1 — encart de transparence concis : pas de deuxième avertissement massif. */
+.current-version-531 {font-size:.85rem;opacity:.88;margin:.5rem 0 .25rem;}
+.hero-transparence-531 {font-size:.88rem;line-height:1.55;max-width:860px;padding:.7rem .85rem;border-left:3px solid currentColor;background:rgba(128,128,128,.075);border-radius:0 .5rem .5rem 0;margin:.65rem 0 .75rem;}
+.hero-transparence-531 a:focus-visible {outline:3px solid #2663b6;outline-offset:3px;}

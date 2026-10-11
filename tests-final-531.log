@@ -1,0 +1,47 @@
+[EcoSim 5.2] scripts/test-economie-inchangee-421.mjs
+NEUTRALITÉ ÉCONOMIQUE 4.21 : 60 comparaisons de trajectoire identiques à la référence archivée 4.19.
+[EcoSim 5.2] scripts/test-economique-419.mjs
+TESTS ÉCONOMIQUES 4.19 OK : base août 2026, parts Mésange, 25 lignes centrales, 120 lignes de stress, documentation HTML.
+[EcoSim 5.2] scripts/test-empirique-423.mjs
+ÉVALUATION 4.23 OK : 4 études indépendantes, 0 correspondance stricte, 16 résultats calculés, sources, page et exports cohérents.
+[EcoSim 5.2] scripts/test-energy-500.mjs
+ÉNERGIE 5.0 OK : référentiel SDES 2024, 3 scénarios, limites d'entrée et séparation du moteur macroéconomique.
+[EcoSim 5.2] scripts/test-finition-521.mjs
+FINITIONS 5.2.1 OK : 22 pages contrôlées, 404, signalement, informations éditoriales, marque et sitemap.
+[EcoSim 5.2] scripts/test-finitions-531.mjs
+FINITION 5.3.1 OK : GitHub uniquement, versions, publication pédagogique, audit, sitemap, liens et moteur présent.
+[EcoSim 5.2] scripts/test-fiscal-419.mjs
+TESTS FISCAUX 4.19 OK : 66 contrôles de calendrier, finitude, décomposition, monotonie de cas-types. Pas de validation nationale.
+[EcoSim 5.2] scripts/test-guardrails-510.mjs
+DURCISSEMENT 5.1 OK : 69 contrôles ciblés, 40 scénarios hostiles, invariants corrompus détectés et imports atomiques.
+[EcoSim 5.2] scripts/test-mathematical.mjs
+TESTS MATHÉMATIQUES OK : 466 projections (30 ans chacune), 84128 identités numériques, référence contrôlée, flux datés, T4, contrôles min/max, 45 profils-cadres, 64 scénarios croisés, fiscalité.
+[EcoSim 5.2] scripts/test-multiplicateurs-422.mjs
+TESTS 4.22 OK : 5 scénarios × 3 variantes × 30 ans ; 1020 vérifications et 60 résultats exportés.
+[EcoSim 5.2] scripts/test-observations-425.mjs
+OBSERVATIONS 4.25 OK : 16 proxys, limites de périmètre, mode comptable, mode historique, mode contextualisé, bornes, 30 ans, import/export.
+[EcoSim 5.2] scripts/test-politique-profils-530.mjs
+POLITIQUE 5.3 OK : 19 scénarios documentés, 8 rapprochements et 11 replis, 9 profils intacts, 357 réglages inchangés.
+[EcoSim 5.2] scripts/test-presentation-4211.mjs
+PRÉSENTATION 4.21.1 OK : provenance, limites de sensibilité, captions, versions, métadonnées et sitemap.
+[EcoSim 5.2] scripts/test-quality-500.mjs
+QUALITÉ 5.0 OK : 9 familles de recouvrements, absence de faux signalement simple, immutabilité, intégration HTML.
+[EcoSim 5.2] scripts/test-regressions.mjs
+TESTS OK : profils valides et 7 cas invalides, pensions −10 Md€, TVA +10 Md€, IR +10 Md€, aucun voteWeight, audit pré-rendu.
+[EcoSim 5.2] scripts/test-sectoral-424.mjs
+SECTORIEL 4.24 OK : 16 filières, 3 instruments, 45 projections croisées sur 30 ans, imports, fenêtres, plafonds et comptabilité.
+[EcoSim 5.2] scripts/test-transparence-420.mjs
+TRANSPARENCE 4.20 OK : 19 scénarios, 357 réglages, 23 liés, 334 non vérifiés ; référence Mésange concordante.
+[EcoSim 5.2] scripts/test-ux-520.mjs
+UX 5.2 OK : 18 définitions, 15 scripts, navigation et liens internes
+[EcoSim 5.2] scripts/test-validation-421.mjs
+VALIDATION 4.21 OK : 9 cas fiscaux, 16 valeurs centrales, 96 variantes et tables HTML statiques cohérentes.
+[EcoSim 5.2] Suites de tests et syntaxe JS : OK
+FINITION 5.3.1 OK : GitHub uniquement, versions, publication pédagogique, audit, sitemap, liens et moteur présent.
+SCAN LOCAL 5.2 OK : 62 fichiers de distribution inspectés ; historique Git non disponible
+NAVIGATEUR 5.3.1 OK : [{'width': 1365, 'height': 850, 'controls': 314, 'visible': 167, 'missing_names': 0, 'horizontal_scroll': 1365, 'page_errors': []}, {'width': 375, 'height': 812, 'controls': 314, 'visible': 148, 'missing_names': 0, 'horizontal_scroll': 375, 'page_errors': []}]
+Version 5.3.1 — identifiant de paquet : 40219bdd801f
+Manifeste 5.3.1 : 69 fichiers vérifiables
+PRÉSENTATION 4.21.1 OK : provenance, limites de sensibilité, captions, versions, métadonnées et sitemap.
+FINITION 5.3.1 OK : GitHub uniquement, versions, publication pédagogique, audit, sitemap, liens et moteur présent.
+EcoSim 5.3.1 : tests, navigateur et manifeste OK.
