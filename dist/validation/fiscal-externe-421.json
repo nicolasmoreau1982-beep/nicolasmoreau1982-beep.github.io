@@ -1,0 +1,137 @@
+{
+  "version": "4.21.0",
+  "checkedAt": "2026-10-11",
+  "referenceYear": 2025,
+  "taxYear": 2026,
+  "scope": "Cas officiels pour barèmes progressifs partiels, pas calcul d’impôt net ni micro-simulation représentative",
+  "cases": [
+    {
+      "id": "ir-11600",
+      "label": "IR brut · célibataire, 11 600 € imposables",
+      "tax": "IR brut",
+      "input": {
+        "netTaxableIncome": 11600,
+        "parts": 1
+      },
+      "expected": 0,
+      "source": "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407",
+      "actual": 0,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "ir-30000",
+      "label": "IR brut · célibataire, 30 000 € imposables",
+      "tax": "IR brut",
+      "input": {
+        "netTaxableIncome": 30000,
+        "parts": 1
+      },
+      "expected": 2103.99,
+      "source": "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407",
+      "actual": 2103.9900000000002,
+      "delta": 4.547473508864641e-13,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "ir-32000",
+      "label": "IR brut · célibataire, 32 000 € imposables",
+      "tax": "IR brut",
+      "input": {
+        "netTaxableIncome": 32000,
+        "parts": 1
+      },
+      "expected": 2703.99,
+      "source": "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407",
+      "actual": 2703.99,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "ir-couple-84000",
+      "label": "IR brut · 84 000 € imposables, 2 parts",
+      "tax": "IR brut",
+      "input": {
+        "netTaxableIncome": 84000,
+        "parts": 2
+      },
+      "expected": 11407.98,
+      "source": "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407",
+      "actual": 11407.98,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "ifi-seuil",
+      "label": "IFI · patrimoine immobilier taxable 1 300 000 €",
+      "tax": "IFI",
+      "input": {
+        "realEstateWealth": 1300000
+      },
+      "expected": 0,
+      "source": "https://bofip.impots.gouv.fr/bofip/11319-PGP.html/identifiant=BOI-PAT-IFI-40-10-20180608",
+      "actual": 0,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "ifi-bo-fip-1374000",
+      "label": "IFI · exemple officiel à 1 374 000 € après décote",
+      "tax": "IFI",
+      "input": {
+        "realEstateWealth": 1374000
+      },
+      "expected": 2693,
+      "source": "https://bofip.impots.gouv.fr/bofip/11319-PGP.html/identifiant=BOI-PAT-IFI-40-10-20180608",
+      "actual": 2693,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "ifi-1500000",
+      "label": "IFI · patrimoine immobilier taxable 1 500 000 €",
+      "tax": "IFI",
+      "input": {
+        "realEstateWealth": 1500000
+      },
+      "expected": 3900,
+      "source": "https://bofip.impots.gouv.fr/bofip/11319-PGP.html/identifiant=BOI-PAT-IFI-40-10-20180608",
+      "actual": 3900,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "succession-100000",
+      "label": "Succession · héritier direct, part reçue de 100 000 €",
+      "tax": "Succession",
+      "input": {
+        "inheritanceShare": 100000
+      },
+      "expected": 0,
+      "source": "https://www.service-public.gouv.fr/particuliers/vosdroits/F14198",
+      "actual": 0,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    },
+    {
+      "id": "succession-150000",
+      "label": "Succession · héritier direct, part reçue de 150 000 €",
+      "tax": "Succession",
+      "input": {
+        "inheritanceShare": 150000
+      },
+      "expected": 8194.35,
+      "source": "https://www.service-public.gouv.fr/particuliers/vosdroits/F14198",
+      "actual": 8194.35,
+      "delta": 0,
+      "status": "conforme sur ce cas"
+    }
+  ],
+  "coverageLimits": [
+    "L’impôt sur le revenu calculé est brut : pas de décote, plafonnement du quotient familial, crédits, réductions, ni revenus à régime particulier.",
+    "Les foyers-types d’EcoSim sont synthétiques et leurs pondérations ne sont pas une population représentative.",
+    "IFI : cas simples avant réductions, dons, plafonnement et corrections particulières.",
+    "Successions : cas directs isolés sans donations antérieures, situations familiales particulières ni reconstitution d’actif.",
+    "Aucune confrontation autonome à OpenFisca n’a été exécutée."
+  ]
+}

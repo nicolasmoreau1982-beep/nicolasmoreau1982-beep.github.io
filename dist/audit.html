@@ -33,17 +33,18 @@
           <a href="#histoire">04 · Tests historiques</a>
           <a href="#benchmark-419">04a · Benchmark 4.19</a>
           <a href="#provenance-420">04b · Provenance politique 4.20</a>
+          <a href="#validation-421">04c · Validation fiscale et sensibilité 4.21</a>
           <a href="#recherche">05 · Modèles de recherche</a>
           <a href="#incertitude">06 · Incertitude</a>
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>6944484be75f</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>e0c581f46154</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 4.20.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 4.21.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -169,6 +170,13 @@
           </tbody></table></div>
           <div class="audit-warning"><strong>Attention aux étiquettes politiques.</strong><p>Ces 357 réglages sont des choix de simulation attribués à des scénarios inspirés de formations ou d’archives, <strong>pas des chiffrages officiels</strong>. Un niveau de confiance « élevé » pour l’interprétation générale ne signifie pas « montant vérifié ». Une mesure absente n’est pas supposée nulle. Les conclusions d’EcoSim ne sauraient départager des programmes complets.</p></div>
           <p class="audit-caption">Données reproductibles : <a href="validation/provenance-politique-420.csv">CSV des valeurs</a> · <a href="validation/provenance-politique-420.json">JSON complet</a> · générateur <code>scripts/export-provenance-420.mjs</code>. La couverture des sources peut être enrichie uniquement après vérification documentaire explicite.</p>
+        </section>
+
+        <section class="audit-section" id="validation-421" aria-labelledby="validation-421-title">
+          <div class="audit-section-heading"><span>04c</span><h2 id="validation-421-title">Vérifications externes ciblées et sensibilité · version 4.21</h2></div>
+          <p>Neuf cas simples ont été comparés à des barèmes publics officiels : <strong>impôt sur le revenu brut 2026</strong> (revenus 2025), <strong>IFI</strong> (avec décote) et <strong>succession en ligne directe</strong>. Les écarts de calcul sur ces cas sont nuls à 0,01 € près. <strong>Cela ne vérifie ni la décote IR, les situations familiales complexes, les crédits, ni les recettes nationales calculées sur les foyers synthétiques.</strong></p>
+          <p>Un nouveau test étudie quatre mesures budgétaires, trois coefficients et quatre horizons : <strong>16 résultats centraux et 96 variantes à ±20 %</strong> en faisant varier un coefficient à la fois. Les résultats montrent la dépendance du déficit et de la dette aux rétroactions de recettes et de chômage. Le PIB reste inchangé lorsque seuls ces trois coefficients sont variés : <strong>c’est une propriété du moteur, pas une preuve de fiabilité du PIB</strong>.</p>
+          <p><a href="validation-economique-421.html">Consulter les tableaux de validation 4.21, sources et explications accessibles sans JavaScript ↗</a> · <a href="validation/fiscal-externe-421.json">Données fiscales</a> · <a href="validation/sensibilite-421.csv">Résultats des stress tests</a>. Aucun coefficient n'a été retouché pour faire disparaître des écarts.</p>
         </section>
 
         <section class="audit-section" id="benchmark-419" aria-labelledby="benchmark-419-title">

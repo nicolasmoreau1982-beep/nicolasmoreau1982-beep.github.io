@@ -8,7 +8,7 @@ window.ECOSIM_FISCAL = (() => {
     incomeTax: {
       brackets: [{ upper: 11600, rate: 0 }, { upper: 29579, rate: 0.11 },
         { upper: 84577, rate: 0.30 }, { upper: 181917, rate: 0.41 }, { upper: Infinity, rate: 0.45 }],
-      source: "https://www.impots.gouv.fr/particulier/questions/comment-calculer-mon-taux-dimposition-dapres-le-bareme-progressif-de-limpot"
+      source: "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407"
     },
     realEstateWealthTax: {
       entryThreshold: 1300000,

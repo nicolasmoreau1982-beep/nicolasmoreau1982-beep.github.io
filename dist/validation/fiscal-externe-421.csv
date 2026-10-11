@@ -1,0 +1,10 @@
+id,tax,expected_eur,calculated_eur,delta_eur,source
+"ir-11600","IR brut","0","0","0","https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407"
+"ir-30000","IR brut","2103.99","2103.9900000000002","4.547473508864641e-13","https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407"
+"ir-32000","IR brut","2703.99","2703.99","0","https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407"
+"ir-couple-84000","IR brut","11407.98","11407.98","0","https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407"
+"ifi-seuil","IFI","0","0","0","https://bofip.impots.gouv.fr/bofip/11319-PGP.html/identifiant=BOI-PAT-IFI-40-10-20180608"
+"ifi-bo-fip-1374000","IFI","2693","2693","0","https://bofip.impots.gouv.fr/bofip/11319-PGP.html/identifiant=BOI-PAT-IFI-40-10-20180608"
+"ifi-1500000","IFI","3900","3900","0","https://bofip.impots.gouv.fr/bofip/11319-PGP.html/identifiant=BOI-PAT-IFI-40-10-20180608"
+"succession-100000","Succession","0","0","0","https://www.service-public.gouv.fr/particuliers/vosdroits/F14198"
+"succession-150000","Succession","8194.35","8194.35","0","https://www.service-public.gouv.fr/particuliers/vosdroits/F14198"
