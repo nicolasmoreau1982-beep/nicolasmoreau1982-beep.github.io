@@ -8,8 +8,8 @@ function sha(x){return crypto.createHash('sha256').update(x).digest('hex');}
 for(const [f,expected] of Object.entries(frozen.files)){
  let content=fs.readFileSync(path.join(root,'dist',f),'utf8');
  if(f==='data.js'){
-  assert.ok(content.includes('version: "5.6.0"'));
-  content=content.replace('version: "5.6.0"','version: "5.3.1"');
+  assert.ok(content.includes('version: "5.6.1"'));
+  content=content.replace('version: "5.6.1"','version: "5.3.1"');
  }
  assert.equal(sha(content),expected,`${f}: code de référence 5.3.1 modifié`);
 }

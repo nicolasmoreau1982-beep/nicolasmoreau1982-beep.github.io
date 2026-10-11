@@ -16,10 +16,11 @@ for(const f of all.sort()){
  const relative=path.relative(dist,f).split(path.sep).join('/');
  h.update(relative+'\0');
  if(f.endsWith('.html'))h.update(normal(fs.readFileSync(f,'utf8')));
+ else if(relative==='validation/sensibilite-globale-561.json')h.update(fs.readFileSync(f,'utf8').replace(/"buildId": (null|"[a-f0-9]{12}")/,'"buildId": "EXCLUDED_FROM_HASH"'));
  else h.update(fs.readFileSync(f));
 }
 const id=h.digest('hex').slice(0,12);
-fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\nwindow.ECOSIM_VERSION = "5.6.0";\n`);
+fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\nwindow.ECOSIM_VERSION = "5.6.1";\n`);
 for(const f of all.filter(f=>f.endsWith('.html'))){
  let s=fs.readFileSync(f,'utf8');
  s=s.replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,(_m,p)=>p+id)
@@ -27,4 +28,9 @@ for(const f of all.filter(f=>f.endsWith('.html'))){
  .replaceAll('PAQUET_A_REMPLACER',id);
  fs.writeFileSync(f,s);
 }
-console.log('Version 5.6.0 — identifiant de paquet :',id);
+const reportFile=path.join(dist,'validation','sensibilite-globale-561.json');
+if(fs.existsSync(reportFile)){
+ const r=JSON.parse(fs.readFileSync(reportFile,'utf8'));r.buildId=id;
+ fs.writeFileSync(reportFile,JSON.stringify(r,null,2)+'\n');
+}
+console.log('Version 5.6.1 — identifiant de paquet :',id);
