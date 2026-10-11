@@ -14,12 +14,32 @@ window.ECOSIM_DATA = (() => {
     revenue: 1562.5197,
     deficit: 151.592,
     debt: 3460.5,
-    debtRatio: 115.6,
+    debtRatio: 115.7,
     deficitRatio: 5.1,
     growth: 0.8,
     inflation: 0.9,
     unemployment: 7.9,
     unit: "Md€"
+  };
+
+  // Référence comptable : tableau Insee 3.201, révision du 28 août 2026.
+  // Le ratio dette/PIB est recalculé sur les montants figés : 3 460,5 / 2 991,1.
+  // Le ratio Eurostat 115,6 % de history.js est une autre série / millésime.
+  const accountingVintage = {
+    id: "insee-3.201-2026-08-28",
+    source: "https://www.insee.fr/fr/statistiques/8988845",
+    date: "2026-08-28",
+    nature: "compte APU simplifié, base 2020",
+    spending2025Bn: 1714.1117,
+    revenue2025Bn: 1562.5197
+  };
+
+  // Hypothèses marginales exploratoires. Elles ne sont PAS des estimations causales.
+  // Séparées du moteur pour analyse de sensibilité reproductible sans modifier le JS.
+  const macroCoefficients = {
+    unemploymentPpPerOutputGapPoint: 0.35,
+    revenueBnPerNominalGdpBn: 0.48,
+    cyclicalSpendingBnPerUnemploymentPoint: 3.1
   };
 
   const sources = [
@@ -293,7 +313,7 @@ window.ECOSIM_DATA = (() => {
       title: "Dette publique au quatrième trimestre 2025",
       date: "27 mars 2026",
       url: "https://www.insee.fr/fr/statistiques/8955019",
-      note: "Dette de Maastricht : 3 460,5 Md€, soit 115,6 % du PIB."
+      note: "Dette de Maastricht : 3 460,5 Md€. La série historique Eurostat indiquait 115,6 % du PIB ; le ratio calculé à partir du PIB figé dans EcoSim est 115,7 %."
     },
     {
       id: "eurostat-cofog",
@@ -1353,6 +1373,8 @@ window.ECOSIM_DATA = (() => {
 
   return {
     BASE,
+    accountingVintage,
+    macroCoefficients,
     sources,
     spendingGroups,
     spending,
@@ -1378,7 +1400,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.18.0"
+      version: "4.19.0"
     }
   };
 })();

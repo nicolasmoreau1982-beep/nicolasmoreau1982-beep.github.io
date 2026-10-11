@@ -917,9 +917,9 @@
       const growth = D.baseline.realGrowth[index] + outputGap - previousOutputGap;
       previousOutputGap = outputGap;
       const inflation = D.baseline.inflation[index] + (eu.inflationShock[index] || 0) + extraInflation;
-      const unemployment = clamp(D.baseline.unemployment[index] - 0.35 * outputGap + labor.unemploymentChangeK / 310, 3.2, 18);
-      const revenueFeedback = (scenarioGdp - baseline[index].gdp - structure.laborGdp) * 0.48;
-      const cyclicalSpending = (unemployment - D.baseline.unemployment[index]) * 3.1;
+      const unemployment = clamp(D.baseline.unemployment[index] - D.macroCoefficients.unemploymentPpPerOutputGapPoint * outputGap + labor.unemploymentChangeK / 310, 3.2, 18);
+      const revenueFeedback = (scenarioGdp - baseline[index].gdp - structure.laborGdp) * D.macroCoefficients.revenueBnPerNominalGdpBn;
+      const cyclicalSpending = (unemployment - D.baseline.unemployment[index]) * D.macroCoefficients.cyclicalSpendingBnPerUnemploymentPoint;
 
       const debtDifferencePrevious = scenarioDebt - baselineDebtPrevious;
       const previousBaselineRatio = index === 0 ? D.BASE.debtRatio : baseline[index - 1].debtRatio;

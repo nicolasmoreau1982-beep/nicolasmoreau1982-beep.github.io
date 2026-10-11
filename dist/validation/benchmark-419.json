@@ -1,0 +1,1702 @@
+{
+  "version": "4.19.0",
+  "date": "2026-10-11",
+  "shockYear": 2026,
+  "shockBn2026": 30.721348811999995,
+  "shockBn2025": 30.030644,
+  "accounting": {
+    "vintage": {
+      "id": "insee-3.201-2026-08-28",
+      "source": "https://www.insee.fr/fr/statistiques/8988845",
+      "date": "2026-08-28",
+      "nature": "compte APU simplifié, base 2020",
+      "spending2025Bn": 1714.1117,
+      "revenue2025Bn": 1562.5197
+    },
+    "spending": 1714.1117,
+    "revenue": 1562.5197,
+    "deficit": 151.592,
+    "debt": 3460.5,
+    "debtRatio": 115.7,
+    "historicalEurostatDebtRatio": 115.6
+  },
+  "coefficients": {
+    "unemploymentPpPerOutputGapPoint": 0.35,
+    "revenueBnPerNominalGdpBn": 0.48,
+    "cyclicalSpendingBnPerUnemploymentPoint": 3.1
+  },
+  "shocks": [
+    {
+      "id": "composite-proxy",
+      "label": "Panier composite EcoSim (proxy COFOG)",
+      "changes": {
+        "GF0405": 2.40245152,
+        "GF0901": 7.507661,
+        "GF0703": 2.7027579599999996,
+        "GF0103": 3.60367728,
+        "GF1002": 12.7630237,
+        "GF1005": 1.05107254
+      },
+      "compare": "Mésange : dépense publique générique",
+      "comparability": "partiel : parts nominales égales, nature économique non identique"
+    },
+    {
+      "id": "mesange-reference",
+      "label": "Mésange 2017 (référence publiée)",
+      "reference": true,
+      "compare": null,
+      "comparability": "modèle de recherche externe"
+    },
+    {
+      "id": "tva",
+      "label": "TVA +1 point de PIB de recettes",
+      "changes": {
+        "R_TVA": 30.030644
+      },
+      "compare": "TVA Mésange : coefficients importés dans EcoSim",
+      "comparability": "calibré par construction, pas indépendant"
+    },
+    {
+      "id": "ir",
+      "label": "IR +1 point de PIB de recettes",
+      "changes": {
+        "R_IR": 30.030644
+      },
+      "compare": null,
+      "comparability": "IR national simplifié, coefficients exploratoires"
+    },
+    {
+      "id": "cotisations",
+      "label": "Cotisations globales −1 point de PIB",
+      "changes": {
+        "R_SOCIAL": -30.030644
+      },
+      "compare": "Mésange : cotisations employeurs",
+      "comparability": "non strictement comparable : assiette toutes cotisations vs employeurs seuls"
+    }
+  ],
+  "proxies": [
+    {
+      "nature": "investissement public",
+      "share": 0.08,
+      "id": "GF0405",
+      "note": "transports : dépenses mixtes, pas investissement public isolé"
+    },
+    {
+      "nature": "rémunérations publiques",
+      "share": 0.25,
+      "id": "GF0901",
+      "note": "enseignement primaire : dépenses mixtes, pas salaires isolés"
+    },
+    {
+      "nature": "prestations en nature",
+      "share": 0.09,
+      "id": "GF0703",
+      "note": "hôpital : soins et fonctionnement confondus"
+    },
+    {
+      "nature": "consommations intermédiaires",
+      "share": 0.12,
+      "id": "GF0103",
+      "note": "services généraux : agrégat fonctionnel, pas achats isolés"
+    },
+    {
+      "nature": "prestations en espèces (hors chômage)",
+      "share": 0.425,
+      "id": "GF1002",
+      "note": "retraites : proxy des prestations en espèces"
+    },
+    {
+      "nature": "prestations en espèces (chômage)",
+      "share": 0.035,
+      "id": "GF1005",
+      "note": "chômage : 3,5 % du choc total, conformément à la note Mésange"
+    }
+  ],
+  "referenceSources": {
+    "insee": {
+      "url": "https://www.insee.fr/fr/statistiques/8988845",
+      "date": "2026-08-28",
+      "table": "3.201"
+    },
+    "mesange": {
+      "url": "https://www.tresor.economie.gouv.fr/Articles/88381f48-797c-4e76-8f03-ef78d0bff99e/files/1c29ff21-585d-488b-8f4b-497540e9fc62",
+      "year": 2017,
+      "section": "4.1.2",
+      "note": "taux d’intérêt réel inchangé, choc permanent en volume sans financement"
+    }
+  },
+  "horizons": [
+    1,
+    2,
+    3,
+    5,
+    10
+  ],
+  "central": [
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "central",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 20.067118134516306,
+      "deltaDebtBn": 20.067118134516477,
+      "referenceValue": null
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "central",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 19.27423041816661,
+      "deltaDebtBn": 39.34134855268303,
+      "referenceValue": null
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "central",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 20.101583328411152,
+      "deltaDebtBn": 59.44293188109441,
+      "referenceValue": null
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "central",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 23.84839808329413,
+      "deltaDebtBn": 104.99773435442694,
+      "referenceValue": null
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "central",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 36.629081064227535,
+      "deltaDebtBn": 261.27506468090724,
+      "referenceValue": null
+    },
+    {
+      "scenario": "mesange-reference",
+      "coefficientExperiment": "central",
+      "horizon": 1,
+      "outputGap": 0.78,
+      "deltaDeficitBn": null,
+      "deltaDebtBn": null,
+      "referenceValue": 0.78
+    },
+    {
+      "scenario": "mesange-reference",
+      "coefficientExperiment": "central",
+      "horizon": 2,
+      "outputGap": 1.06,
+      "deltaDeficitBn": null,
+      "deltaDebtBn": null,
+      "referenceValue": 1.06
+    },
+    {
+      "scenario": "mesange-reference",
+      "coefficientExperiment": "central",
+      "horizon": 3,
+      "outputGap": 1.03,
+      "deltaDeficitBn": null,
+      "deltaDebtBn": null,
+      "referenceValue": 1.03
+    },
+    {
+      "scenario": "mesange-reference",
+      "coefficientExperiment": "central",
+      "horizon": 5,
+      "outputGap": 0.86,
+      "deltaDeficitBn": null,
+      "deltaDebtBn": null,
+      "referenceValue": 0.86
+    },
+    {
+      "scenario": "mesange-reference",
+      "coefficientExperiment": "central",
+      "horizon": 10,
+      "outputGap": 0.53,
+      "deltaDeficitBn": null,
+      "deltaDebtBn": null,
+      "referenceValue": 0.53
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "central",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -25.65534963447682,
+      "deltaDebtBn": -25.655349634476806,
+      "referenceValue": -0.32,
+      "deltaFromPublished": 5.551115123125783e-17
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "central",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -21.267973647890557,
+      "deltaDebtBn": -46.923323282367164,
+      "referenceValue": -0.66,
+      "deltaFromPublished": 0.005887016848364568
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "central",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -21.081065882157958,
+      "deltaDebtBn": -68.00438916452504,
+      "referenceValue": -0.72,
+      "deltaFromPublished": 0.014883597033810148
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "central",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -21.31180336392063,
+      "deltaDebtBn": -110.49813901595917,
+      "referenceValue": -0.81,
+      "deltaFromPublished": 0.03506203038870814
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "central",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -26.512063391363768,
+      "deltaDebtBn": -232.41269237168308,
+      "referenceValue": -0.78,
+      "deltaFromPublished": 0.07208648498193004
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "central",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -21.157019459927483,
+      "deltaDebtBn": -21.157019459927596,
+      "referenceValue": null
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "central",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -22.180644240151537,
+      "deltaDebtBn": -43.33766370007925,
+      "referenceValue": null
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "central",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -23.356204913229746,
+      "deltaDebtBn": -66.69386861330895,
+      "referenceValue": null
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "central",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -25.667918105249925,
+      "deltaDebtBn": -116.87155276041813,
+      "referenceValue": null
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "central",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -31.38161892316991,
+      "deltaDebtBn": -262.3304697940339,
+      "referenceValue": null
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "central",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 19.2026482241007,
+      "deltaDebtBn": 19.202648224100813,
+      "referenceValue": 0.2,
+      "deltaFromPublished": 0.4810195004686975
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "central",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 19.99695126942055,
+      "deltaDebtBn": 39.19959949352142,
+      "referenceValue": 0.55,
+      "deltaFromPublished": 0.09323722619463892
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "central",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 21.33768795187686,
+      "deltaDebtBn": 60.537287445398306,
+      "referenceValue": 0.76,
+      "deltaFromPublished": -0.16376801807118146
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "central",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 25.769303092451025,
+      "deltaDebtBn": 109.59260240383082,
+      "referenceValue": 0.97,
+      "deltaFromPublished": -0.4323336844716871
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "central",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 40.1749771411541,
+      "deltaDebtBn": 280.3113508415163,
+      "referenceValue": 1.29,
+      "deltaFromPublished": -0.8113366805263953
+    }
+  ],
+  "sensitivity": [
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 20.196157458445697,
+      "deltaDebtBn": 20.19615745844567,
+      "referenceValue": null,
+      "centralOutputGap": 0.5946512623473866,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 19.414859687495095,
+      "deltaDebtBn": 39.61101714594088,
+      "referenceValue": null,
+      "centralOutputGap": 0.6343841699452102,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 20.244822221509736,
+      "deltaDebtBn": 59.8558393674507,
+      "referenceValue": null,
+      "centralOutputGap": 0.5966721602720818,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 24.004684992236605,
+      "deltaDebtBn": 105.71397145392348,
+      "referenceValue": null,
+      "centralOutputGap": 0.5351147602243446,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 36.84670000212239,
+      "deltaDebtBn": 262.94690002550124,
+      "referenceValue": null,
+      "centralOutputGap": 0.47164876372258235,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -25.72478963447682,
+      "deltaDebtBn": -25.72478963447702,
+      "referenceValue": -0.32,
+      "centralOutputGap": -0.31999999999999995,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -21.41151328523445,
+      "deltaDebtBn": -47.1363029197114,
+      "referenceValue": -0.66,
+      "centralOutputGap": -0.6541129831516355,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -21.238761693623204,
+      "deltaDebtBn": -68.37506461333442,
+      "referenceValue": -0.72,
+      "centralOutputGap": -0.7051164029661898,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -21.492103112460214,
+      "deltaDebtBn": -111.21791472600717,
+      "referenceValue": -0.81,
+      "centralOutputGap": -0.7749379696112919,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -26.699120322482074,
+      "deltaDebtBn": -234.05364923147044,
+      "referenceValue": -0.78,
+      "centralOutputGap": -0.70791351501807,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -21.280033268558157,
+      "deltaDebtBn": -21.280033268558327,
+      "referenceValue": null,
+      "centralOutputGap": -0.5668839107404551,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -22.300113436360874,
+      "deltaDebtBn": -43.580146704919116,
+      "referenceValue": null,
+      "centralOutputGap": -0.5267030276406197,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -23.465893271933965,
+      "deltaDebtBn": -67.04603997685308,
+      "referenceValue": null,
+      "centralOutputGap": -0.4808927769481176,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -25.770162040550446,
+      "deltaDebtBn": -117.43088808705625,
+      "referenceValue": null,
+      "centralOutputGap": -0.4237759400710582,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -31.483543258609544,
+      "deltaDebtBn": -263.39464373222836,
+      "referenceValue": null,
+      "centralOutputGap": -0.36770780910714973,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 19.350429455702425,
+      "deltaDebtBn": 19.350429455702397,
+      "referenceValue": 0.2,
+      "centralOutputGap": 0.6810195004686975,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 20.139932715831634,
+      "deltaDebtBn": 39.49036217153389,
+      "referenceValue": 0.55,
+      "centralOutputGap": 0.643237226194639,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 21.481915454898342,
+      "deltaDebtBn": 60.97227762643206,
+      "referenceValue": 0.76,
+      "centralOutputGap": 0.5962319819288185,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 25.927931392509507,
+      "deltaDebtBn": 110.33489294755691,
+      "referenceValue": 0.97,
+      "centralOutputGap": 0.5376663155283129,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 0.8",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 40.39813090849245,
+      "deltaDebtBn": 282.03040288294414,
+      "referenceValue": 1.29,
+      "centralOutputGap": 0.4786633194736048,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 19.938078810586944,
+      "deltaDebtBn": 19.93807881058683,
+      "referenceValue": null,
+      "centralOutputGap": 0.5946512623473866,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 19.133601148838125,
+      "deltaDebtBn": 39.07167995942518,
+      "referenceValue": null,
+      "centralOutputGap": 0.6343841699452102,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 19.958345545569017,
+      "deltaDebtBn": 59.03002550499423,
+      "referenceValue": null,
+      "centralOutputGap": 0.5966721602720818,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 23.692119032847486,
+      "deltaDebtBn": 104.2815096668919,
+      "referenceValue": null,
+      "centralOutputGap": 0.5351147602243446,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 36.41152081608186,
+      "deltaDebtBn": 259.6034114335871,
+      "referenceValue": null,
+      "centralOutputGap": 0.47164876372258235,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -25.58590963447682,
+      "deltaDebtBn": -25.585909634476593,
+      "referenceValue": -0.32,
+      "centralOutputGap": -0.31999999999999995,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -21.124434010546636,
+      "deltaDebtBn": -46.710343645023386,
+      "referenceValue": -0.66,
+      "centralOutputGap": -0.6541129831516355,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -20.923370070692727,
+      "deltaDebtBn": -67.63371371571611,
+      "referenceValue": -0.72,
+      "centralOutputGap": -0.7051164029661898,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -21.131503615381064,
+      "deltaDebtBn": -109.77836330591163,
+      "referenceValue": -0.81,
+      "centralOutputGap": -0.7749379696112919,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -26.32500646024549,
+      "deltaDebtBn": -230.77173551189753,
+      "referenceValue": -0.78,
+      "centralOutputGap": -0.70791351501807,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -21.03400565129681,
+      "deltaDebtBn": -21.034005651296866,
+      "referenceValue": null,
+      "centralOutputGap": -0.5668839107404551,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -22.061174883375287,
+      "deltaDebtBn": -43.09518053467218,
+      "referenceValue": null,
+      "centralOutputGap": -0.5267030276406197,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -23.24651655099305,
+      "deltaDebtBn": -66.34169708566515,
+      "referenceValue": null,
+      "centralOutputGap": -0.4808927769481176,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -25.56567416617594,
+      "deltaDebtBn": -116.3122172622966,
+      "referenceValue": null,
+      "centralOutputGap": -0.4237759400710582,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -31.27969458341059,
+      "deltaDebtBn": -261.26629566370593,
+      "referenceValue": null,
+      "centralOutputGap": -0.36770780910714973,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 19.054866992499,
+      "deltaDebtBn": 19.054866992499228,
+      "referenceValue": 0.2,
+      "centralOutputGap": 0.6810195004686975,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 19.853969823009493,
+      "deltaDebtBn": 38.90883681550895,
+      "referenceValue": 0.55,
+      "centralOutputGap": 0.643237226194639,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 21.193461740234397,
+      "deltaDebtBn": 60.102298555743346,
+      "referenceValue": 0.76,
+      "centralOutputGap": 0.5962319819288185,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 25.610683350710246,
+      "deltaDebtBn": 108.8503255377127,
+      "referenceValue": 0.97,
+      "centralOutputGap": 0.5376663155283129,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "unemploymentPpPerOutputGapPoint × 1.2",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 39.951885717965155,
+      "deltaDebtBn": 278.59249329900103,
+      "referenceValue": 1.29,
+      "centralOutputGap": 0.4786633194736048,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 22.068924946083655,
+      "deltaDebtBn": 22.068924946083825,
+      "referenceValue": null,
+      "centralOutputGap": 0.5946512623473866,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 21.681084157625605,
+      "deltaDebtBn": 43.750009103709544,
+      "referenceValue": null,
+      "centralOutputGap": 0.6343841699452102,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 22.769793996873204,
+      "deltaDebtBn": 66.51980310058298,
+      "referenceValue": null,
+      "centralOutputGap": 0.5966721602720818,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 27.128080572889345,
+      "deltaDebtBn": 118.28847173771373,
+      "referenceValue": null,
+      "centralOutputGap": 0.5351147602243446,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 41.90785530881544,
+      "deltaDebtBn": 296.73991039338944,
+      "referenceValue": null,
+      "centralOutputGap": 0.47164876372258235,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -26.599109469981457,
+      "deltaDebtBn": -26.599109469981613,
+      "referenceValue": -0.32,
+      "centralOutputGap": -0.31999999999999995,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -23.27316837338934,
+      "deltaDebtBn": -49.87227784337074,
+      "referenceValue": -0.66,
+      "centralOutputGap": -0.6541129831516355,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -23.34436913115897,
+      "deltaDebtBn": -73.2166469745298,
+      "referenceValue": -0.72,
+      "centralOutputGap": -0.7051164029661898,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -24.048228489243414,
+      "deltaDebtBn": -120.93936441431288,
+      "referenceValue": -0.81,
+      "centralOutputGap": -0.7749379696112919,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -29.723895323127792,
+      "deltaDebtBn": -257.94707775310144,
+      "referenceValue": -0.78,
+      "centralOutputGap": -0.70791351501807,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -22.9468715217113,
+      "deltaDebtBn": -22.946871521711273,
+      "referenceValue": null,
+      "centralOutputGap": -0.5668839107404551,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -24.04156062599546,
+      "deltaDebtBn": -46.98843214770659,
+      "referenceValue": null,
+      "centralOutputGap": -0.5267030276406197,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -25.212799886205985,
+      "deltaDebtBn": -72.20123203391267,
+      "referenceValue": null,
+      "centralOutputGap": -0.4808927769481176,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -27.611509463605913,
+      "deltaDebtBn": -126.21368551957175,
+      "referenceValue": null,
+      "centralOutputGap": -0.4237759400710582,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -33.70505396779254,
+      "deltaDebtBn": -282.47505656399153,
+      "referenceValue": null,
+      "centralOutputGap": -0.36770780910714973,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 21.35860711007885,
+      "deltaDebtBn": 21.358607110078992,
+      "referenceValue": 0.2,
+      "centralOutputGap": 0.6810195004686975,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 22.256908661546163,
+      "deltaDebtBn": 43.61551577162527,
+      "referenceValue": 0.55,
+      "centralOutputGap": 0.643237226194639,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 23.768628211656676,
+      "deltaDebtBn": 67.38414398328177,
+      "referenceValue": 0.76,
+      "centralOutputGap": 0.5962319819288185,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 28.700466029326037,
+      "deltaDebtBn": 122.01164173468896,
+      "referenceValue": 0.97,
+      "centralOutputGap": 0.5376663155283129,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 0.8",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 44.8317805135039,
+      "deltaDebtBn": 312.34863365049205,
+      "referenceValue": 1.29,
+      "centralOutputGap": 0.4786633194736048,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 18.065311322948958,
+      "deltaDebtBn": 18.06531132294913,
+      "referenceValue": null,
+      "centralOutputGap": 0.5946512623473866,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 16.867376678707615,
+      "deltaDebtBn": 34.93268800165697,
+      "referenceValue": null,
+      "centralOutputGap": 0.6343841699452102,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 17.433669399798276,
+      "deltaDebtBn": 52.36635740145539,
+      "referenceValue": null,
+      "centralOutputGap": 0.5966721602720818,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 20.571216491139865,
+      "deltaDebtBn": 91.71080421172701,
+      "referenceValue": null,
+      "centralOutputGap": 0.5351147602243446,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 31.37501187648209,
+      "deltaDebtBn": 225.88112399279908,
+      "referenceValue": null,
+      "centralOutputGap": 0.47164876372258235,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -24.7115897989722,
+      "deltaDebtBn": -24.711589798972,
+      "referenceValue": -0.32,
+      "centralOutputGap": -0.31999999999999995,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -19.26277892239176,
+      "deltaDebtBn": -43.97436872136359,
+      "referenceValue": -0.66,
+      "centralOutputGap": -0.6541129831516355,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -18.81776263315696,
+      "deltaDebtBn": -62.792131354520734,
+      "referenceValue": -0.72,
+      "centralOutputGap": -0.7051164029661898,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -18.575378238597878,
+      "deltaDebtBn": -100.05691361760637,
+      "referenceValue": -0.81,
+      "centralOutputGap": -0.7749379696112919,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -23.300231459599814,
+      "deltaDebtBn": -206.87830699026745,
+      "referenceValue": -0.78,
+      "centralOutputGap": -0.70791351501807,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -19.367167398143664,
+      "deltaDebtBn": -19.367167398143465,
+      "referenceValue": null,
+      "centralOutputGap": -0.5668839107404551,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -20.30038525869149,
+      "deltaDebtBn": -39.66755265683514,
+      "referenceValue": null,
+      "centralOutputGap": -0.5267030276406197,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -21.499184403149954,
+      "deltaDebtBn": -61.16673705998528,
+      "referenceValue": null,
+      "centralOutputGap": -0.4808927769481176,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -23.72387217868203,
+      "deltaDebtBn": -107.5087624014127,
+      "referenceValue": null,
+      "centralOutputGap": -0.4237759400710582,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -29.057663510966975,
+      "deltaDebtBn": -242.1627379790907,
+      "referenceValue": null,
+      "centralOutputGap": -0.36770780910714973,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 17.046689338122547,
+      "deltaDebtBn": 17.046689338122633,
+      "referenceValue": 0.2,
+      "centralOutputGap": 0.6810195004686975,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 17.736993877294964,
+      "deltaDebtBn": 34.78368321541757,
+      "referenceValue": 0.55,
+      "centralOutputGap": 0.643237226194639,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 18.907045556128963,
+      "deltaDebtBn": 53.690728771546674,
+      "referenceValue": 0.76,
+      "centralOutputGap": 0.5962319819288185,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 22.840393669089124,
+      "deltaDebtBn": 97.17706144657222,
+      "referenceValue": 0.97,
+      "centralOutputGap": 0.5376663155283129,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "revenueBnPerNominalGdpBn × 1.2",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 35.5386540547033,
+      "deltaDebtBn": 248.3340178238177,
+      "referenceValue": 1.29,
+      "centralOutputGap": 0.4786633194736048,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 20.196157458445697,
+      "deltaDebtBn": 20.19615745844567,
+      "referenceValue": null,
+      "centralOutputGap": 0.5946512623473866,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 19.414859687495095,
+      "deltaDebtBn": 39.61101714594088,
+      "referenceValue": null,
+      "centralOutputGap": 0.6343841699452102,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 20.244822221509736,
+      "deltaDebtBn": 59.8558393674507,
+      "referenceValue": null,
+      "centralOutputGap": 0.5966721602720818,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 24.004684992236605,
+      "deltaDebtBn": 105.71397145392348,
+      "referenceValue": null,
+      "centralOutputGap": 0.5351147602243446,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 36.84670000212239,
+      "deltaDebtBn": 262.94690002550124,
+      "referenceValue": null,
+      "centralOutputGap": 0.47164876372258235,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -25.72478963447682,
+      "deltaDebtBn": -25.72478963447702,
+      "referenceValue": -0.32,
+      "centralOutputGap": -0.31999999999999995,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -21.41151328523445,
+      "deltaDebtBn": -47.1363029197114,
+      "referenceValue": -0.66,
+      "centralOutputGap": -0.6541129831516355,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -21.23876169362319,
+      "deltaDebtBn": -68.37506461333442,
+      "referenceValue": -0.72,
+      "centralOutputGap": -0.7051164029661898,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -21.492103112460228,
+      "deltaDebtBn": -111.21791472600717,
+      "referenceValue": -0.81,
+      "centralOutputGap": -0.7749379696112919,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -26.699120322482074,
+      "deltaDebtBn": -234.05364923147044,
+      "referenceValue": -0.78,
+      "centralOutputGap": -0.70791351501807,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -21.280033268558157,
+      "deltaDebtBn": -21.280033268558327,
+      "referenceValue": null,
+      "centralOutputGap": -0.5668839107404551,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -22.300113436360874,
+      "deltaDebtBn": -43.580146704919116,
+      "referenceValue": null,
+      "centralOutputGap": -0.5267030276406197,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -23.465893271933965,
+      "deltaDebtBn": -67.04603997685308,
+      "referenceValue": null,
+      "centralOutputGap": -0.4808927769481176,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -25.770162040550446,
+      "deltaDebtBn": -117.43088808705625,
+      "referenceValue": null,
+      "centralOutputGap": -0.4237759400710582,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -31.483543258609544,
+      "deltaDebtBn": -263.39464373222836,
+      "referenceValue": null,
+      "centralOutputGap": -0.36770780910714973,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 19.350429455702425,
+      "deltaDebtBn": 19.350429455702397,
+      "referenceValue": 0.2,
+      "centralOutputGap": 0.6810195004686975,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 20.139932715831634,
+      "deltaDebtBn": 39.49036217153389,
+      "referenceValue": 0.55,
+      "centralOutputGap": 0.643237226194639,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 21.48191545489837,
+      "deltaDebtBn": 60.97227762643206,
+      "referenceValue": 0.76,
+      "centralOutputGap": 0.5962319819288185,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 25.927931392509507,
+      "deltaDebtBn": 110.33489294755691,
+      "referenceValue": 0.97,
+      "centralOutputGap": 0.5376663155283129,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 0.8",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 40.39813090849245,
+      "deltaDebtBn": 282.03040288294414,
+      "referenceValue": 1.29,
+      "centralOutputGap": 0.4786633194736048,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 1,
+      "outputGap": 0.5946512623473866,
+      "deltaDeficitBn": 19.938078810586944,
+      "deltaDebtBn": 19.93807881058683,
+      "referenceValue": null,
+      "centralOutputGap": 0.5946512623473866,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 2,
+      "outputGap": 0.6343841699452102,
+      "deltaDeficitBn": 19.133601148838096,
+      "deltaDebtBn": 39.07167995942518,
+      "referenceValue": null,
+      "centralOutputGap": 0.6343841699452102,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 3,
+      "outputGap": 0.5966721602720818,
+      "deltaDeficitBn": 19.958345545569017,
+      "deltaDebtBn": 59.03002550499423,
+      "referenceValue": null,
+      "centralOutputGap": 0.5966721602720818,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 5,
+      "outputGap": 0.5351147602243446,
+      "deltaDeficitBn": 23.692119032847486,
+      "deltaDebtBn": 104.2815096668919,
+      "referenceValue": null,
+      "centralOutputGap": 0.5351147602243446,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "composite-proxy",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 10,
+      "outputGap": 0.47164876372258235,
+      "deltaDeficitBn": 36.41152081608186,
+      "deltaDebtBn": 259.6034114335871,
+      "referenceValue": null,
+      "centralOutputGap": 0.47164876372258235,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 1,
+      "outputGap": -0.31999999999999995,
+      "deltaDeficitBn": -25.58590963447682,
+      "deltaDebtBn": -25.585909634476593,
+      "referenceValue": -0.32,
+      "centralOutputGap": -0.31999999999999995,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 2,
+      "outputGap": -0.6541129831516355,
+      "deltaDeficitBn": -21.124434010546636,
+      "deltaDebtBn": -46.710343645023386,
+      "referenceValue": -0.66,
+      "centralOutputGap": -0.6541129831516355,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 3,
+      "outputGap": -0.7051164029661898,
+      "deltaDeficitBn": -20.923370070692727,
+      "deltaDebtBn": -67.63371371571611,
+      "referenceValue": -0.72,
+      "centralOutputGap": -0.7051164029661898,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 5,
+      "outputGap": -0.7749379696112919,
+      "deltaDeficitBn": -21.131503615381064,
+      "deltaDebtBn": -109.77836330591163,
+      "referenceValue": -0.81,
+      "centralOutputGap": -0.7749379696112919,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "tva",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 10,
+      "outputGap": -0.70791351501807,
+      "deltaDeficitBn": -26.32500646024549,
+      "deltaDebtBn": -230.77173551189753,
+      "referenceValue": -0.78,
+      "centralOutputGap": -0.70791351501807,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 1,
+      "outputGap": -0.5668839107404551,
+      "deltaDeficitBn": -21.03400565129681,
+      "deltaDebtBn": -21.034005651296866,
+      "referenceValue": null,
+      "centralOutputGap": -0.5668839107404551,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 2,
+      "outputGap": -0.5267030276406197,
+      "deltaDeficitBn": -22.061174883375287,
+      "deltaDebtBn": -43.09518053467218,
+      "referenceValue": null,
+      "centralOutputGap": -0.5267030276406197,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 3,
+      "outputGap": -0.4808927769481176,
+      "deltaDeficitBn": -23.24651655099305,
+      "deltaDebtBn": -66.34169708566515,
+      "referenceValue": null,
+      "centralOutputGap": -0.4808927769481176,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 5,
+      "outputGap": -0.4237759400710582,
+      "deltaDeficitBn": -25.56567416617594,
+      "deltaDebtBn": -116.3122172622966,
+      "referenceValue": null,
+      "centralOutputGap": -0.4237759400710582,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "ir",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 10,
+      "outputGap": -0.36770780910714973,
+      "deltaDeficitBn": -31.27969458341059,
+      "deltaDebtBn": -261.26629566370593,
+      "referenceValue": null,
+      "centralOutputGap": -0.36770780910714973,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 1,
+      "outputGap": 0.6810195004686975,
+      "deltaDeficitBn": 19.054866992499,
+      "deltaDebtBn": 19.054866992499228,
+      "referenceValue": 0.2,
+      "centralOutputGap": 0.6810195004686975,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 2,
+      "outputGap": 0.643237226194639,
+      "deltaDeficitBn": 19.853969823009493,
+      "deltaDebtBn": 38.90883681550895,
+      "referenceValue": 0.55,
+      "centralOutputGap": 0.643237226194639,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 3,
+      "outputGap": 0.5962319819288185,
+      "deltaDeficitBn": 21.193461740234397,
+      "deltaDebtBn": 60.102298555743346,
+      "referenceValue": 0.76,
+      "centralOutputGap": 0.5962319819288185,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 5,
+      "outputGap": 0.5376663155283129,
+      "deltaDeficitBn": 25.610683350710246,
+      "deltaDebtBn": 108.8503255377127,
+      "referenceValue": 0.97,
+      "centralOutputGap": 0.5376663155283129,
+      "outputGapChange": 0
+    },
+    {
+      "scenario": "cotisations",
+      "coefficientExperiment": "cyclicalSpendingBnPerUnemploymentPoint × 1.2",
+      "horizon": 10,
+      "outputGap": 0.4786633194736048,
+      "deltaDeficitBn": 39.951885717965155,
+      "deltaDebtBn": 278.59249329900103,
+      "referenceValue": 1.29,
+      "centralOutputGap": 0.4786633194736048,
+      "outputGapChange": 0
+    }
+  ],
+  "caveats": [
+    "Les parts 8/25/9/12/46 sont conformes au panier Mésange, mais les postes COFOG sélectionnés ne représentent pas ces natures économiques avec précision.",
+    "Écart de production EcoSim = proxy de la réponse du PIB en volume, pas volume chaîné observé.",
+    "Sensibilités à ±20% choisies arbitrairement. Pas de bornes statistiques ni de validation causale.",
+    "La réponse TVA est calibrée sur Mésange : la proximité ne constitue pas une validation indépendante.",
+    "Le choc R_SOCIAL n’isole pas les cotisations patronales, et ne permet donc pas une comparaison causale avec Mésange."
+  ]
+}

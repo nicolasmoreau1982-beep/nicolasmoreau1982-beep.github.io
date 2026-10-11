@@ -31,17 +31,18 @@
           <a href="#provenance">02 · Données et hypothèses</a>
           <a href="#methode">03 · Mécanismes</a>
           <a href="#histoire">04 · Tests historiques</a>
+          <a href="#benchmark-419">04a · Benchmark 4.19</a>
           <a href="#recherche">05 · Modèles de recherche</a>
           <a href="#incertitude">06 · Incertitude</a>
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>a9f6c0bd6f61</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>3ebe6e049323</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 4.18.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 4.19.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -90,7 +91,7 @@
           </table></div>
           <div class="audit-warning audit-reconciliation">
             <strong>Millésimes à ne pas mélanger.</strong>
-            <p>Deux publications Insee donnent des valeurs 2025 différentes : <a href="https://www.insee.fr/fr/statistiques/8997691">l’Insee Première de mai 2026</a> indique 1 714,2 Md€ de dépenses et 1 561,7 Md€ de recettes ; le <a href="https://www.insee.fr/fr/statistiques/8988845">tableau 3.201 actualisé en août 2026</a>, utilisé par EcoSim, indique 1 714,1 et 1 562,5 Md€, soit 151,6 Md€ de déficit. Le ratio de dette affiché provient d’une série Eurostat figée distincte : 115,6 %, contre 115,7 % dans une publication Insee. Ces millésimes ne doivent pas être mélangés comme s’ils formaient un compte unique réconcilié.</p>
+            <p>Deux publications Insee donnent des valeurs 2025 différentes : <a href="https://www.insee.fr/fr/statistiques/8997691">l’Insee Première de mai 2026</a> indique 1 714,2 Md€ de dépenses et 1 561,7 Md€ de recettes ; le <a href="https://www.insee.fr/fr/statistiques/8988845">tableau 3.201 actualisé en août 2026</a>, utilisé par EcoSim, indique 1 714,1 et 1 562,5 Md€, soit 151,6 Md€ de déficit. Le ratio de dette 2025 d’EcoSim est désormais de 115,7 %, recalculé sur 3 460,5 / 2 991,1. La série historique Eurostat conserve son propre ratio 115,6 % et ne sert pas à initialiser la projection. Ces millésimes ne doivent pas être mélangés comme s’ils formaient un compte unique réconcilié.</p>
           </div>
           <p class="audit-caption">Les sources agrégées sont dans <a href="data.js">data.js</a>, les règles fiscales sélectionnées dans <a href="fiscal.js">fiscal.js</a> et l’historique figé dans <a href="history.js">history.js</a>. Une révision d’Eurostat ne modifie pas silencieusement ces chiffres.</p>
         </section>
@@ -155,6 +156,26 @@
           <p>Les observations <a href="https://www.insee.fr/fr/statistiques/8988845">Insee 3.217</a> 2018–2025 (IR avant crédits, crédits utilisés et remboursés, IFI/ISF, successions) sont archivées dans <code>research/fiscal-history.json</code>. Elles mesurent des années civiles comptables et ne doivent pas être substituées aux avis DGFiP : les deux séries diffèrent par calendrier, périmètre et traitement des crédits. Pour les successions, aucune distribution historique des parts transmises et des liens de parenté n’a été reconstituée ; l’écart de niveau reste un diagnostic, <strong>pas un rétrotest</strong>. Les fichiers et calculs sont vérifiables avec <code>python3 scripts/verify-fiscal-source.py</code> et <code>node scripts/fiscal-backtest.mjs</code>.</p>
           <p>Le seuil de 100 M€ et le plancher de 2 % de la <a href="https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html">proposition dite Zucman</a> sont illustrés par une contribution <code>max(0, 2 % × patrimoine net − IR − IFI − autres impôts couverts supposés)</code>. L’assiette, les impôts imputables, les valorisations et l’exil fiscal ne sont pas entièrement reproduits. Les 1 800 foyers au-dessus de 100 M€ dans le jeu synthétique sont une <strong>hypothèse de scénario</strong>, pas un fichier fiscal observé. Un rendement précis exigerait des données confidentielles ou une méthode indépendante validée.</p>
           <div class="audit-equation"><span>Identités comptables</span><code>solde = recettes − dépenses ; dette(t+1) ≈ dette(t) − solde(t+1) + ajustements stock-flux</code><p>Le moteur ne prédit pas entièrement les ajustements stock-flux et impose une partie de la trajectoire de déficit de référence. Les postes détaillés ne constituent pas une réconciliation complète de ces identités dans le futur.</p></div>
+        </section>
+
+        <section class="audit-section" id="benchmark-419" aria-labelledby="benchmark-419-title">
+          <div class="audit-section-heading"><span>04a</span><h2 id="benchmark-419-title">Benchmarks économiques · version 4.19</h2></div>
+          <p>Ce benchmark vérifie des <strong>réponses conditionnelles</strong> et mesure la sensibilité à trois coefficients. Il ne valide ni les effets causaux ni les prédictions. Les résultats sont calculés automatiquement lors de la construction de cette version, par le vrai moteur JavaScript. Ils restent visibles sans JavaScript.</p>
+          <p>Le panier « dépense composite » reproduit les <strong>parts de ventilation du choc Mésange 2017</strong> : 8 % investissement, 25 % rémunérations, 9 % prestations en nature, 12 % consommations intermédiaires et 46 % prestations en espèces. <strong>Attention :</strong> les lignes COFOG disponibles dans EcoSim sont classées par fonction et non par nature économique. Leurs correspondances sont des <em>proxys illustratifs</em> et ne reproduisent donc pas l'expérience Mésange à périmètre constant. Les résultats ne sont pas ajustés sur les cibles Mésange.</p>
+          <div class="audit-table-wrap"><table class="audit-table"><caption>Écart du PIB en volume approximé par l'écart de production, en points de PIB. Comparaison illustrative, non validation.</caption>
+            <thead><tr><th scope="col">Scénario</th><th scope="col">1 an</th><th scope="col">3 ans</th><th scope="col">5 ans</th><th scope="col">10 ans</th></tr></thead>
+            <tbody id="benchmark-419-body">
+              <!-- BENCHMARK419_START -->
+              <tr><th scope="row">Panier composite EcoSim (proxy COFOG)</th><td>+0,59 %</td><td>+0,60 %</td><td>+0,54 %</td><td>+0,47 %</td></tr>
+              <tr><th scope="row">Mésange 2017 (référence publiée)</th><td>+0,78 %</td><td>+1,03 %</td><td>+0,86 %</td><td>+0,53 %</td></tr>
+              <tr><th scope="row">TVA +1 point de PIB de recettes</th><td>−0,32 %</td><td>−0,71 %</td><td>−0,77 %</td><td>−0,71 %</td></tr>
+              <tr><th scope="row">IR +1 point de PIB de recettes</th><td>−0,57 %</td><td>−0,48 %</td><td>−0,42 %</td><td>−0,37 %</td></tr>
+              <tr><th scope="row">Cotisations globales −1 point de PIB</th><td>+0,68 %</td><td>+0,60 %</td><td>+0,54 %</td><td>+0,48 %</td></tr>
+              <!-- BENCHMARK419_END -->
+            </tbody>
+          </table></div>
+          <p class="audit-caption">Les tests de sensibilité varient séparément ±20 % autour des coefficients <code>0,35</code> (emploi), <code>0,48</code> (recettes) et <code>3,1</code> (stabilisateurs). Ce sont des plages de stress arbitraires, <strong>pas des intervalles de confiance</strong>. Voir <a href="validation/benchmark-419.csv">les résultats détaillés (CSV)</a> et <a href="validation/benchmark-419.json">les données et hypothèses (JSON)</a>.</p>
+          <p class="audit-caption">Sources : <a href="https://www.insee.fr/fr/statistiques/8988845">Insee, tableau 3.201 révisé en août 2026</a> ; <a href="https://www.tresor.economie.gouv.fr/Articles/88381f48-797c-4e76-8f03-ef78d0bff99e/files/1c29ff21-585d-488b-8f4b-497540e9fc62">DG Trésor, Mésange 2017, section 4.1.2</a>.</p>
         </section>
 
         <section class="audit-section" id="histoire" aria-labelledby="histoire-title">

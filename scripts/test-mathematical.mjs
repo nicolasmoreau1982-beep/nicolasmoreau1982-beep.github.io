@@ -175,4 +175,4 @@ for(const income of [0,5000,30000,100000,1000000]) {
  const high=F.incomeTax(income+1000,1,F.policyRules(F.defaults));
  assert.ok(high>=low,`IR non monotone pour ${income}`);
 }
-console.log(`TESTS MATHÉMATIQUES OK : ${projections} projections (30 ans chacune), ${assertions} identités numériques, bases inchangées, flux datés, T4, contrôles min/max, 45 profils-cadres, 64 scénarios croisés, fiscalité.`);
+console.log(`TESTS MATHÉMATIQUES OK : ${projections} projections (30 ans chacune), ${assertions} identités numériques, référence contrôlée, flux datés, T4, contrôles min/max, 45 profils-cadres, 64 scénarios croisés, fiscalité.`);
