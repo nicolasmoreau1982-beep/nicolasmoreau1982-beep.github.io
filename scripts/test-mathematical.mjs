@@ -14,7 +14,7 @@ const read = (name) => fs.readFileSync(path.join(root,'dist',name),'utf8');
 const sandbox = {console, Math, Number, Object, Map, Set, Date, JSON, Intl, Array, String, Boolean};
 sandbox.window = sandbox;
 const context = vm.createContext(sandbox);
-for (const file of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js']) {
+for (const file of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js']) {
   vm.runInContext(read(file),context,{filename:file});
 }
 let app = read('app.js');

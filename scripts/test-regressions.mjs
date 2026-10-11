@@ -9,6 +9,7 @@ const require=createRequire(import.meta.url);
 globalThis.window=globalThis;
 require(path.join(root,'dist/data.js'));
 require(path.join(root,'dist/sectoral.js'));
+require(path.join(root,'dist/guardrails-510.js'));
 const D=globalThis.ECOSIM_DATA;
 const src=fs.readFileSync(path.join(root,'dist/app.js'),'utf8');
 function functionCode(name){
@@ -23,7 +24,7 @@ function functionCode(name){
  throw Error('accolade manquante');
 }
 // Isoler les fonctions dans leur contexte réel de données / structures, sans serveur.
-const globals={D,S:globalThis.ECOSIM_SECTORAL, F:{defaults:{},controls:{},validate:x=>x}, byId:new Map([...D.spending,...D.revenue].map(x=>[x.id,x])), state:{
+const globals={D,S:globalThis.ECOSIM_SECTORAL,G:globalThis.ECOSIM_GUARDRAILS, F:{defaults:{},controls:{},validate:x=>x}, byId:new Map([...D.spending,...D.revenue].map(x=>[x.id,x])), state:{
  model:'consensus',euMode:'current',cycle:'normal',monetary:'neutral',confidence:'stable',
  changes:{},engines:Object.fromEntries(Object.entries(D.policyEngines.controls).map(([k,v])=>[k,v.value])),
  structural:Object.fromEntries(Object.entries(D.structural.controls).map(([k,v])=>[k,v.value])),fiscal:{},sectoral:[],policyStartQuarter:1,policyStartQuarters:{}

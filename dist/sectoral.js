@@ -47,6 +47,12 @@ window.ECOSIM_SECTORAL = (() => {
     grant: {label:"Subvention ciblée", accounting:"spending", sign:1}
   });
   const START_MIN=2026, START_MAX=2035, MAX_MEASURES=8, MAX_EACH_BN=10, MAX_TOTAL_BN=30;
+  const strictNumber = raw => {
+    if (typeof raw === "number") return raw;
+    if (typeof raw === "string" && raw.trim() && /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(raw.trim()))
+      return Number(raw);
+    return NaN;
+  };
   function normalize(raw){
     if (!Array.isArray(raw) || raw.length > MAX_MEASURES) throw new RangeError("Nombre de mesures sectorielles invalide (maximum 8).");
     const result=[];
@@ -55,7 +61,7 @@ window.ECOSIM_SECTORAL = (() => {
           typeof item.sector!=="string" || !Object.hasOwn(sectors,item.sector) ||
           typeof item.instrument!=="string" || !Object.hasOwn(instruments,item.instrument) ||
           !["accounting","exploratory","contextual"].includes(item.response)) throw new RangeError("Mesure sectorielle inconnue.");
-      const amount=Number(item.amountBn), start=Number(item.startYear), duration=Number(item.durationYears);
+      const amount=strictNumber(item.amountBn), start=strictNumber(item.startYear), duration=strictNumber(item.durationYears);
       if (![amount,start,duration].every(Number.isFinite) || !(amount>=0.1 && amount<=MAX_EACH_BN) ||
         !Number.isInteger(start) || start<START_MIN || start>START_MAX ||
         !Number.isInteger(duration) || duration<1 || duration>15)

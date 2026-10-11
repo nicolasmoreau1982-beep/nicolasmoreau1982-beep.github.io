@@ -42,12 +42,12 @@
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>c01ea17d83a5</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>b6b056d4e5a8</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 5.0.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 5.1.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -409,6 +409,13 @@
           <p>Un diagnostic compare les réglages budgétaires, structurels, sectoriels et ceux des moteurs publics pour signaler des <strong>recouvrements plausibles</strong>. Il ne prouve pas qu'une enveloppe a été comptabilisée deux fois et ne modifie jamais la projection. L'absence d'alerte ne constitue pas une garantie.</p>
           <p>Le bilan physique séparé s'appuie sur le <strong>SDES 2024</strong> (1 499 TWh d'énergie finale à usage énergétique ; 624,2 TWh de produits pétroliers, y compris biocarburants ; 398 TWh d'électricité finale). Les coefficients de substitution pétrole/électricité sont choisis par le visiteur et <strong>n'alimentent pas le moteur économique</strong>. <a href="qualite-et-energie-500.html">Voir le bilan, ses sources et la matrice de validation ↗</a>.</p>
           <p>La fiscalité des ménages, les élasticités sectorielles et les effets historiques restent respectivement illustratifs, non estimés causalement ou non comparables au sens strict. Les tests renforcent la fiabilité logicielle et l'auditabilité, pas la précision des prévisions.</p>
+        </section>
+
+        <section class="audit-section" id="integrite-510" aria-labelledby="integrite-510-title">
+          <div class="audit-section-heading"><span>04i</span><h2 id="integrite-510-title">Version 5.1 : contrats d'intégrité du moteur</h2></div>
+          <p>Les imports JSON et les liens partagés sont désormais normalisés <strong>avant toute modification du scénario</strong> : profils, montants, bornes, types et calendriers invalides sont rejetés, plutôt que convertis ou corrigés silencieusement.</p>
+          <p>Le calcul vérifie à chaque année la finitude des valeurs, l'identité du coût budgétaire direct, celle du déficit et de la dette, ainsi que les ratios sur le PIB. Les tests injectent volontairement des résultats corrompus pour démontrer que ces garde-fous détectent les anomalies.</p>
+          <p><strong>Ces contrôles attestent d'une cohérence logicielle et mathématique, pas d'une validation causale.</strong> <a href="integrite-moteur-510.html">Voir la liste des contrôles et les commandes de reproduction ↗</a>.</p>
         </section>
 
         <section class="audit-section" id="recherche" aria-labelledby="recherche-title">

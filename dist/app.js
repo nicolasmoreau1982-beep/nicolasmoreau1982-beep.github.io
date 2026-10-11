@@ -10,6 +10,8 @@
   const H = window.ECOSIM_HISTORY;
   const F = window.ECOSIM_FISCAL;
   const S = window.ECOSIM_SECTORAL;
+  const G = window.ECOSIM_GUARDRAILS;
+  if (!G) throw new Error("Contrats d’intégrité 5.1 manquants");
   if (!S) throw new Error("Module sectoriel manquant");
   if (!F) throw new Error("Moteur fiscal manquant");
   const populationProjection = window.ECOSIM_INSEE_PROJECTION;
@@ -17,6 +19,7 @@
   const populationByYear = new Map(populationProjection.rows.map((row) => [row.year, row]));
   const allCategories = [...D.spending, ...D.revenue];
   const byId = new Map(allCategories.map((item) => [item.id, item]));
+  G.checkData(D);
   const fmt1 = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const fmt2 = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fmt0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
@@ -106,73 +109,18 @@
   }
 
   const hasOwnOption = (options, key) => typeof key === "string" && Object.hasOwn(options, key);
-  const selectedOptions = {
-    model: D.models, euMode: D.euModes, cycle: D.assumptions.cycle,
-    monetary: D.assumptions.monetary, confidence: D.assumptions.confidence
-  };
+  const normalizationContext = {D,F,S,byId,categoryChangeLimits};
   function validateScenarioOptions(payload) {
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
-    if (!Object.entries(selectedOptions).every(([field, options]) =>
-      !Object.hasOwn(payload, field) || hasOwnOption(options, payload[field]))) return false;
-    if (Object.hasOwn(payload,"sectoral")) {
-      try { S.normalize(payload.sectoral); } catch { return false; }
-    }
-    return true;
+    try { G.normalizeScenario(payload, normalizationContext); return true; }
+    catch { return false; }
   }
-
   function applySerialized(payload) {
-    // Validation AVANT toute mutation : un lien malformé ne doit pas altérer l'état.
-    if (!validateScenarioOptions(payload)) return false;
-    if (hasOwnOption(D.models, payload.model)) state.model = payload.model;
-    if (hasOwnOption(D.euModes, payload.euMode)) state.euMode = payload.euMode;
-    if (hasOwnOption(D.assumptions.cycle, payload.cycle)) state.cycle = payload.cycle;
-    if (hasOwnOption(D.assumptions.monetary, payload.monetary)) state.monetary = payload.monetary;
-    if (hasOwnOption(D.assumptions.confidence, payload.confidence)) state.confidence = payload.confidence;
-    state.policyStartQuarter = [1, 2, 3, 4].includes(Number(payload.policyStartQuarter))
-      ? Number(payload.policyStartQuarter) : 1;
-    state.policyStartQuarters = {};
-    if (payload.policyStartQuarters && typeof payload.policyStartQuarters === "object") {
-      for (const [id, quarter] of Object.entries(payload.policyStartQuarters)) {
-        if (byId.has(id) && !byId.get(id).locked && [1, 2, 3, 4].includes(Number(quarter))) {
-          state.policyStartQuarters[id] = Number(quarter);
-        }
-      }
-    }
-    if (typeof payload.name === "string") state.name = payload.name.slice(0, 60);
-    if (payload.structural && typeof payload.structural === "object") {
-      Object.entries(D.structural.controls).forEach(([id, control]) => {
-        const value = Number(payload.structural[id]);
-        if (Number.isFinite(value)) state.structural[id] = clamp(value, control.min, control.max);
-      });
-    }
-    if (payload.engines && typeof payload.engines === "object") {
-      Object.entries(D.policyEngines.controls).forEach(([id, control]) => {
-        const value = Number(payload.engines[id]);
-        if (Number.isFinite(value)) state.engines[id] = clamp(value, control.min, control.max);
-      });
-    }
-    state.sectoral = S.normalize(payload.sectoral || []);
-    state.fiscal = { ...F.defaults };
-    if (payload.fiscal && typeof payload.fiscal === "object") {
-      const candidate = { ...F.defaults };
-      Object.entries(F.controls).forEach(([id, control]) => {
-        if (payload.fiscal[id] === undefined) return;
-        const value = Number(payload.fiscal[id]);
-        if (Number.isFinite(value)) candidate[id] = clamp(value, control.min, control.max);
-      });
-      try { state.fiscal = F.validate(candidate); } catch { state.fiscal = { ...F.defaults }; }
-    }
-    if (payload.changes && typeof payload.changes === "object") {
-      state.changes = {};
-      Object.entries(payload.changes).forEach(([id, value]) => {
-        const category = byId.get(id);
-        const number = Number(value);
-        if (category && !category.locked && Number.isFinite(number)) {
-          const limits = categoryChangeLimits(category);
-          state.changes[id] = clamp(number, limits.min, limits.max);
-        }
-      });
-    }
+    // Transaction atomique : tout valider AVANT de modifier un seul réglage.
+    // Les imports partiels démarrent de valeurs par défaut plutôt que d'un état antérieur.
+    let normalized;
+    try { normalized = G.normalizeScenario(payload, normalizationContext); }
+    catch { return false; }
+    Object.assign(state, normalized);
     return true;
   }
 
@@ -955,6 +903,7 @@
         + scenarioDebt * riskPremium / 100 * transmission;
       const directBalanceCost = spendingChange - revenueChange;
       const deficit = baseline[index].deficit + directBalanceCost - revenueFeedback + cyclicalSpending + extraInterest;
+      const previousDebtForGuard = scenarioDebt;
       scenarioDebt += deficit;
       const debtRatio = scenarioDebt / scenarioGdp * 100;
       const deficitRatio = deficit / scenarioGdp * 100;
@@ -1003,10 +952,15 @@
           unemployment: Math.max(0.08, modelGdpBand / baseline[index].gdp * 28, H.stressFloor("unemployment", index + 1))
         }
       });
+      G.checkYear(scenario[scenario.length - 1], baseline[index], previousDebtForGuard,
+        D.baseline.unemployment[index], D.macroCoefficients.cyclicalSpendingBnPerUnemploymentPoint);
       baselineDebtPrevious = baseline[index].debt;
       lastDebtRatio = debtRatio;
     }
 
+    // Contrôle final indépendant de la validité des valeurs de sortie.
+    G.checkProjection({baseline,scenario}, D.metadata.projectionYears,D.BASE.debt,
+      D.baseline.unemployment,D.macroCoefficients.cyclicalSpendingBnPerUnemploymentPoint);
     scenario.forEach((point, index) => { point.social = calculateSocialOutlook(point, baseline[index]); });
     return { baseline, scenario, profile, eu, structural, engines };
   }

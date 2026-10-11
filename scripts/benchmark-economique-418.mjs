@@ -15,7 +15,7 @@ const read = file => fs.readFileSync(path.join(siteRoot,file),'utf8');
 const sandbox={console, Math, Number, Object, Map, Set, Date, JSON, Intl, Array, String, Boolean};
 sandbox.window=sandbox;
 const ctx=vm.createContext(sandbox);
-for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js']) vm.runInContext(read(f),ctx,{filename:f});
+for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js']) vm.runInContext(read(f),ctx,{filename:f});
 let app=read('app.js');
 const stop='  loadInitialState();\n  initTheme();';
 assert.ok(app.includes(stop),'Le harnais doit être adapté à la nouvelle version');

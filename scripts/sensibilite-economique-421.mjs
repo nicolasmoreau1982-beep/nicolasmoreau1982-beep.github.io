@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
 const ctx=vm.createContext({console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean});ctx.window=ctx;
-for(const name of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js'])
+for(const name of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js'])
  vm.runInContext(fs.readFileSync(path.join(dist,name),'utf8'),ctx,{filename:name});
 let source=fs.readFileSync(path.join(dist,'app.js'),'utf8');
 const stop='  loadInitialState();\n  initTheme();';
