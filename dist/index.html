@@ -16,18 +16,15 @@
     <meta property="og:title" content="Simulateur du budget et de la dette de la France — EcoSim" />
     <meta property="og:description" content="Testez l’effet de réformes sur les finances publiques et comparez des orientations de groupes politiques. Les programmes individuels des candidats ne sont pas encore modélisés." />
     <meta property="og:url" content="https://nicolasmoreau1982-beep.github.io/" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"EcoSim France","applicationCategory":"EducationalApplication","operatingSystem":"Tout navigateur récent","url":"https://nicolasmoreau1982-beep.github.io/","description":"Simulation pédagogique conditionnelle du budget et de la dette publique français."}</script>
     <title>Simulateur du budget et de la dette de la France — EcoSim</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
     <script src="theme.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Aller au simulateur</a>
+    <noscript><p class="no-js-message">Le simulateur interactif nécessite JavaScript. Les <a href="comprendre-budget-france.html">guides</a> et l’<a href="audit.html">audit</a> restent consultables sans JavaScript.</p></noscript>
 
     <header class="topbar">
       <a class="brand" href="#" aria-label="EcoSim France — accueil">
@@ -372,11 +369,24 @@
           <p>Indices illustratifs d’exposition par âge et situation. Leurs poids ne sont pas estimés sur microdonnées et ne permettent de prédire ni mobilisation ni vote.</p>
         </div>
         <div class="social-cards">
-          <article><small>Écart moyen de mécontentement</small><strong id="social-discomfort">—</strong><span>Indice relatif à la trajectoire de référence, pas une enquête d'opinion.</span></article>
-          <article><small>Mobilisation la plus exposée</small><strong id="social-pressure">—</strong><span id="social-pressure-detail">Pression indicative, pas une probabilité de grève.</span></article>
+          <article><small>Plage d’exposition simulée</small><strong id="social-discomfort">—</strong><span>Minimum à maximum parmi les profils modélisés, sans moyenne de population.</span></article>
+          <article><small>Groupe le plus défavorablement exposé</small><strong id="social-pressure">—</strong><span id="social-pressure-detail">Indice calculé, non représentatif d’un groupe national.</span></article>
         </div>
-        <div class="social-matrix-wrap"><table class="social-matrix"><caption>Écart de mécontentement par âge et situation, en points d'indice</caption><thead id="social-matrix-head"></thead><tbody id="social-matrix-body"></tbody></table></div>
-        <p class="social-caveat">Les poids d'âge, de profession et de mobilisation sont des hypothèses de sensibilité. Ils s'inspirent des mécanismes documentés par l'Insee et le CEVIPOF mais ne sont pas estimés sur microdonnées. L'« influence » désigne ici seulement la capacité de mobilisation collective, jamais la valeur des personnes. Le modèle ne prédit ni parti gagnant, ni manifestation, ni effet économique automatique des conflits sociaux.</p>
+        <div class="social-matrix-wrap"><table class="social-matrix"><caption>Exposition simulée par âge et situation, en unités d’indice EcoSim (ni %, ni points de vote)</caption><thead id="social-matrix-head"></thead><tbody id="social-matrix-body"></tbody></table></div>
+        <p id="social-mechanism" class="social-mechanism" aria-live="polite">Les facteurs de chaque résultat seront expliqués après calcul.</p>
+        <details class="social-assumptions">
+          <summary>Comment les indices sont-ils calculés ? Voir les coefficients</summary>
+          <p>L'exposition additionne un effet de conjoncture commun, des effets directs conventionnels selon la situation, un effet TVA commun et, pour certaines mesures ciblées, un effet propre à l'âge. Chaque coefficient convertit sa variable d'origine (Md€, taux ou unité d'un moteur) en unité d'indice EcoSim. Les différences de consommation et de population entre groupes ne sont pas observées ici.</p>
+          <table><caption>Exemples de coefficients internes, non estimés sur microdonnées</caption><thead><tr><th>Variable</th><th>Contribution indicative à l’indice</th></tr></thead><tbody>
+            <tr><th scope="row">TVA</th><td>+0,09 par Md€ supplémentaire, pour tous les profils</td></tr>
+            <tr><th scope="row">Impôt sur le revenu</th><td>+0,10 par Md€ pour salarié privé ; +0,09 pour agent public</td></tr>
+            <tr><th scope="row">Pensions</th><td>−0,14 par Md€ pour un profil retraité ; supplément −0,05 à partir de 65 ans</td></tr>
+            <tr><th scope="row">Dépenses d'éducation</th><td>−0,15 par Md€ pour les étudiants, supplément −0,04 avant 35 ans</td></tr>
+            <tr><th scope="row">Santé</th><td>−0,07 par Md€, sans distinction observée entre profils</td></tr>
+          </tbody></table>
+          <p>Une réaction sociale hypothétique peut aussi être calculée avec les multiplicateurs de mobilisation par âge et situation définis dans les données du modèle ; cette réaction n'est <strong>pas utilisée pour classer les groupes exposés</strong>. Les profils à très faible effectif ne sont pas quantifiables : aucun total national ni prédiction électorale n'est produit.</p>
+        </details>
+        <p class="social-caveat">Indices exploratoires non validés par des microdonnées. Une exposition économique simulée ne mesure ni le mécontentement ni une mobilisation effective. Les cellules ne sont pas pondérées par leur population ; un ex æquo ne départage pas artificiellement les groupes.</p>
       </section>
 
       <section class="engine-room" id="engines" aria-labelledby="engine-title">
@@ -485,7 +495,7 @@
             </div>
             <div class="search-box">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.5-4.5m2-5A7 7 0 1 1 4.5 11.5a7 7 0 0 1 14 0Z"/></svg>
-              <input id="category-search" type="search" placeholder="Rechercher un poste…" />
+              <label class="visually-hidden" for="category-search">Rechercher un poste budgétaire</label><input id="category-search" type="search" placeholder="Rechercher un poste…" />
             </div>
           </div>
           <div class="table-head" aria-hidden="true">
@@ -517,12 +527,12 @@
             <small>Écart de recettes en <span id="fiscal-year">2026</span></small>
             <strong id="fiscal-total">0 Md€ / an</strong>
             <div id="fiscal-breakdown" class="fiscal-breakdown"></div>
-            <h3>Foyers-types gagnants et perdants</h3>
+            <h3>Exemples illustratifs de foyers-types : gains et pertes</h3><p class="fiscal-example-note">Profils synthétiques non représentatifs ; ces nombres ne permettent pas d’estimer les gagnants et perdants dans la population française.</p>
             <div class="fiscal-table-wrap"><table>
               <thead><tr><th>Revenus</th><th>Gagnants</th><th>Perdants</th><th>Gain moyen</th></tr></thead>
               <tbody id="fiscal-groups"></tbody>
             </table></div>
-            <h3>Lecture par patrimoine net</h3>
+            <h3>Illustration par patrimoine net (foyers-types)</h3><p class="fiscal-example-note">Regroupements fictifs pondérés : ni enquête sur le patrimoine ni distribution nationale vérifiée.</p>
             <div class="fiscal-table-wrap"><table>
               <thead><tr><th>Patrimoine</th><th>Gagnants</th><th>Perdants</th><th>Gain moyen</th></tr></thead>
               <tbody id="fiscal-wealth-groups"></tbody>
@@ -626,7 +636,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.16 · octobre 2026</span>
+      <span class="footer-version">Version 4.17 · paquet <code title="Empreinte du code de distribution, pas un commit Git">555831d7707d</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -663,7 +673,7 @@
           <h3>11. Moteur fiscal expérimental</h3>
           <p>Un module séparé applique des barèmes IR, IFI et succession simplifiés à des foyers-types pondérés selon revenu et patrimoine ; il peut aussi tester un impôt plancher proposé, désactivé par défaut. Ses écarts de recettes et les gains/pertes simulés alimentent le budget et une réponse de consommation hypothétique. Les foyers-types ne sont pas un échantillon représentatif, les recettes calculées ne sont pas réconciliées avec les comptes et les règles LFSS individuelles ne sont pas codées : ces résultats ne sont pas des prévisions fiscales.</p>
           <h3>12. Exposition sociale expérimentale</h3>
-          <p>Le module affiche une matrice âge × situation socio-professionnelle. Il combine des écarts macroéconomiques simulés et l'exposition conventionnelle à certaines mesures. Les poids de mobilisation ne sont pas estimés sur microdonnées : ils illustrent des expositions possibles et ne prédisent ni comportement individuel, ni scrutin, ni conflit social. Aucun indicateur chiffré de vote n’est affiché. La population simulée n'est pas ventilée par ces cellules ; aucune taille électorale n'en est déduite.</p>
+          <p>Le module affiche une matrice âge × situation socio-professionnelle. Il combine des écarts macroéconomiques simulés et l'exposition conventionnelle à certaines mesures. Les coefficients conventionnels ne sont pas estimés sur microdonnées : ils illustrent des expositions possibles et ne prédisent ni comportement individuel, ni scrutin, ni conflit social. Aucun indicateur chiffré de vote n’est affiché. La population simulée n'est pas ventilée par ces cellules ; aucune taille électorale n'en est déduite.</p>
           <h3>13. Horizons 20 et 30 ans</h3>
           <p>Après 2035, la trajectoire n’est plus une prévision conjoncturelle : elle prolonge des hypothèses structurelles de productivité, inflation, chômage, vieillissement, migrations et coût de la dette. Les nouvelles générations n’affectent l’offre de travail qu’après 18 ans. L’incertitude augmente volontairement plus vite au-delà de dix ans.</p>
         </div>
@@ -686,6 +696,7 @@
     <script src="history.js"></script>
     <script src="insee-projection.js"></script>
     <script src="fiscal.js"></script>
+    <script src="build-info.js"></script>
     <script src="app.js"></script>
     <script src="analytics.js"></script>
   </body>

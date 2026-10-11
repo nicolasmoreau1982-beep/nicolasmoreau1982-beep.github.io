@@ -9,7 +9,7 @@
 .audit-sidebar nav { display: grid; gap: 2px; margin: 18px 0 32px; border-left: 1px solid var(--line); }
 .audit-sidebar nav a { display: block; padding: 10px 12px 10px 16px; color: var(--ink-2); text-decoration: none; font-size: 12px; border-left: 2px solid transparent; margin-left: -1px; }
 .audit-sidebar nav a:hover, .audit-sidebar nav a:focus-visible { color: var(--blue); border-left-color: var(--blue); background: var(--blue-soft); }
-.audit-sidebar-note { border-top: 1px solid var(--line); padding-top: 19px; font-size: 11px; color: var(--ink-2); line-height: 1.8; }
+.audit-sidebar-note { border-top: 1px solid var(--line); padding-top: 19px; font-size: 12px; color: var(--ink-2); line-height: 1.8; }
 .audit-sidebar-note strong { color: var(--ink); }
 .audit-content { min-width: 0; max-width: 1030px; }
 .audit-hero { padding: 80px 0 64px; border-bottom: 1px solid var(--line); }
@@ -18,7 +18,7 @@
 .audit-hero h1 em { color: var(--blue); font-weight: 500; }
 .audit-hero > p { max-width: 760px; font-size: 16px; color: var(--ink-2); line-height: 1.75; }
 .audit-status-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 31px; }
-.audit-status-row span { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 99px; background: var(--card); padding: 7px 12px; font-size: 11px; }
+.audit-status-row span { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 99px; background: var(--card); padding: 7px 12px; font-size: 12px; }
 .audit-hero .audit-status-explainer { max-width: 740px; margin: 12px 0 0; font-size: 12px; line-height: 1.6; }
 .audit-quick-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 22px; font-size: 12px; }
 .audit-quick-links a { color: var(--blue); text-underline-offset: 3px; }
@@ -50,45 +50,45 @@
 .audit-triplet-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
 .audit-triplet-grid article { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
 .audit-triplet-grid h5 { margin: 9px 0 13px; font-size: 13px; }
-.audit-triplet-grid dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; margin: 0; font-size: 11px; }
+.audit-triplet-grid dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; margin: 0; font-size: 12px; }
 .audit-triplet-grid dt { color: var(--ink-2); }
 .audit-triplet-grid dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; }
-.audit-triplet-grid ul { margin: 0; padding-left: 17px; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.audit-triplet-grid ul { margin: 0; padding-left: 17px; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .audit-triplet-grid li + li { margin-top: 9px; }
 .audit-triplet-grid li small { display: block; margin-top: 3px; color: var(--ink-2); }
-.audit-triplet-grid .audit-caption { margin: 14px 0 0; font-size: 10px; }
+.audit-triplet-grid .audit-caption { margin: 14px 0 0; font-size: 12px; }
 .audit-triplet-table { min-width: 600px; }
 .audit-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
 .audit-controls { display: flex; flex-wrap: wrap; gap: 12px; margin: 15px 0; }
-.audit-controls label { display: grid; gap: 6px; color: var(--ink-2); font-size: 11px; font-weight: 600; }
+.audit-controls label { display: grid; gap: 6px; color: var(--ink-2); font-size: 12px; font-weight: 600; }
 .audit-controls select { min-width: 185px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--card); color: var(--ink); font: inherit; }
 .audit-year-table { min-width: 560px; }
 .audit-year-table tbody th { min-width: 65px; }
 .audit-quarter-ledger { margin: 18px 0; }
 .audit-quarter-ledger summary { cursor: pointer; color: var(--blue); font-size: 12px; font-weight: 700; }
-.audit-quarter-ledger > p { font-size: 11px; }
+.audit-quarter-ledger > p { font-size: 12px; }
 .audit-quarter-ledger .audit-table { min-width: 800px; }
 .audit-table { border-collapse: collapse; width: 100%; min-width: 740px; font-size: 12px; line-height: 1.55; }
-.audit-table caption { text-align: left; font-size: 11px; color: var(--ink-2); padding: 13px 17px; border-bottom: 1px solid var(--line); }
+.audit-table caption { text-align: left; font-size: 12px; color: var(--ink-2); padding: 13px 17px; border-bottom: 1px solid var(--line); }
 .audit-table th, .audit-table td { vertical-align: top; text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); }
 .audit-table tbody tr:last-child th, .audit-table tbody tr:last-child td { border-bottom: 0; }
-.audit-table thead th { background: var(--paper-2); font-size: 10px; color: var(--ink-2); font-weight: 600; }
+.audit-table thead th { background: var(--paper-2); font-size: 12px; color: var(--ink-2); font-weight: 600; }
 .audit-table tbody th { min-width: 155px; font-weight: 700; }
 .audit-table a { white-space: normal; }
 .audit-numeric td:not(:last-child) { font-variant-numeric: tabular-nums; }
 .tag { display: inline-flex; border: 1px solid currentColor; border-radius: 99px; padding: 2px 8px; font: 500 10px var(--mono); white-space: nowrap; }
-.audit-caption { margin-top: 14px; font-size: 11px; }
+.audit-caption { margin-top: 14px; font-size: 12px; }
 .audit-process { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin: 0 0 27px; }
 .audit-process div { min-height: 120px; padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
 .audit-process b { display: block; color: var(--blue); font: 600 11px var(--mono); }
 .audit-process strong, .audit-process small { display: block; }
 .audit-process strong { margin-top: 13px; font-size: 12px; }
-.audit-process small { margin-top: 4px; color: var(--ink-2); font-size: 10px; }
+.audit-process small { margin-top: 4px; color: var(--ink-2); font-size: 12px; }
 .audit-equation, .audit-warning { border-radius: 12px; padding: 20px 23px; margin-top: 22px; }
 .audit-equation { background: var(--blue-soft); }
 .audit-equation > span { display: block; color: var(--blue); font: 600 10px var(--mono); text-transform: uppercase; }
 .audit-equation code { display: block; margin-top: 10px; white-space: normal; overflow-wrap: anywhere; font-size: 12px; }
-.audit-equation p { margin-bottom: 0; font-size: 11px; }
+.audit-equation p { margin-bottom: 0; font-size: 12px; }
 .audit-warning { background: var(--coral-soft); border-left: 3px solid var(--coral); }
 .audit-warning strong { color: var(--ink); }
 .audit-warning p { margin: 7px 0 0; font-size: 12px; }
@@ -97,7 +97,7 @@
 .audit-roadmap li { counter-increment: items; position: relative; padding: 16px 0 17px 45px; border-bottom: 1px solid var(--line); color: var(--ink-2); line-height: 1.7; }
 .audit-roadmap li::before { content: counter(items, decimal-leading-zero); position: absolute; left: 0; top: 19px; color: var(--blue); font: 600 11px var(--mono); }
 .audit-roadmap li strong { color: var(--ink); }
-.audit-footer { padding: 30px 0 55px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; color: var(--ink-2); font-size: 11px; }
+.audit-footer { padding: 30px 0 55px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; color: var(--ink-2); font-size: 12px; }
 .audit-footer a { color: var(--blue); }
 @media (max-width: 1080px) {
   .audit-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -105,14 +105,14 @@
   .audit-sidebar > p, .audit-sidebar-note { display: none; }
   .audit-sidebar nav { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; margin: 0; border: 0; padding-bottom: 5px; scrollbar-width: none; }
   .audit-sidebar nav::-webkit-scrollbar { display: none; }
-  .audit-sidebar::after { content: "Faites défiler pour voir toutes les rubriques →"; display: block; color: var(--ink-2); font-size: 10px; margin-top: 4px; }
+  .audit-sidebar::after { content: "Faites défiler pour voir toutes les rubriques →"; display: block; color: var(--ink-2); font-size: 12px; margin-top: 4px; }
   .audit-sidebar nav a { border: 1px solid var(--line); border-radius: 99px; margin: 0; padding: 7px 12px; }
   .audit-hero { padding-top: 50px; }
 }
 @media (max-width: 760px) {
   .audit-topbar { grid-template-columns: 1fr auto; }
   .audit-topbar-label { display: none; }
-  .audit-back { font-size: 10px; padding: 8px 10px; }
+  .audit-back { font-size: 12px; padding: 8px 10px; }
   .audit-layout { padding: 0 17px; }
   .audit-content, .audit-hero, .audit-section { min-width: 0; }
   .audit-hero h1 { overflow-wrap: anywhere; }

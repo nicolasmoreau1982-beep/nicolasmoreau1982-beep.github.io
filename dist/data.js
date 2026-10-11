@@ -1333,13 +1333,13 @@ window.ECOSIM_DATA = (() => {
 
   const social = {
     ages: [
-      { id: "18-24", label: "18–24 ans", voteWeight: 0.55, mobilization: 1.0 },
-      { id: "25-34", label: "25–34 ans", voteWeight: 0.68, mobilization: 1.0 },
-      { id: "35-44", label: "35–44 ans", voteWeight: 0.78, mobilization: 0.88 },
-      { id: "45-54", label: "45–54 ans", voteWeight: 0.85, mobilization: 0.85 },
-      { id: "55-64", label: "55–64 ans", voteWeight: 0.91, mobilization: 0.72 },
-      { id: "65-74", label: "65–74 ans", voteWeight: 1.0, mobilization: 0.55 },
-      { id: "75+", label: "75 ans et +", voteWeight: 0.82, mobilization: 0.35 }
+      { id: "18-24", label: "18–24 ans", mobilization: 1.0 },
+      { id: "25-34", label: "25–34 ans", mobilization: 1.0 },
+      { id: "35-44", label: "35–44 ans", mobilization: 0.88 },
+      { id: "45-54", label: "45–54 ans", mobilization: 0.85 },
+      { id: "55-64", label: "55–64 ans", mobilization: 0.72 },
+      { id: "65-74", label: "65–74 ans", mobilization: 0.55 },
+      { id: "75+", label: "75 ans et +", mobilization: 0.35 }
     ],
     situations: [
       { id: "private", label: "Salariés du privé", mobilization: 0.82, minAge: 18, maxAge: 74 },
@@ -1378,7 +1378,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.16.0"
+      version: "4.17.0"
     }
   };
 })();

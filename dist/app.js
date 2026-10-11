@@ -2,6 +2,7 @@
   "use strict";
 
   const D = window.ECOSIM_DATA;
+  const BUILD_ID = window.ECOSIM_BUILD_ID || "non renseigné";
   const H = window.ECOSIM_HISTORY;
   const F = window.ECOSIM_FISCAL;
   if (!F) throw new Error("Moteur fiscal manquant");
@@ -76,6 +77,7 @@
   function serializableState() {
     return {
       version: D.metadata.version,
+      buildId: BUILD_ID,
       name: state.name,
       model: state.model,
       euMode: state.euMode,
@@ -95,13 +97,25 @@
     if (location.hash.startsWith("#scenario=")) window.history.replaceState(null, "", location.pathname + location.search);
   }
 
+  const hasOwnOption = (options, key) => typeof key === "string" && Object.hasOwn(options, key);
+  const selectedOptions = {
+    model: D.models, euMode: D.euModes, cycle: D.assumptions.cycle,
+    monetary: D.assumptions.monetary, confidence: D.assumptions.confidence
+  };
+  function validateScenarioOptions(payload) {
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
+    return Object.entries(selectedOptions).every(([field, options]) =>
+      !Object.hasOwn(payload, field) || hasOwnOption(options, payload[field]));
+  }
+
   function applySerialized(payload) {
-    if (!payload || typeof payload !== "object") return false;
-    if (D.models[payload.model]) state.model = payload.model;
-    if (D.euModes[payload.euMode]) state.euMode = payload.euMode;
-    if (D.assumptions.cycle[payload.cycle]) state.cycle = payload.cycle;
-    if (D.assumptions.monetary[payload.monetary]) state.monetary = payload.monetary;
-    if (D.assumptions.confidence[payload.confidence]) state.confidence = payload.confidence;
+    // Validation AVANT toute mutation : un lien malformé ne doit pas altérer l'état.
+    if (!validateScenarioOptions(payload)) return false;
+    if (hasOwnOption(D.models, payload.model)) state.model = payload.model;
+    if (hasOwnOption(D.euModes, payload.euMode)) state.euMode = payload.euMode;
+    if (hasOwnOption(D.assumptions.cycle, payload.cycle)) state.cycle = payload.cycle;
+    if (hasOwnOption(D.assumptions.monetary, payload.monetary)) state.monetary = payload.monetary;
+    if (hasOwnOption(D.assumptions.confidence, payload.confidence)) state.confidence = payload.confidence;
     state.policyStartQuarter = [1, 2, 3, 4].includes(Number(payload.policyStartQuarter))
       ? Number(payload.policyStartQuarter) : 1;
     state.policyStartQuarters = {};
@@ -157,7 +171,7 @@
       !knownFields.some((key) => Object.hasOwn(payload, key))) {
       throw new Error("Ce fichier ne contient pas de scénario EcoSim.");
     }
-    if (payload.model && !D.models[payload.model]) throw new Error("Cadre économique inconnu dans ce fichier.");
+    if (!validateScenarioOptions(payload)) throw new Error("Le scénario contient un profil ou une hypothèse inconnue.");
     return {payload, version: file?.metadata?.version || payload.version || null};
   }
 
@@ -166,7 +180,7 @@
     const hash = location.hash.match(/^#scenario=(.+)$/);
     if (hash) {
       try {
-        if (applySerialized(decodeState(hash[1]))) return;
+        if (hash[1].length <= 200_000 && applySerialized(decodeState(hash[1]))) return;
         invalidInitialLink = true;
       } catch (error) {
         invalidInitialLink = true;
@@ -714,6 +728,7 @@
     const change = (id) => Number(state.changes[id] || 0);
     const education = Object.entries(state.changes).reduce((sum, [id, value]) => sum + (id.startsWith("GF09") ? Number(value) : 0), 0);
     const health = Object.entries(state.changes).reduce((sum, [id, value]) => sum + (id.startsWith("GF07") ? Number(value) : 0), 0);
+    // Indices exploratoires EcoSim : ni taux de population touchée, ni mesure d'opinion.
     const macro = clamp((point.unemployment - reference.unemployment) * 2.2
       + (point.inflation - reference.inflation) * 1.5
       - (point.gdp / reference.gdp - 1) * 100 * 0.9, -12, 12);
@@ -730,23 +745,34 @@
       const lower = Number(age.id.split("-")[0].replace("+", ""));
       D.social.situations.forEach((situation) => {
         if (lower > situation.maxAge || (lower + (age.id === "75+" ? 20 : 9)) < situation.minAge) return;
-        const ageFactor = lower >= 65 ? 0.80 : lower < 35 ? 1.15 : 1;
-        const agePolicy = lower >= 65 ? -change("GF1002") * 0.05 : lower < 35 ? -education * 0.04 : 0;
-        const discomfort = clamp((macro + budget[situation.id] + agePolicy
-          + change("R_TVA") * 0.09 - health * 0.07) * ageFactor, -20, 20);
-        const pressure = Math.max(0, discomfort) * age.mobilization * situation.mobilization;
+        // Ne pas inventer une exposition plus forte à la TVA chez les jeunes :
+        // sans microdonnées de consommation, ce poste reste identique entre profils.
+        const agePolicy = situation.id === "retired" && lower >= 65 ? -change("GF1002") * 0.05
+          : situation.id === "student" && lower < 35 ? -education * 0.04 : 0;
+        const components = {
+          "Situation et mesures directes": budget[situation.id],
+          "Conjoncture macroéconomique": macro,
+          "TVA (hypothèse commune à tous)": change("R_TVA") * 0.09,
+          "Santé (hypothèse commune à tous)": -health * 0.07,
+          "Âge et mesure ciblée": agePolicy
+        };
+        const exposure = clamp(Object.values(components).reduce((sum, value) => sum + value, 0), -20, 20);
+        // La réaction supposée est une lecture distincte, jamais l'exposition elle-même.
+        const mobilization = Math.max(0, exposure) * age.mobilization * situation.mobilization;
         cells.push({ age: age.id, ageLabel: age.label, situation: situation.id,
-          situationLabel: situation.label, discomfort, pressure, voteWeight: age.voteWeight });
+          situationLabel: situation.label, exposure, mobilization, components });
       });
     });
-    const weighted = cells.reduce((sum, cell) => sum + cell.discomfort * cell.voteWeight, 0);
-    const weight = cells.reduce((sum, cell) => sum + cell.voteWeight, 0);
-    const meanDiscomfort = weight ? weighted / weight : 0;
-    const highestPressure = [...cells].sort((a, b) => b.pressure - a.pressure)[0];
+    const sorted = [...cells].sort((a, b) => b.exposure - a.exposure);
+    const highestExposure = sorted[0];
+    const equalExposureCount = highestExposure ? cells.filter((cell) =>
+      Math.abs(cell.exposure - highestExposure.exposure) < 1e-6).length : 0;
     return {
-      cells, meanDiscomfort, highestPressure,
-      incumbentVoteSensitivity: [round(-meanDiscomfort * 0.05, 2), round(-meanDiscomfort * 0.25, 2)],
-      note: "Indices relatifs hypothétiques ; pas une prévision de manifestation, de participation ni de résultat électoral."
+      cells, highestExposure, equalExposureCount,
+      lowestExposure: Math.min(...cells.map((cell) => cell.exposure)),
+      highestExposureValue: highestExposure?.exposure ?? 0,
+      // Aucune moyenne nationale : pas d'effectifs démographiques par cellule disponibles.
+      note: "Scores internes EcoSim sans pondération démographique : aucune prévision de réaction, de manifestation ou de vote."
     };
   }
 
@@ -1738,16 +1764,27 @@
   }
 
   function updateSocialLab(social) {
-    $("#social-discomfort").textContent = `${signed(social.meanDiscomfort, " pt")}`;
-    const top = social.highestPressure;
-    $("#social-pressure").textContent = top?.pressure > 0.05 ? `${top.ageLabel} · ${top.situationLabel}` : "Pas de hausse détectée";
-    $("#social-pressure-detail").textContent = top?.pressure > 0.05
-      ? `Pression indicative ${fmt1.format(top.pressure)} / 20 ; elle suppose une coordination qui n'est pas modélisée.`
-      : "Aucun surcroît de pression dans ce scénario par rapport à la référence.";
+    $("#social-discomfort").textContent = `${signed(social.lowestExposure)} à ${signed(social.highestExposureValue)}`;
+    const top = social.highestExposure;
+    const multiple = social.equalExposureCount > 1;
+    $("#social-pressure").textContent = top?.exposure > 0.05
+      ? (multiple ? `${social.equalExposureCount} profils ex æquo` : `${top.ageLabel} · ${top.situationLabel}`)
+      : "Aucune hausse d'exposition";
+    $("#social-pressure-detail").textContent = top?.exposure > 0.05
+      ? `Exposition ${signed(top.exposure)} unité(s) d'indice EcoSim. ${multiple ? "Plusieurs profils obtiennent la même valeur : aucun classement unique n'est justifié." : "Ce résultat n'est pas une prévision de mécontentement."}`
+      : "Le modèle n'identifie pas de groupe plus défavorablement exposé que la référence.";
+    const contributors = top ? Object.entries(top.components)
+      .filter(([, value]) => Math.abs(value) > 0.001)
+      .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])) : [];
+    $("#social-mechanism").textContent = contributors.length
+      ? `Pourquoi ? ${contributors.slice(0, 3).map(([label, value]) => `${label} : ${signed(value)} unité(s) d'indice`).join(" ; ")}. Chaque coefficient est conventionnel, et l'indice est limité à ±20.`
+      : "Sans réforme, les indices restent à leur référence. Cliquez sur une mesure puis examinez les composantes de chaque case.";
     $("#social-matrix-head").innerHTML = `<tr><th scope="col">Âge</th>${D.social.situations.map((group) => `<th scope="col">${escapeHtml(group.label)}</th>`).join("")}</tr>`;
     $("#social-matrix-body").innerHTML = D.social.ages.map((age) => `<tr><th scope="row">${escapeHtml(age.label)}</th>${D.social.situations.map((group) => {
       const cell = social.cells.find((item) => item.age === age.id && item.situation === group.id);
-      return cell ? `<td class="${cell.discomfort > 0.05 ? "social-risk" : cell.discomfort < -0.05 ? "social-relief" : ""}" title="Pression de mobilisation ${fmt1.format(cell.pressure)} sur 20">${signed(cell.discomfort, " pt")}</td>` : `<td aria-label="hors champ">—</td>`;
+      if (!cell) return `<td aria-label="hors du champ du modèle">—</td>`;
+      const why = Object.entries(cell.components).map(([label, value]) => `${label} : ${signed(value)}`).join(" ; ");
+      return `<td class="${cell.exposure > 0.05 ? "social-risk" : cell.exposure < -0.05 ? "social-relief" : ""}" title="${escapeHtml(why)}">${signed(cell.exposure)}</td>`;
     }).join("")}</tr>`).join("");
   }
 
@@ -2199,8 +2236,11 @@
     };
     let savedPoint;
     try {
-      applySerialized(saved.scenario);
+      if (!applySerialized(saved.scenario)) throw new Error("Scénario sauvegardé invalide");
       savedPoint = calculateProjection().scenario[projectionIndex(state.horizon)];
+    } catch {
+      container.hidden = true;
+      return;
     } finally {
       Object.assign(state, snapshot);
     }
@@ -2226,6 +2266,7 @@
   }
 
   function restoreScenario(payload) {
+    if (!validateScenarioOptions(payload)) throw new Error("Profil ou hypothèse du scénario invalide.");
     pushUndo();
     state.name = "Mon scénario";
     state.model = "consensus";
@@ -2259,8 +2300,12 @@
   function loadSavedScenario() {
     const item = readScenarioLibrary().find((record) => record.id === $("#saved-scenarios").value);
     if (!item) return;
-    restoreScenario(item.scenario);
-    showToast(`Scénario « ${state.name} » chargé`);
+    try {
+      restoreScenario(item.scenario);
+      showToast(`Scénario « ${state.name} » chargé`);
+    } catch {
+      showToast("La copie sauvegardée contient des réglages invalides.", { error: true });
+    }
   }
 
   async function importScenarioFile(file) {
@@ -2359,7 +2404,10 @@
       moteurs_solde_exterieur_milliards: round(item.engines.trade, 2),
       moteurs_emissions_mtco2e: round(item.engines.emissions, 2),
       moteurs_pauvrete_points: round(item.engines.poverty, 2),
-      mecontentement_moyen_ecart_indice: round(item.social.meanDiscomfort, 2),
+      version_ecosim: D.metadata.version,
+      empreinte_paquet: BUILD_ID,
+      exposition_min_indice: round(item.social.lowestExposure, 2),
+      exposition_max_indice: round(item.social.highestExposureValue, 2),
       reference_deficit_pct_pib: round(state.projection.baseline[index].deficitRatio, 2),
       reference_dette_pct_pib: round(state.projection.baseline[index].debtRatio, 2)
     }));
@@ -2376,7 +2424,7 @@
     let mime;
     let extension;
     if (type === "json") {
-      content = JSON.stringify({ metadata: D.metadata, scenario: serializableState(), projection: projectionRows }, null, 2);
+      content = JSON.stringify({ metadata: { ...D.metadata, buildId: BUILD_ID }, scenario: serializableState(), projection: projectionRows }, null, 2);
       mime = "application/json";
       extension = "json";
     } else {

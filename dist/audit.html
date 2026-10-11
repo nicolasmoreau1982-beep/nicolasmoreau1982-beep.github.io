@@ -8,9 +8,6 @@
     <meta name="description" content="Audit d'EcoSim France : provenance des données, hypothèses, tests historiques, écarts, incertitude et limites du simulateur." />
     <link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/audit.html" />
     <title>Méthodologie et fiabilité du simulateur — EcoSim France</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="audit.css" />
     <script src="theme.js"></script>
@@ -39,12 +36,12 @@
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>555831d7707d</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 4.16.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 4.17.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -167,9 +164,14 @@
           <div class="audit-table-wrap"><table class="audit-table audit-numeric" id="backtest-table">
             <caption>Erreurs du témoin en pseudo-hors-échantillon ; MAE / P80 de l’erreur absolue</caption>
             <thead><tr><th>Horizon</th><th>Cas</th><th>PIB nominal<br />% / %</th><th>Déficit / PIB<br />pt / pt</th><th>Dette / PIB<br />pt / pt</th><th>Chômage<br />pt / pt</th></tr></thead>
-            <tbody id="backtest-body"><tr><td colspan="6">Chargement des résultats…</td></tr></tbody>
+            <tbody id="backtest-body">
+<tr><th scope="row">1 an</th><td>18</td><td>2,36 / 3,84</td><td>1,23 / 1,90</td><td>4,03 / 4,95</td><td>0,41 / 0,60</td></tr>
+<tr><th scope="row">3 ans</th><td>16</td><td>4,38 / 7,23</td><td>2,16 / 3,50</td><td>9,29 / 13,81</td><td>0,99 / 1,30</td></tr>
+<tr><th scope="row">5 ans</th><td>14</td><td>7,47 / 11,52</td><td>2,66 / 3,40</td><td>12,01 / 22,68</td><td>1,51 / 2,20</td></tr>
+<tr><th scope="row">10 ans</th><td>9</td><td>17,12 / 31,82</td><td>1,44 / 1,70</td><td>14,60 / 24,88</td><td>1,91 / 2,90</td></tr>
+</tbody>
           </table></div>
-          <noscript><p>Activez JavaScript pour recalculer le tableau à partir de <a href="history.js">history.js</a>, ou lancez <code>node scripts/backtest.mjs</code> depuis le dépôt.</p></noscript>
+          <noscript><p>Les chiffres ci-dessus sont figés dans le HTML. Activez JavaScript pour modifier les sélections, ou consultez <a href="history.js">history.js</a>, ou lancez <code>node scripts/backtest.mjs</code> depuis le dépôt.</p></noscript>
           <p class="audit-caption"><strong>MAE</strong> : moyenne des erreurs absolues ; <strong>P80</strong> : 80e centile de ces erreurs sur les cas observés, et non probabilité de couverture future. À 10 ans il ne reste que neuf cas, dont les horizons se chevauchent. Les séries utilisées sont révisées a posteriori : ce n’est pas un véritable test sur les seules données disponibles à chaque date.</p>
           <h3 id="moteur-principal-historique">Moteur principal sans réforme</h3>
           <p>La fonction <code>calculateProjection</code> du simulateur est exécutée sur des comptes historiques Insee. La référence prolonge la croissance réelle et le déflateur médians des années précédant chaque départ ; déficit/PIB et chômage restent initialement constants. Aucune politique historique n’est injectée. Le moteur central sans réforme suit exactement cette référence : le tableau ci-dessous mesure donc surtout la qualité de la trajectoire de départ, pas celle des leviers de politique.</p>
@@ -245,9 +247,16 @@
             <div class="audit-table-wrap"><table class="audit-table audit-numeric audit-triplet-table">
               <caption id="audit-comparable-caption">Résultat à T+1, prototype moins Insee</caption>
               <thead><tr><th>Indicateur</th><th>Insee observé</th><th>Prototype simulé</th><th>Écart signé</th></tr></thead>
-              <tbody id="audit-comparable-results"><tr><td colspan="4">Chargement des résultats…</td></tr></tbody>
+              <tbody id="audit-comparable-results">
+<tr><th scope="row">PIB nominal</th><td>2 153,7 Md€</td><td>2 150,8 Md€</td><td>−0,14 % du PIB observé</td></tr>
+<tr><th scope="row">Dépenses</th><td>1 257,6 Md€</td><td>1 274,7 Md€</td><td>+17,00 Md€</td></tr>
+<tr><th scope="row">Recettes</th><td>1 159,1 Md€</td><td>1 160,7 Md€</td><td>+1,52 Md€</td></tr>
+<tr><th scope="row">Déficit / PIB</th><td>4,6 %</td><td>5,3 %</td><td>+0,73 pt</td></tr>
+<tr><th scope="row">Dette / PIB</th><td>96,2 %</td><td>98,5 %</td><td>+2,36 pt</td></tr>
+</tbody>
             </table></div>
-            <p id="audit-comparable-summary" class="audit-caption" aria-live="polite"></p>
+            <noscript><p class="audit-caption">Cas initial figé dans le HTML. Activez JavaScript pour changer de mesure et d’année.</p></noscript>
+          <p id="audit-comparable-summary" class="audit-caption" aria-live="polite"></p>
             <p class="audit-caption">Compte initial et cible : <a href="https://www.insee.fr/fr/statistiques/8988797">PIB Insee</a>, <a href="https://www.insee.fr/fr/statistiques/8988845">dépenses et recettes Insee</a>, <a href="https://www.insee.fr/fr/statistiques/8988843">dette Insee</a>, tous dans le gel révisé au 10 octobre 2026. Les montants des politiques sont filtrés sur leur année de connaissance ; <strong>les comptes initiaux révisés et la courbe TVA Mésange 2017 ne l’étaient pas nécessairement à T</strong>. Les observations après T servent uniquement à mesurer l’écart. L’ajustement stock-flux de la dette, absent de la prévision, figure dans les données sources et peut expliquer une partie de son écart.</p>
           </div>
           <div class="audit-controls">
@@ -258,8 +267,15 @@
           <div class="audit-table-wrap"><table class="audit-table audit-numeric audit-year-table">
             <caption id="audit-year-caption">Comparaison annuelle — simulé moins observé</caption>
             <thead><tr><th>Année</th><th>Observé</th><th>Simulé</th><th>Écart</th></tr></thead>
-            <tbody id="audit-year-body"><tr><td colspan="4">Chargement des résultats…</td></tr></tbody>
+            <tbody id="audit-year-body">
+<tr><th scope="row">2021</th><td>6,6 pt</td><td>8,3 pt</td><td>+1,7 pt</td></tr>
+<tr><th scope="row">2022</th><td>4,7 pt</td><td>7,7 pt</td><td>+3,0 pt</td></tr>
+<tr><th scope="row">2023</th><td>5,4 pt</td><td>7,1 pt</td><td>+1,7 pt</td></tr>
+<tr><th scope="row">2024</th><td>5,8 pt</td><td>6,5 pt</td><td>+0,7 pt</td></tr>
+<tr><th scope="row">2025</th><td>5,1 pt</td><td>5,9 pt</td><td>+0,8 pt</td></tr>
+</tbody>
           </table></div>
+          <noscript><p class="audit-caption">Tableau initial statique (départ 2020, indicateur déficit / PIB). JavaScript permet de changer l’année et l’indicateur.</p></noscript>
           <p id="audit-year-summary" class="audit-caption" aria-live="polite"></p>
           <details id="audit-quarter-ledger" class="audit-quarter-ledger" hidden>
             <summary>Comparer chaque trimestre à l’Insee</summary>
