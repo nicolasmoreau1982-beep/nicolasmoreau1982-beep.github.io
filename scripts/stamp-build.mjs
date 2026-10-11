@@ -1,30 +1,30 @@
-/* Identifiant reproductible de distribution locale, différent d'un hash de commit Git. */
+/* Identifiant SHA-256 stable de la distribution 5.2.1. Pas un commit Git. */
 import fs from 'node:fs';
-import crypto from 'node:crypto';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import crypto from 'node:crypto';
+import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
+function walk(base){const out=[];for(const entry of fs.readdirSync(base,{withFileTypes:true})){
+ const name=path.join(base,entry.name);if(entry.isDirectory())out.push(...walk(name));else out.push(name);
+}return out;}
+const all=walk(dist).filter(p=> !/^manifest-integrite-\d+\.sha256$/.test(path.basename(p)) && path.basename(p)!=='build-info.js' && !/google[0-9a-f]+\.html$/i.test(path.basename(p)));
+const normal=(s)=>s.replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,'$1PAQUET_A_REMPLACER')
+ .replace(/(Paquet : <code>)[a-f0-9]{12}/gi,'$1PAQUET_A_REMPLACER');
 const h=crypto.createHash('sha256');
-for (const f of ['app.js','data.js','fiscal.js','sectoral.js','guardrails-510.js','sectoral-observations.js','quality-500.js','energy-balance-500.js','data/energy-reference-2024.json','data/sectoral-observations-2023.json','styles.css']) {
- h.update(f+'\0');h.update(fs.readFileSync(path.join(dist,f)));
+for(const f of all.sort()){
+ const relative=path.relative(dist,f).split(path.sep).join('/');
+ h.update(relative+'\0');
+ if(f.endsWith('.html'))h.update(normal(fs.readFileSync(f,'utf8')));
+ else h.update(fs.readFileSync(f));
 }
-// Inclure les pages éditoriales et l'aperçu de partage, sans boucler sur l'empreinte déjà imprimée.
-for (const f of ['index.html','audit.html','provenance-politique.html','validation-economique-421.html','sensibilite-multiplicateurs-422.html','evaluations-empiriques-423.html','fiscalite-sectorielle-424.html','donnees-sectorielles-425.html','qualite-et-energie-500.html','integrite-moteur-510.html']) {
- let source=fs.readFileSync(path.join(dist,f),'utf8');
- source=source.replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,'$1PAQUET_A_REMPLACER')
-   .replace(/(Paquet : <code>)[a-f0-9]{12}/gi,'$1PAQUET_A_REMPLACER');
- h.update(f+'\0');h.update(source);
+const id=h.digest('hex').slice(0,12);
+fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\n`);
+for(const f of all.filter(f=>f.endsWith('.html'))){
+ let s=fs.readFileSync(f,'utf8');
+ s=s.replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,(_m,p)=>p+id)
+ .replace(/(Paquet : <code>)[a-f0-9]{12}/gi,(_m,p)=>p+id)
+ .replaceAll('PAQUET_A_REMPLACER',id);
+ fs.writeFileSync(f,s);
 }
-h.update('og-ecosim.png\0');h.update(fs.readFileSync(path.join(dist,'og-ecosim.png')));
-const build=h.digest('hex').slice(0,12);
-fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${build}";\n`);
-for (const file of ['index.html','audit.html','provenance-politique.html','validation-economique-421.html','sensibilite-multiplicateurs-422.html','evaluations-empiriques-423.html','fiscalite-sectorielle-424.html','donnees-sectorielles-425.html','qualite-et-energie-500.html','integrite-moteur-510.html']) {
- const p=path.join(dist,file);
- let s=fs.readFileSync(p,'utf8');
- s=s.replaceAll('PAQUET_A_REMPLACER',build)
-   .replace(/(Paquet : <code>)[a-f0-9]{12}/gi,(_,head)=>head+build)
-   .replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,(_,head)=>head+build);
- fs.writeFileSync(p,s);
-}
-console.log('Identifiant du paquet:',build);
+console.log('Version 5.2.1 — identifiant de paquet :',id);

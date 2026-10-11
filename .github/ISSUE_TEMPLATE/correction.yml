@@ -1,0 +1,38 @@
+name: Signaler une erreur EcoSim
+about: Erreur de calcul, de source, de texte ou de fonctionnement
+labels: ["correction"]
+body:
+  - type: markdown
+    attributes:
+      value: "Merci de ne pas publier de données personnelles. Les simulations politiques sont des hypothèses, non des chiffrages officiels."
+  - type: dropdown
+    id: categorie
+    attributes:
+      label: Catégorie
+      options:
+        - Calcul ou incohérence
+        - Donnée et source
+        - Scénario politique
+        - Accessibilité et affichage
+        - Lien ou documentation
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page ou module concerné
+      placeholder: Exemple - simulateur, fiscalité, 2030
+    validations:
+      required: true
+  - type: textarea
+    id: probleme
+    attributes:
+      label: Constat et étapes de reproduction
+      description: Indiquez le résultat observé et ce qui vous semble incorrect.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source, date et passage exact (si disponible)
+      description: Fournir le lien et la localisation de la référence, sans information confidentielle.

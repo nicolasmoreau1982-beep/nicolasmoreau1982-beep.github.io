@@ -18,7 +18,7 @@
     <meta property="og:url" content="https://nicolasmoreau1982-beep.github.io/" />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"EcoSim France","applicationCategory":"EducationalApplication","operatingSystem":"Tout navigateur récent","url":"https://nicolasmoreau1982-beep.github.io/","description":"Simulation pédagogique conditionnelle du budget et de la dette publique français."}</script>
-    <title>Simulateur du budget et de la dette de la France — EcoSim</title>
+    <title>Simulateur du budget et de la dette de la France | EcoSim France</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="theme.js"></script>
   <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"></head>
@@ -39,6 +39,7 @@
         <a class="nav-link" href="#fiscal" data-scroll="fiscal">Fiscalité</a>
         <a class="nav-link" href="#sectoral-fiscal" data-scroll="sectoral-fiscal">Secteurs</a>
         <a class="nav-link" href="#qualite-500" data-scroll="qualite-500">Qualité</a>
+        <a class="nav-link" href="glossaire.html">Glossaire</a>
         <a class="nav-link" href="audit.html">Audit complet</a>
         <a class="nav-link" href="evaluations-empiriques-423.html">Études indépendantes</a>
         <button type="button" class="nav-link mobile-nav-action" id="mobile-export-button">Exporter le scénario</button>
@@ -102,6 +103,19 @@
           <div class="baseline-source"><span>Référence</span><strong>Base 2025</strong><small><a href="audit.html#provenance">Sources et millésimes ↗</a></small></div>
         </div>
       </section>
+
+
+      <nav class="v52-quick-nav" aria-label="Accès direct aux espaces du simulateur">
+        <details id="v52-summary" open>
+          <summary>Explorer EcoSim <span class="v52-summary-hint">Accéder directement à un outil, sans perdre le scénario</span></summary>
+          <div class="v52-quick-grid">
+            <div><strong>Créer</strong><a href="#workspace">Choisir une mesure</a><a href="#results">Voir les résultats</a><a href="#budget">Modifier le budget</a></div>
+            <div><strong>Approfondir</strong><a href="#structural">Population et énergie</a><a href="#social">Laboratoire social</a><a href="#engines">Moteurs publics</a></div>
+            <div><strong>Comparer</strong><a href="#politics">Orientations politiques</a><a href="#fiscal">Fiscalité des ménages</a><a href="#sectoral-fiscal">Fiscalité sectorielle</a></div>
+            <div><strong>Comprendre</strong><a href="#qualite-500">Risques de double compte</a><a href="#methodology">Méthode</a><a href="glossaire.html">Glossaire · 18 notions</a></div>
+          </div>
+        </details>
+      </nav>
 
       <section class="workspace" id="workspace" aria-label="Espace de simulation">
         <aside class="control-panel">
@@ -207,7 +221,7 @@
           <div class="results-header">
             <div>
               <span class="section-number">02</span>
-              <h2 id="results-title" tabindex="-1">Trajectoire simulée</h2>
+              <h2 id="results-title" tabindex="-1">Trajectoire simulée</h2><button type="button" class="v52-help-trigger" data-glossary="projection" aria-label="Définition : projection conditionnelle" title="Comprendre la projection">?</button>
             </div>
             <div class="horizon-switch" role="group" aria-label="Horizon de projection">
               <button data-horizon="1">1 an</button>
@@ -345,7 +359,7 @@
         <div class="section-intro">
           <div>
             <span class="section-number">03</span>
-            <h2 id="structural-title">Population, emploi & énergie</h2>
+            <h2 id="structural-title">Population, emploi & énergie</h2><button type="button" class="v52-help-trigger" data-glossary="cohorte" aria-label="Définition : cohorte démographique" title="Comprendre les cohortes">?</button>
           </div>
           <p>Choisissez des mesures publiques ; population, naissances et chômage apparaissent comme résultats. Les facteurs que l’État ne fixe pas directement sont rangés dans les hypothèses avancées.</p>
         </div>
@@ -398,7 +412,7 @@
 
       <section class="social-lab" id="social" aria-labelledby="social-title">
         <div class="section-intro">
-          <div><span class="section-number">04 bis</span><h2 id="social-title">Laboratoire social expérimental</h2></div>
+          <div><span class="section-number">04 bis</span><h2 id="social-title">Laboratoire social expérimental</h2><button type="button" class="v52-help-trigger" data-glossary="incertitude" aria-label="Comprendre les hypothèses et la sensibilité" title="Comprendre les incertitudes">?</button></div>
           <p>Indices illustratifs d’exposition par âge et situation. Leurs poids ne sont pas estimés sur microdonnées et ne permettent de prédire ni mobilisation ni vote.</p>
         </div>
         <div class="social-cards">
@@ -518,7 +532,7 @@
         <div class="section-intro">
           <div>
             <span class="section-number">06</span>
-            <h2 id="budget-title">Réglez le budget</h2>
+            <h2 id="budget-title">Réglez le budget</h2><button type="button" class="v52-help-trigger" data-glossary="cofog" aria-label="Définition : COFOG" title="Comprendre la classification COFOG">?</button>
             <p>Chaque variation est permanente à partir de 2026, en euros constants 2025. Les effets indirects sont calculés séparément.</p>
           </div>
           <div class="editor-summary">
@@ -554,7 +568,7 @@
         <div class="section-intro">
           <div>
             <span class="section-number">Atelier fiscal · expérimental</span>
-            <h2 id="fiscal-title">Qui paie une réforme fiscale ?</h2>
+            <h2 id="fiscal-title">Qui paie une réforme fiscale ?</h2><button type="button" class="v52-help-trigger" data-glossary="assiette" aria-label="Définition : assiette fiscale" title="Comprendre l’assiette fiscale">?</button>
             <p>Changez une règle, pas une recette supposée. L’écart calculé remonte dans le budget et le moteur macro.</p>
           </div>
         </div>
@@ -586,7 +600,7 @@
 
       <section class="sectoral-section" id="sectoral-fiscal" aria-labelledby="sectoral-title">
         <div class="section-intro"><div><span class="section-number">Fiscalité sectorielle · expérimental</span>
-          <h2 id="sectoral-title">Cibler une filière, pas toute l’économie</h2>
+          <h2 id="sectoral-title">Cibler une filière, pas toute l’économie</h2><button type="button" class="v52-help-trigger" data-glossary="sectoriel" aria-label="Définition : mesure sectorielle" title="Comprendre les mesures sectorielles">?</button>
           <p>Crédits d’impôt, prélèvements et subventions par filière. Le montant saisi est un <strong>flux budgétaire annuel supposé</strong>, pas un rendement fiscal déduit d’entreprises réelles.</p></div>
           <a href="fiscalite-sectorielle-424.html">Méthode, secteurs et limites ↗</a></div>
         <div class="sectoral-card">
@@ -610,7 +624,7 @@
 
       <section class="sectoral-section v5-quality" id="qualite-500" aria-labelledby="qualite-500-title">
         <div class="section-intro"><div><span class="section-number">5.0 · Vérifications transversales</span>
-          <h2 id="qualite-500-title">Ce scénario pourrait-il compter deux fois un même effet ?</h2></div>
+          <h2 id="qualite-500-title">Ce scénario pourrait-il compter deux fois un même effet ?</h2><button type="button" class="v52-help-trigger" data-glossary="doublecompte" aria-label="Définition : double comptabilisation" title="Comprendre les doubles comptes">?</button></div>
           <p>Contrôles indicatifs entre budget, mesures structurelles, moteurs publics et fiscalité sectorielle. Aucune correction automatique : une superposition peut être intentionnelle.</p></div>
         <div class="sectoral-card">
           <p id="qualite-500-status" role="status" aria-live="polite">Diagnostic en cours…</p>
@@ -638,7 +652,7 @@
         <div class="method-heading">
           <div>
             <span class="section-number light">08</span>
-            <h2 id="method-title">Un modèle qui montre ses coutures.</h2>
+            <h2 id="method-title">Un modèle qui montre ses coutures.</h2><button type="button" class="v52-help-trigger" data-glossary="multiplicateur" aria-label="Définition : multiplicateur budgétaire" title="Comprendre les multiplicateurs">?</button>
           </div>
           <p>Nous ne choisissons pas une école économique à votre place. Neuf lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
         </div>
@@ -686,7 +700,7 @@
 
       <section class="sources-section" id="sources" aria-labelledby="sources-title">
         <div class="section-intro">
-          <div><span class="section-number">09</span><h2 id="sources-title">Données & sources</h2></div>
+          <div><span class="section-number">09</span><h2 id="sources-title">Données & sources</h2><button type="button" class="v52-help-trigger" data-glossary="apu" aria-label="Définition : APU" title="Comprendre le périmètre public">?</button></div>
           <p>Chaque chiffre a un millésime. Les observations, calibrages et hypothèses sont distingués.</p>
         </div>
         <div class="source-grid" id="source-grid"></div>
@@ -710,14 +724,23 @@
       <a href="confidentialite.html">Confidentialité</a>
       <a href="audit.html">Audit du modèle</a>
       <a href="comprendre-budget-france.html">Guides</a>
+      <a href="glossaire.html">Glossaire</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 5.1 · paquet <code title="Empreinte du code de distribution, pas un commit Git">b6b056d4e5a8</code></span>
-    </footer>
+      <span class="footer-version">Version 5.2.1 · paquet <code title="Empreinte du code de distribution, pas un commit Git">4a83f82175e9</code></span>
+    <a href="contact-signalement.html">Signaler une erreur</a> <a href="informations-legales.html">Informations légales</a></footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <div class="app-error" id="app-error" role="alert" hidden><span id="app-error-message"></span><button type="button" id="app-error-close" aria-label="Fermer le message d’erreur">×</button></div>
     <div class="help-panel" id="help-panel" role="region" aria-label="Aide contextuelle" tabindex="-1" hidden><strong>Aide</strong><p id="help-panel-text"></p><button type="button" id="help-panel-close" aria-label="Fermer l’aide">Fermer</button></div>
+
+    <dialog id="v52-glossary-dialog" class="v52-glossary-dialog" aria-labelledby="v52-glossary-title" aria-describedby="v52-glossary-definition">
+      <div class="v52-dialog-top"><span>Comprendre une notion</span><button id="v52-glossary-close" type="button" aria-label="Fermer la définition">×</button></div>
+      <h2 id="v52-glossary-title">Définition</h2>
+      <p id="v52-glossary-definition"></p>
+      <strong>Exemple</strong><p id="v52-glossary-example"></p>
+      <a href="glossaire.html">Consulter toutes les définitions →</a>
+    </dialog>
 
     <dialog id="method-dialog" class="modal">
       <form method="dialog" class="modal-shell">
@@ -779,5 +802,6 @@
     <script src="guardrails-510.js"></script>
     <script src="app.js"></script>
     <script src="analytics.js"></script>
+    <script src="glossary-520.js"></script>
   </body>
 </html>

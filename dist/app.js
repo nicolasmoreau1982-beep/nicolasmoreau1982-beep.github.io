@@ -1233,7 +1233,7 @@
     renderSectoralEditor();
     refreshAll(true);
     showToast(`Scénario « ${scenario.name} » appliqué et modifiable`);
-    $("#simulator").scrollIntoView({ behavior: "smooth" });
+    $("#simulator").scrollIntoView({ behavior: (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth") });
   }
 
   function updateModelDescription() {
@@ -2815,7 +2815,7 @@
       $$("[data-horizon]").forEach((button) => button.classList.toggle("is-active", Number(button.dataset.horizon) === 1));
       applyPreset(event.currentTarget.dataset.quickPreset);
       $("#results-title").focus({ preventScroll: true });
-      $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("#results").scrollIntoView({ behavior: (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"), block: "start" });
     });
     $("#reset-button").addEventListener("click", resetScenario);
     $("#mobile-controls-toggle").addEventListener("click", () => {
@@ -2862,7 +2862,7 @@
       if (event.target.closest("[data-open-assumptions]")) {
         const panel = $("#structural-assumptions");
         panel.open = true;
-        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        panel.scrollIntoView({ behavior: (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"), block: "nearest" });
         return;
       }
       const button = event.target.closest("[data-open-engine]");
@@ -2871,7 +2871,7 @@
       renderEngineSelector();
       renderEngineControls();
       updateEngineRoom();
-      $("#engines").scrollIntoView({ behavior: "smooth" });
+      $("#engines").scrollIntoView({ behavior: (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth") });
     });
     $(".structural-controls").addEventListener("pointerdown", (event) => {
       if (event.target.dataset.structuralControl || event.target.dataset.structuralNumber) captureEditSnapshot();
@@ -3055,7 +3055,7 @@
     });
     $$("[data-scroll]").forEach((button) => button.addEventListener("click", (event) => {
       if (button.tagName === "A") event.preventDefault();
-      $(`#${button.dataset.scroll}`)?.scrollIntoView({ behavior: "smooth" });
+      $(`#${button.dataset.scroll}`)?.scrollIntoView({ behavior: (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth") });
     }));
     const toggleTheme = () => {
       const current = document.documentElement.dataset.theme;
