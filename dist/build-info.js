@@ -1,2 +1,2 @@
 /* Empreinte locale du paquet, pas un commit Git. */
-window.ECOSIM_BUILD_ID = "b177a044830c";
+window.ECOSIM_BUILD_ID = "5d55b3b98dcc";

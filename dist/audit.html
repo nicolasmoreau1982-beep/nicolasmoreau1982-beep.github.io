@@ -39,7 +39,7 @@
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>b177a044830c</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>5d55b3b98dcc</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
@@ -162,18 +162,21 @@
 
         <section class="audit-section" id="provenance-420" aria-labelledby="provenance-420-title">
           <div class="audit-section-heading"><span>04b</span><h2 id="provenance-420-title">Provenance des scénarios politiques · version 4.20</h2></div>
-          <p>La version 4.20 publie un <a href="provenance-politique.html">registre vérifiable de chaque réglage</a> reconstruit automatiquement depuis <code>data.js</code>. Pour chaque valeur, il distingue une correspondance exactement documentée, une proposition liée mais non équivalente et une hypothèse chiffrée EcoSim sans preuve localisée. Il ne crée aucune source fictive pour compléter des cases manquantes.</p>
-          <div class="audit-table-wrap"><table><caption>Couverture documentaire des 19 scénarios et noyaux historiques (4.20)</caption><thead><tr><th>Statut</th><th>Nombre de réglages</th><th>Interprétation</th></tr></thead><tbody>
+          <p>Le registre créé en 4.20, enrichi en 4.22, publie un <a href="provenance-politique.html">registre vérifiable de chaque réglage</a> reconstruit automatiquement depuis <code>data.js</code>. Pour chaque valeur, il distingue une correspondance exactement documentée, une proposition liée mais non équivalente et une hypothèse chiffrée EcoSim sans preuve localisée. Il ne crée aucune source fictive pour compléter des cases manquantes.</p>
+          <div class="audit-table-wrap"><table><caption>Couverture documentaire actualisée de 19 scénarios (4.22)</caption><thead><tr><th>Statut</th><th>Nombre de réglages</th><th>Interprétation</th></tr></thead><tbody>
             <tr><th scope="row">Valeur exacte, localisée</th><td>0</td><td>Aucune correspondance à l’identique enregistrée à ce stade.</td></tr>
-            <tr><th scope="row">Proposition reliée à un passage</th><td>1</td><td>Le montant ou l’unité du modèle n’est pas équivalent à celui de la source.</td></tr>
-            <tr><th scope="row">Hypothèse EcoSim non vérifiée individuellement</th><td>356</td><td>Pas de justification localisée pour la valeur numérique ; la source générale du scénario ne suffit pas.</td></tr>
+            <tr><th scope="row">Proposition reliée à un passage</th><td>23</td><td>Le montant ou l’unité du modèle n’est pas équivalent à celui de la source.</td></tr>
+            <tr><th scope="row">Hypothèse EcoSim non vérifiée individuellement</th><td>334</td><td>Pas de justification localisée pour la valeur numérique ; la source générale du scénario ne suffit pas.</td></tr>
           </tbody></table></div>
           <div class="audit-warning"><strong>Attention aux étiquettes politiques.</strong><p>Ces 357 réglages sont des choix de simulation attribués à des scénarios inspirés de formations ou d’archives, <strong>pas des chiffrages officiels</strong>. Un niveau de confiance « élevé » pour l’interprétation générale ne signifie pas « montant vérifié ». Une mesure absente n’est pas supposée nulle. Les conclusions d’EcoSim ne sauraient départager des programmes complets.</p></div>
           <p class="audit-caption">Données reproductibles : <a href="validation/provenance-politique-420.csv">CSV des valeurs</a> · <a href="validation/provenance-politique-420.json">JSON complet</a> · générateur <code>scripts/export-provenance-420.mjs</code>. La couverture des sources peut être enrichie uniquement après vérification documentaire explicite.</p>
         </section>
 
+          <section class="audit-section" id="sensibilite-422"><div class="audit-section-heading"><span>04d</span><h2>Transmission économique et explication · version 4.22</h2></div><p>La version 4.22 explore des variantes conventionnelles ×0,70 / ×1,00 / ×1,30 des canaux de transmission des dépenses et prélèvements. Les montants budgétaires saisis sont maintenus constants. Ce banc teste cinq scénarios simples, à 1, 3, 5 et 10 ans, et contrôle la somme des quatre contributions comptables à l’écart de déficit.</p><p>Ces facteurs ne sont ni des plages empiriques de multiplicateurs ni des intervalles de confiance, et ils ne remplacent pas une validation hors échantillon. Les moteurs structurels, sociaux et les hypothèses de comportement ne sont pas tous testés. <a href="sensibilite-multiplicateurs-422.html">Tableaux pré-rendus et exports du banc 4.22 ↗</a>. Le <a href="provenance-politique.html">registre de provenance</a> signale les rattachements à des propositions officielles tout en marquant leurs montants comme non équivalents lorsqu’ils ne sont pas vérifiés.</p></section>
+
         <section class="audit-section" id="validation-421" aria-labelledby="validation-421-title">
-          <div class="audit-section-heading"><span>04c</span><h2 id="validation-421-title">Vérifications externes ciblées et sensibilité · version 4.21</h2></div>
+
+        <div class="audit-section-heading"><span>04c</span><h2 id="validation-421-title">Vérifications externes ciblées et sensibilité · version 4.21</h2></div>
           <p>Neuf cas simples ont été comparés à des barèmes publics officiels : <strong>impôt sur le revenu brut 2026</strong> (revenus 2025), <strong>IFI</strong> (avec décote) et <strong>succession en ligne directe</strong>. Les écarts de calcul sur ces cas sont nuls à 0,01 € près. <strong>Cela ne vérifie ni la décote IR, les situations familiales complexes, les crédits, ni les recettes nationales calculées sur les foyers synthétiques.</strong></p>
           <p>Un nouveau test étudie quatre mesures budgétaires, trois coefficients et quatre horizons : <strong>16 résultats centraux et 96 variantes à ±20 %</strong> en faisant varier un coefficient à la fois. Les résultats montrent la dépendance du déficit et de la dette aux rétroactions de recettes et de chômage. Le PIB reste inchangé lorsque seuls ces trois coefficients sont variés : <strong>c’est une propriété du moteur, pas une preuve de fiabilité du PIB</strong>.</p>
           <p><a href="validation-economique-421.html">Consulter les tableaux de validation 4.21, sources et explications accessibles sans JavaScript ↗</a> · <a href="validation/fiscal-externe-421.json">Données fiscales</a> · <a href="validation/sensibilite-421.csv">Résultats des stress tests</a>. Aucun coefficient n'a été retouché pour faire disparaître des écarts.</p>

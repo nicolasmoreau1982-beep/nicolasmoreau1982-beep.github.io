@@ -251,7 +251,7 @@
   }
 
   function categoryPolicyImpact(category, delta, index, priceIndex, profile, baselineGdp = D.BASE.gdp,
-    startQuarter = 1) {
+    startQuarter = 1, multiplierFactor = 1) {
     const exposure = index === 0 ? (5 - startQuarter) / 4 : 1;
     const age = index + 1 - (startQuarter - 1) / 4;
     if (category.id === "R_TVA") {
@@ -260,7 +260,7 @@
       const variant = D.researchVariants.vat;
       const fullAmount = delta * priceIndex;
       const amount = fullAmount * exposure;
-      const realGdp = amount * interpolateVariant(variant.realGdpPct, age) * profile.taxScale;
+      const realGdp = amount * interpolateVariant(variant.realGdpPct, age) * profile.taxScale * multiplierFactor;
       const cpiLevel = (elapsed) => elapsed <= 0 ? 0 : elapsed < 1
         ? elapsed * variant.cpiLevelPct[1] : interpolateVariant(variant.cpiLevelPct, elapsed);
       const cpiChange = cpiLevel(age) - cpiLevel(age - 1);
@@ -277,9 +277,9 @@
     const direction = category.type === "spending" ? 1 : -1;
     const scale = category.type === "spending" ? profile.spendScale : profile.taxScale;
     const leakage = clamp(1 - (category.importShare || 0) * 0.22 * (profile.importLeakageScale || 1), 0.35, 1);
-    const demand = direction * amount * category.multiplier * scale * ramp * demandWeight * leakage * strategic;
+    const demand = direction * amount * category.multiplier * scale * ramp * demandWeight * leakage * strategic * multiplierFactor;
     const supplyMaturity = 1 - Math.exp(-age / 3.6);
-    const supply = direction * amount * category.supply * profile.supplyScale * supplyMaturity * strategic;
+    const supply = direction * amount * category.supply * profile.supplyScale * supplyMaturity * strategic * multiplierFactor;
     const inflation = direction * amount * category.inflation * (profile.inflationBoost || 1);
     return { demand, supply, inflation, cpiPoints: 0, amount };
   }
@@ -780,7 +780,11 @@
     };
   }
 
-  function calculateProjection(modelKey = state.model, directAccountingFlows = null) {
+  function calculateProjection(modelKey = state.model, directAccountingFlows = null, multiplierFactor = 1) {
+    const factors = typeof multiplierFactor === "number"
+      ? { spending: multiplierFactor, tax: multiplierFactor } : multiplierFactor;
+    if (!factors || ![factors.spending, factors.tax].every(v => Number.isFinite(v) && v >= 0.5 && v <= 1.5))
+      throw new RangeError("Facteur de multiplicateur invalide");
     const baseline = baselineTrajectory();
     const profile = effectiveProfile(modelKey);
     const eu = D.euModes[state.euMode];
@@ -834,7 +838,7 @@
         const category = byId.get(id);
         if (!category || category.locked) return;
         const impact = categoryPolicyImpact(category, delta, index, priceIndex, profile, baseline[index].gdp,
-          categoryStartQuarter(id));
+          categoryStartQuarter(id), category.type === "spending" ? factors.spending : factors.tax);
         demandContribution += impact.demand;
         supplyContribution += impact.supply;
         policyGdp += impact.demand + impact.supply;
@@ -853,13 +857,13 @@
         // Le canal macro attend un choc en euros de la base 2025.
         const fiscalPolicyIndex = index - (state.fiscal.startYear - D.metadata.projectionStart);
         const impact = categoryPolicyImpact(byId.get(categoryId), amount / priceIndex,
-          fiscalPolicyIndex, priceIndex, profile, baseline[index].gdp, 1);
+          fiscalPolicyIndex, priceIndex, profile, baseline[index].gdp, 1, factors.tax);
         revenueChange += impact.amount;
         supplyContribution += impact.supply;
         policyGdp += impact.supply;
         policyInflationBillions += impact.inflation * (profile.decay ** index);
       }
-      const fiscalDemand = fiscal.distributionDemandBn * profile.taxScale;
+      const fiscalDemand = fiscal.distributionDemandBn * profile.taxScale * factors.tax;
       demandContribution += fiscalDemand;
       policyGdp += fiscalDemand;
 
@@ -1718,6 +1722,140 @@
     element.classList.add(good ? "good" : "bad");
   }
 
+  // 4.22 — variantes pédagogiques conventionnelles, ni intervalle de confiance ni calibrage.
+  // Les moteurs structurels et publics ne sont pas rééchelonnés : cette analyse
+  // isole les multiplicateurs des variations budgétaires et du canal fiscal.
+  const MULTIPLIER_VARIANTS_422 = Object.freeze([
+    { id: "prudente", label: "Transmission atténuée", factor: 0.7 },
+    { id: "centrale", label: "Transmission centrale", factor: 1 },
+    { id: "forte", label: "Transmission renforcée", factor: 1.3 }
+  ]);
+  let multiplierAnalysis422 = null;
+  let multiplierAnalysisKey422 = "";
+  const deltaSign422 = (number, tolerance) => Math.abs(number) <= tolerance ? 0 : Math.sign(number);
+
+  function calculateMultiplierAnalysis422() {
+    // On ne modifie jamais state ni les paramètres enregistrés/partagés.
+    const key = JSON.stringify(serializableState());
+    if (multiplierAnalysis422 && multiplierAnalysisKey422 === key) return multiplierAnalysis422;
+    const records = MULTIPLIER_VARIANTS_422.map((variant) => {
+      const trajectory = variant.factor === 1 ? state.projection : calculateProjection(state.model, null, variant.factor);
+      return {
+        id: variant.id, label: variant.label, factor: variant.factor,
+        rows: trajectory.scenario.map((point, i) => {
+          const base = trajectory.baseline[i];
+          return {
+            year: point.year, horizon: i + 1,
+            gdpDeltaPct: (point.gdp / base.gdp - 1) * 100,
+            deficitDeltaBn: point.deficit - base.deficit,
+            debtDeltaBn: point.debt - base.debt,
+            unemploymentDeltaPp: point.unemployment - base.unemployment,
+            directCostBn: point.directBalanceCost,
+            receiptsFeedbackBn: -point.revenueFeedback,
+            cyclicalSpendingBn: (point.unemployment - D.baseline.unemployment[i]) * D.macroCoefficients.cyclicalSpendingBnPerUnemploymentPoint,
+            interestsBn: point.extraInterest
+          };
+        })
+      };
+    });
+    multiplierAnalysis422 = records;
+    multiplierAnalysisKey422 = key;
+    return records;
+  }
+
+  let channelSensitivity422 = null;
+  let channelSensitivityKey422 = "";
+  function computeChannelSensitivity422() {
+    const key = JSON.stringify(serializableState());
+    if (channelSensitivity422 && channelSensitivityKey422 === key) return channelSensitivity422;
+    const list = [
+      { id: "spending", label: "Transmission des dépenses publiques" },
+      { id: "tax", label: "Transmission des prélèvements" }
+    ];
+    channelSensitivity422 = list.map(channel => {
+      const simulations = [0.7, 1.3].map(factor => {
+        const scales = {spending:1, tax:1};scales[channel.id] = factor;
+        const p = calculateProjection(state.model, null, scales);
+        return p.scenario.map((r, i) => ({
+          gdp: (r.gdp / p.baseline[i].gdp - 1) * 100,
+          deficit: r.deficit - p.baseline[i].deficit,
+          debt: r.debt - p.baseline[i].debt
+        }));
+      });
+      return { ...channel, rows: state.projection.scenario.map((central,i) => {
+        const base = state.projection.baseline[i];
+        const centralValues = {gdp:(central.gdp/base.gdp - 1)*100,deficit:central.deficit-base.deficit,debt:central.debt-base.debt};
+        const influence = Object.fromEntries(Object.keys(centralValues).map(m => [m,Math.max(...simulations.map(a => Math.abs(a[i][m]-centralValues[m])))]));
+        return influence;
+      })};
+    });
+    channelSensitivityKey422 = key;
+    return channelSensitivity422;
+  }
+
+  function number422(v, suffix = "") { return `${v > 0 ? "+" : v < 0 ? "−" : ""}${fmt2.format(Math.abs(v))}${suffix}`; }
+  function renderMultiplierAnalysis422() {
+    const rows = calculateMultiplierAnalysis422().map((v) => ({ ...v, result: v.rows[projectionIndex(state.horizon)] }));
+    const selected = $("#multiplier-variant-select").value || "centrale";
+    const focus = rows.find((r) => r.id === selected) || rows[1];
+    const columns = [
+      ["PIB", "gdpDeltaPct", 0.01, " %"],
+      ["Déficit", "deficitDeltaBn", 0.1, " Md€"],
+      ["Dette", "debtDeltaBn", 0.1, " Md€"],
+      ["Chômage", "unemploymentDeltaPp", 0.01, " pt"]
+    ];
+    const stability = columns.map(([label, field, tolerance, unit]) => {
+      const values = rows.map((r) => r.result[field]);
+      const signs = new Set(values.map((v) => deltaSign422(v, tolerance)));
+      const low = Math.min(...values), high = Math.max(...values);
+      const labelStability = signs.size === 1 ? (signs.has(0) ? "proche de zéro" : "sens stable dans ces trois variantes") : "signe / seuil change selon la variante";
+      return `<tr><th scope="row">${label}</th><td>${number422(focus.result[field], unit)}</td><td>${number422(low, unit)} à ${number422(high, unit)}</td><td>${labelStability}</td></tr>`;
+    }).join("");
+    const influences = computeChannelSensitivity422().map(c => ({label:c.label,...c.rows[projectionIndex(state.horizon)]}));
+    influences.sort((a,b) => b.gdp-a.gdp);
+    $("#multiplier-contributions-body").innerHTML = influences.map(c => `<tr><th scope="row">${c.label}</th><td>${fmt2.format(c.gdp)} point(s) de PIB</td><td>${fmt2.format(c.deficit)} Md€</td><td>${fmt2.format(c.debt)} Md€</td></tr>`).join("");
+    $("#multiplier-analysis-table-body").innerHTML = stability;
+    $("#multiplier-export-csv").disabled = false;
+    $("#multiplier-export-json").disabled = false;
+    $("#multiplier-analysis-status").textContent = `À ${state.horizon} an${state.horizon > 1 ? "s" : ""} : ${focus.label.toLowerCase()} (×${String(focus.factor).replace(".", ",")}). Les valeurs sont des écarts à la référence sans réforme.`;
+    renderExplanation422();
+  }
+
+  function renderExplanation422() {
+    const result = state.projection.scenario[projectionIndex(state.horizon)];
+    const base = state.projection.baseline[projectionIndex(state.horizon)];
+    const components = [
+      ["Dépenses et recettes directes", result.directBalanceCost],
+      ["Retours de recettes liés au PIB", -result.revenueFeedback],
+      ["Dépenses cycliques (chômage)", (result.unemployment - D.baseline.unemployment[projectionIndex(state.horizon)]) * D.macroCoefficients.cyclicalSpendingBnPerUnemploymentPoint],
+      ["Intérêts supplémentaires", result.extraInterest]
+    ];
+    const total = components.reduce((sum, [, value]) => sum + value, 0);
+    const delta = result.deficit - base.deficit;
+    const detail = components.map(([label, number]) => `<tr><th scope="row">${label}</th><td>${number422(number, " Md€")}</td></tr>`).join("");
+    $("#multiplier-explanation-body").innerHTML = detail + `<tr><th scope="row">Écart de déficit calculé</th><td><strong>${number422(delta, " Md€")}</strong></td></tr>`;
+    $("#multiplier-explanation-note").textContent = `Vérification : somme des composantes ${number422(total, " Md€")} ; écart de déficit ${number422(delta, " Md€")} ; résidu ${fmt2.format(Math.abs(total - delta))} Md€. PIB : demande et offre simulées, inflation et effets structurels interviennent dans la trajectoire. Les contributions affichées sont comptables, pas des causalités indépendamment établies.`;
+  }
+
+  function downloadMultiplierAnalysis422(format) {
+    const records = calculateMultiplierAnalysis422().flatMap((variant) => variant.rows.map((row) => ({
+      version: D.metadata.version, buildId: BUILD_ID, scenario: state.name,
+      profil: state.model, variante: variant.id, facteur: variant.factor, ...row
+    })));
+    const columns = Object.keys(records[0]);
+    const csvField = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+    const content = format === "json"
+      ? JSON.stringify({ meta: {version: D.metadata.version, buildId: BUILD_ID, hypotheses: "Facteurs conventionnels 0.7/1/1.3; pas de probabilité; canaux structurels inchangés", scenario: serializableState()}, results: records }, null, 2)
+      : [columns.join(";"), ...records.map((row) => columns.map((col) => csvField(row[col])).join(";"))].join("\n");
+    const link = document.createElement("a");
+    const blob = new Blob([content], {type: format === "json" ? "application/json" : "text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = `ecosim-${D.metadata.version}-multiplicateurs.${format}`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   function updateResults() {
     const index = projectionIndex(state.horizon);
     const item = state.projection.scenario[index];
@@ -1751,6 +1889,19 @@
     updateSocialLab(item.social);
     $("#journey-status").textContent = `${state.name || "Mon scénario"} · ${state.horizon} an${state.horizon > 1 ? "s" : ""}`;
     renderSavedComparison();
+    if ($("#multiplier-analysis-details")?.open) {
+      const isFresh = multiplierAnalysisKey422 === JSON.stringify(serializableState());
+      if (isFresh) renderMultiplierAnalysis422();
+      else {
+        $("#multiplier-analysis-status").textContent = "Scénario modifié : relancez l’analyse pour obtenir des résultats à jour.";
+        $("#multiplier-analysis-table-body").innerHTML = '<tr><td colspan="4">Résultats précédents masqués : recalcul nécessaire.</td></tr>';
+        $("#multiplier-explanation-body").innerHTML = '<tr><td colspan="2">Recalcul nécessaire.</td></tr>';
+        $("#multiplier-contributions-body").innerHTML = '<tr><td colspan="4">Recalcul nécessaire.</td></tr>';
+        $("#multiplier-explanation-note").textContent = "";
+        $("#multiplier-export-csv").disabled = true;
+        $("#multiplier-export-json").disabled = true;
+      }
+    }
   }
 
   function updateActiveScenario() {
@@ -2499,6 +2650,17 @@
   }
 
   function bindEvents() {
+    $("#multiplier-analysis-details").addEventListener("toggle", (event) => {
+      if (event.currentTarget.open && state.projection) renderMultiplierAnalysis422();
+    });
+    $("#multiplier-variant-select").addEventListener("change", () => {
+      if (state.projection) renderMultiplierAnalysis422();
+    });
+    $("#multiplier-recalculate").addEventListener("click", () => {
+      if (state.projection) renderMultiplierAnalysis422();
+    });
+    $("#multiplier-export-json").addEventListener("click", () => downloadMultiplierAnalysis422("json"));
+    $("#multiplier-export-csv").addEventListener("click", () => downloadMultiplierAnalysis422("csv"));
     $("#fiscal-control-list").addEventListener("change", (event) => {
       const id = event.target?.dataset?.fiscalControl;
       if (!id || !F.controls[id]) return;

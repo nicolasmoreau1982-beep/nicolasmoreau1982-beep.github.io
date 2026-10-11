@@ -223,7 +223,7 @@
             <summary>Lire les résultats avec un point de comparaison externe (Mésange)</summary>
             <div class="benchmark-context-content">
               <p><strong>Exemple documenté, indépendant de votre scénario :</strong> une hausse composite permanente des dépenses publiques équivalente à 1 point de PIB conduit à <strong>+0,60 %</strong> de PIB à 3 ans dans le panier proxy EcoSim, contre <strong>+1,03 %</strong> dans Mésange 2017. Il existe un écart d’environ <strong>0,43 point de PIB</strong> entre les résultats.</p>
-              <p><strong>Ce n’est pas une comparaison strictement équivalente :</strong> EcoSim utilise des fonctions COFOG pour approcher des natures de dépenses distinctes dans Mésange. Cet écart ne prouve pas une sous-estimation générale, et <strong>ne doit pas servir de correction automatique</strong> des chiffres de votre réforme. La réponse TVA est calibrée sur Mésange par construction, pas validée indépendamment. <a href="audit.html#benchmark-419">Méthode et comparaison Mésange ↗</a> · <a href="validation-economique-421.html">Tester la sensibilité des résultats (4.21) ↗</a></p>
+              <p><strong>Ce n’est pas une comparaison strictement équivalente :</strong> EcoSim utilise des fonctions COFOG pour approcher des natures de dépenses distinctes dans Mésange. Cet écart ne prouve pas une sous-estimation générale, et <strong>ne doit pas servir de correction automatique</strong> des chiffres de votre réforme. La réponse TVA est calibrée sur Mésange par construction, pas validée indépendamment. <a href="audit.html#benchmark-419">Méthode et comparaison Mésange ↗</a> · <a href="validation-economique-421.html">Vérification des rétroactions (4.21) ↗</a></p>
             </div>
           </details>
           <p class="result-status"><strong>Observé</strong> : comptes de départ 2025 · <strong>Modélisé</strong> : trajectoire et écarts ci-dessous · <strong>Exploratoire</strong> : fourchettes, effets sociaux et horizons lointains. <a href="audit.html#incertitude">Méthode et limites ↗</a></p>
@@ -263,6 +263,28 @@
             <div class="plain-summary-actions"><button type="button" data-scroll="budget">Modifier un poste du budget</button><a href="audit.html#incertitude">Pourquoi cette fourchette ? ↗</a></div>
           </article>
 
+          <details class="multiplier-analysis-422" id="multiplier-analysis-details">
+            <summary><strong>Quelle confiance accorder au résultat ?</strong> · Tester les multiplicateurs et comprendre les écarts</summary>
+            <div class="multiplier-analysis-content">
+              <p>Trois variantes pédagogiques appliquent ×0,70 / ×1,00 / ×1,30 aux <strong>canaux de transmission des postes budgétaires et fiscaux</strong>. Elles ne modifient ni les montants saisis, ni les moteurs structurels ou publics, ni les trois coefficients de rétroaction étudiés dans la version 4.21. Ce ne sont <strong>ni des probabilités ni des intervalles de confiance</strong> ; l’éventuel écart avec Mésange ne valide aucune de ces amplitudes.</p>
+              <label for="multiplier-variant-select">Variante à afficher</label>
+              <select id="multiplier-variant-select"><option value="prudente">Transmission atténuée (×0,70)</option><option value="centrale" selected>Transmission centrale (×1,00)</option><option value="forte">Transmission renforcée (×1,30)</option></select>
+              <button type="button" id="multiplier-recalculate" class="button button-dark">Recalculer les trois variantes</button>
+              <p id="multiplier-analysis-status" class="model-description" aria-live="polite">Ouvrez ce panneau pour calculer les variantes.</p>
+              <div class="table-scroll"><table><caption>Résultats de votre scénario selon les multiplicateurs · écarts à la référence</caption><thead><tr><th scope="col">Indicateur</th><th scope="col">Variante sélectionnée</th><th scope="col">Plage des trois variantes</th><th scope="col">Stabilité dans le test</th></tr></thead><tbody id="multiplier-analysis-table-body"><tr><td colspan="4">Calcul disponible à l’ouverture du panneau.</td></tr></tbody></table></div>
+              <h3>Quels canaux de transmission influencent le plus le résultat ?</h3>
+              <p>Effet maximal d’une variation isolée de ±30 % d’une seule famille de multiplicateurs, les autres fixés à leur valeur centrale. Cette analyse ne couvre pas les autres coefficients comportementaux.</p>
+              <div class="table-scroll"><table><caption>Sensibilité de chaque indicateur aux deux familles de multiplicateurs</caption><thead><tr><th scope="col">Canal testé</th><th scope="col">Variation maximale du PIB</th><th scope="col">Variation maximale du déficit</th><th scope="col">Variation maximale de la dette</th></tr></thead><tbody id="multiplier-contributions-body"><tr><td colspan="4">Analyse disponible à l’ouverture.</td></tr></tbody></table></div>
+              <h3>Pourquoi le déficit change-t-il ?</h3>
+              <p>Décomposition comptable à l’horizon sélectionné, issue du scénario central effectivement calculé.</p>
+              <div class="table-scroll"><table><caption>Écart de déficit par rapport à la référence en Md€</caption><thead><tr><th scope="col">Composante</th><th scope="col">Contribution</th></tr></thead><tbody id="multiplier-explanation-body"><tr><td colspan="2">Calcul disponible à l’ouverture.</td></tr></tbody></table></div>
+              <p id="multiplier-explanation-note"></p>
+              <div class="multiplier-export-actions"><button type="button" id="multiplier-export-csv" class="button button-ghost">Exporter toutes les variantes en CSV</button><button type="button" id="multiplier-export-json" class="button button-ghost">Exporter en JSON</button></div>
+              <p class="model-description">Un signe stable dans trois hypothèses arbitraires ne prouve pas que le résultat se réalisera. La plage ne couvre pas l’incertitude sur les données, les réactions sociales, les multiplicateurs institutionnels ou les réformes non modélisées. <a href="validation-economique-421.html">Voir les autres tests</a>.</p>
+            </div>
+          </details>
+
+          <p class="model-description">Banc reproductible des variantes : <a href="sensibilite-multiplicateurs-422.html">comparer cinq réformes avec trois hypothèses de transmission ↗</a>. Les exemples ne sont pas des prévisions.</p>
           <article class="chart-card">
             <div class="chart-toolbar">
               <div>
@@ -474,7 +496,7 @@
             <span>écarts et niveaux simulés</span>
           </div>
           <!-- provenance-counter:start -->
-          <p class="politics-provenance-status" role="note"><strong>Provenance des 357 réglages du comparateur : 1 sur 357 lié à une proposition localisée, mais aucun montant exact vérifié (0/357).</strong> 0 correspondances chiffrées exactes, 1 proposition reliée à une source localisée mais non équivalente, 356 hypothèses sans preuve individuelle. <a href="provenance-politique.html">Voir les sources et limites de chaque réglage ↗</a></p>
+          <p class="politics-provenance-status" role="note"><strong>Provenance des 357 réglages du comparateur : 23 sur 357 lié à une proposition localisée, mais aucun montant exact vérifié (0/357).</strong> 0 correspondances chiffrées exactes, 23 propositions reliées à une source localisée mais non équivalentes, 334 hypothèses sans preuve individuelle. <a href="provenance-politique.html">Voir les sources et limites de chaque réglage ↗</a></p>
           <!-- provenance-counter:end -->
           <div class="politics-comparison-scroll"><div id="politics-comparison"></div></div>
         </article>
@@ -651,7 +673,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.21.1 · paquet <code title="Empreinte du code de distribution, pas un commit Git">b177a044830c</code></span>
+      <span class="footer-version">Version 4.22 · paquet <code title="Empreinte du code de distribution, pas un commit Git">5d55b3b98dcc</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

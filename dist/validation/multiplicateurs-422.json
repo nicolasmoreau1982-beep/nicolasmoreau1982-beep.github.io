@@ -1,0 +1,721 @@
+{
+  "version": "4.22.0",
+  "date": "2026-10-11",
+  "method": "Variation conventionnelle des multiplicateurs des postes budgétaires et fiscaux (pas de modification des moteurs structurels).",
+  "factors": [
+    {
+      "label": "atténuée",
+      "factor": 0.7
+    },
+    {
+      "label": "centrale",
+      "factor": 1
+    },
+    {
+      "label": "renforcée",
+      "factor": 1.3
+    }
+  ],
+  "thresholds": "La stabilité du signe dans trois variantes arbitraires ne constitue pas une probabilité ni une validation empirique.",
+  "scenarios": [
+    {
+      "key": "education+10",
+      "label": "Éducation +10 Md€",
+      "changes": {
+        "GF0901": 10
+      }
+    },
+    {
+      "key": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "changes": {
+        "GF1002": -10
+      }
+    },
+    {
+      "key": "TVA+10",
+      "label": "TVA +10 Md€",
+      "changes": {
+        "R_TVA": 10
+      }
+    },
+    {
+      "key": "IR+10",
+      "label": "IR +10 Md€",
+      "changes": {
+        "R_IR": 10
+      }
+    },
+    {
+      "key": "mixte",
+      "label": "Mixte",
+      "changes": {
+        "GF0901": 4,
+        "R_TVA": 6,
+        "GF1002": -3
+      }
+    }
+  ],
+  "records": [
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 1,
+      "gdpDeltaPct": 0.2104284794696598,
+      "deficitDeltaBn": 6.9239455081714425,
+      "debtDeltaBn": 6.923945508171528,
+      "unemploymentDeltaPp": -0.06549163461314222
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 3,
+      "gdpDeltaPct": 0.2607865114503838,
+      "deficitDeltaBn": 6.69552312231707,
+      "debtDeltaBn": 20.024256345814592,
+      "unemploymentDeltaPp": -0.07315047515011219
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 5,
+      "gdpDeltaPct": 0.26128986058364667,
+      "deficitDeltaBn": 7.868413457575784,
+      "debtDeltaBn": 35.08627997749045,
+      "unemploymentDeltaPp": -0.06827953012363608
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 10,
+      "gdpDeltaPct": 0.25780547896447903,
+      "deficitDeltaBn": 11.894457346735962,
+      "debtDeltaBn": 86.11067573595028,
+      "unemploymentDeltaPp": -0.06281623277830928
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 1,
+      "gdpDeltaPct": 0.29062231777148284,
+      "deficitDeltaBn": 5.65437701167329,
+      "debtDeltaBn": 5.654377011673205,
+      "unemploymentDeltaPp": -0.09355947801877385
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 3,
+      "gdpDeltaPct": 0.35035852183826766,
+      "deficitDeltaBn": 5.036402493913215,
+      "debtDeltaBn": 15.53500569089465,
+      "unemploymentDeltaPp": -0.10450067878587532
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 5,
+      "gdpDeltaPct": 0.3448974484901557,
+      "deficitDeltaBn": 5.778714497984268,
+      "debtDeltaBn": 26.623532712113956,
+      "unemploymentDeltaPp": -0.09754218589090868
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 10,
+      "gdpDeltaPct": 0.3347233150195361,
+      "deficitDeltaBn": 8.72478551626429,
+      "debtDeltaBn": 64.046119485899,
+      "unemploymentDeltaPp": -0.08973747539758481
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 1,
+      "gdpDeltaPct": 0.37081615607328366,
+      "deficitDeltaBn": 4.384808515175337,
+      "debtDeltaBn": 4.384808515175337,
+      "unemploymentDeltaPp": -0.12162732142440547
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 3,
+      "gdpDeltaPct": 0.43993053222617373,
+      "deficitDeltaBn": 3.480606831907238,
+      "debtDeltaBn": 11.149080002373466,
+      "unemploymentDeltaPp": -0.13585088242163756
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 5,
+      "gdpDeltaPct": 0.4285050363966425,
+      "deficitDeltaBn": 3.8296928106422996,
+      "debtDeltaBn": 18.63882437418306,
+      "unemploymentDeltaPp": -0.1268048416581813
+    },
+    {
+      "scenario": "education+10",
+      "label": "Éducation +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 10,
+      "gdpDeltaPct": 0.4116411510746154,
+      "deficitDeltaBn": 5.616964078553266,
+      "debtDeltaBn": 42.71054401868605,
+      "unemploymentDeltaPp": -0.11665871801686034
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 1,
+      "gdpDeltaPct": -0.11489173525549568,
+      "deficitDeltaBn": -8.440024320591647,
+      "debtDeltaBn": -8.440024320591874,
+      "unemploymentDeltaPp": 0.030888297966569667
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 3,
+      "gdpDeltaPct": -0.12895298449098203,
+      "deficitDeltaBn": -8.881069703338895,
+      "debtDeltaBn": -25.967170551969957,
+      "unemploymentDeltaPp": 0.024426857713422123
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 5,
+      "gdpDeltaPct": -0.13402310521570815,
+      "deficitDeltaBn": -9.4866036798078,
+      "debtDeltaBn": -44.618474202629386,
+      "unemploymentDeltaPp": 0.020440094499039496
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 10,
+      "gdpDeltaPct": -0.13680652280383399,
+      "deficitDeltaBn": -11.321906775453328,
+      "debtDeltaBn": -97.44163108711746,
+      "unemploymentDeltaPp": 0.016571624714782907
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 1,
+      "gdpDeltaPct": -0.1527141409288446,
+      "deficitDeltaBn": -7.8412484579880015,
+      "debtDeltaBn": -7.841248457988058,
+      "unemploymentDeltaPp": 0.044126139952243904
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 3,
+      "gdpDeltaPct": -0.15886342250741592,
+      "deficitDeltaBn": -8.356791823259798,
+      "debtDeltaBn": -24.281610954016287,
+      "unemploymentDeltaPp": 0.03489551101917421
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 5,
+      "gdpDeltaPct": -0.15905179235738975,
+      "deficitDeltaBn": -8.996331879854168,
+      "debtDeltaBn": -41.941079953680855,
+      "unemploymentDeltaPp": 0.029200134998627725
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 10,
+      "gdpDeltaPct": -0.15709830816887926,
+      "deficitDeltaBn": -10.806156386078214,
+      "debtDeltaBn": -92.27395382535906,
+      "unemploymentDeltaPp": 0.023673749592546756
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 1,
+      "gdpDeltaPct": -0.19053654660220465,
+      "deficitDeltaBn": -7.242472595384356,
+      "debtDeltaBn": -7.242472595384243,
+      "unemploymentDeltaPp": 0.057363981937916364
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 3,
+      "gdpDeltaPct": -0.1887738605238387,
+      "deficitDeltaBn": -7.8325139431807145,
+      "debtDeltaBn": -22.59605135606307,
+      "unemploymentDeltaPp": 0.04536416432492629
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 5,
+      "gdpDeltaPct": -0.18408047949907136,
+      "deficitDeltaBn": -8.50606007990055,
+      "debtDeltaBn": -39.263685704734144,
+      "unemploymentDeltaPp": 0.03796017549821595
+    },
+    {
+      "scenario": "pensions-10",
+      "label": "Pensions −10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 10,
+      "gdpDeltaPct": -0.17739009353391344,
+      "deficitDeltaBn": -10.2904059967031,
+      "debtDeltaBn": -87.10627656360157,
+      "unemploymentDeltaPp": 0.030775874470311493
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 1,
+      "gdpDeltaPct": -0.07459047498282745,
+      "deficitDeltaBn": -9.049139734643518,
+      "debtDeltaBn": -9.049139734643632,
+      "unemploymentDeltaPp": 0.02610666624398661
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 3,
+      "gdpDeltaPct": -0.1643592731732091,
+      "deficitDeltaBn": -8.22911572354461,
+      "debtDeltaBn": -25.43361675918277,
+      "unemploymentDeltaPp": 0.05752574561062218
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 5,
+      "gdpDeltaPct": -0.1806343476110306,
+      "deficitDeltaBn": -8.553559715440628,
+      "debtDeltaBn": -42.369934084184024,
+      "unemploymentDeltaPp": 0.0632220216638597
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 10,
+      "gdpDeltaPct": -0.16501126666236265,
+      "deficitDeltaBn": -10.526046889199904,
+      "debtDeltaBn": -90.96565019834088,
+      "unemploymentDeltaPp": 0.05775394333182682
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 1,
+      "gdpDeltaPct": -0.1065578214040297,
+      "deficitDeltaBn": -8.543056763776633,
+      "debtDeltaBn": -8.543056763776804,
+      "unemploymentDeltaPp": 0.03729523749140995
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 3,
+      "gdpDeltaPct": -0.23479896167600822,
+      "deficitDeltaBn": -7.019851416492486,
+      "debtDeltaBn": -22.64499861026161,
+      "unemploymentDeltaPp": 0.08217963658660388
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 5,
+      "gdpDeltaPct": -0.2580490680157532,
+      "deficitDeltaBn": -7.096685427032696,
+      "debtDeltaBn": -36.79512800856355,
+      "unemploymentDeltaPp": 0.09031717380551374
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 10,
+      "gdpDeltaPct": -0.23573038094623078,
+      "deficitDeltaBn": -8.82833661221639,
+      "debtDeltaBn": -77.39184426803695,
+      "unemploymentDeltaPp": 0.08250563333118155
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 1,
+      "gdpDeltaPct": -0.13852516782524305,
+      "deficitDeltaBn": -8.036973792909492,
+      "debtDeltaBn": -8.03697379290952,
+      "unemploymentDeltaPp": 0.04848380873883329
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 3,
+      "gdpDeltaPct": -0.30523865017881846,
+      "deficitDeltaBn": -5.810587109440149,
+      "debtDeltaBn": -19.856380461339995,
+      "unemploymentDeltaPp": 0.1068335275625838
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 5,
+      "gdpDeltaPct": -0.33546378842048696,
+      "deficitDeltaBn": -5.639811138624523,
+      "debtDeltaBn": -31.22032193294308,
+      "unemploymentDeltaPp": 0.11741232594716866
+    },
+    {
+      "scenario": "TVA+10",
+      "label": "TVA +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 10,
+      "gdpDeltaPct": -0.3064494952300989,
+      "deficitDeltaBn": -7.13062633523289,
+      "debtDeltaBn": -63.818038337733014,
+      "unemploymentDeltaPp": 0.10725732333053628
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 1,
+      "gdpDeltaPct": -0.1454576656825357,
+      "deficitDeltaBn": -7.94167560855243,
+      "debtDeltaBn": -7.941675608552487,
+      "unemploymentDeltaPp": 0.04624827830246048
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 3,
+      "gdpDeltaPct": -0.14167760492390657,
+      "deficitDeltaBn": -8.617488274520298,
+      "debtDeltaBn": -24.825521020342876,
+      "unemploymentDeltaPp": 0.039232835084153095
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 5,
+      "gdpDeltaPct": -0.13659697939477633,
+      "deficitDeltaBn": -9.370518745394008,
+      "debtDeltaBn": -43.18203433470126,
+      "unemploymentDeltaPp": 0.034573053217709315
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 10,
+      "gdpDeltaPct": -0.1304486581714559,
+      "deficitDeltaBn": -11.366606217586579,
+      "debtDeltaBn": -95.97110222862466,
+      "unemploymentDeltaPp": 0.029998828273963163
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 1,
+      "gdpDeltaPct": -0.20208821054269466,
+      "deficitDeltaBn": -7.045143440789161,
+      "debtDeltaBn": -7.045143440789161,
+      "unemploymentDeltaPp": 0.06606896900351522
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 3,
+      "gdpDeltaPct": -0.18971781114940356,
+      "deficitDeltaBn": -7.777368677805796,
+      "debtDeltaBn": -22.208477906025564,
+      "unemploymentDeltaPp": 0.056046907263075596
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 5,
+      "gdpDeltaPct": -0.17893133027359065,
+      "deficitDeltaBn": -8.547056825767982,
+      "debtDeltaBn": -38.916981039812526,
+      "unemploymentDeltaPp": 0.049390076025299656
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 10,
+      "gdpDeltaPct": -0.16718191728242182,
+      "deficitDeltaBn": -10.44951633461558,
+      "debtDeltaBn": -87.35235565271341,
+      "unemploymentDeltaPp": 0.04285546896280401
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 1,
+      "gdpDeltaPct": -0.2587187554028536,
+      "deficitDeltaBn": -6.148611273025864,
+      "debtDeltaBn": -6.1486112730258355,
+      "unemploymentDeltaPp": 0.08588965970456997
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 3,
+      "gdpDeltaPct": -0.23775801737490054,
+      "deficitDeltaBn": -6.93612228645047,
+      "debtDeltaBn": -19.53909005884725,
+      "unemploymentDeltaPp": 0.07286097944199632
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 5,
+      "gdpDeltaPct": -0.22126568115242717,
+      "deficitDeltaBn": -7.722391239009596,
+      "debtDeltaBn": -34.59722776080707,
+      "unemploymentDeltaPp": 0.06420709883288911
+    },
+    {
+      "scenario": "IR+10",
+      "label": "IR +10 Md€",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 10,
+      "gdpDeltaPct": -0.20391517639339884,
+      "deficitDeltaBn": -9.531048552053988,
+      "debtDeltaBn": -78.67232249936023,
+      "unemploymentDeltaPp": 0.05571210965164575
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 1,
+      "gdpDeltaPct": 0.004949586221525415,
+      "deficitDeltaBn": -5.191912933695221,
+      "debtDeltaBn": -5.191912933695221,
+      "unemploymentDeltaPp": -0.0012661647088929584
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 3,
+      "gdpDeltaPct": -0.032993639418321674,
+      "deficitDeltaBn": -4.964804294837933,
+      "debtDeltaBn": -15.081795526471524,
+      "unemploymentDeltaPp": 0.012583314620355779
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 5,
+      "gdpDeltaPct": -0.044084662963350674,
+      "deficitDeltaBn": -5.160065702525088,
+      "debtDeltaBn": -25.297994671394918,
+      "unemploymentDeltaPp": 0.016753429298573153
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "atténuée",
+      "factor": 0.7,
+      "horizon": 10,
+      "gdpDeltaPct": -0.036946354294942196,
+      "deficitDeltaBn": -6.361411275999885,
+      "debtDeltaBn": -54.64644982343998,
+      "unemploymentDeltaPp": 0.014497360302207163
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 1,
+      "gdpDeltaPct": 0.006499991987518605,
+      "deficitDeltaBn": -5.216457790993076,
+      "debtDeltaBn": -5.21645779099299,
+      "unemploymentDeltaPp": -0.0018088067269896868
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 3,
+      "gdpDeltaPct": -0.04840177976976889,
+      "deficitDeltaBn": -4.704280611385187,
+      "debtDeltaBn": -14.657327033140973,
+      "unemploymentDeltaPp": 0.017976163743364637
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 5,
+      "gdpDeltaPct": -0.06459906618609956,
+      "deficitDeltaBn": -4.7818349884149285,
+      "debtDeltaBn": -24.1766099004235,
+      "unemploymentDeltaPp": 0.02393347042653371
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "centrale",
+      "factor": 1,
+      "horizon": 10,
+      "gdpDeltaPct": -0.054698224052740496,
+      "deficitDeltaBn": -5.941234235292271,
+      "debtDeltaBn": -51.50519354474727,
+      "unemploymentDeltaPp": 0.020710514717439565
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 1,
+      "gdpDeltaPct": 0.008050397753511795,
+      "deficitDeltaBn": -5.241002648290959,
+      "debtDeltaBn": -5.24100264829076,
+      "unemploymentDeltaPp": -0.002351448745086415
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 3,
+      "gdpDeltaPct": -0.06380992012122721,
+      "deficitDeltaBn": -4.443756927932441,
+      "debtDeltaBn": -14.232858539810422,
+      "unemploymentDeltaPp": 0.023369012866373495
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 5,
+      "gdpDeltaPct": -0.08511346940884845,
+      "deficitDeltaBn": -4.403604274304769,
+      "debtDeltaBn": -23.055225129452083,
+      "unemploymentDeltaPp": 0.031113511554493378
+    },
+    {
+      "scenario": "mixte",
+      "label": "Mixte",
+      "variant": "renforcée",
+      "factor": 1.3,
+      "horizon": 10,
+      "gdpDeltaPct": -0.072450093810561,
+      "deficitDeltaBn": -5.5210571945844436,
+      "debtDeltaBn": -48.36393726605456,
+      "unemploymentDeltaPp": 0.02692366913267108
+    }
+  ]
+}

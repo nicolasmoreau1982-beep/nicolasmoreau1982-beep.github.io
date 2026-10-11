@@ -1126,6 +1126,15 @@ window.ECOSIM_DATA = (() => {
         changes: { R_TVA: -10, R_PRODUCTS: -5, GF0201: 5, GF0301: 4, GF0303: 2, GF0102: -3, GF0505: -1, GF1004: 3 },
         structural: { economicMigration: 20, otherMigration: 25, nuclear: 8, renewables: -6 },
         engines: { tradeProtection: 5, fraudRecovery: 7, publicSafety: 5, defenseCapacity: 5, domesticDefense: 18, pensionIndex: 0.5 },
+        evidence: {
+          "engines.fraudRecovery": {"status": "related", "sourceTitle": "RN, campagne législative 2024", "locator": "Pour réaliser des économies : lutte contre les fraudes sociales et fiscales", "url": "https://rassemblementnational.fr/legislatives-2024", "note": "Orientation documentée, mais un niveau 7 EcoSim ne représente ni un rendement budgétaire ni un objectif officiel de contrôles."},
+          "changes.R_TVA": {"status": "related", "sourceTitle": "RN, législatives 2024", "locator": "Pour soutenir le pouvoir d’achat : TVA sur les énergies", "url": "https://rassemblementnational.fr/legislatives-2024", "note": "Le document évoque la TVA sur certains produits énergétiques, pas une baisse générale de recettes TVA de 10 Md€ ; valeur EcoSim illustrative."},
+          "structural.economicMigration": {"status": "related", "sourceTitle": "RN, législatives 2024", "locator": "Pour réduire l’immigration légale et illégale", "url": "https://rassemblementnational.fr/legislatives-2024", "note": "Orientation générale attestée, aucun flux migratoire chiffré équivalent au curseur EcoSim."},
+          "structural.otherMigration": {"status": "related", "sourceTitle": "RN, législatives 2024", "locator": "Immigration légale et illégale", "url": "https://rassemblementnational.fr/legislatives-2024", "note": "Orientation générale documentée ; le flux des autres migrations et son volume ne sont pas sourcés."},
+          "structural.nuclear": {"status": "related", "sourceTitle": "RN, programme législatif 2024", "locator": "Le besoin de projection : plan Marie Curie de relance du nucléaire", "url": "https://rassemblementnational.fr/documents/20240625-programme.pdf", "note": "Plan de relance nucléaire documenté, mais +8 unités d’EcoSim n’est ni un calendrier ni un nombre de réacteurs officiels."},
+          "engines.defenseCapacity": {"status": "related", "sourceTitle": "RN, programme législatif 2024", "locator": "Le devoir de protection : préserver la trajectoire de LPM", "url": "https://rassemblementnational.fr/documents/20240625-programme.pdf", "note": "La trajectoire budgétaire de défense est mentionnée ; la valeur du moteur n’est pas chiffrée dans ces unités."},
+          "engines.publicSafety": {"status": "related", "sourceTitle": "RN, législatives 2024", "locator": "Pour remettre la France en ordre", "url": "https://rassemblementnational.fr/legislatives-2024", "note": "Une orientation de sécurité est documentée, mais le coefficient du moteur EcoSim n’est pas une mesure officiellement calibrée."},
+        },
         measures: ["TVA/accises énergie en baisse", "Immigration et prestations plus restrictives", "Sécurité, défense, nucléaire et contenu national"],
         sources: [{ label: "Programme législatif 2024", url: "https://rassemblementnational.fr/documents/202406-programme.pdf" }, { label: "Contre-budget 2026", url: "https://francaisdeletranger.rassemblementnational.fr/documents/GRN-CONTRE-BUDGET-2026.pdf" }]
       },
@@ -1151,6 +1160,11 @@ window.ECOSIM_DATA = (() => {
         structural: { renewables: 35, efficiency: 12, carbonTax: 15, economicMigration: 70, otherMigration: 140, integration: 70 },
         engines: { minimumWage: 14, retirementAge: -2, pensionIndex: 1.5, teacherResources: 12, healthWorkforce: 55, socialHousing: 90, targetedTransfers: 12, publicResearch: 10, transportInfrastructure: 12, bankLevy: 6, fraudRecovery: 9 },
         evidence: {
+          "changes.GF0703": {"status": "related", "sourceTitle": "La France insoumise, réponses à l’Ordre national des infirmiers", "locator": "Investissement en ressources humaines hospitalières", "url": "https://programme.lafranceinsoumise.fr/reponses-aux-associations/ordre-national-des-infirmiers/", "note": "L’orientation santé est documentée, mais +10 Md€ dans la ligne hospitalière est une convention EcoSim non équivalente au plan officiel."},
+          "engines.healthWorkforce": {"status": "related", "sourceTitle": "La France insoumise, réponses à l’Ordre national des infirmiers", "locator": "Plan de recrutement pluriannuel : 100 000 soignants et médecins supplémentaires à l’hôpital", "url": "https://programme.lafranceinsoumise.fr/reponses-aux-associations/ordre-national-des-infirmiers/", "note": "Objectif national documenté ; les 55 milliers du curseur EcoSim ne représentent pas l’intégralité du plan, son calendrier ou ses coûts."},
+          "engines.retirementAge": {"status": "related", "sourceTitle": "La France insoumise, octobre 2023", "locator": "Plan de revalorisation des retraites : retraite à 60 ans après 40 ans", "url": "https://lafranceinsoumise.fr/2023/10/24/revalorisation-des-pensions-retraite-tout%C2%B7es-dans-la-rue-ce-mardi-24-octobre/", "note": "La retraite à 60 ans est documentée, mais -2 ans dans EcoSim ne reproduit pas l’ensemble des conditions de carrière, ni les coûts."},
+          "engines.pensionIndex": {"status": "related", "sourceTitle": "La France insoumise, octobre 2023", "locator": "Revalorisation de 10 % des pensions revendiquée", "url": "https://lafranceinsoumise.fr/2023/10/24/revalorisation-des-pensions-retraite-tout%C2%B7es-dans-la-rue-ce-mardi-24-octobre/", "note": "Revalorisation documentée, mais le +1,5 du curseur pensionIndex n’est pas équivalent à +10 % des pensions."},
+
           "engines.minimumWage": {
             status: "related",
             sourceValue: 14,
@@ -1174,6 +1188,12 @@ window.ECOSIM_DATA = (() => {
         changes: { GF0703: 7, GF0901: 5, GF0902: 5, GF0601: 7, GF0405: 7, GF1006: 5, GF1007: 6, R_IR: 11, R_IS: 8, R_CAPITALLEVY: 5, R_HIGHINC: 3 },
         structural: { renewables: 28, efficiency: 10, carbonTax: 10, integration: 68 },
         engines: { minimumWage: 7, retirementAge: -1, pensionIndex: 0.5, teacherResources: 8, healthWorkforce: 35, socialHousing: 65, targetedTransfers: 8, publicResearch: 6, transportInfrastructure: 8 },
+        evidence: {
+          "engines.minimumWage": {"status": "related", "sourceTitle": "PS, déclaration du groupe, 22 juillet 2024", "locator": "Salaires : SMIC à 1 600 € nets", "url": "https://parti-socialiste.fr/vie-parlementaire/notre-declaration-politique-17eme-legislature/", "note": "Montant net documenté, mais le +7 du levier EcoSim est un pourcentage de salaire minimum réel : grandeur non équivalente."},
+          "engines.socialHousing": {"status": "related", "sourceTitle": "PS, budget contre la vie chère", "locator": "Logement : 125 000 logements sociaux neufs en 2024", "url": "https://parti-socialiste.fr/vie-parlementaire/un-budget-contre-la-vie-chere-est-possible/", "note": "Volume de logements documenté ; le curseur EcoSim de logements ne reproduit ni l’année ni la ventilation ni le coût précis."},
+          "changes.GF0703": {"status": "related", "sourceTitle": "PS, budget contre la vie chère", "locator": "Reconstruction de l’hôpital public", "url": "https://parti-socialiste.fr/vie-parlementaire/un-budget-contre-la-vie-chere-est-possible/", "note": "Orientation hospitalière documentée ; +7 Md€ est une ventilation pédagogique non attribuable officiellement au PS."},
+          "engines.pensionIndex": {"status": "related", "sourceTitle": "PS, déclaration politique de juillet 2024", "locator": "Revaloriser les petites retraites", "url": "https://parti-socialiste.fr/vie-parlementaire/notre-declaration-politique-17eme-legislature/", "note": "La mesure documentée vise les petites pensions ; le levier agrégé de l’indice n’est pas équivalent."},
+        },
         measures: ["Pouvoir d’achat et retraite révisée", "École, santé, logement et rail", "Fiscalité progressive et transition juste"],
         sources: [{ label: "Déclaration politique du groupe", url: "https://parti-socialiste.fr/vie-parlementaire/notre-declaration-politique-17eme-legislature/" }]
       },
@@ -1198,6 +1218,15 @@ window.ECOSIM_DATA = (() => {
         changes: { GF0405: 12, GF0503: 8, GF0504: 4, GF0601: 8, GF0704: 4, GF0901: 4, GF1007: 5, R_IR: 9, R_CAPITALLEVY: 6, R_HIGHINC: 3, R_PRODUCTS: 5 },
         structural: { nuclear: -6, renewables: 52, efficiency: 18, carbonTax: 35 },
         engines: { adaptation: 8, agricultureTransition: 8, carbonSinks: 5, transportInfrastructure: 14, socialHousing: 65, targetedTransfers: 7, publicResearch: 6 },
+        evidence: {
+          "changes.GF0901": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, juin 2024", "locator": "Pilier 5 : plan massif pour l’Éducation nationale", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "La source ne donne pas une ventilation de +4 Md€ pour l’enseignement primaire ; montant purement EcoSim."},
+          "structural.efficiency": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, 10 juin 2024", "locator": "Pilier 1 : rénovation des bâtiments et logements", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "Rénovation thermique documentée ; l’intensité du curseur d’efficacité énergétique est propre à EcoSim."},
+          "structural.nuclear": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, 10 juin 2024", "locator": "Pilier 1 : sortie programmée du nucléaire", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "Orientation documentée ; -6 unités du curseur ne constitue pas un plan officiel de fermetures."},
+          "engines.transportInfrastructure": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, 10 juin 2024", "locator": "Pilier 1 : rail et transports de proximité", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "Politique ferroviaire documentée ; le niveau 14 du moteur n’est pas un chiffrage exact."},
+          "changes.GF0405": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, 10 juin 2024", "locator": "Pilier 1 : rail et transports de proximité", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "+12 Md€ est un choix de ventilation EcoSim, non une dépense chiffrée dans la source."},
+          "changes.R_HIGHINC": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, 10 juin 2024", "locator": "Pilier 2 : ISF climatique et fiscalité des plus riches", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "La source cite la taxation des plus aisés ; +3 Md€ est un rendement supposé, non une estimation officielle."},
+          "changes.GF0503": {"status": "related", "sourceTitle": "Les Écologistes, 10 piliers, 10 juin 2024", "locator": "Pilier 1 : plan climat et adaptation", "url": "https://lesecologistes.fr/posts/3cyFgfScqsrMXIt3h2Bh6l/10-piliers-des-ecologistes-pour-changer-la-vie", "note": "L’objectif climatique est documenté, mais l’affectation de +8 Md€ à cette ligne fonctionnelle n’est pas prouvée."},
+        },
         measures: ["Rénovation, renouvelables et rail", "Biodiversité et adaptation", "Compensation sociale et impôts progressifs"],
         sources: [{ label: "Programme du Nouveau Front populaire", url: "https://lesecologistes.fr/posts/1Otm5ILXmpHTs3IQtYEcHC/le-programme-du-nouveau-front-populaire" }]
       },
@@ -1400,7 +1429,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "4.21.0"
+      version: "4.22.0"
     }
   };
 })();
