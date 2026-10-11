@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "version": "4.25.0",
+    "note": "Exemple pédagogique avec proxys Insee Ésane 2023 ; aucune élasticité causale estimée"
+  },
+  "scenario": {
+    "version": "4.25.0",
+    "name": "Industrie et bâtiment — contexte Insee 2023",
+    "model": "consensus",
+    "euMode": "current",
+    "sectoral": [
+      {
+        "sector": "chemical",
+        "instrument": "credit",
+        "amountBn": 2,
+        "startYear": 2026,
+        "durationYears": 5,
+        "response": "contextual"
+      },
+      {
+        "sector": "building",
+        "instrument": "grant",
+        "amountBn": 2,
+        "startYear": 2026,
+        "durationYears": 5,
+        "response": "contextual"
+      },
+      {
+        "sector": "renewables",
+        "instrument": "credit",
+        "amountBn": 1,
+        "startYear": 2027,
+        "durationYears": 6,
+        "response": "contextual"
+      }
+    ]
+  }
+}

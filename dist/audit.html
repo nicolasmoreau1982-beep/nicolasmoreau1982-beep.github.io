@@ -35,12 +35,13 @@
           <a href="#provenance-420">04b · Provenance politique 4.20</a>
           <a href="#validation-421">04c · Validation fiscale et sensibilité 4.21</a>
           <a href="#sectoriel-424">04f · Fiscalité sectorielle 4.24</a>
+          <a href="#observations-sectorielles-425">04g · Données sectorielles 4.25</a>
           <a href="#recherche">05 · Modèles de recherche</a>
           <a href="#incertitude">06 · Incertitude</a>
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>42cbd08c2980</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>14f3c54ee942</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
@@ -393,6 +394,13 @@
           <p>La 4.24 introduit seize filières pédagogiques — énergie, industrie, transport, bâtiment, agriculture, numérique, santé et économie circulaire — ainsi que trois instruments : crédit d'impôt, prélèvement sectoriel et subvention. Les montants en Md€/an sont des <strong>hypothèses décidées par l'utilisateur</strong> : EcoSim ne dispose pas d'assiettes fiscales nationales par secteur permettant de calculer les rendements effectifs.</p>
           <p>Par défaut, le canal est <strong>comptable seulement</strong> : la mesure modifie directement les recettes ou dépenses pendant sa durée, puis cesse. Un canal économique facultatif ajoute un effet de PIB conventionnel à délai sectoriel, non validé par des données d'entreprises. Aucun effet direct sur capacités électriques, émissions, consommation de pétrole ou emplois ne lui est attribué. Une enveloppe saisie dans deux modules peut être comptée deux fois : un avertissement le signale, sans garantir une détection exhaustive.</p>
           <p>Garde-fous : huit mesures au maximum, dix milliards annuels chacune, trente milliards annuels cumulés, années de début 2026–2035, durée 1–15 ans. Les identités budgétaires et les bornes sont testées. Ce module n'est pas une évaluation des effets causaux des aides ou des taxes sectorielles. <a href="fiscalite-sectorielle-424.html">Périmètre, nomenclature et limites ↗</a>.</p>
+        </section>
+
+        <section class="audit-section" id="observations-sectorielles-425" aria-labelledby="observations-sectorielles-425-title">
+          <div class="audit-section-heading"><span>04g</span><h2 id="observations-sectorielles-425-title">Ancrage sectoriel observé · version 4.25</h2></div>
+          <p>Les données <strong>Insee Ésane 2023</strong> ont été associées aux seize filières pédagogiques pour afficher une valeur ajoutée et des investissements corporels observés lorsque le champ statistique le permet. Les catégories sont parfois plus larges que les filières et se chevauchent. L'agriculture n'est pas couverte par le champ Ésane non agricole ; le raffinage ne dispose pas de valeur d'investissement publiée en clair.</p>
+          <p>Un troisième mode de réaction, <strong>« Exploratoire encadré »</strong>, reprend le coefficient conventionnel de la 4.24, le multiplie par un facteur calculé à partir de l'intensité d'investissement historique et plafonné entre 0,75 et 1,25, puis limite l'amplitude à 15 % de l'investissement corporel 2023 du proxy. <strong>Ces bornes sont des conventions, non des élasticités ou intervalles de confiance estimés.</strong> Sans proxy d'investissement, le mode devient comptable uniquement. Les deux modes existants et leurs résultats sont inchangés.</p>
+          <p>La valeur ajoutée et l'investissement d'une branche en 2023 <strong>ne suffisent pas à calibrer la réponse causale</strong> à un dispositif fiscal. Le montant des aides, leurs bénéficiaires, un groupe témoin et les réponses observées seraient nécessaires. <a href="donnees-sectorielles-425.html">Registre complet des chiffres, proxys, doublons et sources ↗</a> ; <a href="data/sectoral-observations-2023.json">données JSON</a>.</p>
         </section>
 
         <section class="audit-section" id="recherche" aria-labelledby="recherche-title">

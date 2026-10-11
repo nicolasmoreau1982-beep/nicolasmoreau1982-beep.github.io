@@ -1445,12 +1445,26 @@
     $("#sectoral-measures").innerHTML = state.sectoral.length
       ? state.sectoral.map((item, index) => `<li class="sectoral-measure">
           <div><strong>${escapeHtml(S.sectors[item.sector].label)}</strong> — ${escapeHtml(S.instruments[item.instrument].label)}
-          <small>${fmt1.format(item.amountBn)} Md€/an · ${item.startYear}–${item.startYear+item.durationYears-1} · ${item.response==="accounting"?"Comptable uniquement":"Effet macro exploratoire"}</small></div>
+          <small>${fmt1.format(item.amountBn)} Md€/an · ${item.startYear}–${item.startYear+item.durationYears-1} · ${item.response==="accounting"?"Comptable uniquement":item.response==="contextual"?"Exploratoire encadré Ésane 2023":"Effet macro exploratoire 4.24"}</small></div>
           <button class="button button-ghost" type="button" data-sector-remove="${index}" aria-label="Retirer : ${escapeHtml(S.sectors[item.sector].label)}">Retirer</button>
         </li>`).join("")
       : "<li>Aucune mesure sectorielle : scénario de référence inchangé.</li>";
     $("#sectoral-count").textContent = `${state.sectoral.length} / ${S.MAX_MEASURES} mesures`;
     $("#sectoral-add").disabled = state.sectoral.length >= S.MAX_MEASURES;
+    updateSectoralObserved();
+  }
+
+  function updateSectoralObserved() {
+    const select=$("#sectoral-sector"), field=$("#sectoral-observed");
+    if (!field || !select || !Object.hasOwn(S.sectors,select.value)) return;
+    const sector=S.sectors[select.value];
+    const ctx=S.observedContext(select.value,Number($("#sectoral-amount")?.value)||0);
+    if (!ctx.available) {
+      field.textContent=`${sector.label} : aucune référence d'investissement utilisable pour cette filière. ${ctx.reason}. Le mode encadré ne produit alors aucun effet PIB supplémentaire.`;
+      return;
+    }
+    const ratio=Number.isFinite(ctx.publicToInvestment) ? (ctx.publicToInvestment*100).toFixed(1).replace('.',',') : '—';
+    field.textContent=`Insee Ésane ${ctx.year} — proxy : ${ctx.proxy}. VA ${fmt1.format(ctx.valueAddedBn)} Md€, investissements corporels ${fmt1.format(ctx.investmentBn)} Md€. Enveloppe saisie : ${ratio} % de cet investissement historique. ${ctx.note} Réaction des entreprises NON estimée ; les proxys peuvent se recouvrir.`;
   }
 
   function updateSectoralPanel() {
@@ -1459,6 +1473,12 @@
     if (!point) return;
     const outcome = point.sectoral;
     container.textContent = `En ${point.year} : recettes ${signed(outcome.revenueChange, " Md€")}, dépenses ${signed(outcome.spendingChange, " Md€")}, effet PIB exploratoire ${signed(outcome.gdpImpact, " Md€")}.`;
+    const bounded=outcome.rows.filter(r=>r.response==="contextual");
+    if(bounded.length) {
+      const caps=bounded.filter(r=>r.capped).length;
+      const unavailable=bounded.filter(r=>!r.contextAvailable).length;
+      container.textContent += ` Mode encadré 2023 : ${caps} effet(s) plafonné(s), ${unavailable} proxy(s) indisponible(s) ; facteurs et bornes conventionnels, pas de calibration causale.`;
+    }
     const warning = $("#sectoral-overlap");
     const hasEnergy = state.sectoral.some(m => ["renewables","nuclear","fossil","grids"].includes(m.sector));
     const otherLeversUsed = Object.values(state.changes).some(v => Math.abs(Number(v)) > 1e-6)
@@ -1470,6 +1490,10 @@
   }
 
   function bindSectoralEditor() {
+    for (const id of ["sectoral-sector","sectoral-amount","sectoral-response"]) {
+      const control=$("#"+id);
+      control?.addEventListener(id==="sectoral-amount"?"input":"change",updateSectoralObserved);
+    }
     $("#sectoral-add").addEventListener("click", () => {
       const raw = {sector:$("#sectoral-sector").value, instrument:$("#sectoral-instrument").value,
         amountBn:Number($("#sectoral-amount").value),startYear:Number($("#sectoral-start").value),

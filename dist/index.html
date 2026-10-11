@@ -594,13 +594,15 @@
             <label for="sectoral-amount">Montant annuel (Md€) <input type="number" id="sectoral-amount" min="0.1" max="10" step="0.1" value="2"/></label>
             <label for="sectoral-start">Début <input type="number" id="sectoral-start" min="2026" max="2035" step="1" value="2026"/></label>
             <label for="sectoral-duration">Durée (années) <input type="number" id="sectoral-duration" min="1" max="15" step="1" value="5"/></label>
-            <label for="sectoral-response">Modélisation <select id="sectoral-response"><option value="accounting">Flux comptable uniquement</option><option value="exploratory">+ Effet PIB exploratoire</option></select></label>
+            <label for="sectoral-response">Modélisation <select id="sectoral-response"><option value="accounting">Flux comptable uniquement</option><option value="exploratory">+ Effet PIB exploratoire (4.24)</option><option value="contextual">+ Effet exploratoire encadré par statistiques 2023 (4.25)</option></select></label>
           </div>
+          <p id="sectoral-observed" class="fiscal-example-note" role="status" aria-live="polite">Sélectionnez une filière pour consulter son proxy statistique observé.</p>
+          <p class="fiscal-example-note">L'intensité d'investissement observée sert uniquement à encadrer <strong>une hypothèse de réaction</strong>, pas à estimer un effet causal. <a href="donnees-sectorielles-425.html">Données Insee 2023 et limites</a>.</p>
           <div class="sectoral-actions"><button id="sectoral-add" class="button button-dark" type="button">Ajouter la mesure</button><span id="sectoral-count" aria-live="polite">0 / 8 mesures</span></div>
           <ul id="sectoral-measures" class="sectoral-measures" aria-label="Mesures sectorielles du scénario"><li>Aucune mesure sectorielle</li></ul>
           <div class="sectoral-outcome" role="status" aria-live="polite" id="sectoral-result">Les résultats apparaîtront ici.</div>
           <p class="sectoral-warning" id="sectoral-overlap" hidden></p>
-          <p class="fiscal-example-note"><strong>Limites :</strong> maximum 8 mesures, 10 Md€/an chacune et 30 Md€/an cumulés. Ni assiette fiscale sectorielle observée, ni effet direct sur les GW, l’emploi ou les émissions. Les regroupements de filières peuvent se chevaucher : vérifiez qu’une même enveloppe n’est pas inscrite ailleurs. Toute aide ou taxation réelle exigerait aussi une analyse juridique.</p>
+          <p class="fiscal-example-note"><strong>Limites :</strong> maximum 8 mesures, 10 Md€/an chacune et 30 Md€/an cumulés. Des proxys de taille sectorielle sont consultables, mais aucune assiette fiscale ou élasticité sectorielle n'est estimée ; ni effet direct sur les GW, l’emploi ou les émissions. Les regroupements de filières peuvent se chevaucher : vérifiez qu’une même enveloppe n’est pas inscrite ailleurs. Toute aide ou taxation réelle exigerait aussi une analyse juridique.</p>
         </div>
       </section>
 
@@ -697,7 +699,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.24 · paquet <code title="Empreinte du code de distribution, pas un commit Git">42cbd08c2980</code></span>
+      <span class="footer-version">Version 4.25 · paquet <code title="Empreinte du code de distribution, pas un commit Git">14f3c54ee942</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -757,6 +759,7 @@
     <script src="history.js"></script>
     <script src="insee-projection.js"></script>
     <script src="fiscal.js"></script>
+    <script src="sectoral-observations.js"></script>
     <script src="sectoral.js"></script>
     <script src="build-info.js"></script>
     <script src="app.js"></script>
