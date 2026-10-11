@@ -1,0 +1,44 @@
+name: EcoSim - verification OpenFisca independante
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-openfisca:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Installer le paquet reel OpenFisca-France
+        run: python -m pip install --disable-pip-version-check 'openfisca-france'
+      - name: Executer les 56 cas dans OpenFisca
+        run: >-
+          python openfisca-validation/run_openfisca_571.py
+          --cases validation/fiscal-individuel-570.json
+          --out comparaison-openfisca-reelle-571.json
+      - name: Comparer au moteur EcoSim
+        run: >-
+          node scripts/comparer-openfisca-570.mjs
+          comparaison-openfisca-reelle-571.json
+          rapport-ecarts-openfisca-571.json
+      - name: Mesurer les ecarts sans masquer les divergences
+        run: >-
+          node scripts/auditer-ecarts-571.mjs
+          rapport-ecarts-openfisca-571.json
+          synthese-openfisca-571.json
+      - name: Archiver la provenance et les differences
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosim-openfisca-comparaison-571
+          if-no-files-found: warn
+          path: |
+            comparaison-openfisca-reelle-571.json
+            rapport-ecarts-openfisca-571.json
+            synthese-openfisca-571.json

@@ -1,0 +1,35 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confrontation OpenFisca et microdonnées fiscales | EcoSim France</title>
+<meta name="description" content="EcoSim 5.7.1 : protocole d'exécution OpenFisca et microsimulation pondérée, sans prétention de représentativité avant vérification des données.">
+<link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/verification-openfisca-571.html">
+<meta property="og:type" content="article"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="Vérification fiscale 5.7.1 | EcoSim France"><meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css"><script src="theme.js"></script><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script>
+</head><body><a class="skip-link" href="#main">Aller au contenu</a>
+<header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a><nav class="guide-nav" aria-label="Navigation principale"><a href="index.html">Simulateur</a><a href="fiscal-individuel-570.html">Calcul fiscal</a><a href="audit.html">Audit</a><a href="contact-signalement.html">Signaler une erreur</a></nav></header>
+<main id="main" class="guide-main"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / <a href="fiscal-individuel-570.html">Atelier fiscal individuel</a> / Vérification externe</p>
+<div class="guide-hero"><span class="guide-kicker">Version 5.7.1 — protocole externe</span>
+<h1>Fiscalité : confronter les calculs et contrôler les microdonnées</h1>
+<p class="guide-lead">Deux opérations différentes : exécuter réellement <strong>OpenFisca-France</strong> pour confronter les 56 cas fiscaux et permettre un calcul pondéré sur des microdonnées disposant d'une provenance explicite.</p></div>
+<section><h2>1. OpenFisca-France : exécution externe</h2>
+<p><strong>État au moment de la livraison :</strong> le véritable paquet OpenFisca n'a pas pu être installé dans l'environnement de construction (accès réseau indisponible). Il n'y a donc <strong>aucun résultat de concordance inventé</strong>, ni de pourcentage de réussite annoncé.</p>
+<p>La distribution inclut un script Python <code>openfisca-validation/run_openfisca_571.py</code> ainsi qu'un workflow GitHub Actions à déclencher manuellement. Celui-ci installera OpenFisca, exécutera les 56 cas synthétiques puis enregistrera un rapport d'écarts téléchargeable comme <strong>artifact de workflow</strong>. Son lancement, son résultat et les éventuelles erreurs restent à vérifier sur GitHub.</p>
+<p>Dans ton dépôt GitHub : <strong>Actions → EcoSim - verification OpenFisca independante → Run workflow</strong>, puis télécharger l'archive d'artefacts du run.</p>
+<p>Les variables comparées sont l'IR après plafonnement général du quotient familial (<code>ir_plaf_qf</code>) et la décote calculée par OpenFisca. Les grandeurs d'entrée intermédiaires <code>rni</code> et <code>nbptr</code> sont injectées afin d'aligner le revenu net imposable et le nombre de parts : cette méthode ne constitue pas une déclaration fiscale complète.</p>
+<p><a href="validation/fiscal-individuel-570.json">56 cas de référence et montants EcoSim</a> · <a href="https://github.com/openfisca/openfisca-france">Moteur OpenFisca-France (source)</a>.</p>
+</section>
+<section><h2>2. Calcul fiscal pondéré : un outil, pas une population nationale</h2>
+<p>L'outil local <code>microdonnees-validation/estimer-571.mjs</code> prend des foyers fiscaux, leurs revenus nets imposables, leur composition familiale et leurs poids, puis calcule deux barèmes sur les mêmes foyers. Il produit les variations d'impôt, le nombre pondéré de foyers gagnants/perdants et dix groupes de revenu fiscal par foyer.</p>
+<p><strong>Attention :</strong> ces groupes ne sont <strong>pas</strong> les déciles de niveau de vie de l'Insee. Un foyer fiscal et un ménage sont deux unités différentes ; les poids et les revenus de référence doivent être cohérents. Les règles fiscales particulières restent hors périmètre, et aucune réaction économique n'est évaluée.</p>
+<p>Sans échantillon représentatif documenté, il n'est pas possible d'estimer un rendement national ni une redistribution nationale représentative. L'exemple inclus contient uniquement 56 foyers fictifs avec poids arbitraires : ses sommes ne sont pas des milliards d'euros de recettes françaises.</p>
+<p><a href="microdonnees-validation/demo-571.json">Exemple synthétique d'entrée (JSON)</a> · <a href="microdonnees-validation/demo-resultats-571.json">Rapport de démonstration (non national)</a></p>
+</section>
+<section><h2>3. Représentativité et accès aux données</h2>
+<p>OpenFisca-France-Data documente l'utilisation de l'ERFS, de fichiers de production et de recherche et d'autres enquêtes. Ces sources nécessitent un accès approprié ainsi que les variables, les pondérations et le traitement statistique correspondants. L'accès au code OpenFisca ne fournit pas automatiquement ces microdonnées.</p>
+<p>Avant une estimation nationale, il faut notamment documenter : l'échantillonnage, le champ de la population, les poids, les conditions légales d'utilisation, le passage ménage → foyer fiscal, les revenus nets imposables, les non-réponses et les effets des règles fiscales hors du champ EcoSim.</p>
+<p><a href="https://github.com/openfisca/openfisca-france-data">OpenFisca-France-Data</a> · <a href="https://www.insee.fr/fr/metadonnees/source/serie/s1231">Enquête Revenus fiscaux et sociaux — Insee</a>.</p>
+</section>
+<section><h2>4. Préservation du moteur existant</h2>
+<p>Ce développement est séparé des projections macroéconomiques. Les six scénarios de référence de la 5.3.1, la correction Sobol 5.6.1 et les contrôles comptables historiques ne changent pas. Aucune valeur OpenFisca externe n'est injectée automatiquement dans le moteur du budget national.</p></section>
+</main>
+<footer class="guide-footer">EcoSim France · version <span data-ecosim-version>5.7.1</span> · paquet <code title="Empreinte de distribution">c8d899d647ef</code> · projet personnel pédagogique · <a href="contact-signalement.html">Signaler une erreur</a> · <a href="informations-legales.html">Informations légales</a></footer>
+</body></html>

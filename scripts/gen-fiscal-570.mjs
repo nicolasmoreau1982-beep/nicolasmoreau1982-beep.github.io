@@ -9,7 +9,7 @@ for(const householdType of ['single','couple'])for(const children of [0,1,2,3])f
  const id=`${householdType}-${children}-${netTaxableIncome}`;
  cases.push({id,...F.calculate({householdType,children,netTaxableIncome})});
 }
-const data={version:'5.7.0',taxYear:2026,incomeYear:2025,status:'comparaison_officielle_partielle',
+const data={version:'5.7.1',taxYear:2026,incomeYear:2025,status:'comparaison_officielle_partielle',
  openFiscaStatus:'non_execute_dependance_indisponible',sourceUrls:F.law.sources,
  count:cases.length, note:'IR sur revenu NET imposable déclaré par utilisateur. Tests officiels ciblés ; OpenFisca non installé sur cet environnement. Foyers de démonstration non représentatifs.',cases};
 fs.mkdirSync(path.join(root,'dist','validation'),{recursive:true});

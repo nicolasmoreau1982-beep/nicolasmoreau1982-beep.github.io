@@ -1,0 +1,147 @@
+{
+  "version": "5.7.1",
+  "kind": "simulation_fiscale_ponderee",
+  "status": "demonstration_not_representative",
+  "source": {
+    "name": "Démonstration synthétique EcoSim",
+    "description": "56 foyers fictifs de la 5.7, poids arbitraire = 1. Aucun échantillonnage national."
+  },
+  "unit": "foyer_fiscal",
+  "incomeYear": 2025,
+  "taxYear": 2026,
+  "decileDefinition": "deciles ponderes du revenu net imposable par foyer fiscal, PAS du niveau de vie Insee",
+  "reformRates": [
+    0,
+    0.1,
+    0.3,
+    0.41,
+    0.45
+  ],
+  "baselineRates": [
+    0,
+    0.11,
+    0.3,
+    0.41,
+    0.45
+  ],
+  "nRows": 56,
+  "totalWeight": 56,
+  "totals": {
+    "taxBefore": 545204.40175,
+    "taxAfter": 537958.0804999999,
+    "difference": -7246.321249999961
+  },
+  "deciles": [
+    {
+      "decile": 1,
+      "foyersPonderes": 5.6,
+      "impotAvant": 0,
+      "impotApres": 0,
+      "variation": 0,
+      "gagnants": 0,
+      "perdants": 0,
+      "neutres": 5.6,
+      "meanDifference": 0
+    },
+    {
+      "decile": 2,
+      "foyersPonderes": 5.6,
+      "impotAvant": 0,
+      "impotApres": 0,
+      "variation": 0,
+      "gagnants": 0,
+      "perdants": 0,
+      "neutres": 5.6,
+      "meanDifference": 0
+    },
+    {
+      "decile": 3,
+      "foyersPonderes": 5.600000000000001,
+      "impotAvant": 24.901749999999993,
+      "impotApres": 0,
+      "variation": -24.901749999999993,
+      "gagnants": 1,
+      "perdants": 0,
+      "neutres": 4.600000000000001,
+      "meanDifference": -4.446741071428569
+    },
+    {
+      "decile": 4,
+      "foyersPonderes": 5.599999999999998,
+      "impotAvant": 3295.9429999999998,
+      "impotApres": 2867.3305,
+      "variation": -428.6124999999999,
+      "gagnants": 2.3999999999999986,
+      "perdants": 0,
+      "neutres": 3.1999999999999993,
+      "meanDifference": -76.53794642857144
+    },
+    {
+      "decile": 5,
+      "foyersPonderes": 5.600000000000001,
+      "impotAvant": 388.2070000000003,
+      "impotApres": 169.17000000000016,
+      "variation": -219.0370000000001,
+      "gagnants": 1.6000000000000014,
+      "perdants": 0,
+      "neutres": 4,
+      "meanDifference": -39.11375
+    },
+    {
+      "decile": 6,
+      "foyersPonderes": 5.600000000000001,
+      "impotAvant": 9934.070000000003,
+      "impotApres": 8778.2,
+      "variation": -1155.8700000000008,
+      "gagnants": 4.600000000000001,
+      "perdants": 0,
+      "neutres": 1,
+      "meanDifference": -206.40535714285724
+    },
+    {
+      "decile": 7,
+      "foyersPonderes": 5.600000000000001,
+      "impotAvant": 20891.776000000005,
+      "impotApres": 19965.460000000006,
+      "variation": -926.3159999999975,
+      "gagnants": 4.600000000000001,
+      "perdants": 0,
+      "neutres": 1,
+      "meanDifference": -165.41357142857095
+    },
+    {
+      "decile": 8,
+      "foyersPonderes": 5.599999999999994,
+      "impotAvant": 73248.59999999992,
+      "impotApres": 71489.82399999994,
+      "variation": -1758.7759999999894,
+      "gagnants": 5.599999999999994,
+      "perdants": 0,
+      "neutres": 0,
+      "meanDifference": -314.0671428571413
+    },
+    {
+      "decile": 9,
+      "foyersPonderes": 5.600000000000001,
+      "impotAvant": 162822.56,
+      "impotApres": 161384.24,
+      "variation": -1438.3199999999779,
+      "gagnants": 5.600000000000001,
+      "perdants": 0,
+      "neutres": 0,
+      "meanDifference": -256.8428571428531
+    },
+    {
+      "decile": 10,
+      "foyersPonderes": 5.600000000000001,
+      "impotAvant": 274598.34400000004,
+      "impotApres": 273303.856,
+      "variation": -1294.4879999999953,
+      "gagnants": 5.600000000000001,
+      "perdants": 0,
+      "neutres": 0,
+      "meanDifference": -231.15857142857053
+    }
+  ],
+  "limitations": "Résultats conditionnels aux données/poids fournis, aux règles incomplètes de fiscal-individuel-570 et sans réponses comportementales. Aucun extrapolation nationale autorisée sans documentation de plan de sondage, représentativité et comparabilité fiscales."
+}

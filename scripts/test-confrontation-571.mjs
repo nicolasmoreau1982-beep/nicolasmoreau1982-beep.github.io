@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';
+import {describe} from '../dist/scripts/auditer-ecarts-571.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../dist');
+const mk=rows=>({source:'openfisca-france',packageVersion:'TEST_SEULEMENT',count:rows.length,rows});
+const mock=Array.from({length:56},(_,i)=>({deltaGross:i/100,deltaAfterDecote:i/200}));
+const r=describe(mk(mock));assert.equal(r.count,56);assert.equal(r.gross.withinOneEuro,56);
+assert.ok(r.afterDecote.meanAbsolute<r.gross.meanAbsolute);
+assert.throws(()=>describe(mk(mock.slice(0,3))));
+assert.ok(fs.existsSync(path.join(root,'.github/workflows/openfisca-571.yml')));
+assert.ok(fs.existsSync(path.join(root,'openfisca-validation/run_openfisca_571.py')));
+const page=fs.readFileSync(path.join(root,'verification-openfisca-571.html'),'utf8');
+assert.match(page,/aucun résultat de concordance inventé/);assert.match(page,/Run workflow/);
+console.log('CONFRONTATION 5.7.1 : workflow présent; tests synthétiques des rapports, aucune sortie OpenFisca revendiquée.');

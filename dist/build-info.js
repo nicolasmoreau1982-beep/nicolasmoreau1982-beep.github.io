@@ -1,3 +1,3 @@
 /* Empreinte locale du paquet, pas un commit Git. */
-window.ECOSIM_BUILD_ID = "8f8f188d8789";
-window.ECOSIM_VERSION = "5.7.0";
+window.ECOSIM_BUILD_ID = "c8d899d647ef";
+window.ECOSIM_VERSION = "5.7.1";

@@ -1,0 +1,409 @@
+{
+  "source": {
+    "name": "Démonstration synthétique EcoSim",
+    "description": "56 foyers fictifs de la 5.7, poids arbitraire = 1. Aucun échantillonnage national."
+  },
+  "unit": "foyer_fiscal",
+  "incomeYear": 2025,
+  "reformRates": [
+    0,
+    0.1,
+    0.3,
+    0.41,
+    0.45
+  ],
+  "households": [
+    {
+      "id": "single-0-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-0-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-0-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-0-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-0-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-0-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-0-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "single",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "single-1-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-1-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-1-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-1-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-1-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-1-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-1-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "single",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "single-2-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-2-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-2-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-2-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-2-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-2-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-2-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "single",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "single-3-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "single-3-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "single-3-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "single-3-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "single-3-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "single-3-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "single-3-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "single",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-0-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "couple",
+      "children": 0,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-1-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "couple",
+      "children": 1,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-2-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "couple",
+      "children": 2,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-12000",
+      "netTaxableIncome": 12000,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-17370",
+      "netTaxableIncome": 17370,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-30000",
+      "netTaxableIncome": 30000,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-34200",
+      "netTaxableIncome": 34200,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-50000",
+      "netTaxableIncome": 50000,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-100000",
+      "netTaxableIncome": 100000,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    },
+    {
+      "id": "couple-3-180000",
+      "netTaxableIncome": 180000,
+      "householdType": "couple",
+      "children": 3,
+      "weight": 1
+    }
+  ]
+}
