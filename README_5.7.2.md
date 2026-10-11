@@ -48,3 +48,9 @@ Le site public existant reste en affichage **5.7.1**, volontairement : ce paquet
 ## Étape suivante
 
 **Récupérer un vrai rapport OpenFisca et l'auditer**, relever les différences réglementaires/arrondis/périodes et corriger le modèle individuel uniquement sur preuves, avant d'envisager des données représentatives. Ne pas étendre artificiellement les 56 foyers synthétiques au niveau national.
+
+---
+
+## Addendum audit v5 — contrôle de la livraison
+
+Une version publique 5.7.1 et une version technique 5.7.2 sont explicitement distinguées et vérifiées avant publication. Les fichiers livrables figurent dans `dist/`. Lire `README_AUDIT_V5_CORRECTIFS.md` pour le périmètre, l'intégration GitHub Pages et les points volontairement non modifiés.

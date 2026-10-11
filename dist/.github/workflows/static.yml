@@ -1,0 +1,53 @@
+# Déploiement GitHub Pages avec contrôle bloquant de la livraison.
+# Supporte deux organisations : fichiers publics à la racine ou sous dist/.
+name: Deploy static content to Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Localiser les fichiers publiés
+        id: site
+        shell: bash
+        run: |
+          if [[ -f index.html && -f release-status-572.json ]]; then
+            echo 'path=.' >> "$GITHUB_OUTPUT"
+          elif [[ -f dist/index.html && -f dist/release-status-572.json ]]; then
+            echo 'path=dist' >> "$GITHUB_OUTPUT"
+          else
+            echo 'Distribution 5.7.2 absente ou incomplète' >&2
+            exit 1
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Bloquer les versions ou empreintes incohérentes AVANT la mise en ligne
+        shell: bash
+        run: |
+          cd "${{ steps.site.outputs.path }}"
+          node scripts/check-release-572.mjs
+          sha256sum -c manifest-integrite-572.sha256
+      - name: Configurer GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Préparer les fichiers du site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.site.outputs.path }}
+      - name: Publier GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,10 +1,14 @@
-/* Identifiant SHA-256 stable de la distribution 5.3. Pas un commit Git. */
+/* Empreinte SHA-256 reproductible du paquet. Versions publique et technique distinctes. */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
+const release=JSON.parse(fs.readFileSync(path.join(dist,'release-status-572.json'),'utf8'));
+for(const key of ['publicVersion','technicalVersion']){
+ if(!/^\d+\.\d+\.\d+$/.test(release[key]||''))throw new Error(`Version incorrecte : ${key}`);
+}
 function walk(base){const out=[];for(const entry of fs.readdirSync(base,{withFileTypes:true})){
  const name=path.join(base,entry.name);if(entry.isDirectory())out.push(...walk(name));else out.push(name);
 }return out;}
@@ -20,7 +24,7 @@ for(const f of all.sort()){
  else h.update(fs.readFileSync(f));
 }
 const id=h.digest('hex').slice(0,12);
-fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\nwindow.ECOSIM_VERSION = "5.7.1";\n`);
+fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\nwindow.ECOSIM_VERSION = "${release.publicVersion}";\nwindow.ECOSIM_TECHNICAL_VERSION = "${release.technicalVersion}";\n`);
 for(const f of all.filter(f=>f.endsWith('.html'))){
  let s=fs.readFileSync(f,'utf8');
  s=s.replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,(_m,p)=>p+id)
@@ -33,4 +37,4 @@ if(fs.existsSync(reportFile)){
  const r=JSON.parse(fs.readFileSync(reportFile,'utf8'));r.buildId=id;
  fs.writeFileSync(reportFile,JSON.stringify(r,null,2)+'\n');
 }
-console.log('Version 5.7.1 — identifiant de paquet :',id);
+console.log(`Versions publique ${release.publicVersion} / technique ${release.technicalVersion} — identifiant de paquet :`,id);

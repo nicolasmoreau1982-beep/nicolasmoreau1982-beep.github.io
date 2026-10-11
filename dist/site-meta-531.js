@@ -2,6 +2,9 @@
 (() => {
   'use strict';
   const show = () => {
+    for (const el of document.querySelectorAll('[data-ecosim-technical-version]')) {
+      el.textContent = window.ECOSIM_TECHNICAL_VERSION || 'non disponible';
+    }
     for (const el of document.querySelectorAll('[data-ecosim-version]')) {
       el.textContent = window.ECOSIM_VERSION || '5.5.0';
     }

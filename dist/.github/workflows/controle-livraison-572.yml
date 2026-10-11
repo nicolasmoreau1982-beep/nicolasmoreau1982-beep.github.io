@@ -1,0 +1,21 @@
+name: EcoSim - cohérence livraison et empreintes
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  controler-livraison:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Versions publique / technique / commit et empreinte du paquet
+        run: node scripts/check-release-572.mjs
+      - name: Vérifier les fichiers contre le manifeste technique
+        run: sha256sum -c manifest-integrite-572.sha256

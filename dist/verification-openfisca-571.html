@@ -10,6 +10,7 @@
 <div class="guide-hero"><span class="guide-kicker">Version 5.7.1 — protocole externe</span>
 <h1>Fiscalité : confronter les calculs et contrôler les microdonnées</h1>
 <p class="guide-lead">Deux opérations différentes : exécuter réellement <strong>OpenFisca-France</strong> pour confronter les 56 cas fiscaux et permettre un calcul pondéré sur des microdonnées disposant d'une provenance explicite.</p></div>
+<p class="guide-callout"><strong>Versions : simulateur public <span data-ecosim-version>5.7.1</span> / outillage technique <span data-ecosim-technical-version>5.7.2</span>.</strong> Le comparateur renforcé de la 5.7.2 est prêt à être exécuté dans GitHub Actions, mais aucun benchmark indépendant n’est déclaré réussi tant que le rapport réel n’a pas été vérifié. Cette distinction est contrôlée lors de la livraison.</p>
 <section><h2>1. OpenFisca-France : exécution externe</h2>
 <p><strong>État au moment de la livraison :</strong> le véritable paquet OpenFisca n'a pas pu être installé dans l'environnement de construction (accès réseau indisponible). Il n'y a donc <strong>aucun résultat de concordance inventé</strong>, ni de pourcentage de réussite annoncé.</p>
 <p>La distribution inclut un script Python <code>openfisca-validation/run_openfisca_571.py</code> ainsi qu'un workflow GitHub Actions à déclencher manuellement. Celui-ci installera OpenFisca, exécutera les 56 cas synthétiques puis enregistrera un rapport d'écarts téléchargeable comme <strong>artifact de workflow</strong>. Son lancement, son résultat et les éventuelles erreurs restent à vérifier sur GitHub.</p>
@@ -31,5 +32,5 @@
 <section><h2>4. Préservation du moteur existant</h2>
 <p>Ce développement est séparé des projections macroéconomiques. Les six scénarios de référence de la 5.3.1, la correction Sobol 5.6.1 et les contrôles comptables historiques ne changent pas. Aucune valeur OpenFisca externe n'est injectée automatiquement dans le moteur du budget national.</p></section>
 </main>
-<footer class="guide-footer">EcoSim France · version <span data-ecosim-version>5.7.1</span> · paquet <code title="Empreinte de distribution">c8d899d647ef</code> · projet personnel pédagogique · <a href="contact-signalement.html">Signaler une erreur</a> · <a href="informations-legales.html">Informations légales</a></footer>
+<footer class="guide-footer">EcoSim France · version <span data-ecosim-version>5.7.1</span> · paquet <code title="Empreinte de distribution">79a53ed7c37c</code> · projet personnel pédagogique · <a href="contact-signalement.html">Signaler une erreur</a> · <a href="informations-legales.html">Informations légales</a></footer>
 </body></html>

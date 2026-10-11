@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "5.7.2",
+  "publicVersion": "5.7.1",
+  "technicalVersion": "5.7.2",
+  "publicScope": "Interface publique et résultats fiscaux EcoSim",
+  "technicalScope": "Contrôle externe OpenFisca et correction du traitement des pondérations",
+  "openFiscaIndependentExecution": "not_executed_in_release",
+  "versionPolicy": "Une livraison technique ne change pas automatiquement la version des résultats du simulateur. Les deux versions sont contrôlées et publiées séparément."
+}
