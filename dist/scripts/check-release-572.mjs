@@ -58,7 +58,7 @@ for(const f of all.sort()){
 assert.equal(value('ECOSIM_BUILD_ID'), h.digest('hex').slice(0,12),'Empreinte de distribution incorrecte : relancer stamp-build avant livraison');
 const map=read('sitemap.xml');
 assert.equal((map.match(/<loc>/g)||[]).length,28,'28 pages du sitemap attendues, vérifier manuellement');
-assert.equal(versions.distributionModuleVersion,'5.8.0','Version atelier distributif non déclarée');
+assert.equal(versions.distributionModuleVersion,'5.8.1','Version atelier distributif non déclarée');
 assert.match(read('distribution-ciblee-580.html'),/module-dist-introuvable|Atelier distributif expérimental 5\.8|Module expérimental 5\.8/, 'Module distributif 5.8 absent');
 assert.ok(!map.includes('<lastmod>2026-10-12</lastmod>'),'Dernière modification future : données douteuses');
 const argv=process.argv;

@@ -1,0 +1,18 @@
+/* Complément de lisibilité 5.8.2 — n'altère pas styles.css historique. */
+.workforce-ux-legend {
+  border-left: 3px solid var(--line);
+  background: color-mix(in srgb, var(--ink-2) 5%, var(--card));
+  color: var(--ink-2);
+  padding: 9px 12px;
+  margin: 12px 0 9px;
+  border-radius: 0 7px 7px 0;
+  line-height: 1.55;
+  font-size: 12px;
+}
+.workforce-row > .workforce-ux-delta { text-align: right; max-width: 185px; white-space: normal; }
+.workforce-row > .workforce-ux-zero { color: var(--ink-2); font-family: inherit; font-weight: 500; }
+.workforce-row > .workforce-ux-small { font-family: inherit; font-size: 11px; }
+@media (max-width: 480px) {
+  .workforce-row > .workforce-ux-delta { max-width: 115px; }
+  .workforce-ux-legend { font-size: 12px; }
+}

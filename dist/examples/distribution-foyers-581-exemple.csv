@@ -1,0 +1,5 @@
+id;pensions;netTaxableIncome;referenceTaxIncome;householdType;children;weight
+F01;15000;13500;14000;single;0;1
+F02;30000;27000;28500;single;0;1
+F03;65000;60561;70000;single;0;1
+F04;9000|9000;85000;90000;couple;0;1

@@ -65,5 +65,5 @@ assert.match(html,/module" src="distribution-ciblee-580\.mjs"/);
 assert.match(html,/aucun chiffrage national/i);
 assert.doesNotMatch(html,/r[eé]sultats repr[eé]sentatifs de la France/i);
 assert.match(fs.readFileSync(new URL('../dist/index.html',import.meta.url),'utf8'),/id="smic-distribution-link"/);
-assert.match(fs.readFileSync(new URL('../dist/release-status-572.json',import.meta.url),'utf8'),/"distributionModuleVersion": "5\.8\.0"/);
+assert.match(fs.readFileSync(new URL('../dist/release-status-572.json',import.meta.url),'utf8'),/"distributionModuleVersion": "5\.8\.1"/);
 console.log('ATELIER 5.8 OK : salaires légaux, diffusion facultative, cas fiscaux ciblés, poids, effets de seuil, garde-fous de publication.');

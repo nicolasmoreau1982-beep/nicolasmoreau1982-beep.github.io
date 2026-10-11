@@ -33,3 +33,10 @@
 .dist580 summary {cursor:pointer;font-weight:650;}
 @media (max-width:760px){ .dist580 .dist-table-wrap { margin-left:-10px;margin-right:-10px;} .dist580 th,.dist580 td{padding:7px 8px;} }
 .dist580 [hidden] { display:none !important; }
+
+/* 5.8.1 — contrôles de provenance et ventilation locale. */
+.dist580 .dist-import {border:1px solid var(--panel-border);border-radius:10px;padding:clamp(12px,2vw,20px);margin:16px 0;background:var(--panel-bg)}
+.dist580 .dist-import h3,.dist580 .dist-strata h3 {margin:0 0 10px;font-size:1.12rem}
+.dist580 .dist-import .dist-actions a {align-self:center;text-decoration:underline}
+.dist580 .dist-import input[type=file]{max-width:100%}
+.dist580 .dist-strata {padding:14px 0;border-top:1px solid var(--panel-border)}

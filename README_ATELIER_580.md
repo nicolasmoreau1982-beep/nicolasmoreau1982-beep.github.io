@@ -1,6 +1,6 @@
 # EcoSim — Atelier distributif expérimental 5.8.0
 
-Date de préparation : 11 octobre 2026. Livraison locale **5.7.2.5** (révision documentaire des droits après l’atelier 5.8.0), contenant le nouvel atelier **5.8.0**. Les résultats publics macro restent à la version **5.7.1**, le protocole OpenFisca existant reste en **5.7.2**. Ne pas confondre ces numéros : l'atelier 5.8 introduit une nouvelle possibilité d'exploration et **ne remplace pas le moteur macroéconomique**.
+Date de préparation : 11 octobre 2026. Livraison locale **5.7.2.6** incluant les diagnostics 5.8.1 après l’atelier 5.8.0, contenant le nouvel atelier **5.8.0**. Les résultats publics macro restent à la version **5.7.1**, le protocole OpenFisca existant reste en **5.7.2**. Ne pas confondre ces numéros : l'atelier 5.8 introduit une nouvelle possibilité d'exploration et **ne remplace pas le moteur macroéconomique**.
 
 ## Fonctionnalités
 
@@ -60,3 +60,7 @@ Le test Chromium utilise `set_content` avec la logique ESM assemblée à partir 
 ## Révision des droits d’auteur
 
 Voir `README_DROITS_580.md` et `LICENSE` : la livraison 5.7.2.5 ajoute uniquement des précisions sur les permissions et les contributions protégeables, sans licence libre générale ni modification du moteur historique.
+
+## Extension 5.8.1
+
+Lire `README_DISTRIBUTION_581.md` pour les deux formats CSV, les contrôles de provenance, le traitement local en mémoire, la suppression des petites cellules à l’export et le sens précis des pondérations. Le public continue de voir la version macro 5.7.1 et le contrôle OpenFisca 5.7.2 : aucune publication de résultat national 5.8 n’est revendiquée.
