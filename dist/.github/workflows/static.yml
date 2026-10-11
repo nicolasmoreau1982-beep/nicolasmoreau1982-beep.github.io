@@ -47,6 +47,8 @@ jobs:
         run: |
           cd "${{ steps.site.outputs.path }}"
           node scripts/test-ux-sentinelle-584.mjs
+          node scripts/test-citoyen-585.mjs
+          node scripts/test-neutralite-585.mjs
       - name: Configurer GitHub Pages
         uses: actions/configure-pages@v5
       - name: Préparer les fichiers du site

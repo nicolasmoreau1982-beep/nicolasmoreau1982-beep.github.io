@@ -15,9 +15,32 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Localiser les fichiers publiés
+        id: site
+        shell: bash
+        run: |
+          if [[ -f index.html && -f release-status-572.json ]]; then
+            echo 'path=.' >> "$GITHUB_OUTPUT"
+          elif [[ -f dist/index.html && -f dist/release-status-572.json ]]; then
+            echo 'path=dist' >> "$GITHUB_OUTPUT"
+          else
+            echo 'Site non trouvé' >&2
+            exit 1
+          fi
       - name: Versions publique / technique / commit et empreinte du paquet
-        run: node scripts/check-release-572.mjs
-      - name: Régressions UX (parcours, énergie, droits)
-        run: node scripts/test-ux-sentinelle-584.mjs
+        shell: bash
+        run: |
+          cd "${{ steps.site.outputs.path }}"
+          node scripts/check-release-572.mjs
+      - name: Régressions UX (parcours, énergie, droits et neutralité politique)
+        shell: bash
+        run: |
+          cd "${{ steps.site.outputs.path }}"
+          node scripts/test-ux-sentinelle-584.mjs
+          node scripts/test-citoyen-585.mjs
+          node scripts/test-neutralite-585.mjs
       - name: Vérifier les fichiers contre le manifeste technique
-        run: sha256sum -c manifest-integrite-572.sha256
+        shell: bash
+        run: |
+          cd "${{ steps.site.outputs.path }}"
+          sha256sum -c manifest-integrite-572.sha256

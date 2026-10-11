@@ -8,10 +8,10 @@ const dist = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = file => fs.readFileSync(path.join(dist,file),'utf8');
 const html = read('index.html');
 const release = JSON.parse(read('release-status-572.json'));
-assert.equal(release.interfaceUXVersion, '5.8.3');
+assert.equal(release.interfaceUXVersion, '5.8.5');
 assert.equal(release.workforceUXVersion, '5.8.2');
 assert.equal(release.energyUXVersion, '5.8.4');
-assert.equal(release.deliveryLabel, '5.7.2.9');
+assert.equal(release.deliveryLabel, '5.7.2.11');
 for (const filename of ['workforce-ux-582.js','ux-parcours-583.js','energy-ux-584.js']) {
   assert.ok(html.includes(`src="${filename}"`), `Extension non chargée : ${filename}`);
   assert.ok(html.indexOf('src="app.js"') < html.indexOf(`src="${filename}"`), 'Extension avant le moteur');

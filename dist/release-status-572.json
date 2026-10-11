@@ -6,14 +6,14 @@
   "technicalScope": "Contrôle externe OpenFisca et correction du traitement des pondérations",
   "openFiscaIndependentExecution": "not_executed_in_release",
   "versionPolicy": "Une livraison technique ne change pas automatiquement la version des résultats du simulateur. Les deux versions sont contrôlées et publiées séparément.",
-  "deliveryLabel": "5.7.2.9",
-  "deliveryPolicy": "Revue UX : états énergie, tests CI explicites des surfaces citoyennes et contrôles de navigation. Le moteur et les références historiques ne changent pas.",
+  "deliveryLabel": "5.7.2.11",
+  "deliveryPolicy": "Complétude du sitemap avec dates justifiées : confidentialité datée par sa propre notice (10/10/2026), cinq guides enrichis en JSON-LD (11/10/2026). Sentinelles CI pour 28 dates. Moteur et résultats inchangés. Exécution OpenFisca indépendante non revendiquée.",
   "distributionModuleVersion": "5.8.1",
   "distributionScope": "Atelier expérimental SMIC/pensions : CSV locaux et fictifs, diagnostics Kish, tranches descriptives ; non calibré et sans agrégat APU.",
   "workforceUXVersion": "5.8.2",
   "workforceUXScope": "Présentation des écarts d’effectifs publics, sans modification des flux, des effectifs, des coûts ou des projections.",
-  "interfaceUXVersion": "5.8.3",
-  "interfaceUXScope": "Parcours Découverte/Expert, sommaire sticky orienté actions, jargon lié au glossaire et dé-versionnage du premier écran ; aucun changement des calculs du moteur.",
+  "interfaceUXVersion": "5.8.5",
+  "interfaceUXScope": "Libellés des validations sans numéros de version sur la page citoyenne, suivi par flux public GitHub et tableaux fiscaux navigables au clavier sur mobile. Présentation du projet personnel et déclaration de non-partisanerie.",
   "energyUXVersion": "5.8.4",
   "energyUXScope": "Libellés des variations énergétiques arrondies à zéro et tests de non-régression, sans modifier les valeurs calculées."
 }

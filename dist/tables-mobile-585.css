@@ -1,0 +1,9 @@
+/* Lisibilité et navigation clavier des tableaux étendus, sans changer les données. */
+.accessible-table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-gutter: stable; }
+.accessible-table-scroll:focus-visible { outline: 3px solid #176c9b; outline-offset: 3px; }
+.table-scroll-help { display: none; }
+@media (max-width: 700px) {
+  .table-scroll-help { display: block; font-size: .9rem; color: var(--ink-2, #42474d); margin: 12px 0 5px; }
+  .accessible-table-scroll { border-inline: 2px solid var(--line, #c1c5cc); }
+  .accessible-table-scroll table { min-width: 640px; }
+}
