@@ -14,7 +14,9 @@ fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet,
 for (const file of ['index.html','audit.html']) {
  const p=path.join(dist,file);
  let s=fs.readFileSync(p,'utf8');
- s=s.replaceAll('PAQUET_A_REMPLACER',build);
+ s=s.replaceAll('PAQUET_A_REMPLACER',build)
+   .replace(/(Paquet : <code>)[a-f0-9]{12}/gi,(_,head)=>head+build)
+   .replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,(_,head)=>head+build);
  fs.writeFileSync(p,s);
 }
 console.log('Identifiant du paquet:',build);

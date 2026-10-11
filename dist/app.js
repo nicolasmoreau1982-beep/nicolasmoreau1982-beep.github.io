@@ -3,6 +3,10 @@
 
   const D = window.ECOSIM_DATA;
   const BUILD_ID = window.ECOSIM_BUILD_ID || "non renseigné";
+  // Garde-fou numérique : plafond conventionnel de PRIME ADDITIONNELLE, en points de taux.
+  // Au-delà, la boucle endogène prime de risque → intérêts → dette s’emballe
+  // en dehors du domaine où le modèle peut être interprété. Ce n’est pas un calibrage empirique.
+  const MAX_RISK_PREMIUM_PP = 5;
   const H = window.ECOSIM_HISTORY;
   const F = window.ECOSIM_FISCAL;
   if (!F) throw new Error("Moteur fiscal manquant");
@@ -920,8 +924,10 @@
       const debtDifferencePrevious = scenarioDebt - baselineDebtPrevious;
       const previousBaselineRatio = index === 0 ? D.BASE.debtRatio : baseline[index - 1].debtRatio;
       const debtRisk = Math.max(0, lastDebtRatio - previousBaselineRatio) * 0.045 * profile.debtSensitivity;
-      const riskPremium = Math.max(-0.20, eu.rateShock + profile.assumptionRate + debtRisk
-        + Math.max(0, extraInflation) * (profile.inflationRiskScale || 0));
+      const rawRiskPremium = eu.rateShock + profile.assumptionRate + debtRisk
+        + Math.max(0, extraInflation) * (profile.inflationRiskScale || 0);
+      const riskPremium = clamp(rawRiskPremium, -0.20, MAX_RISK_PREMIUM_PP);
+      const riskPremiumCapped = rawRiskPremium > MAX_RISK_PREMIUM_PP;
       const transmission = Math.min(1, 0.18 * (index + 1));
       const extraInterest = debtDifferencePrevious * D.baseline.policyRate[index] / 100
         + scenarioDebt * riskPremium / 100 * transmission;
@@ -961,6 +967,7 @@
         hysteresis,
         outputGap,
         riskPremium,
+        riskPremiumCapped,
         structural: structure,
         engines: engine,
         labor,
@@ -1717,10 +1724,16 @@
     $("#results-context").textContent = `Résultats ${item.year} comparés à la trajectoire de référence · profil économique : ${D.models[state.model].label}.`;
     updateActiveScenario();
     const longRunNote = $("#long-run-note");
-    longRunNote.hidden = state.horizon <= 10;
-    longRunNote.textContent = state.horizon > 10
-      ? `Horizon structurel ${item.year} : ce n’est plus une prévision conjoncturelle. La fourchette et les hypothèses démographiques dominent le chiffre central.`
-      : "";
+    const capReached = state.projection.scenario.slice(0, index + 1).some((point) => point.riskPremiumCapped);
+    const debtBelowZero = state.projection.scenario.slice(0, index + 1).some((point) => point.debt < 0);
+    const horizonWarning = state.horizon > 10
+      ? `Horizon structurel ${item.year} : ce n’est plus une prévision conjoncturelle. La fourchette et les hypothèses démographiques dominent le chiffre central.` : "";
+    const numericalWarning = capReached
+      ? "Limite de validité : la prime de risque calculée a atteint le plafond numérique conventionnel de 5 points (non estimé empiriquement). La trajectoire ne doit pas être lue comme une prévision." : "";
+    const debtWarning = debtBelowZero
+      ? "Limite de validité : la dette simulée passe sous zéro ; les actifs financiers de l’État ne sont pas modélisés, et le ratio affiché ne représente alors plus une dette publique brute." : "";
+    longRunNote.hidden = !horizonWarning && !numericalWarning && !debtWarning;
+    longRunNote.textContent = [horizonWarning, numericalWarning, debtWarning].filter(Boolean).join(" ");
     $("#metric-deficit").textContent = percent(-item.deficitRatio);
     updateMetricDelta($("#delta-deficit"), -(item.deficitRatio - baseline.deficitRatio), false, " pt");
     $("#sub-deficit").textContent = `${money(-item.deficit)} en ${item.year}`;

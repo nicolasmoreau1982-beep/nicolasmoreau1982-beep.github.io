@@ -36,12 +36,12 @@
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>555831d7707d</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>a9f6c0bd6f61</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 4.17.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 4.18.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -85,7 +85,7 @@
               <tr><th scope="row">Population par âge et sexe</th><td><a href="https://www.insee.fr/fr/statistiques/8990852?sommaire=8991068">Projection centrale Insee 2026–2070</a></td><td>Pyramide âge × sexe figée dans les données de recherche ; trajectoire de référence 2026–2056 utilisée par le simulateur. Projection conditionnelle, pas observation future.</td><td><span class="tag anchored">Projeté</span></td></tr>
               <tr><th scope="row">Viviers de travail</th><td><a href="https://www.insee.fr/fr/statistiques/9012123">Enquête Emploi 2025 : chômage et halo</a> ; <a href="https://www.insee.fr/fr/statistiques/9012121">sous-emploi</a></td><td>Totaux BIT/halo/sous-emploi utilisés pour le vivier global ; ventilations âge et diplôme conservées pour audit, pas assimilées à des candidats immédiatement disponibles.</td><td><span class="tag observed">Observé</span></td></tr>
               <tr><th scope="row">Commerce et branches</th><td><a href="https://www.insee.fr/fr/statistiques/8988861">TES 2024, 17 produits</a></td><td>Production intérieure et importations observées ; aucune conversion automatique en multiplicateur budgétaire.</td><td><span class="tag observed">Observé</span></td></tr>
-              <tr><th scope="row">Scénarios politiques et réaction sociale</th><td>Documents des groupes et paramètres affichés dans le simulateur</td><td>Traduction manuelle des mesures ; pondérations de colère/vote conventionnelles, non estimées sur microdonnées.</td><td><span class="tag assumed">Hypothèse</span></td></tr>
+              <tr><th scope="row">Scénarios politiques et réaction sociale</th><td>Documents des groupes et paramètres affichés dans le simulateur</td><td>Traduction manuelle des mesures ; indices d’exposition et de réaction sociale conventionnels, sans prédiction électorale ni calibration sur microdonnées.</td><td><span class="tag assumed">Hypothèse</span></td></tr>
             </tbody>
           </table></div>
           <div class="audit-warning audit-reconciliation">
@@ -122,6 +122,7 @@
           </table></div>
           <p>Ces coefficients permettent de tester le sens et l’amplitude d’une réponse sous plusieurs hypothèses. Aucun score historique présenté ici ne valide séparément ces quatre profils : les chocs comparables et les tests indépendants par régime économique font défaut.</p>
           <p>Le rejeu historique expérimental calcule quatre flux internes par an. Sa référence est une ventilation synthétique d’hypothèses annuelles, tandis que ses cibles trimestrielles proviennent des comptes Insee. Ce rejeu n’est pas le pas de calcul du simulateur principal.</p>
+          <p><strong>Contrôles mathématiques 4.18 :</strong> une suite de tests reproductibles (<code>scripts/test-mathematical.mjs</code> dans le paquet complet) exécute 466 projections à 30 ans : référence inchangée sans mesure, équations de solde et de dette, proratisation des mesures, bornes individuelles et croisements de moteurs. Ces contrôles portent sur la <em>cohérence interne</em>, non sur la précision des coefficients de politique publique. Une boucle de rétroaction de prime de risque qui pouvait produire des valeurs infinies à des réglages extrêmes est désormais plafonnée à <strong>5 points de taux additionnels</strong>, plafond numérique exploratoire et non calibrage économique. En cas d’atteinte de ce plafond ou de dette brute simulée négative, l’interface signale explicitement une limite de validité. Les trajectoires extrêmes ne constituent donc pas des prévisions utilisables.</p>
           <p>Le module d’emploi public suit les recrutements par mission et statut, ainsi que rémunérations, sorties et pensions simplifiées sur plusieurs décennies ; l’« engagement à 40 ans » est indicatif, pas un passif actuariel certifié. Les viviers de chômage, formation, halo et sous-emploi sont séparés pour limiter les doubles comptes. Les scénarios de sortie des traités européens sont des expériences conditionnelles, non une prédiction juridique ou monétaire.</p>
           <p><strong>Décisions, contexte et résultats sont séparés.</strong> Le chômage découle de l’activité et des flux d’emploi simulés ; il n’est pas un levier politique direct. La fécondité de fond, la migration et les prix fossiles mondiaux sont des hypothèses de contexte. Productivité, activité, âge effectif de retraite, efficience et fraude recouvrée sont des hypothèses de réalisation : une loi ne garantit pas leur valeur. Exemple de coefficient exploratoire : 300 000 places de garde supplémentaires ajoutent au plus 0,03 enfant par femme à la fécondité simulée, avec un délai initial d’un an. <a href="https://www.ined.fr/fr/publications/editions/document-travail/impact-family-policy-fertility-trends">L’étude Ined citée</a> n’est pas une estimation de ce coefficient précis. Les autres réactions démographiques aux politiques ne sont pas quantifiées.</p>
           <h3 id="fiscalite">Fiscalité : ce qui est codé et ce qui ne l’est pas</h3>
@@ -408,7 +409,7 @@ node tests/insee-observations.mjs # réconciliation des nouvelles séries
 node tests/insee-annual-nature.mjs # 28 postes, candidat et anti-fuite
 node tests/historical-replay.mjs    # calendriers, comptes et anti-fuite
 node tests/history-backtest.mjs     # garde-fou anti-fuite des années futures</code></pre>
-          <p>Les mesures du rejeu et leurs liens primaires figurent dans <code>research/historical-policy-timeline.json</code> ; <code>research/policy-events.json</code> documente séparément la variante de choc TVA du moteur principal. Une modification de donnée ou de coefficient doit conserver son origine, son millésime, sa formule de transformation et un test de non-régression. Les exports du simulateur permettent de conserver les réglages et trajectoires d’un scénario, mais ne figent pas encore automatiquement une empreinte de version du moteur.</p>
+          <p>Les mesures du rejeu et leurs liens primaires figurent dans <code>research/historical-policy-timeline.json</code> ; <code>research/policy-events.json</code> documente séparément la variante de choc TVA du moteur principal. Une modification de donnée ou de coefficient doit conserver son origine, son millésime, sa formule de transformation et un test de non-régression. Les exports structurés comportent maintenant une version du moteur et une empreinte locale de distribution ; cette empreinte n’est pas un hash Git et ne garantit pas la validité économique des simulations.</p>
         </section>
 
         <section class="audit-section" id="limites" aria-labelledby="limites-title">
