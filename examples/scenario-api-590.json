@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "horizon": 5,
+  "scenario": {
+    "name": "Essai API - SMIC et fiscalité",
+    "model": "consensus",
+    "euMode": "current",
+    "cycle": "normal",
+    "monetary": "neutral",
+    "confidence": "stable",
+    "policyStartQuarter": 1,
+    "changes": {"R_IR": 2},
+    "engines": {"minimumWage": 10},
+    "structural": {"fertility": 1.56},
+    "fiscal": {"irLowRate": 11},
+    "sectoral": []
+  }
+}

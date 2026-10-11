@@ -1,0 +1,3719 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EcoSim France — API de simulation (prototype inactif)",
+    "version": "1.0.0-draft",
+    "description": "CONTRAT EXPÉRIMENTAL — aucun service HTTP public actif sur GitHub Pages. Simulations économiques exploratoires, pas des prévisions certifiées. Entrée : tous les paramètres de scénario du simulateur; sortie : calcul réel du moteur de référence."
+  },
+  "x-ecosim-status": "SPECIFICATION_ONLY_NOT_DEPLOYED",
+  "x-ecosim-source-version": "5.7.1",
+  "tags": [
+    {
+      "name": "Simulation",
+      "description": "Non disponible en production"
+    },
+    {
+      "name": "Documentation",
+      "description": "Disponible dans le prototype local uniquement"
+    }
+  ],
+  "paths": {
+    "/v1/simulations": {
+      "post": {
+        "tags": [
+          "Simulation"
+        ],
+        "summary": "Soumettre un scénario et calculer une projection",
+        "description": "Endpoint spécifié, non déployé. Utilisable localement en test explicite seulement.",
+        "operationId": "simulateScenario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Simulation calculée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "JSON illisible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Corps dépassant 2 Mo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Scénario invalide",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/metadata": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "Version et périmètre",
+        "responses": {
+          "200": {
+            "description": "Métadonnées du moteur"
+          }
+        }
+      }
+    },
+    "/v1/schema": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "Schéma de scénario",
+        "responses": {
+          "200": {
+            "description": "JSON Schema complet des critères"
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "Document OpenAPI 3.1",
+        "responses": {
+          "200": {
+            "description": "Contrat"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Scenario": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Mêmes familles de réglages que le fichier importé par l’IHM. Champs omis = valeurs par défaut.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "version": {
+            "type": "string",
+            "description": "Version source de l’export IHM; informative"
+          },
+          "buildId": {
+            "type": "string",
+            "description": "Empreinte de l’export IHM; informative"
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "consensus",
+              "keynesian",
+              "supply",
+              "liberal",
+              "industrial",
+              "debtCrisis",
+              "stabilization",
+              "openEconomy",
+              "constrainedTransition"
+            ],
+            "description": "Modèle économique"
+          },
+          "euMode": {
+            "type": "string",
+            "enum": [
+              "current",
+              "derogation",
+              "renegotiation",
+              "breach",
+              "euroExit"
+            ],
+            "description": "Cadre européen"
+          },
+          "cycle": {
+            "type": "string",
+            "enum": [
+              "recession",
+              "normal",
+              "tension"
+            ],
+            "description": "Hypothèses de cycle"
+          },
+          "monetary": {
+            "type": "string",
+            "enum": [
+              "accommodative",
+              "neutral",
+              "restrictive"
+            ],
+            "description": "Politique monétaire"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "trusted",
+              "stable",
+              "fragile"
+            ],
+            "description": "Confiance"
+          },
+          "policyStartQuarter": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 1
+          },
+          "policyStartQuarters": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "GF0101": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0102": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0103": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0104": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0105": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0106": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0201": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0202": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0203": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0204": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0205": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0301": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0302": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0303": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0304": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0305": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0306": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0401": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0402": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0403": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0404": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0405": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0406": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0407": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0408": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0409": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0501": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0502": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0503": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0504": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0505": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0506": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0601": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0602": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0603": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0604": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0605": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0606": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0701": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0702": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0703": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0704": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0705": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0706": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0801": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0802": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0803": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0804": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0805": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0806": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0901": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0902": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0903": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0904": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0905": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0906": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0907": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF0908": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1001": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1002": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1003": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1004": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1005": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1006": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1007": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1008": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "GF1009": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_TVA": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_IMPORT": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_PRODUCTS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_PAYROLL": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_OTHERPROD": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_PRODADJ": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_CSG": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_CRDS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_CAPITALLEVY": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_IR": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_IS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_CSB": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_PHARMA": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_EXCEPTIONAL": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_HIGHINC": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_OTHERINC": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_OTHERWEALTH": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_SOCIAL": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_DONATION": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_SUCCESSION": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_OTHERCAP": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_MARKET": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_OWN": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_COPAY": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_PRODSUB": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_INTEREST": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_DIVIDENDS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_CURTRANS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_CAPTRANS": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "R_UNCOLLECTED": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              }
+            }
+          },
+          "changes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "GF0101": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Institutions, finances, fiscalité et affaires étrangères Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Institutions, finances, fiscalité et affaires étrangères — -35 à 35 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0102": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -5.004449589734093,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Aide économique extérieure Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Aide économique extérieure — -5.004449589734093 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0103": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 40,
+                    "default": 0,
+                    "description": "Services généraux Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Services généraux — -40 à 40 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0104": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Recherche fondamentale Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recherche fondamentale — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0105": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.006254408510188279,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D des services publics généraux Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D des services publics généraux — -0.006254408510188279 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0106": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.8885361335949447,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres services publics généraux Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres services publics généraux — -0.8885361335949447 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0201": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Défense militaire Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Défense militaire — -35 à 35 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0202": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.23438652220148204,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Défense civile Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Défense civile — -0.23438652220148204 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0203": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -2.057392805990787,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Aide militaire extérieure Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Aide militaire extérieure — -2.057392805990787 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0204": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.7245762482191285,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D de défense Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D de défense — -1.7245762482191285 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0205": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -2.6453072059484852,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses de défense Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses de défense — -2.6453072059484852 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0301": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -25,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Police Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Police — -25 à 25 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0302": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -8.13831837848663,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Services d’incendie et de secours Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Services d’incendie et de secours — -8.13831837848663 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0303": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -8.504970260985536,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Justice Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Justice — -8.504970260985536 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0304": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -5.249396834501958,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Administration pénitentiaire Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Administration pénitentiaire — -5.249396834501958 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0305": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D de sécurité publique Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D de sécurité publique — 0 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0306": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.911798378376568,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses de sécurité Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses de sécurité — -1.911798378376568 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0401": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Économie, commerce et emploi Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Économie, commerce et emploi — -35 à 35 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0402": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -6.355606890508866,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Agriculture, forêt et pêche Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Agriculture, forêt et pêche — -6.355606890508866 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0403": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Énergie Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Énergie — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0404": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.6665435397475454,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Industrie, mines et construction Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Industrie, mines et construction — -1.6665435397475454 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0405": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -45,
+                    "maximum": 45,
+                    "default": 0,
+                    "description": "Transports Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Transports — -45 à 45 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0406": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.662134694404298,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Communications Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Communications — -1.662134694404298 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0407": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -10,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres activités économiques Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres activités économiques — -10 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0408": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -20,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "R&D économique Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D économique — -20 à 20 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0409": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -2.6753488730547996,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres affaires économiques Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres affaires économiques — -2.6753488730547996 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0501": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Gestion des déchets Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Gestion des déchets — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0502": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -5.331626926717877,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Gestion des eaux usées Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Gestion des eaux usées — -5.331626926717877 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0503": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -4.376650519113063,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Lutte contre la pollution Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Lutte contre la pollution — -4.376650519113063 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0504": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.720885121885247,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Biodiversité et paysages Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Biodiversité et paysages — -1.720885121885247 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0505": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.8043455895457923,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D environnementale Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D environnementale — -1.8043455895457923 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0506": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.5542717804253134,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses environnementales Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses environnementales — -1.5542717804253134 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0601": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -8.628007805448256,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Développement du logement Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Développement du logement — -8.628007805448256 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0602": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -20,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Aménagement des territoires Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Aménagement des territoires — -20 à 20 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0603": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -2.9198859926744554,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Approvisionnement en eau Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Approvisionnement en eau — -2.9198859926744554 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0604": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.8652491740548387,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Éclairage public Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Éclairage public — -1.8652491740548387 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0605": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D logement et équipements Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D logement et équipements — 0 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0606": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.862685891878532,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres équipements collectifs Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres équipements collectifs — -1.862685891878532 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0701": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Médicaments et dispositifs médicaux Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Médicaments et dispositifs médicaux — -35 à 35 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0702": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -70,
+                    "maximum": 70,
+                    "default": 0,
+                    "description": "Soins ambulatoires Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Soins ambulatoires — -70 à 70 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0703": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -80,
+                    "maximum": 80,
+                    "default": 0,
+                    "description": "Services hospitaliers Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Services hospitaliers — -80 à 80 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0704": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -8.159747417480554,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Santé publique et prévention Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Santé publique et prévention — -8.159747417480554 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0705": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -6.878106329327219,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D en santé Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D en santé — -6.878106329327219 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0706": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.6896130793343056,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses de santé Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses de santé — -1.6896130793343056 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0801": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Sports et loisirs Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Sports et loisirs — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0802": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Culture Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Culture — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0803": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -7.7517754262995835,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Audiovisuel et édition Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Audiovisuel et édition — -7.7517754262995835 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0804": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.76303783824297,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Cultes et vie communautaire Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Cultes et vie communautaire — -0.76303783824297 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0805": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D culture et loisirs Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D culture et loisirs — 0 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0806": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.2373599295259978,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses culturelles Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses culturelles — -0.2373599295259978 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0901": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Enseignement préélémentaire et primaire Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Enseignement préélémentaire et primaire — -35 à 35 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0902": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -50,
+                    "maximum": 50,
+                    "default": 0,
+                    "description": "Enseignement secondaire Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Enseignement secondaire — -50 à 50 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0903": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.185671803472414,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Enseignement post-secondaire non supérieur Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Enseignement post-secondaire non supérieur — -1.185671803472414 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0904": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -10,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Enseignement supérieur Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Enseignement supérieur — -10 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0905": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -8.840555163507604,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Enseignement non classé par niveau Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Enseignement non classé par niveau — -8.840555163507604 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0906": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Services auxiliaires de l’enseignement Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Services auxiliaires de l’enseignement — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0907": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D dans l’enseignement Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D dans l’enseignement — 0 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF0908": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.5892473066893776,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses d’enseignement Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses d’enseignement — -0.5892473066893776 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1001": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -65,
+                    "maximum": 65,
+                    "default": 0,
+                    "description": "Maladie et invalidité Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Maladie et invalidité — -65 à 65 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1002": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -285,
+                    "maximum": 285,
+                    "default": 0,
+                    "description": "Vieillesse et retraites Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Vieillesse et retraites — -285 à 285 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1003": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 30,
+                    "default": 0,
+                    "description": "Survivants et pensions de réversion Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Survivants et pensions de réversion — -30 à 30 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1004": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -50,
+                    "maximum": 50,
+                    "default": 0,
+                    "description": "Famille et enfants Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Famille et enfants — -50 à 50 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1005": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Chômage Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Chômage — -35 à 35 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1006": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -20,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Aides au logement Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Aides au logement — -20 à 20 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1007": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 30,
+                    "default": 0,
+                    "description": "Exclusion sociale Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Exclusion sociale — -30 à 30 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1008": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "R&D en protection sociale Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "R&D en protection sociale — 0 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "GF1009": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -3.8219562561602993,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres dépenses de protection sociale Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres dépenses de protection sociale — -3.8219562561602993 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_TVA": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -150,
+                    "maximum": 150,
+                    "default": 0,
+                    "description": "Taxe sur la valeur ajoutée (TVA) Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Taxe sur la valeur ajoutée (TVA) — -150 à 150 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_IMPORT": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -3.577,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Droits et impôts sur les importations Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Droits et impôts sur les importations — -3.577 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_PRODUCTS": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "default": 0,
+                    "description": "Accises et autres impôts sur les produits Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Accises et autres impôts sur les produits — -90 à 90 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_PAYROLL": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -45,
+                    "maximum": 45,
+                    "default": 0,
+                    "description": "Impôts sur salaires et main-d’œuvre Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôts sur salaires et main-d’œuvre — -45 à 45 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_OTHERPROD": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -55,
+                    "maximum": 55,
+                    "default": 0,
+                    "description": "Autres impôts sur la production Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres impôts sur la production — -55 à 55 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_PRODADJ": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 2.863,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Consolidations et ajustements D2 Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Consolidations et ajustements D2 — 2.863 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_CSG": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -110,
+                    "maximum": 110,
+                    "default": 0,
+                    "description": "Contribution sociale généralisée (CSG) Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Contribution sociale généralisée (CSG) — -110 à 110 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_CRDS": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -9.27,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Contribution au remboursement de la dette sociale Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Contribution au remboursement de la dette sociale — -9.27 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_CAPITALLEVY": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -14.406,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Prélèvements sociaux sur le capital Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Prélèvements sociaux sur le capital — -14.406 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_IR": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -70,
+                    "maximum": 70,
+                    "default": 0,
+                    "description": "Impôt sur le revenu net des crédits Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôt sur le revenu net des crédits — -70 à 70 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_IS": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -45,
+                    "maximum": 45,
+                    "default": 0,
+                    "description": "Impôt sur les sociétés net des crédits Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôt sur les sociétés net des crédits — -45 à 45 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_CSB": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1.151,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Contribution sociale sur les bénéfices Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Contribution sociale sur les bénéfices — -1.151 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_PHARMA": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -10,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Remises pharmaceutiques Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Remises pharmaceutiques — -10 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_EXCEPTIONAL": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -7.52,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Contribution exceptionnelle des grandes entreprises Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Contribution exceptionnelle des grandes entreprises — -7.52 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_HIGHINC": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.369,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Contribution différentielle sur les hauts revenus Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Contribution différentielle sur les hauts revenus — -0.369 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_OTHERINC": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -25,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Autres impôts courants sur le revenu Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres impôts courants sur le revenu — -25 à 25 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_OTHERWEALTH": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -6.573,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres impôts courants sur le patrimoine Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres impôts courants sur le patrimoine — -6.573 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_SOCIAL": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -350,
+                    "maximum": 350,
+                    "default": 0,
+                    "description": "Cotisations sociales nettes Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Cotisations sociales nettes — -350 à 350 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_DONATION": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -4.982,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Droits sur les donations Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Droits sur les donations — -4.982 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_SUCCESSION": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Droits sur les successions Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Droits sur les successions — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_OTHERCAP": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.629,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Autres impôts en capital Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres impôts en capital — -0.629 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_MARKET": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -60,
+                    "maximum": 60,
+                    "default": 0,
+                    "description": "Ventes publiques et production marchande Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Ventes publiques et production marchande — -60 à 60 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_OWN": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -25,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Production publique pour emploi propre Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Production publique pour emploi propre — -25 à 25 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_COPAY": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -14.659,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Paiements partiels des ménages Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Paiements partiels des ménages — -14.659 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_PRODSUB": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.883,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Subventions de production reçues Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Subventions de production reçues — -0.883 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_INTEREST": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -3.473,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Intérêts reçus Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Intérêts reçus — -3.473 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_DIVIDENDS": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -15,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Dividendes, loyers et autres revenus Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Dividendes, loyers et autres revenus — -15 à 15 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_CURTRANS": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -20,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Autres transferts courants reçus Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autres transferts courants reçus — -20 à 20 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_CAPTRANS": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -10,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Transferts en capital reçus Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Transferts en capital reçus — -10 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "R_UNCOLLECTED": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 6.675,
+                    "maximum": 10,
+                    "default": 0,
+                    "description": "Impôts dus non recouvrables Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôts dus non recouvrables — 6.675 à 10 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              }
+            },
+            "description": "Montants budgétaires en Md€"
+          },
+          "structural": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "fertility": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 2.4,
+                    "default": 1.56,
+                    "description": "Fécondité hors nouvelles mesures enfant/femme"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Fécondité hors nouvelles mesures — 1 à 2.4 enfant/femme. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "lifeExpectancy": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -3,
+                    "maximum": 5,
+                    "default": 0,
+                    "description": "Évolution exogène de l’espérance de vie an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Évolution exogène de l’espérance de vie — -3 à 5 an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "economicMigration": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -50,
+                    "maximum": 300,
+                    "default": 50,
+                    "description": "Solde migratoire économique supposé k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Solde migratoire économique supposé — -50 à 300 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "otherMigration": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 300,
+                    "default": 100,
+                    "description": "Solde migratoire autres motifs supposé k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Solde migratoire autres motifs supposé — -100 à 300 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "integration": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 40,
+                    "maximum": 80,
+                    "default": 62,
+                    "description": "Taux d’emploi des nouveaux arrivants supposé %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Taux d’emploi des nouveaux arrivants supposé — 40 à 80 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "nuclear": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Nucléaire supplémentaire en 2035 GW"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Nucléaire supplémentaire en 2035 — -10 à 20 GW. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "renewables": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -20,
+                    "maximum": 80,
+                    "default": 0,
+                    "description": "Renouvelables supplémentaires en 2035 GW"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Renouvelables supplémentaires en 2035 — -20 à 80 GW. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "efficiency": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 30,
+                    "default": 0,
+                    "description": "Rénovation et efficacité publiques Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Rénovation et efficacité publiques — 0 à 30 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "fossilPrice": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Choc extérieur sur les prix fossiles %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Choc extérieur sur les prix fossiles — -40 à 100 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "carbonTax": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Signal-prix carbone supplémentaire €/t"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Signal-prix carbone supplémentaire — -30 à 100 €/t. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicFpeNet": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Recrutements supplémentaires — État k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements supplémentaires — État — -100 à 100 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicFptNet": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Recrutements supplémentaires — collectivités k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements supplémentaires — collectivités — -100 à 100 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicFphNet": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -50,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Recrutements supplémentaires — hôpitaux k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements supplémentaires — hôpitaux — -50 à 100 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicPermanentShare": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 20,
+                    "maximum": 100,
+                    "default": 69,
+                    "description": "Part de titulaires dans les flux %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Part de titulaires dans les flux — 20 à 100 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicCategoryA": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 5,
+                    "maximum": 75,
+                    "default": 38,
+                    "description": "Part de catégorie A dans les flux %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Part de catégorie A dans les flux — 5 à 75 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicCategoryB": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 5,
+                    "maximum": 50,
+                    "default": 22,
+                    "description": "Part de catégorie B dans les flux %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Part de catégorie B dans les flux — 5 à 50 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicHiringCapacity": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 2,
+                    "maximum": 15,
+                    "default": 6,
+                    "description": "Capacité de recrutement supposée par mission % des effectifs"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Capacité de recrutement supposée par mission — 2 à 15 % des effectifs. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "trainingEntries": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -400,
+                    "maximum": 600,
+                    "default": 0,
+                    "description": "Entrées en formation supplémentaires k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Entrées en formation supplémentaires — -400 à 600 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "trainingMatch": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 35,
+                    "maximum": 80,
+                    "default": 61,
+                    "description": "Taux d’accès à l’emploi après formation supposé %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Taux d’accès à l’emploi après formation supposé — 35 à 80 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "activationPlaces": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -300,
+                    "maximum": 600,
+                    "default": 0,
+                    "description": "Accompagnement intensif supplémentaire k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Accompagnement intensif supplémentaire — -300 à 600 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsMilitary": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -8,
+                    "maximum": 30,
+                    "default": 0,
+                    "description": "Recrutements — armées k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — armées — -8 à 30 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsPolice": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -5,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Recrutements — Police nationale k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — Police nationale — -5 à 20 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsGendarmerie": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -4,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Recrutements — Gendarmerie k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — Gendarmerie — -4 à 20 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsJudiciary": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1,
+                    "maximum": 8,
+                    "default": 0,
+                    "description": "Recrutements — magistrats et greffes k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — magistrats et greffes — -1 à 8 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsPrison": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -2,
+                    "maximum": 12,
+                    "default": 0,
+                    "description": "Recrutements — pénitentiaire k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — pénitentiaire — -2 à 12 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsYouthJustice": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -0.25,
+                    "maximum": 4,
+                    "default": 0,
+                    "description": "Recrutements — justice des mineurs k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — justice des mineurs — -0.25 à 4 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsEducation": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 80,
+                    "default": 0,
+                    "description": "Recrutements — éducation et recherche k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — éducation et recherche — -40 à 80 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsStateAdmin": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -35,
+                    "maximum": 80,
+                    "default": 0,
+                    "description": "Recrutements — autres services de l’État k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — autres services de l’État — -35 à 80 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsHospital": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -40,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Recrutements — hôpitaux publics k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — hôpitaux publics — -40 à 100 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsFirefighters": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -2,
+                    "maximum": 12,
+                    "default": 0,
+                    "description": "Recrutements — pompiers professionnels k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — pompiers professionnels — -2 à 12 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "jobsTerritorial": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -60,
+                    "maximum": 100,
+                    "default": 0,
+                    "description": "Recrutements — autres services territoriaux k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recrutements — autres services territoriaux — -60 à 100 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              }
+            }
+          },
+          "engines": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "laborParticipation": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -5,
+                    "maximum": 8,
+                    "default": 0,
+                    "description": "Variation supposée du taux d’activité pt"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Variation supposée du taux d’activité — -5 à 8 pt. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "productivity": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -1,
+                    "maximum": 2.5,
+                    "default": 0,
+                    "description": "Gain annuel de productivité supposé pt/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Gain annuel de productivité supposé — -1 à 2.5 pt/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "minimumWage": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Salaire minimum réel %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Salaire minimum réel — -10 à 20 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "retirementAge": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -3,
+                    "maximum": 3,
+                    "default": 0,
+                    "description": "Écart supposé d’âge effectif de départ an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Écart supposé d’âge effectif de départ — -3 à 3 an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "pensionIndex": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -4,
+                    "maximum": 4,
+                    "default": 0,
+                    "description": "Indexation au-dessus des prix pt"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Indexation au-dessus des prix — -4 à 4 pt. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "pensionContribution": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -3,
+                    "maximum": 5,
+                    "default": 0,
+                    "description": "Cotisation retraite pt"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Cotisation retraite — -3 à 5 pt. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "prevention": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Prévention supplémentaire Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Prévention supplémentaire — 0 à 15 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "careEfficiency": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Efficience des soins supposée %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Efficience des soins supposée — -10 à 15 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "healthWorkforce": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -30,
+                    "maximum": 80,
+                    "default": 0,
+                    "description": "Soignants publics supplémentaires k"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Soignants publics supplémentaires — -30 à 80 k. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "teacherResources": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -15,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Moyens scolaires Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Moyens scolaires — -15 à 25 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "vocationalTraining": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -5,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Formation professionnelle Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Formation professionnelle — -5 à 20 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "childcarePlaces": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 300,
+                    "default": 0,
+                    "description": "Programme de places de garde financées k"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Programme de places de garde financées — 0 à 300 k. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "housingBuild": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 350,
+                    "default": 0,
+                    "description": "Logements supplémentaires k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Logements supplémentaires — -100 à 350 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "socialHousing": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 150,
+                    "default": 0,
+                    "description": "Dont logements sociaux k/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Dont logements sociaux — 0 à 150 k/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "housingAid": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -10,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Aides au logement Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Aides au logement — -10 à 15 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "industrialInvestment": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 40,
+                    "default": 0,
+                    "description": "Investissement industriel public Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Investissement industriel public — -10 à 40 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "localContent": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 60,
+                    "default": 0,
+                    "description": "Contenu France/UE des achats %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Contenu France/UE des achats — 0 à 60 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "tradeProtection": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Protection commerciale supplémentaire %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Protection commerciale supplémentaire — 0 à 20 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "adaptation": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Adaptation climatique Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Adaptation climatique — 0 à 25 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "agricultureTransition": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -5,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Transition agricole Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Transition agricole — -5 à 20 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "carbonSinks": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 30,
+                    "default": 0,
+                    "description": "Puits carbone additionnels MtCO₂e/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Puits carbone additionnels — -10 à 30 MtCO₂e/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "defenseCapacity": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -15,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Capacités militaires Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Capacités militaires — -15 à 35 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicSafety": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Sécurité et justice Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Sécurité et justice — -10 à 20 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "domesticDefense": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 80,
+                    "default": 0,
+                    "description": "Achats de défense domestiques %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Achats de défense domestiques — 0 à 80 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicPayroll": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -8,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Rémunération publique réelle %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Rémunération publique réelle — -8 à 15 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "digitalAdministration": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Transformation numérique Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Transformation numérique — 0 à 15 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "fraudRecovery": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Recouvrement supposé fraude et erreurs Md€/an ciblés"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recouvrement supposé fraude et erreurs — 0 à 25 Md€/an ciblés. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "targetedTransfers": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -15,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Transferts sociaux ciblés Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Transferts sociaux ciblés — -15 à 25 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "disabilityInclusion": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -5,
+                    "maximum": 20,
+                    "default": 0,
+                    "description": "Autonomie et handicap Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Autonomie et handicap — -5 à 20 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "youthIntegration": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -5,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Insertion des jeunes Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Insertion des jeunes — -5 à 15 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicResearch": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 30,
+                    "default": 0,
+                    "description": "Recherche publique Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Recherche publique — -10 à 30 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "transportInfrastructure": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 35,
+                    "default": 0,
+                    "description": "Infrastructures de transport Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Infrastructures de transport — -10 à 35 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "digitalDiffusion": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 25,
+                    "default": 0,
+                    "description": "Diffusion numérique et IA Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Diffusion numérique et IA — 0 à 25 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "publicGuarantees": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 150,
+                    "default": 0,
+                    "description": "Garanties publiques nouvelles Md€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Garanties publiques nouvelles — 0 à 150 Md€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "developmentBank": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 50,
+                    "default": 0,
+                    "description": "Financement public long terme Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Financement public long terme — -10 à 50 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "bankLevy": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": -5,
+                    "maximum": 15,
+                    "default": 0,
+                    "description": "Prélèvement financier Md€/an"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Prélèvement financier — -5 à 15 Md€/an. Chaîne numérique tolérée comme dans l’import IHM."
+              }
+            }
+          },
+          "fiscal": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "startYear": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 2026,
+                    "maximum": 2055,
+                    "default": 2026,
+                    "description": "Entrée en vigueur"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Entrée en vigueur — 2026 à 2055. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "irLowRate": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 30,
+                    "default": 11,
+                    "description": "IR · tranche à 11 % %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "IR · tranche à 11 % — 0 à 30 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "irTopRate": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 30,
+                    "maximum": 65,
+                    "default": 45,
+                    "description": "IR · tranche à 45 % %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "IR · tranche à 45 % — 30 à 65 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "ifiThresholdM": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0.8,
+                    "maximum": 10,
+                    "default": 1.3,
+                    "description": "IFI · seuil d'entrée M€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "IFI · seuil d'entrée — 0.8 à 10 M€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "ifiTopRate": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 4,
+                    "default": 1.5,
+                    "description": "IFI · dernière tranche %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "IFI · dernière tranche — 0 à 4 %. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "inheritanceAllowanceK": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 500,
+                    "default": 100,
+                    "description": "Succession · abattement en ligne directe k€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Succession · abattement en ligne directe — 0 à 500 k€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "wealthFloorEnabled": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "default": 0,
+                    "description": "Impôt plancher ultra-riches (proposition)"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôt plancher ultra-riches (proposition) — 0 à 1. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "wealthFloorThresholdM": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 10,
+                    "maximum": 1000,
+                    "default": 100,
+                    "description": "Impôt plancher · seuil M€"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôt plancher · seuil — 10 à 1000 M€. Chaîne numérique tolérée comme dans l’import IHM."
+              },
+              "wealthFloorRate": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "default": 2,
+                    "description": "Impôt plancher · taux %"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$"
+                  }
+                ],
+                "description": "Impôt plancher · taux — 0 à 5 %. Chaîne numérique tolérée comme dans l’import IHM."
+              }
+            }
+          },
+          "sectoral": {
+            "type": "array",
+            "maxItems": 8,
+            "description": "Enveloppes cumulées ≤30 Md€/an, vérifiées par le moteur.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "sector",
+                "instrument",
+                "amountBn",
+                "startYear",
+                "durationYears",
+                "response"
+              ],
+              "properties": {
+                "sector": {
+                  "type": "string",
+                  "enum": [
+                    "renewables",
+                    "nuclear",
+                    "fossil",
+                    "grids",
+                    "automotive",
+                    "transit",
+                    "aviation",
+                    "building",
+                    "metals",
+                    "chemical",
+                    "manufacturing",
+                    "agriculture",
+                    "food",
+                    "digital",
+                    "health",
+                    "circular"
+                  ],
+                  "description": "Filière sectorielle"
+                },
+                "instrument": {
+                  "type": "string",
+                  "enum": [
+                    "credit",
+                    "levy",
+                    "grant"
+                  ],
+                  "description": "Instrument comptable"
+                },
+                "amountBn": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 10,
+                  "description": "Md€ annuels"
+                },
+                "startYear": {
+                  "type": "integer",
+                  "minimum": 2026,
+                  "maximum": 2035
+                },
+                "durationYears": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 15
+                },
+                "response": {
+                  "type": "string",
+                  "enum": [
+                    "accounting",
+                    "exploratory",
+                    "contextual"
+                  ],
+                  "description": "Aucune causalité dans le mode accounting"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SimulationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "scenario"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.0"
+          },
+          "scenario": {
+            "$ref": "#/components/schemas/Scenario"
+          },
+          "horizon": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 3,
+            "description": "Nombre d’années depuis 2026"
+          }
+        }
+      },
+      "SimulationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "schemaVersion",
+          "engineVersion",
+          "buildId",
+          "scenario",
+          "selectedYear",
+          "results",
+          "limitations"
+        ],
+        "properties": {
+          "status": {
+            "const": "completed"
+          },
+          "schemaVersion": {
+            "const": "1.0"
+          },
+          "engineVersion": {
+            "type": "string"
+          },
+          "buildId": {
+            "type": "string"
+          },
+          "scenario": {
+            "$ref": "#/components/schemas/Scenario"
+          },
+          "selectedYear": {
+            "type": "integer"
+          },
+          "results": {
+            "type": "object",
+            "required": [
+              "baseline",
+              "scenario"
+            ],
+            "properties": {
+              "baseline": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProjectionPoint"
+                }
+              },
+              "scenario": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProjectionPoint"
+                }
+              }
+            }
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ProjectionPoint": {
+        "type": "object",
+        "required": [
+          "year",
+          "gdp",
+          "debt",
+          "debtRatio",
+          "deficit",
+          "deficitRatio",
+          "unemployment"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "year": {
+            "type": "integer"
+          },
+          "gdp": {
+            "type": "number",
+            "description": "Md€"
+          },
+          "debt": {
+            "type": "number",
+            "description": "Md€"
+          },
+          "debtRatio": {
+            "type": "number",
+            "description": "% PIB"
+          },
+          "deficit": {
+            "type": "number",
+            "description": "Md€"
+          },
+          "deficitRatio": {
+            "type": "number",
+            "description": "% PIB"
+          },
+          "unemployment": {
+            "type": "number",
+            "description": "%"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "error"
+        ],
+        "properties": {
+          "status": {
+            "const": "error"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

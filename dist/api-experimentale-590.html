@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,follow"/>
+<title>API de simulation — Spécification expérimentale | EcoSim France</title>
+<meta name="description" content="Spécification OpenAPI expérimentale du moteur EcoSim France. API HTTP publique non active sur GitHub Pages."/>
+<link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/api-experimentale-590.html"/>
+<meta property="og:title" content="API expérimentale EcoSim France — contrat non actif"/>
+<meta property="og:description" content="Document OpenAPI et schéma des scénarios — aucun webservice public déployé."/>
+<meta property="og:url" content="https://nicolasmoreau1982-beep.github.io/api-experimentale-590.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"/>
+<meta property="og:image:alt" content="EcoSim France — simulation économique"/>
+<script src="site-meta-531.js" defer></script>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,-apple-system,sans-serif}body{max-width:950px;padding:24px;margin:auto;line-height:1.65}a{color:inherit;text-underline-offset:3px}.eyebrow{font-weight:700;color:#936100;letter-spacing:.03em}.notice{border:2px solid currentColor;border-radius:12px;padding:1rem;margin:1rem 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.grid>*{padding:1rem;border:1px solid #888;border-radius:8px}pre{padding:15px;overflow:auto;background:#1e2735;color:#f6f8fa;border-radius:8px}code{font-family:ui-monospace,monospace}main{display:block}footer{border-top:1px solid #888;margin-top:3rem;padding:1rem 0}h1{line-height:1.25}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+<header><nav aria-label="Navigation"><a href="index.html">Accueil / Simulateur</a> · <a href="audit.html">Audit</a> · <a href="glossaire.html">Glossaire</a></nav></header>
+<main id="main">
+<p class="eyebrow">Contrat d'interopérabilité · démonstrateur 5.9 · non actif</p>
+<h1>API HTTP EcoSim : spécification expérimentale</h1>
+<div class="notice"><strong>API non active.</strong> Aucun endpoint de calcul n'est disponible sur le domaine GitHub Pages. Cette page documente un projet de webservice et un prototype utilisable uniquement en local, sur activation explicite. Aucun hébergement supplémentaire ni service Cloudflare n'a été mis en place.</div>
+<p>L'idée : envoyer par HTTP le même scénario JSON qu'on peut importer dans le simulateur et recevoir la projection calculée sous une forme normalisée. Le contrat couvre les modifications budgétaires, les 31 paramètres structurels, les 36 réglages des moteurs publics, les 9 paramètres fiscaux, les instruments sectoriels, les trimestres de démarrage et les hypothèses macroéconomiques. Tous les identifiants budgétaires sont générés depuis le catalogue du moteur.</p>
+<h2>Contrats à consulter</h2>
+<div class="grid"><div><h3>OpenAPI 3.1</h3><p><a href="api-spec/openapi-590.json">Contrat HTTP complet (JSON)</a> : routes, requêtes, réponses, erreurs, exemples d'unités.</p></div><div><h3>JSON Schema</h3><p><a href="api-spec/scenario-590.schema.json">Schéma des scénarios</a> : identifiants, bornes et valeurs par défaut issues du code EcoSim.</p></div></div>
+<h2>Endpoint prévu : <code>POST /v1/simulations</code></h2>
+<p>Ce chemin est une <strong>spécification</strong>, pas une adresse opérationnelle. Un client enverrait :</p>
+<pre><code>{
+  "schemaVersion": "1.0",
+  "horizon": 5,
+  "scenario": {
+    "name": "Essai SMIC",
+    "model": "consensus",
+    "engines": {"minimumWage": 10},
+    "changes": {"R_IR": 2}
+  }
+}</code></pre>
+<p>Une réponse <code>200</code> comporterait <code>status: completed</code>, l'empreinte du moteur, les paramètres normalisés, l'année sélectionnée et les trajectoires <code>baseline[]</code> et <code>scenario[]</code>. Une entrée invalide produirait un objet <code>error.code</code> et <code>error.message</code> avec un code HTTP adapté.</p>
+<h2>Règles d'interopérabilité</h2>
+<ul><li>Validation des entrées à partir des mêmes garde-fous que l'import IHM ; aucune formule économique réécrite.</li><li>Paramètres manquants : valeurs par défaut du moteur. Aucun scénario précédent conservé entre requêtes.</li><li>Les exports JSON du simulateur (enveloppe <code>metadata</code> + <code>scenario</code>) sont également acceptés par le prototype local.</li><li>Les sommes d'argent du moteur sont exprimées en milliards d'euros (Md€) ; les ratios dette/déficit et chômage en pourcentages.</li><li>Pas de promesse de disponibilité, d'authentification, de quotas publics ou de compatibilité à long terme à ce stade.</li></ul>
+<h2>Pourquoi pas de webservice sur ce site ?</h2><p>GitHub Pages sert des fichiers statiques : il ne peut ni recevoir ni exécuter un calcul côté serveur pour une requête POST. Le contrat est donc publié « pour le fun » et pour réfléchir à l'interopérabilité, <strong>sans service activé</strong>. Un futur hébergement du moteur nécessiterait une décision et une architecture distinctes.</p>
+<p><a href="index.html">← Retour au simulateur</a></p>
+</main>
+<footer><p>EcoSim France — projet personnel, indépendant, pédagogique et politiquement agnostique. Simulation, non prévision certifiée.</p><p><a href="contact-signalement.html">Signaler une erreur</a> · <a href="informations-legales.html">Informations légales</a> · <a href="audit.html">Provenance et limites</a></p><small class="rights-notice">© 2026 EcoSim France — droits réservés sur les contributions originales protégeables. <a href="informations-legales.html#reutilisation">Conditions de réutilisation</a></small></footer>
+</body></html>
