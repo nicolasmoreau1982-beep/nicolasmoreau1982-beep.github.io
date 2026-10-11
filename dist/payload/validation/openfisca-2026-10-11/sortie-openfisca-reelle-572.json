@@ -1,0 +1,971 @@
+{
+  "source": "openfisca-france",
+  "schemaVersion": "5.7.2",
+  "execution": "python_openfisca_direct",
+  "status": "calcule_non_revu",
+  "packageVersion": "176.1.2",
+  "period": "2025",
+  "incomeYear": 2025,
+  "taxYearEcoSim": 2026,
+  "generatedUTC": "2026-10-11T19:47:24.315096+00:00",
+  "inputFileSHA256": "8e3122a86f64eff7d54462365f7e807eb2117205e907fbad87153f7335a1a8b5",
+  "environment": {
+    "python": "3.11.17",
+    "intermediateInputs": "rni_nbptr_nbF_forces"
+  },
+  "semantics": "ir_plaf_qf et max(0, ir_plaf_qf - decote); variables intermédiaires forcées; vérification temporelle et fiscale manuelle requise",
+  "cases": [
+    {
+      "id": "single-0-12000",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 44.0,
+      "grossAfterFamilyCap": 44.0,
+      "openfiscaDecote": 877.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-0-17370",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 634.7000122070312,
+      "grossAfterFamilyCap": 634.7000122070312,
+      "openfiscaDecote": 610.0,
+      "afterDecote": 24.70001220703125,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-0-30000",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 2103.989990234375,
+      "grossAfterFamilyCap": 2103.989990234375,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 2103.989990234375,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-0-34200",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 3363.989990234375,
+      "grossAfterFamilyCap": 3363.989990234375,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 3363.989990234375,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-0-50000",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 8103.990234375,
+      "grossAfterFamilyCap": 8103.990234375,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 8103.990234375,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-0-100000",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 24800.51953125,
+      "grossAfterFamilyCap": 24800.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 24800.51953125,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-0-180000",
+      "householdType": "single",
+      "children": 0,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 57600.51953125,
+      "grossAfterFamilyCap": 57600.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 57600.51953125,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 1.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "single-1-12000",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-1-17370",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-1-30000",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 1386.0,
+      "grossAfterFamilyCap": 1386.0,
+      "openfiscaDecote": 270.0,
+      "afterDecote": 1116.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-1-34200",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 1848.0,
+      "grossAfterFamilyCap": 1848.0,
+      "openfiscaDecote": 61.0,
+      "afterDecote": 1787.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-1-50000",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 4655.984375,
+      "grossAfterFamilyCap": 6296.990234375,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 6296.990234375,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-1-100000",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 19655.984375,
+      "grossAfterFamilyCap": 22993.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 22993.51953125,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-1-180000",
+      "householdType": "single",
+      "children": 1,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 49500.78125,
+      "grossAfterFamilyCap": 55793.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 55793.51953125,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 1.5,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "single-2-12000",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-2-17370",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-2-30000",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 748.0,
+      "grossAfterFamilyCap": 748.0,
+      "openfiscaDecote": 559.0,
+      "afterDecote": 189.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-2-34200",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 1210.0,
+      "grossAfterFamilyCap": 1210.0,
+      "openfiscaDecote": 349.0,
+      "afterDecote": 861.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-2-50000",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 2948.0,
+      "grossAfterFamilyCap": 4489.990234375,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 4489.990234375,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-2-100000",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 16207.98046875,
+      "grossAfterFamilyCap": 21186.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 21186.51953125,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-2-180000",
+      "householdType": "single",
+      "children": 2,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 41401.0390625,
+      "grossAfterFamilyCap": 53986.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 53986.51953125,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "single-3-12000",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "single-3-17370",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "single-3-30000",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "single-3-34200",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 897.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "single-3-50000",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 1671.999755859375,
+      "grossAfterFamilyCap": 1671.999755859375,
+      "openfiscaDecote": 140.0,
+      "afterDecote": 1531.999755859375,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "single-3-100000",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 9311.96875,
+      "grossAfterFamilyCap": 17572.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 17572.51953125,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "single-3-180000",
+      "householdType": "single",
+      "children": 3,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 33311.96875,
+      "grossAfterFamilyCap": 50372.51953125,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 50372.51953125,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": false,
+        "celibataire_ou_divorce": true,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-0-12000",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-0-17370",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-0-30000",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 748.0,
+      "grossAfterFamilyCap": 748.0,
+      "openfiscaDecote": 1145.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-0-34200",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 1210.0,
+      "grossAfterFamilyCap": 1210.0,
+      "openfiscaDecote": 935.0,
+      "afterDecote": 275.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-0-50000",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 2948.0,
+      "grossAfterFamilyCap": 2948.0,
+      "openfiscaDecote": 149.0,
+      "afterDecote": 2799.0,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-0-100000",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 16207.98046875,
+      "grossAfterFamilyCap": 16207.98046875,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 16207.98046875,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-0-180000",
+      "householdType": "couple",
+      "children": 0,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 41401.0390625,
+      "grossAfterFamilyCap": 41401.0390625,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 41401.0390625,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 2.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 0
+      }
+    },
+    {
+      "id": "couple-1-12000",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-1-17370",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-1-30000",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 110.0,
+      "grossAfterFamilyCap": 110.0,
+      "openfiscaDecote": 1433.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-1-34200",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 572.0,
+      "grossAfterFamilyCap": 572.0,
+      "openfiscaDecote": 1224.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-1-50000",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 2310.0,
+      "grossAfterFamilyCap": 2310.0,
+      "openfiscaDecote": 438.0,
+      "afterDecote": 1872.0,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-1-100000",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 12759.974609375,
+      "grossAfterFamilyCap": 14400.98046875,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 14400.98046875,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-1-180000",
+      "householdType": "couple",
+      "children": 1,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 36759.9765625,
+      "grossAfterFamilyCap": 39594.0390625,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 39594.0390625,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 2.5,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 1
+      }
+    },
+    {
+      "id": "couple-2-12000",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-2-17370",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-2-30000",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-2-34200",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-2-50000",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 1671.999755859375,
+      "grossAfterFamilyCap": 1671.999755859375,
+      "openfiscaDecote": 726.0,
+      "afterDecote": 945.999755859375,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-2-100000",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 9311.96875,
+      "grossAfterFamilyCap": 12593.98046875,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 12593.98046875,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-2-180000",
+      "householdType": "couple",
+      "children": 2,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 33311.96875,
+      "grossAfterFamilyCap": 37787.0390625,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 37787.0390625,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 3.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 2
+      }
+    },
+    {
+      "id": "couple-3-12000",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 12000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 12000.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-3-17370",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 17370,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 17370.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-3-30000",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 30000,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 30000.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-3-34200",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 34200,
+      "openfiscaIrBrut": 0.0,
+      "grossAfterFamilyCap": 0.0,
+      "openfiscaDecote": 1483.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 34200.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-3-50000",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 50000,
+      "openfiscaIrBrut": 396.0,
+      "grossAfterFamilyCap": 396.0,
+      "openfiscaDecote": 1304.0,
+      "afterDecote": 0.0,
+      "overrides": {
+        "rni": 50000.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-3-100000",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 100000,
+      "openfiscaIrBrut": 5896.0,
+      "grossAfterFamilyCap": 8979.98046875,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 8979.98046875,
+      "overrides": {
+        "rni": 100000.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    },
+    {
+      "id": "couple-3-180000",
+      "householdType": "couple",
+      "children": 3,
+      "netTaxableIncome": 180000,
+      "openfiscaIrBrut": 26415.9609375,
+      "grossAfterFamilyCap": 34173.0390625,
+      "openfiscaDecote": 0.0,
+      "afterDecote": 34173.0390625,
+      "overrides": {
+        "rni": 180000.0,
+        "nbptr": 4.0,
+        "maries_ou_pacses": true,
+        "celibataire_ou_divorce": false,
+        "nbF": 3
+      }
+    }
+  ]
+}

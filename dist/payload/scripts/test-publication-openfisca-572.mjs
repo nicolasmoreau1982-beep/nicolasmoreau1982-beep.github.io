@@ -1,0 +1,48 @@
+/* Sentinelle de publication factuelle des résultats externes OpenFisca. */
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import assert from 'node:assert/strict';
+import {fileURLToPath} from 'node:url';
+const base=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=(file)=>fs.readFileSync(path.join(base,file));
+const text=(file)=>read(file).toString('utf8');
+const data=JSON.parse(text('release-status-572.json'));
+const p='validation/openfisca-2026-10-11/';
+const original=JSON.parse(text(p+'sortie-openfisca-reelle-572.json'));
+const report=JSON.parse(text(p+'rapport-confrontation-openfisca-572.json'));
+const eco=JSON.parse(text('validation/fiscal-individuel-570.json'));
+const sha=(file)=>crypto.createHash('sha256').update(read(file)).digest('hex');
+assert.equal(data.openFiscaIndependentExecution,'executed_scoped_comparison_review_needed');
+assert.equal(original.source,'openfisca-france');
+assert.equal(original.execution,'python_openfisca_direct');
+assert.equal(original.packageVersion,'176.1.2');
+assert.equal(original.period,'2025');
+assert.equal(original.cases.length,56);
+assert.equal(report.count,56);
+assert.equal(report.rows.length,56);
+assert.equal(eco.cases.length,56);
+assert.equal(original.inputFileSHA256,sha('validation/fiscal-individuel-570.json'));
+assert.equal(report.inputFileSHA256,original.inputFileSHA256);
+assert.equal(data.openFiscaExternalEvidence.sourceCaseSHA256,original.inputFileSHA256);
+assert.equal(data.openFiscaExternalEvidence.cases,56);
+assert.equal(report.afterDecote.casesAboveOneEuro,0);
+assert.ok(report.afterDecote.maximumAbsoluteEuro>0.47 && report.afterDecote.maximumAbsoluteEuro<0.48);
+const ids=new Set(original.cases.map(x=>x.id));
+assert.equal(ids.size,56);
+for(const c of eco.cases)assert.ok(ids.has(c.id),`Cas manquant : ${c.id}`);
+const listed=text(p+'artifact-provenance.sha256').trim().split('\n');
+for(const line of listed){
+ const match=line.match(/^([a-f0-9]{64})  (.+)$/);
+ assert.ok(match,'Empreinte mal formatée');
+ assert.equal(match[1],sha(p+match[2]),'Fichier de preuve modifié : '+match[2]);
+}
+const page=text('verification-openfisca-571.html');
+assert.match(page,/Confrontation exécutée le 11 octobre 2026/);
+assert.match(page,/variables intermédiaires/);
+assert.match(page,/rapport-confrontation-openfisca-572\.json/);
+assert.ok(!page.includes('aucun benchmark indépendant n’est déclaré réussi'));
+const fiscal=text('fiscal-individuel-570.html');
+assert.match(fiscal,/résultats de la confrontation du 11 octobre 2026/);
+assert.ok(!fiscal.includes('OpenFisca : confrontation non encore exécutée'));
+console.log('Confrontation publiée : artifact réel conservé, 56/56 cas, empreintes, preuves et limites vérifiés.');
