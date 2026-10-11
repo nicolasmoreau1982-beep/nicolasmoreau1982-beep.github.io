@@ -1,0 +1,61 @@
+# À publier à la racine du dépôt : .github/workflows/openfisca-572.yml
+# La source EcoSim (scripts, validation, openfisca-validation) est sous dist/.
+name: EcoSim - confrontation OpenFisca 5.7.2 (revue requise)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifier-fiscalite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: dist
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Vérifier les fichiers nécessaires
+        run: |
+          test -f openfisca-validation/run_openfisca_572.py
+          test -f validation/fiscal-individuel-570.json
+          test -f scripts/verifier-openfisca-572.mjs
+      - name: Installer OpenFisca-France
+        run: python -m pip install --disable-pip-version-check openfisca-france
+      - name: Archiver versions et empreinte des cas
+        run: |
+          python -m pip freeze > versions-dependances-572.txt
+          sha256sum validation/fiscal-individuel-570.json > empreinte-cas-572.txt
+      - name: Exécuter OpenFisca sur les 56 foyers
+        run: >-
+          python openfisca-validation/run_openfisca_572.py
+          --cases validation/fiscal-individuel-570.json
+          --out sortie-openfisca-reelle-572.json
+      - name: Vérifier les entrées et analyser les écarts
+        run: >-
+          node scripts/verifier-openfisca-572.mjs
+          validation/fiscal-individuel-570.json
+          sortie-openfisca-reelle-572.json
+          rapport-confrontation-openfisca-572.json
+      - name: Conserver les résultats même en cas d'échec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosim-confrontation-openfisca-572
+          if-no-files-found: warn
+          path: |
+            dist/versions-dependances-572.txt
+            dist/empreinte-cas-572.txt
+            dist/sortie-openfisca-reelle-572.json
+            dist/rapport-confrontation-openfisca-572.json
