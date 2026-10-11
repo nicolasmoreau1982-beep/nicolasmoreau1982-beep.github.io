@@ -9,5 +9,5 @@ function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){cons
 walk(dist);
 const text=files.sort().map(f=>`${crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex')}  ${path.relative(dist,f).split(path.sep).join('/')}`).join('\n')+'\n';
 // Ne pas écraser les manifests archivés 5.1–5.3.1 avec la distribution actuelle.
-fs.writeFileSync(path.join(dist,'manifest-integrite-561.sha256'),text);
-console.log(`Manifeste 5.6.1 : ${files.length} fichiers vérifiables`);
+fs.writeFileSync(path.join(dist,'manifest-integrite-570.sha256'),text);
+console.log(`Manifeste 5.7.0 : ${files.length} fichiers vérifiables`);

@@ -6,7 +6,7 @@ const golden=JSON.parse(fs.readFileSync(path.join(root,'fixtures/golden-531-for-
 assert.equal(golden.sourceVersion,'5.3.1');assert.equal(golden.sourcePackage,'40219bdd801f');
 assert.equal(golden.cases.length,6);assert.equal(golden.projectionYears,30);
 const h=makeHarness(path.join(root,'dist'));
-assert.equal(h.D.metadata.version,'5.6.1');
+assert.equal(h.D.metadata.version,'5.7.0');
 let checks=0;
 function assertValue(a,b,label){
  assert.ok(typeof a==='number'&&Number.isFinite(a) && typeof b==='number'&&Number.isFinite(b),label+': pas numérique');

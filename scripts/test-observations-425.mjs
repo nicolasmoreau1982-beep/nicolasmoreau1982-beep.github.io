@@ -5,7 +5,7 @@ const read=p=>fs.readFileSync(path.join(root,'dist',p),'utf8');
 const observed=JSON.parse(read('data/sectoral-observations-2023.json'));
 const ctx=vm.createContext({console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean});ctx.window=ctx;
 for (const f of ['data.js','history.js','insee-projection.js','fiscal.js','sectoral-observations.js','sectoral.js','guardrails-510.js','political-profiles-530.js'])vm.runInContext(read(f),ctx,{filename:f});
-assert.equal(ctx.ECOSIM_DATA.metadata.version,'5.6.1');
+assert.equal(ctx.ECOSIM_DATA.metadata.version,'5.7.0');
 assert.deepEqual(JSON.parse(JSON.stringify(ctx.ECOSIM_SECTOR_OBS)),observed,'le script et le JSON proviennent de la même source');
 const S=ctx.ECOSIM_SECTORAL,D=ctx.ECOSIM_DATA;
 assert.equal(observed.year,2023);assert.equal(observed.behaviorStatus,'not_causally_estimated');
