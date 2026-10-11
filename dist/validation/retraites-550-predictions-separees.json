@@ -1,0 +1,447 @@
+{
+  "version": "5.5.0",
+  "sourceProtocolHash": "fa949a859e254719003c2c2ec7a04c60c15193b5e165a6502e717312382fd5b7",
+  "generatedAt": "reproductible-sans-horodatage",
+  "noObservedInputs": true,
+  "months": 12,
+  "scenarios": [
+    {
+      "birthYear": 1951,
+      "birthMonth": 10,
+      "label": "1951 second semestre",
+      "sex": "men",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.24364545823545775,
+        "partTime": 0.04060757637257627,
+        "unemployed": 0.032142535946811865,
+        "inactive": 0.11360442944515438,
+        "retired": 0.5699999999999997
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.3228014684067426,
+        "partTime": 0.05380024473445711,
+        "unemployed": 0.04258506551729113,
+        "inactive": 0.15051245735500934,
+        "retired": 0.4303007639864998
+      },
+      "effect": {
+        "fullTime": 0.07915601017128487,
+        "partTime": 0.013192668361880842,
+        "unemployed": 0.010442529570479267,
+        "inactive": 0.036908027909854965,
+        "retired": -0.13969923601349993
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 333234467.48633265,
+        "unemploymentExtraEur": 17131980.966789234,
+        "contributionsExtraEur": 69909042.4575088,
+        "illustrativeNetEur": 386011528.9770522,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1951,
+      "birthMonth": 10,
+      "label": "1951 second semestre",
+      "sex": "women",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.23461534285323182,
+        "partTime": 0.16321067328920477,
+        "unemployed": 0.03546065629498688,
+        "inactive": 0.16671332756257687,
+        "retired": 0.3999999999999996
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.27816724737510024,
+        "partTime": 0.19350765034789574,
+        "unemployed": 0.042043256982820715,
+        "inactive": 0.19766050619219605,
+        "retired": 0.2886213391019871
+      },
+      "effect": {
+        "fullTime": 0.04355190452186841,
+        "partTime": 0.03029697705869097,
+        "unemployed": 0.0065826006878338325,
+        "inactive": 0.030947178629619182,
+        "retired": -0.11137866089801246
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 230216886.09385425,
+        "unemploymentExtraEur": 8992406.70871884,
+        "contributionsExtraEur": 41671618.13538487,
+        "illustrativeNetEur": 262896097.52052027,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1952,
+      "birthMonth": 6,
+      "label": "1952",
+      "sex": "men",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.24364545823545775,
+        "partTime": 0.04060757637257627,
+        "unemployed": 0.032142535946811865,
+        "inactive": 0.11360442944515438,
+        "retired": 0.5699999999999997
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.4588354648001513,
+        "partTime": 0.07647257746669191,
+        "unemployed": 0.06053113211229444,
+        "inactive": 0.21394095159963694,
+        "retired": 0.1902198740212253
+      },
+      "effect": {
+        "fullTime": 0.21519000656469356,
+        "partTime": 0.03586500109411564,
+        "unemployed": 0.028388596165482574,
+        "inactive": 0.10033652215448256,
+        "retired": -0.3797801259787744
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 606040875.3221253,
+        "unemploymentExtraEur": 30512381.081975624,
+        "contributionsExtraEur": 127315357.69721258,
+        "illustrativeNetEur": 702843851.9373623,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1952,
+      "birthMonth": 6,
+      "label": "1952",
+      "sex": "women",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.23461534285323182,
+        "partTime": 0.16321067328920477,
+        "unemployed": 0.03546065629498688,
+        "inactive": 0.16671332756257687,
+        "retired": 0.3999999999999996
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.3441461947948919,
+        "partTime": 0.2394060485529683,
+        "unemployed": 0.05201556633269076,
+        "inactive": 0.24454392711284234,
+        "retired": 0.11988826320660646
+      },
+      "effect": {
+        "fullTime": 0.10953085194166007,
+        "partTime": 0.07619537526376352,
+        "unemployed": 0.01655491003770388,
+        "inactive": 0.07783059955026547,
+        "retired": -0.28011173679339313
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 409416054.9302882,
+        "unemploymentExtraEur": 15804084.514501115,
+        "contributionsExtraEur": 74125800.1490733,
+        "illustrativeNetEur": 467737770.5648604,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1953,
+      "birthMonth": 6,
+      "label": "1953 (exclue comparaison principale par Insee)",
+      "sex": "men",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.24364545823545775,
+        "partTime": 0.04060757637257627,
+        "unemployed": 0.032142535946811865,
+        "inactive": 0.11360442944515438,
+        "retired": 0.5699999999999997
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.566617344733622,
+        "partTime": 0.0944362241222704,
+        "unemployed": 0.0747500835972369,
+        "inactive": 0.2641963475468706,
+        "retired": 0
+      },
+      "effect": {
+        "fullTime": 0.3229718864981643,
+        "partTime": 0.05382864774969413,
+        "unemployed": 0.04260754765042503,
+        "inactive": 0.15059191810171624,
+        "retired": -0.5699999999999997
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 668337080.9852341,
+        "unemploymentExtraEur": 33455571.872132745,
+        "contributionsExtraEur": 140452454.48232386,
+        "illustrativeNetEur": 775333963.5954252,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1953,
+      "birthMonth": 6,
+      "label": "1953 (exclue comparaison principale par Insee)",
+      "sex": "women",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.23461534285323182,
+        "partTime": 0.16321067328920477,
+        "unemployed": 0.03546065629498688,
+        "inactive": 0.16671332756257687,
+        "retired": 0.3999999999999996
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.3910255714220526,
+        "partTime": 0.2720177888153411,
+        "unemployed": 0.059101093824978086,
+        "inactive": 0.27785554593762807,
+        "retired": 0
+      },
+      "effect": {
+        "fullTime": 0.15641022856882075,
+        "partTime": 0.10880711552613634,
+        "unemployed": 0.023640437529991204,
+        "inactive": 0.1111422183750512,
+        "retired": -0.3999999999999996
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 448324508.1160503,
+        "unemploymentExtraEur": 17250895.994849183,
+        "contributionsExtraEur": 81174381.96772677,
+        "illustrativeNetEur": 512247994.08892787,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1954,
+      "birthMonth": 6,
+      "label": "1954, documentation uniquement",
+      "sex": "men",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.24364545823545775,
+        "partTime": 0.04060757637257627,
+        "unemployed": 0.032142535946811865,
+        "inactive": 0.11360442944515438,
+        "retired": 0.5699999999999997
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.566617344733622,
+        "partTime": 0.0944362241222704,
+        "unemployed": 0.0747500835972369,
+        "inactive": 0.2641963475468706,
+        "retired": 0
+      },
+      "effect": {
+        "fullTime": 0.3229718864981643,
+        "partTime": 0.05382864774969413,
+        "unemployed": 0.04260754765042503,
+        "inactive": 0.15059191810171624,
+        "retired": -0.5699999999999997
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 668337080.9852341,
+        "unemploymentExtraEur": 33455571.872132745,
+        "contributionsExtraEur": 140452454.48232386,
+        "illustrativeNetEur": 775333963.5954252,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1954,
+      "birthMonth": 6,
+      "label": "1954, documentation uniquement",
+      "sex": "women",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.23461534285323182,
+        "partTime": 0.16321067328920477,
+        "unemployed": 0.03546065629498688,
+        "inactive": 0.16671332756257687,
+        "retired": 0.3999999999999996
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.3910255714220526,
+        "partTime": 0.2720177888153411,
+        "unemployed": 0.059101093824978086,
+        "inactive": 0.27785554593762807,
+        "retired": 0
+      },
+      "effect": {
+        "fullTime": 0.15641022856882075,
+        "partTime": 0.10880711552613634,
+        "unemployed": 0.023640437529991204,
+        "inactive": 0.1111422183750512,
+        "retired": -0.3999999999999996
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 448324508.1160503,
+        "unemploymentExtraEur": 17250895.994849183,
+        "contributionsExtraEur": 81174381.96772677,
+        "illustrativeNetEur": 512247994.08892787,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1955,
+      "birthMonth": 6,
+      "label": "1955, documentation uniquement",
+      "sex": "men",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.24364545823545775,
+        "partTime": 0.04060757637257627,
+        "unemployed": 0.032142535946811865,
+        "inactive": 0.11360442944515438,
+        "retired": 0.5699999999999997
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.566617344733622,
+        "partTime": 0.0944362241222704,
+        "unemployed": 0.0747500835972369,
+        "inactive": 0.2641963475468706,
+        "retired": 0
+      },
+      "effect": {
+        "fullTime": 0.3229718864981643,
+        "partTime": 0.05382864774969413,
+        "unemployed": 0.04260754765042503,
+        "inactive": 0.15059191810171624,
+        "retired": -0.5699999999999997
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 668337080.9852341,
+        "unemploymentExtraEur": 33455571.872132745,
+        "contributionsExtraEur": 140452454.48232386,
+        "illustrativeNetEur": 775333963.5954252,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    },
+    {
+      "birthYear": 1955,
+      "birthMonth": 6,
+      "label": "1955, documentation uniquement",
+      "sex": "women",
+      "legalAgeMonths": 732,
+      "baseline": {
+        "ageMonths": 732,
+        "fullTime": 0.23461534285323182,
+        "partTime": 0.16321067328920477,
+        "unemployed": 0.03546065629498688,
+        "inactive": 0.16671332756257687,
+        "retired": 0.3999999999999996
+      },
+      "reform": {
+        "ageMonths": 732,
+        "fullTime": 0.3910255714220526,
+        "partTime": 0.2720177888153411,
+        "unemployed": 0.059101093824978086,
+        "inactive": 0.27785554593762807,
+        "retired": 0
+      },
+      "effect": {
+        "fullTime": 0.15641022856882075,
+        "partTime": 0.10880711552613634,
+        "unemployed": 0.023640437529991204,
+        "inactive": 0.1111422183750512,
+        "retired": -0.3999999999999996
+      },
+      "budgetIllustration": {
+        "cohortSize": 100000,
+        "months": 12,
+        "pensionSavedEur": 448324508.1160503,
+        "unemploymentExtraEur": 17250895.994849183,
+        "contributionsExtraEur": 81174381.96772677,
+        "illustrativeNetEur": 512247994.08892787,
+        "caveat": "Unités hypothétiques, sans coûts de santé/inactivité ni carrière; non intégrable aux APU sans double comptage."
+      }
+    }
+  ],
+  "heldout": {
+    "men": {
+      "before": {
+        "fullTime": 0.24364545823545775,
+        "partTime": 0.04060757637257627,
+        "unemployed": 0.032142535946811865,
+        "inactive": 0.11360442944515438,
+        "retired": 0.5699999999999997
+      },
+      "after": {
+        "fullTime": 0.390818466603447,
+        "partTime": 0.06513641110057451,
+        "unemployed": 0.051558098814792785,
+        "inactive": 0.18222670447732314,
+        "retired": 0.31026031900386253
+      },
+      "effect": {
+        "fullTime": 0.14717300836798922,
+        "partTime": 0.02452883472799824,
+        "unemployed": 0.01941556286798092,
+        "inactive": 0.06862227503216876,
+        "retired": -0.2597396809961372
+      }
+    },
+    "women": {
+      "before": {
+        "fullTime": 0.23461534285323182,
+        "partTime": 0.16321067328920477,
+        "unemployed": 0.03546065629498688,
+        "inactive": 0.16671332756257687,
+        "retired": 0.3999999999999996
+      },
+      "after": {
+        "fullTime": 0.31115672108499604,
+        "partTime": 0.21645684945043203,
+        "unemployed": 0.04702941165775574,
+        "inactive": 0.2211022166525192,
+        "retired": 0.20425480115429678
+      },
+      "effect": {
+        "fullTime": 0.07654137823176424,
+        "partTime": 0.053246176161227246,
+        "unemployed": 0.011568755362768857,
+        "inactive": 0.05438888908994233,
+        "retired": -0.1957451988457028
+      }
+    }
+  }
+}

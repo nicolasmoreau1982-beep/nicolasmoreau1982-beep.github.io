@@ -86,5 +86,5 @@ for(const model of Object.keys(D.models)){
  assert.equal(snapshot(),x,`${model} round trip`);checks++;
 }
 assert.ok(read('index.html').includes('src="guardrails-510.js"'));
-assert.equal(D.metadata.version,'5.4.0');
+assert.equal(D.metadata.version,'5.6.0');
 console.log(`DURCISSEMENT 5.1 OK : ${checks} contrôles ciblés, ${invalidScenarios.length} scénarios hostiles, invariants corrompus détectés et imports atomiques.`);

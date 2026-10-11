@@ -1,0 +1,1844 @@
+{
+  "version": "5.6.0",
+  "method": "Monte Carlo conjoint uniforme indépendant + Jansen (pick-and-freeze), N paires A/B",
+  "seed": 90185766,
+  "n": 64,
+  "simulationsParScenario": 448,
+  "date": "2026-10-11",
+  "horizons": [
+    1,
+    5,
+    10
+  ],
+  "metrics": [
+    {
+      "id": "gdpDeltaPct",
+      "label": "Écart PIB à la référence",
+      "unit": "% du PIB"
+    },
+    {
+      "id": "debtDeltaPp",
+      "label": "Écart dette/PIB à la référence",
+      "unit": "point de PIB"
+    },
+    {
+      "id": "deficitDeltaBn",
+      "label": "Écart déficit à la référence",
+      "unit": "Md€"
+    },
+    {
+      "id": "unemploymentDeltaPp",
+      "label": "Écart chômage à la référence",
+      "unit": "point"
+    }
+  ],
+  "factors": [
+    {
+      "id": "spending",
+      "label": "Transmission des dépenses",
+      "lo": 0.7,
+      "hi": 1.3,
+      "unit": "× facteur central",
+      "effect": "Multiplicateurs des postes de dépenses"
+    },
+    {
+      "id": "tax",
+      "label": "Transmission des prélèvements",
+      "lo": 0.7,
+      "hi": 1.3,
+      "unit": "× facteur central",
+      "effect": "Multiplicateurs fiscaux des postes budgétaires"
+    },
+    {
+      "id": "supply",
+      "label": "Échelle des effets d’offre",
+      "lo": 0.8,
+      "hi": 1.2,
+      "unit": "× facteur central",
+      "effect": "Profil d’offre, y compris certains moteurs"
+    },
+    {
+      "id": "decay",
+      "label": "Persistance de la demande",
+      "lo": 0.84,
+      "hi": 1.16,
+      "unit": "× coefficient central",
+      "effect": "Persistance de la demande après le choc"
+    },
+    {
+      "id": "debt",
+      "label": "Sensibilité à la dette",
+      "lo": 0.7,
+      "hi": 1.3,
+      "unit": "× coefficient central",
+      "effect": "Prime de risque en fonction du ratio de dette"
+    }
+  ],
+  "note": "Plages d’hypothèses CONVENTIONNELLES, ni priors bayésiens estimés, ni intervalles de confiance, ni probabilités prédictives. Les indices de Sobol peuvent être négatifs ou dépasser 1 par bruit d’échantillonnage et ne doivent pas être interprétés comme des causalités.",
+  "reference": "https://www.insee.fr/fr/statistiques/1381077",
+  "scenarios": [
+    {
+      "id": "education",
+      "label": "Éducation +10 Md€/an",
+      "changes": {
+        "GF0901": 10
+      },
+      "summaries": [
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": 0.29062231777148284,
+          "p05": 0.21783398373492524,
+          "p50": 0.2920035235584151,
+          "p95": 0.3639556021728285,
+          "mean": 0.2921359974762429,
+          "min": 0.2086810725774102,
+          "max": 0.3706453549206401
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -0.15738151002982192,
+          "p05": -0.2808769543448008,
+          "p50": -0.15970916999628315,
+          "p95": -0.03462505230232652,
+          "mean": -0.15989068164998665,
+          "min": -0.29213371618513406,
+          "max": -0.019176182790047847
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": 5.65437701167329,
+          "p05": 4.493419641478542,
+          "p50": 5.632510801108793,
+          "p95": 6.806707137805989,
+          "mean": 5.630413573737705,
+          "min": 4.387512510484129,
+          "max": 6.951609139043029
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": -0.09355947801877385,
+          "p05": -0.1192261275592477,
+          "p50": -0.09404290004420357,
+          "p95": -0.06808356110597913,
+          "mean": -0.0940892659154431,
+          "min": -0.12156754102097977,
+          "max": -0.06488004220085486
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": 0.3448974484901557,
+          "p05": 0.2630970452225412,
+          "p50": 0.3371938715263201,
+          "p95": 0.43781540664590163,
+          "mean": 0.3429011882103946,
+          "min": 0.24285476389624971,
+          "max": 0.4848992273875474
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": 0.36471206317743565,
+          "p05": 0.021881977871538554,
+          "p50": 0.39188831269055413,
+          "p95": 0.6925517418017157,
+          "mean": 0.37319415235772124,
+          "min": -0.11099442274091587,
+          "max": 0.7556764672380467
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": 5.778714497984268,
+          "p05": 3.676086211966472,
+          "p50": 6.001474160070707,
+          "p95": 7.8460273870838275,
+          "mean": 5.841799263872766,
+          "min": 2.813287426145294,
+          "max": 8.286549651876754
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": -0.09754218589090868,
+          "p05": -0.12814752753973863,
+          "p50": -0.09503991133148482,
+          "p95": -0.0703591643281662,
+          "mean": -0.09738313323880107,
+          "min": -0.1410552278662509,
+          "max": -0.06479462028910987
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": 0.3347233150195361,
+          "p05": 0.2571552868109095,
+          "p50": 0.3289005520503263,
+          "p95": 0.4218961352389416,
+          "mean": 0.334731738573686,
+          "min": 0.2366740331234407,
+          "max": 0.47684317804164156
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": 1.2255441428473688,
+          "p05": 0.559501462216479,
+          "p50": 1.299028400379136,
+          "p95": 1.8607902136963788,
+          "mean": 1.2344566102414443,
+          "min": 0.24212262444710575,
+          "max": 2.0029810423735483
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": 8.72478551626429,
+          "p05": 5.331717796126709,
+          "p50": 9.02302910761388,
+          "p95": 12.054597062760198,
+          "mean": 8.739053648104752,
+          "min": 3.4674874186118245,
+          "max": 12.91000683902331
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": -0.08973747539758481,
+          "p05": -0.11763351253998015,
+          "p50": -0.08877615021693197,
+          "p95": -0.06424150075372119,
+          "mean": -0.09028030493266027,
+          "min": -0.12747912864244082,
+          "max": -0.060481656299048225
+        }
+      ],
+      "sobol": [
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.9957786390292468,
+          "total": 0.8127066626815294
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 0.18182135355191031,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.18984272754318154,
+          "total": 0.004134765395295161
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.18182135355191031,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.18182135355191031,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.9957806552324104,
+          "total": 0.8127773005651793
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 0.18174207046228275,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.18975974076569013,
+          "total": 0.004132984636522467
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.18174207046228275,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.18174207046228275,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.9957786390292411,
+          "total": 0.8127066626815422
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 0.18182135355189888,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.1898427275431499,
+          "total": 0.004134765395295627
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.18182135355189888,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.18182135355189888,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.9957786390292426,
+          "total": 0.8127066626815294
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 0.1818213535519101,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.18984272754312803,
+          "total": 0.0041347653952954555
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.1818213535519101,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.1818213535519101,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.8644438238386947,
+          "total": 0.6478824687072758
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 0.2584735187172261,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.2676429493718181,
+          "total": 0.02748230329577325
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.301333917496025,
+          "total": 0.12106066428351477
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.2584735187172261,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.9218278870363391,
+          "total": 0.7170245629493872
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 0.23356053235742535,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.24407128493160202,
+          "total": 0.01822674745724418
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.24374776978800305,
+          "total": 0.06814027062541186
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.23740485420014534,
+          "total": 0.00022723535052765782
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.8938561753375679,
+          "total": 0.6855025358575129
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 0.23346829848370865,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.2485240574719585,
+          "total": 0.02290147498911668
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.2614733328924487,
+          "total": 0.09190040692521391
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.2509578637020994,
+          "total": 0.003394311411831112
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.9267673673346719,
+          "total": 0.7077541409496859
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 0.24140021672540468,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.2618967080713972,
+          "total": 0.030021979139568538
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.23676926461689674,
+          "total": 0.05169518269944688
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.24140021672540468,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.8463569183118698,
+          "total": 0.6159370774523782
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 0.2718170575851926,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.28992564427886935,
+          "total": 0.04246272409303687
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.32849116273777956,
+          "total": 0.13470794088014273
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.2718170575851926,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.8882052382126566,
+          "total": 0.6723905710350515
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 0.23226214881029283,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.2504129308231162,
+          "total": 0.026089331313153354
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.25448017311244264,
+          "total": 0.08708016711462757
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.26403916774358405,
+          "total": 0.008749899074622083
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.8336102319610922,
+          "total": 0.6178155570957703
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 0.2130855650678728,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.24150609164663062,
+          "total": 0.030884887830570494
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.24224956292719113,
+          "total": 0.09710315489559429
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.3089367181521212,
+          "total": 0.04577976208857366
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.9441721571812247,
+          "total": 0.7241732656057267
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 0.224395382862557,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.2741693107726384,
+          "total": 0.04992453076563793
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.2104895688781956,
+          "total": 0.013214418901034806
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.224395382862557,
+          "total": 0
+        }
+      ]
+    },
+    {
+      "id": "tva",
+      "label": "TVA +10 Md€/an",
+      "changes": {
+        "R_TVA": 10
+      },
+      "summaries": [
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": -0.1065578214040297,
+          "p05": -0.13572853006632302,
+          "p50": -0.10176850458022413,
+          "p95": -0.07709151399544589,
+          "mean": -0.10360326225602505,
+          "min": -0.1374512300941544,
+          "max": -0.07542443010416511
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -0.15288874029053545,
+          "p05": -0.2027312338800506,
+          "p50": -0.1609919088003977,
+          "p95": -0.10351728024958719,
+          "mean": -0.15788188565871175,
+          "min": -0.20555024115884635,
+          "max": -0.10060070807270449
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": -8.543056763776633,
+          "p05": -9.009545167203289,
+          "p50": -8.618877623433747,
+          "p95": -8.081248057242384,
+          "mean": -8.589831120694543,
+          "min": -9.03593718477228,
+          "max": -8.053975566854604
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": 0.03729523749140995,
+          "p05": 0.026982029898407856,
+          "p50": 0.035618976603079666,
+          "p95": 0.047504985523212626,
+          "mean": 0.036261141789609014,
+          "min": 0.026398550536457677,
+          "max": 0.048107930532951926
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": -0.2580490680157532,
+          "p05": -0.32869122346224966,
+          "p50": -0.2464508697180623,
+          "p95": -0.18669106665592516,
+          "mean": -0.2508940678055966,
+          "min": -0.3328630536554189,
+          "max": -0.1826539210125322
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -0.7656133871121398,
+          "p05": -0.9988168165288392,
+          "p50": -0.8035398950376091,
+          "p95": -0.5344204683556164,
+          "mean": -0.7889452183642811,
+          "min": -1.012000555148802,
+          "max": -0.5207569524989708
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": -7.096685427032696,
+          "p05": -8.439577798274469,
+          "p50": -7.314952919357502,
+          "p95": -5.767264621665492,
+          "mean": -7.231335992005787,
+          "min": -8.515553189720237,
+          "max": -5.688754590081601
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": 0.09031717380551374,
+          "p05": 0.0653418733295719,
+          "p50": 0.08625780440132047,
+          "p95": 0.11504192821178694,
+          "mean": 0.08781292373195855,
+          "min": 0.06392887235438671,
+          "max": 0.11650206877939517
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": -0.23573038094623078,
+          "p05": -0.3002626900233851,
+          "p50": -0.22513531186100222,
+          "p95": -0.17054413953307868,
+          "mean": -0.22919421734688145,
+          "min": -0.30407369824845265,
+          "max": -0.1668561669789903
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -1.6831035119099056,
+          "p05": -2.0724393598155695,
+          "p50": -1.7464189737392317,
+          "p95": -1.297171874139339,
+          "mean": -1.7220637011214193,
+          "min": -2.0944512064397856,
+          "max": -1.2743647717559554
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": -8.82833661221639,
+          "p05": -10.39322261348653,
+          "p50": -9.082685918673313,
+          "p95": -7.2791491623001905,
+          "mean": -8.985246271323906,
+          "min": -10.48175750210487,
+          "max": -7.1876606320084875
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": 0.08250563333118155,
+          "p05": 0.059690448836575836,
+          "p50": 0.07879735915135111,
+          "p95": 0.10509194150818639,
+          "mean": 0.08021797607140849,
+          "min": 0.058399658442644053,
+          "max": 0.10642579438695865
+        }
+      ],
+      "sobol": [
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.12425928170840062,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915994
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.12425928170840062,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.12425928170840062,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.12425928170840062,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.12425337444724616,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757466255527538
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.12425337444724616,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.12425337444724616,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.12425337444724616,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.12425928170838951,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182916105
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.12425928170838951,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.12425928170838951,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.12425928170838951,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.12425928170839051,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182916095
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.12425928170839051,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.12425928170839051,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.12425928170839051,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.12425928170841993,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915801
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.12425928170841993,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.12425928170841993,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.12425928170841993,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.12424494958645438,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757550504135456
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.12424494958645438,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.12424494958645438,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.12424494958645438,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.12425928170840406,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915959
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.12425928170840406,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.12425928170840406,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.12425928170840406,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.1242592817084075,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915925
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.1242592817084075,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.1242592817084075,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.1242592817084075,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.1242592817084277,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915723
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.1242592817084277,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.1242592817084277,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.1242592817084277,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.12424619276188786,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757538072381121
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.12424619276188786,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.12424619276188786,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.12424619276188786,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.12425928170841938,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915806
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.12425928170841938,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.12425928170841938,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.12425928170841938,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.12425928170840184,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 1,
+          "total": 0.8757407182915982
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.12425928170840184,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.12425928170840184,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.12425928170840184,
+          "total": 0
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "label": "Éducation +8, énergie +6, IR +10 Md€/an",
+      "changes": {
+        "GF0901": 8,
+        "GF0403": 6,
+        "R_IR": 10
+      },
+      "summaries": [
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": 0.20558366001135475,
+          "p05": 0.08316616562177748,
+          "p50": 0.21018164123624006,
+          "p95": 0.32682338977809694,
+          "mean": 0.21290509858456286,
+          "min": 0.05256469431820232,
+          "max": 0.3556863597222293
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -0.21284061499012807,
+          "p05": -0.41702034298719964,
+          "p50": -0.22059308863374838,
+          "p95": -0.006175309951454768,
+          "mean": -0.22508348915102327,
+          "min": -0.4655559290112592,
+          "max": 0.045565078721466534
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": 0.877819543522719,
+          "p05": -1.0415566167316328,
+          "p50": 0.8050277650741862,
+          "p95": 2.8158411869354634,
+          "mean": 0.7619120379285218,
+          "min": -1.4984934354751829,
+          "max": 3.3003006508569115
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": -0.05890094788198397,
+          "p05": -0.10133485330033842,
+          "p50": -0.06051024131069216,
+          "p95": -0.016054824845628535,
+          "mean": -0.06146345138260466,
+          "min": -0.11143689278079272,
+          "max": -0.005344309889379062
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": 0.36363101860370506,
+          "p05": 0.23713864536609508,
+          "p50": 0.3576136147733111,
+          "p95": 0.5088568687769757,
+          "mean": 0.3657448910876162,
+          "min": 0.20689539885514474,
+          "max": 0.5494539115226793
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -0.5837940183217967,
+          "p05": -1.1005594304002067,
+          "p50": -0.5565017546751108,
+          "p95": -0.10844714797387899,
+          "mean": -0.5961657731868918,
+          "min": -1.2170347557753871,
+          "max": 0.011013023693934088
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": -1.9798760333613643,
+          "p05": -4.728869315285355,
+          "p50": -1.8591757557694422,
+          "p95": 0.4422170282087351,
+          "mean": -2.026656850655625,
+          "min": -5.472614929791916,
+          "max": 1.0310480286754427
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": -0.0901902133235426,
+          "p05": -0.1353709370168373,
+          "p50": -0.08912692629575236,
+          "p95": -0.04633282448415726,
+          "mean": -0.0917936887036713,
+          "min": -0.1462572255069281,
+          "max": -0.03623888595846392
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "label": "Écart PIB à la référence",
+          "unit": "% du PIB",
+          "central": 0.3699316412871356,
+          "p05": 0.2605388161319666,
+          "p50": 0.36875155866494813,
+          "p95": 0.5087204538524415,
+          "mean": 0.37291302189963627,
+          "min": 0.21611094461202462,
+          "max": 0.568168260937596
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "label": "Écart dette/PIB à la référence",
+          "unit": "point de PIB",
+          "central": -0.8754771024046164,
+          "p05": -1.733225960370597,
+          "p50": -0.8439806355348978,
+          "p95": -0.12852718811151115,
+          "mean": -0.8949473312540132,
+          "min": -1.9716176723321155,
+          "max": 0.07247156241062669
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "label": "Écart déficit à la référence",
+          "unit": "Md€",
+          "central": -2.8655473620677867,
+          "p05": -6.184255210052537,
+          "p50": -2.7929991999978157,
+          "p95": -0.2116971163021757,
+          "mean": -2.938814634757572,
+          "min": -7.487230184207348,
+          "max": 0.8840837687070717
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "label": "Écart chômage à la référence",
+          "unit": "point",
+          "central": -0.08560252589199635,
+          "p05": -0.12624133614018795,
+          "p50": -0.08639777972595741,
+          "p95": -0.045133341356373084,
+          "mean": -0.08750979944710358,
+          "min": -0.13500755066847336,
+          "max": -0.036427257910205846
+        }
+      ],
+      "sobol": [
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.843872608283926,
+          "total": 0.598776083591865
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 0.3984181547538198,
+          "total": 0.15675545659346718
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.1296652243667552,
+          "total": 0.001772360113320487
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.1307889246203371,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.1307889246203371,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.8437339627289008,
+          "total": 0.5986477554480849
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 0.39835501283712516,
+          "total": 0.15669094728168959
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.12980749304431882,
+          "total": 0.0017696447393215698
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.13091099161242759,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.13091099161242759,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.8438726082839273,
+          "total": 0.5987760835918736
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 0.39841815475382636,
+          "total": 0.15675545659346093
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.12966522436674077,
+          "total": 0.0017723601133210368
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.13078892462032532,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.13078892462032532,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.8438726082839247,
+          "total": 0.5987760835918758
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 0.39841815475382136,
+          "total": 0.15675545659346418
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.12966522436671246,
+          "total": 0.0017723601133212894
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.13078892462031577,
+          "total": 0
+        },
+        {
+          "horizon": 1,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.13078892462031577,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.8483156962591453,
+          "total": 0.6118258037666262
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 0.34273835069451164,
+          "total": 0.07116780079466571
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.18089642133346673,
+          "total": 0.013153078260963222
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.2106788473999046,
+          "total": 0.06483111144097212
+        },
+        {
+          "horizon": 5,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.18556758648050387,
+          "total": 0
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.8684892994727654,
+          "total": 0.6290068429527506
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 0.35060319176377663,
+          "total": 0.08748809708271753
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.16592245540002393,
+          "total": 0.00859713813317669
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.1760979350785713,
+          "total": 0.032724584657048486
+        },
+        {
+          "horizon": 5,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.16901711039800504,
+          "total": 3.526981876502868e-9
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.8552103354122248,
+          "total": 0.6174263402941333
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 0.3436703968699658,
+          "total": 0.0738304008616868
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.17839394283749632,
+          "total": 0.012488952710173787
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.20161472097509092,
+          "total": 0.05600633949501757
+        },
+        {
+          "horizon": 5,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.18243625196537638,
+          "total": 7.614047116228566e-11
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.8963795861252856,
+          "total": 0.6461798114136431
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 0.3334896430082833,
+          "total": 0.07516387150248614
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.17563714047806733,
+          "total": 0.013891623363797914
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.1663584791751237,
+          "total": 0.014189217659751972
+        },
+        {
+          "horizon": 5,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.17252386563293443,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "spending",
+          "first": 0.8135373469396394,
+          "total": 0.5781375439884796
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "tax",
+          "first": 0.33853527738241285,
+          "total": 0.05941492590159096
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "supply",
+          "first": 0.19977756474544994,
+          "total": 0.020185736266257807
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "decay",
+          "first": 0.26771597796112523,
+          "total": 0.11343814079186618
+        },
+        {
+          "horizon": 10,
+          "metric": "gdpDeltaPct",
+          "factor": "debt",
+          "first": 0.20648240917851746,
+          "total": 0
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "spending",
+          "first": 0.8517894768894451,
+          "total": 0.614175189799269
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "tax",
+          "first": 0.3451492867426127,
+          "total": 0.0758463581381538
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "supply",
+          "first": 0.18000109971848888,
+          "total": 0.013261092399719406
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "decay",
+          "first": 0.20672184843238495,
+          "total": 0.05947782548319813
+        },
+        {
+          "horizon": 10,
+          "metric": "debtDeltaPp",
+          "factor": "debt",
+          "first": 0.1841627418907963,
+          "total": 1.0895653255987598e-7
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "spending",
+          "first": 0.8291861444374403,
+          "total": 0.5918529384907126
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "tax",
+          "first": 0.3385318784023148,
+          "total": 0.06431920143094343
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "supply",
+          "first": 0.19496298974226667,
+          "total": 0.018582044969324394
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "decay",
+          "first": 0.24343993760259097,
+          "total": 0.09266983461854786
+        },
+        {
+          "horizon": 10,
+          "metric": "deficitDeltaBn",
+          "factor": "debt",
+          "first": 0.2001269709786424,
+          "total": 0.0000014736882639313338
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "spending",
+          "first": 0.9097114836671003,
+          "total": 0.661240500712256
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "tax",
+          "first": 0.3129689636308499,
+          "total": 0.06795537802632942
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "supply",
+          "first": 0.1841812742249982,
+          "total": 0.023087285187996257
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "decay",
+          "first": 0.16245561556851085,
+          "total": 0.0035087107393690477
+        },
+        {
+          "horizon": 10,
+          "metric": "unemploymentDeltaPp",
+          "factor": "debt",
+          "first": 0.17018952210548088,
+          "total": 0
+        }
+      ]
+    }
+  ]
+}

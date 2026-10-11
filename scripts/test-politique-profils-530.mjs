@@ -9,7 +9,7 @@ const context=vm.createContext({window:{}});
 for(const file of ['data.js','political-profiles-530.js'])vm.runInContext(read(file),context,{filename:file});
 const D=context.window.ECOSIM_DATA;
 const P=context.window.ECOSIM_POLITICAL_PROFILES_530;
-assert.equal(D.metadata.version,'5.4.0');
+assert.equal(D.metadata.version,'5.6.0');
 const oldSources=JSON.parse(read('validation/provenance-politique-420.json'));
 assert.equal(oldSources.counts.total,357);
 assert.equal(oldSources.counts.exact,0);

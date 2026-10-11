@@ -1,0 +1,60 @@
+from pathlib import Path
+import json,html
+root=Path(__file__).resolve().parent.parent
+D=root/'dist'
+compar=json.loads((D/'validation/retraites-550-confrontation.json').read_text())
+rows=compar['rows']
+fmt=lambda v: f'{v:+.1f}'.replace('.',',')
+T=[]
+for r in rows:
+    T.append(f'<tr><th scope="row">{"Hommes" if r["sex"]=="men" else "Femmes"} — {html.escape(r["label"])}</th><td>{fmt(r["estimatedEffectPoints"])} pt</td><td>{fmt(r["observedEffectPoints"])} pt</td><td>{fmt(r["descriptiveEffectGapPoints"])} pt</td></tr>')
+table='\n'.join(T)
+raw=f'''<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retraites 2010 : simulation par génération et confrontation Insee | EcoSim France</title>
+<meta name="description" content="EcoSim 5.5 : règles exactes de l'âge légal par génération 2010–2011, module mensuel expérimental, comparaison Insee de l'emploi, du chômage, de l'inactivité et de la retraite.">
+<link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/retraites-cohortes-550.html">
+<meta property="og:type" content="article"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="Retraites par cohorte : validation expérimentale | EcoSim France"><meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css"><script src="theme.js"></script><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script>
+</head><body><a class="skip-link" href="#main">Aller au contenu</a>
+<header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a><nav class="guide-nav" aria-label="Navigation principale"><a href="index.html">Simulateur</a><a href="audit.html">Audit</a><a href="validation-historique-540.html">TVA 2009</a><a href="contact-signalement.html">Signaler une erreur</a></nav></header>
+<main class="guide-main" id="main"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / Retraites par cohorte 5.5</p>
+<div class="guide-hero"><span class="guide-kicker">EcoSim 5.5 — témoin historique expérimental</span><h1>Retraites 2010–2011 : ce que prédit un modèle de cohortes simplifié</h1>
+<p class="guide-lead">L'âge légal est traité <strong>génération par génération et mois par mois</strong>, mais les comportements d'emploi et de chômage restent simplifiés. Nous publions les écarts avec l'Insee, y compris lorsqu'ils montrent une faiblesse du modèle.</p></div>
+<section><h2>1. Les règles historiques reproduites</h2>
+<p>Référence sans réforme : âge légal à <strong>60 ans</strong>. La réforme de 2010 instaurait une hausse progressive, puis la loi de financement de 2012 a accéléré le calendrier. Le module distingue les deux versions de ce calendrier. <a href="https://legislation.lassuranceretraite.fr/Documents/Circulaires/Pdf/circulaire_cnav_2024_25_01082024.pdf">Table CNAV officielle</a> ; <a href="https://www.securite-sociale.fr/files/live/sites/SSFR/files/medias/CCSS/2012/RAPPORT/CCSS-RAPPORT-JUILLET_2012.pdf">Rapport CCSS 2012, accélération</a>.</p>
+<div class="prov-scroll"><table><caption>Âge d'ouverture des droits au régime général (cas général ; exceptions exclues)</caption><thead><tr><th scope="col">Génération</th><th scope="col">Calendrier initial 2010</th><th scope="col">Calendrier accéléré</th></tr></thead><tbody>
+<tr><th scope="row">Avant juillet 1951</th><td>60 ans</td><td>60 ans</td></tr>
+<tr><th scope="row">Juillet–décembre 1951</th><td>60 ans 4 mois</td><td>60 ans 4 mois</td></tr>
+<tr><th scope="row">1952</th><td>60 ans 8 mois</td><td>60 ans 9 mois</td></tr>
+<tr><th scope="row">1953</th><td>61 ans</td><td>61 ans 2 mois</td></tr>
+<tr><th scope="row">1954</th><td>61 ans 4 mois</td><td>61 ans 7 mois</td></tr>
+<tr><th scope="row">1955</th><td>61 ans 8 mois</td><td>62 ans</td></tr></tbody></table></div>
+<p>Le modèle n'assimile pas les départs anticipés, invalidités ou dispositifs de carrières longues à un âge légal unique. Ces cas sont <strong>explicitement exclus de l'expérience</strong>.</p></section>
+<section><h2>2. Le moteur expérimental, sans transmission au cœur macro</h2>
+<p>Chaque cohorte est suivie mensuellement selon cinq états : emploi à temps plein, emploi à temps partiel, chômage, inactivité hors retraite et retraite. Le passage vers la retraite est bloqué jusqu'à l'âge légal. Les personnes restent dans leur état professionnel ou changent de statut selon des transitions tirées des <strong>estimations AVANT réforme</strong> de l'<a href="https://www.insee.fr/fr/statistiques/2546882">Insee Analyses n° 30, figures 3 et 4</a>.</p>
+<p>Le risque mensuel de départ est ajusté à partir de la part de retraités avant réforme. Les probabilités annuelles entre situations professionnelles sont converties en pas mensuels par une approximation linéaire. <strong>Ce choix simple peut mal reproduire le chômage</strong> : aucune transition n'a été recalée sur les résultats observés après réforme.</p>
+<p>Le moteur produit aussi des <strong>flux budgétaires illustratifs pour 100 000 individus fictifs</strong> (pensions évitées, chômage et cotisations), avec des montants arbitraires transparents : ils ne représentent pas des économies nationales et ne sont pas injectés dans les comptes des administrations publiques d'EcoSim.</p>
+<p><a href="cohort-retirement-550.js">Code autonome consultable</a> · <a href="data/retraites-2010-protocole-550.json">Protocole et paramètres AVANT réforme</a> · <a href="validation/retraites-550-predictions-separees.json">Prédictions avant confrontation</a> · <a href="validation/retraites-550-trajectoires-mensuelles.csv">Toutes les trajectoires mensuelles (CSV)</a></p></section>
+<section><h2>3. Confrontation descriptive à l'Insee : les erreurs sont publiées</h2>
+<p>L'échantillon et la période d'observation de l'Insee (salariés privés de certaines générations, principalement 1949 à 1952, exclusions spécifiques) ne correspondent pas exactement à notre mélange <strong>50 % de cohortes 1951 second semestre et 50 % de 1952</strong>, mesuré au terme de 12 mois après 60 ans. <strong>Les écarts sont descriptifs et ne sont PAS des erreurs prédictives causales comparables au point près.</strong></p>
+<div class="prov-scroll"><table><caption>Écarts de variations des états (points de pourcentage), même source Insee : « après » tenu à l'écart du script de calcul</caption><thead><tr><th scope="col">Situation</th><th scope="col">Effet EcoSim</th><th scope="col">Effet estimé Insee</th><th scope="col">Écart descriptif</th></tr></thead><tbody>{table}</tbody></table></div>
+<p>Le modèle illustre correctement l'orientation de la baisse de retraite, mais il <strong>sous-estime l'augmentation du chômage</strong> et <strong>surestime le maintien dans l'inactivité hors retraite</strong>. Cela indique qu'il manque une modélisation comportementale adaptée aux personnes proches de l'âge de liquidation ; ce problème n'est pas masqué par un recalibrage opportuniste.</p>
+<p>Un écart faible pour certaines cases ne démontre pas la validité du modèle : les populations et fenêtres ne sont pas strictement égales, et les données de construction et d'évaluation viennent de la même étude de 2017, même si les lignes APRÈS étaient tenues à l'écart du calcul.</p>
+<p><a href="data/retraites-2010-observations-550.json">Observations tenues à l'écart</a> · <a href="validation/retraites-550-confrontation.json">Résultats et écarts (JSON)</a> · <a href="validation/retraites-550-confrontation.csv">CSV</a></p></section>
+<section><h2>4. Ce que cette expérience ne permet toujours pas</h2>
+<p>Elle ne reproduit ni le parcours complet des carrières, ni les durées validées, les régimes multiples, la pension par cohorte, la mortalité, les départs anticipés, l'emploi des seniors en séries longues ou la causalité des effets mesurés par l'Insee.</p>
+<p>Notre hypothèse de maintien dans l'état précédent est <strong>une convention, non une loi économique</strong>. Aucune prévision n'a été enregistrée en 2010 ou avant la publication Insee 2017 : l'expérience est <strong>rétrospective, non aveugle</strong>.</p>
+<p>Le témoin 2010 se trouve dans le périmètre des études historiques de 5.4, sans rendre leurs quatre chocs macro antérieurs davantage comparables. <strong>Le moteur macro 5.3.1 reste inchangé</strong> et les six trajectoires gelées sont rejouées dans les tests.</p></section>
+<section><h2>5. Reproduire et contester</h2>
+<pre><code>node scripts/projeter-retraites-550.mjs
+node scripts/confronter-retraites-550.mjs
+node scripts/test-cohort-550.mjs
+node scripts/test-golden-540.mjs
+bash scripts/run-tests-550.sh</code></pre>
+<p>Le script de prédiction ne lit pas le fichier d'observations après réforme ; seul le script de confrontation les charge ensuite. Les sources et limites sont accessibles sans JavaScript.</p>
+<p>Une anomalie ? <a href="https://github.com/nicolasmoreau1982-beep/nicolasmoreau1982-beep.github.io/issues/new/choose">Ouvrir un ticket GitHub</a>.</p></section>
+</main><footer class="guide-footer">EcoSim France · version <span data-ecosim-version>5.5.0</span> · paquet <code>45a262d37f8f</code> <a href="index.html">Simulateur</a> <a href="informations-legales.html">Informations légales</a></footer></body></html>
+'''
+(D/'retraites-cohortes-550.html').write_text(raw,encoding='utf-8')
+print('HTML 5.5 généré avec',len(rows),'lignes ;',len(raw),'caractères')

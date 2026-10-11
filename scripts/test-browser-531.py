@@ -1,4 +1,4 @@
-"""Essai navigateur local 5.4.0, sans réseau ; pas un audit RGAA/Lighthouse certifié."""
+"""Essai navigateur local 5.6.0, sans réseau ; pas un audit RGAA/Lighthouse certifié."""
 import asyncio, pathlib,sys, json
 sys.path.insert(0,str(pathlib.Path(__file__).parent))
 import importlib.util
@@ -15,16 +15,16 @@ CHECKS='''() => [...document.querySelectorAll('button,input,select,textarea,[rol
  return {tag:e.tagName,id:e.id||'',visible,named:!!name};
 })'''
 async def main():
- result={'version':'5.4.0','method':'Chromium in-memory, heuristic control names + keyboard', 'views': []}
+ result={'version':'5.6.0','method':'Chromium in-memory, heuristic control names + keyboard', 'views': []}
  async with async_playwright() as pw:
   browser=await pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
   for width,height in [(1365,850),(375,812)]:
    p,errors,_=await base.load_page(browser,width,height)
    await p.add_script_tag(content=(DIST/'site-meta-531.js').read_text())
    assert not errors,errors[:2]
-   assert (await p.locator('.current-version-531').inner_text()).endswith('5.4.0')
-   assert (await p.locator('.footer-version').inner_text()).startswith('Version 5.4.0')
-   assert await p.locator('.hero-transparence-531 a').count()==4
+   assert (await p.locator('.current-version-531').inner_text()).endswith('5.6.0')
+   assert (await p.locator('.footer-version').inner_text()).startswith('Version 5.6.0')
+   assert await p.locator('.hero-transparence-531 a').count()==6
    ctrls=await p.evaluate(CHECKS)
    missing=[x for x in ctrls if not x['named']]
    assert not missing,missing[:10]
@@ -45,5 +45,5 @@ async def main():
    await p.close()
   await browser.close()
  path=DIST.parent/'audit-navigateur-531.json';path.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
- print('NAVIGATEUR 5.4.0 OK :',result['views'])
+ print('NAVIGATEUR 5.6.0 OK :',result['views'])
 asyncio.run(main())

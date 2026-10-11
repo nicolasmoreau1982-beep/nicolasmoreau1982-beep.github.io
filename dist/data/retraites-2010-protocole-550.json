@@ -1,0 +1,18 @@
+{
+  "version":"5.5.0",
+  "id":"retirement-2010-monthly-cohort",
+  "title":"Retraites 2010–2011 : simulation mensuelle de cohortes et confrontation prudente",
+  "sourceRules":"https://legislation.lassuranceretraite.fr/Documents/Circulaires/Pdf/circulaire_cnav_2024_25_01082024.pdf",
+  "sourceBefore":"https://www.insee.fr/fr/statistiques/2546882",
+  "beforeDistributionSource":"Insee Analyses n°30, figure 3, lignes AVANT réforme ; ces données de référence servent au calibrage du risque de départ AVANT réforme.",
+  "beforeAtAge60":{"men":{"fullTime":0.24,"partTime":0.04,"unemployed":0.04,"inactive":0.11,"retired":0.57},"women":{"fullTime":0.23,"partTime":0.16,"unemployed":0.04,"inactive":0.16,"retired":0.40}},
+  "beforeTransitionSource":"Insee Analyses n°30, figure 4, lignes AVANT réforme. Transitions annuelles ventilées conditionnellement hors retraite, approximation /12.",
+  "cohorts":[{"birthYear":1951,"birthMonth":10,"label":"1951 second semestre"},{"birthYear":1952,"birthMonth":6,"label":"1952"},{"birthYear":1953,"birthMonth":6,"label":"1953 (exclue comparaison principale par Insee)"},{"birthYear":1954,"birthMonth":6,"label":"1954, documentation uniquement"},{"birthYear":1955,"birthMonth":6,"label":"1955, documentation uniquement"}],
+  "observationComparisonCohorts":[{"birthYear":1951,"birthMonth":10,"weight":0.5},{"birthYear":1952,"birthMonth":6,"weight":0.5}],
+  "comparisonAgeMonths":732,
+  "rules":{"referenceLegalAgeMonths":720,"observedReformLegalAge":{"1951H2":724,"1952":729,"1953":734,"1954":739,"1955":744}},
+  "method":"Cinq états, modèle déterministe mensuel de risques concurrents ; les transitions non-retraite conservent les probabilités AVANT réforme, la sortie en retraite est bloquée jusqu'à l'âge légal. Le risque mensuel de liquidation est fixé par la part retraite AVANT réforme à 60 ans : il reproduit cette seule part à la fin de la première année SANS réforme. Ne prédit pas les comportements de retour à l'emploi après réforme.",
+  "heldOutObservationFile":"data/retraites-2010-observations-550.json",
+  "budgetCaveat":"Flux monétaires conventionnels pour 100000 personnes fictives : ne sont pas des comptes nationaux et ne sont pas injectés dans le moteur macro.",
+  "limits":["Échantillon Insee : salariés privés, hors carrières longues, invalidité et début d'études précoce ; non représentatif de toute la France.","Les poids 50/50 des deux cohortes sont une convention, pas les poids réels de l'enquête.","L'indicateur Insee '60 ans' n'est pas exactement une mesure du mois 12 de chaque cohorte simulée.","Le calage pré-réforme et l'évaluation post-réforme viennent de la même publication, mais seuls les résultats avant réforme servent au calcul.","Pas d'historique de carrière, décès, pension par cohorte, ni emploi observé individuel ; pas de validation causale ni prédiction réellement aveugle."]
+}

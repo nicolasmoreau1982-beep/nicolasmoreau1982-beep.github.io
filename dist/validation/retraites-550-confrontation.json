@@ -1,0 +1,119 @@
+{
+  "version": "5.5.0",
+  "predictionProtocolHash": "fa949a859e254719003c2c2ec7a04c60c15193b5e165a6502e717312382fd5b7",
+  "observedPublication": "Insee Analyses n°30, Dubois et Koubi, 5 janvier 2017, figure 3 — APRÈS réforme",
+  "fullyComparable": false,
+  "note": "Les poids de cohorte, l’âge exact et les exclusions de l’Insee ne sont pas reconstitués. Ces écarts NE sont PAS des erreurs prédictives causales.",
+  "rows": [
+    {
+      "sex": "men",
+      "status": "fullTime",
+      "label": "Emploi temps plein",
+      "estimatedPostPct": 39.0818466603447,
+      "observedPostPct": 38,
+      "descriptivePostGapPoints": 1.0818466603447021,
+      "estimatedEffectPoints": 14.717300836798922,
+      "observedEffectPoints": 14,
+      "descriptiveEffectGapPoints": 0.7173008367989215
+    },
+    {
+      "sex": "men",
+      "status": "partTime",
+      "label": "Emploi temps partiel",
+      "estimatedPostPct": 6.513641110057451,
+      "observedPostPct": 7.000000000000001,
+      "descriptivePostGapPoints": -0.48635888994254994,
+      "estimatedEffectPoints": 2.452883472799824,
+      "observedEffectPoints": 3,
+      "descriptiveEffectGapPoints": -0.5471165272001759
+    },
+    {
+      "sex": "men",
+      "status": "unemployed",
+      "label": "Chômage",
+      "estimatedPostPct": 5.1558098814792785,
+      "observedPostPct": 11,
+      "descriptivePostGapPoints": -5.8441901185207215,
+      "estimatedEffectPoints": 1.941556286798092,
+      "observedEffectPoints": 7,
+      "descriptiveEffectGapPoints": -5.058443713201908
+    },
+    {
+      "sex": "men",
+      "status": "inactive",
+      "label": "Inactivité hors retraite",
+      "estimatedPostPct": 18.222670447732312,
+      "observedPostPct": 14.000000000000002,
+      "descriptivePostGapPoints": 4.222670447732311,
+      "estimatedEffectPoints": 6.862227503216876,
+      "observedEffectPoints": 3,
+      "descriptiveEffectGapPoints": 3.862227503216876
+    },
+    {
+      "sex": "men",
+      "status": "retired",
+      "label": "Retraite",
+      "estimatedPostPct": 31.026031900386254,
+      "observedPostPct": 30,
+      "descriptivePostGapPoints": 1.0260319003862541,
+      "estimatedEffectPoints": -25.97396809961372,
+      "observedEffectPoints": -27,
+      "descriptiveEffectGapPoints": 1.026031900386279
+    },
+    {
+      "sex": "women",
+      "status": "fullTime",
+      "label": "Emploi temps plein",
+      "estimatedPostPct": 31.115672108499602,
+      "observedPostPct": 32,
+      "descriptivePostGapPoints": -0.8843278915003978,
+      "estimatedEffectPoints": 7.654137823176424,
+      "observedEffectPoints": 9,
+      "descriptiveEffectGapPoints": -1.3458621768235757
+    },
+    {
+      "sex": "women",
+      "status": "partTime",
+      "label": "Emploi temps partiel",
+      "estimatedPostPct": 21.645684945043204,
+      "observedPostPct": 23,
+      "descriptivePostGapPoints": -1.3543150549567962,
+      "estimatedEffectPoints": 5.324617616122724,
+      "observedEffectPoints": 7,
+      "descriptiveEffectGapPoints": -1.6753823838772757
+    },
+    {
+      "sex": "women",
+      "status": "unemployed",
+      "label": "Chômage",
+      "estimatedPostPct": 4.702941165775574,
+      "observedPostPct": 10,
+      "descriptivePostGapPoints": -5.297058834224426,
+      "estimatedEffectPoints": 1.1568755362768857,
+      "observedEffectPoints": 6,
+      "descriptiveEffectGapPoints": -4.843124463723115
+    },
+    {
+      "sex": "women",
+      "status": "inactive",
+      "label": "Inactivité hors retraite",
+      "estimatedPostPct": 22.11022166525192,
+      "observedPostPct": 16,
+      "descriptivePostGapPoints": 6.11022166525192,
+      "estimatedEffectPoints": 5.438888908994233,
+      "observedEffectPoints": 0,
+      "descriptiveEffectGapPoints": 5.438888908994233
+    },
+    {
+      "sex": "women",
+      "status": "retired",
+      "label": "Retraite",
+      "estimatedPostPct": 20.42548011542968,
+      "observedPostPct": 18,
+      "descriptivePostGapPoints": 2.4254801154296786,
+      "estimatedEffectPoints": -19.57451988457028,
+      "observedEffectPoints": -22,
+      "descriptiveEffectGapPoints": 2.425480115429721
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "source":"https://www.insee.fr/fr/statistiques/2546882",
+  "publication":"Insee Analyses n°30, Dubois et Koubi, 5 janvier 2017, figure 3 — APRÈS réforme",
+  "scope":"Salariés privés âgés de 60 ans des générations 1949 à 1952 ; exclusions de carrières précoces et situations d'invalidité ; estimation et non census",
+  "heldOutAfter":{"men":{"fullTime":0.38,"partTime":0.07,"unemployed":0.11,"inactive":0.14,"retired":0.30},"women":{"fullTime":0.32,"partTime":0.23,"unemployed":0.10,"inactive":0.16,"retired":0.18}},
+  "heldOutEffectPoints":{"men":{"fullTime":14,"partTime":3,"unemployed":7,"inactive":3,"retired":-27},"women":{"fullTime":9,"partTime":7,"unemployed":6,"inactive":0,"retired":-22}},
+  "note":"Les résultats après réforme sont interdits au script de prédiction. Écarts seulement descriptifs : âge, générations et pondérations non strictement identiques. Les valeurs INSEE sont arrondies ; sommes femmes parfois différentes de 100 %."
+}

@@ -24,7 +24,7 @@ for(const r of doc.records){
  for(const k of ['deltaGdpPct','deltaDeficitBn','deltaDebtBn','deltaUnemploymentPp'])assert.ok(Number.isFinite(r[k]));
 }
 for(const f of [index,audit,sitemap])assert.ok(f.includes('evaluations-empiriques-423.html'));
-assert.ok(index.includes('Version <span data-ecosim-version>5.4.0</span>'));
+assert.ok(index.includes('Version <span data-ecosim-version>5.6.0</span>'));
 const build=file('build-info.js').match(/\b[a-f0-9]{12}\b/)?.[0];
 assert.ok(build);
 assert.ok(html.includes('paquet <code>'+build+'</code>'));

@@ -3,7 +3,7 @@
   'use strict';
   const show = () => {
     for (const el of document.querySelectorAll('[data-ecosim-version]')) {
-      el.textContent = window.ECOSIM_VERSION || '5.4.0';
+      el.textContent = window.ECOSIM_VERSION || '5.5.0';
     }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show, {once:true});
