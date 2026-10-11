@@ -1,0 +1,18 @@
+{
+  "frozenVersion": "5.3.1",
+  "frozenPackage": "40219bdd801f",
+  "files": {
+    "app.js": "b9b5ff5cdc40908f880d8413646a26e39c009f2435619e172a5af5bb0bf33fbe",
+    "data.js": "d1518eac5d5ad9324ef53000cfd7d88056e7023b5e4a7ec2c7805ab86c35cb28",
+    "fiscal.js": "696ab1bef801ecb57528b1e6821c32ab1d58bf813f09fc4e050aa103bbe27014",
+    "guardrails-510.js": "0932033727c5960730a05784cdc7ff9b0916e333640701c42485a3ae20966e0b",
+    "sectoral.js": "6a1ff95e027d65b7d1486619192063724e6b6e0cb2b8b2363227c857c161edc6",
+    "insee-projection.js": "43f87571125682b51cde3602b49e653c10e4644eb363bebde7f3021550677138",
+    "history.js": "b6f51f6d2bbee8ac4feaed76f7477cbccdf7aeebc83f2305ffa813fdcf1ddbfc",
+    "historical-audit-data.js": "6ce5338636d8861020e0b806c5a113f10bd49ac913482f44d1a50e1fa3a00f0e",
+    "political-profiles-530.js": "915b116a738b9b865b2a48db9d1d8bea8893fbbc6e4882dcf367fada3812f131"
+  },
+  "allowChange": {
+    "data.js": "Uniquement métadonnée version 5.3.1 vers 5.4.0"
+  }
+}

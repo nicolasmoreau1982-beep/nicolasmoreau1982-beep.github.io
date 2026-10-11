@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Génère la page pédagogique 5.4 uniquement depuis résultats déjà figés."""
+from pathlib import Path
+import json, html
+root=Path(__file__).resolve().parent.parent
+D=root/'dist'
+v=json.loads((D/'validation/tva-540-comparaison.json').read_text())
+g=json.loads((root/'fixtures/golden-531-for-540.json').read_text())
+f=lambda n: f'{n:+.3f}'.replace('.',',').replace('+','+')
+rows='\n'.join(f'<tr><th scope="row">{html.escape(r["label"])}</th><td>{f(r["pricePercent"])} %</td><td>−1,900 %</td><td>{f(r["errorSignedPp"])} pt</td></tr>' for r in v['rows'])
+page='''<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>Première confrontation historique — TVA restauration 2009 | EcoSim France</title>
+<meta name="description" content="EcoSim France 5.4 : protocole, prévisions mécaniques, résultats de la baisse de TVA de 2009, comparaison IPP et tests de non-régression 5.3.1.">
+<link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/validation-historique-540.html">
+<meta property="og:type" content="article"><meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Validation historique des mécanismes | EcoSim France">
+<meta property="og:description" content="Exercice rétrospectif de TVA et six trajectoires économiques figées ; limites de la confrontation explicites.">
+<meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Budget public"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css">
+<script src="theme.js"></script><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script>
+</head><body><a class="skip-link" href="#main">Aller au contenu</a>
+<header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a>
+<nav class="guide-nav" aria-label="Navigation"><a href="index.html">Simulateur</a><a href="audit.html">Audit</a><a href="evaluations-empiriques-423.html">Études antérieures</a><a href="contact-signalement.html">Signaler une erreur</a></nav></header>
+<main class="guide-main" id="main"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / Validation historique 5.4</p>
+<div class="guide-hero"><span class="guide-kicker">Version 5.4 — confrontation empirique limitée</span><h1>TVA restauration 2009 : une première expérience historique comparable</h1>
+<p class="guide-lead">On reproduit ici le changement de taux de TVA et le calcul TTC d'un produit éligible. Les comportements de fixation des prix, l'emploi et les marges <strong>ne sont pas estimés par EcoSim</strong>.</p></div>
+<section><h2>1. Ce qui a effectivement changé le 1er juillet 2009</h2>
+<p>Le taux de TVA des produits concernés consommés sur place est passé de <strong>19,6 % à 5,5 %</strong>. Les boissons alcoolisées sont exclues ; la vente à emporter pouvait déjà bénéficier du taux réduit. L'expérience calcule donc le <strong>prix d'une vente éligible</strong>, pas la moyenne nationale d'un panier de restauration.</p>
+<p>À prix hors taxe constant, la variation de prix TTC est de <code>(1 + 0,055) / (1 + 0,196) − 1</code>, soit <strong>−11,789 %</strong>. La transmission partielle est volontairement une hypothèse indépendante : <code>variation TTC × taux conventionnel de répercussion</code>.</p>
+<p>Source du périmètre et de la réforme : <a href="https://www.insee.fr/fr/statistiques/1381051">Insee, Quantin, Robin et Accardo (2015)</a>.</p></section>
+<section><h2>2. Protocole séparant prédiction et observation</h2>
+<p>Les quatre hypothèses de transmission — <strong>0 %, 25 %, 50 % et 100 %</strong> — sont définies dans un JSON séparé. Le script de prédiction ne lit pas les observations ; la confrontation intervient lors d'une seconde étape. La valeur de 50 % est un <em>repère conventionnel</em>, pas une estimation statistique.</p>
+<p><strong>Important :</strong> l'expérience a été construite en 2026 alors que l'étude de 2018 était connue. Ce n'est <strong>pas</strong> une prévision réellement enregistrée avant les résultats, ni une validation en aveugle. Un mécanisme arithmétique correct n'explique pas les choix des restaurateurs.</p>
+<p><a href="data/tva-restauration-2009-protocole-540.json">Protocole JSON</a> · <a href="validation/tva-540-predictions-separees.json">Prédictions de l'étape A</a> · <a href="data/tva-restauration-2009-observations-540.json">Références indépendantes de l'étape B</a></p></section>
+<section><h2>3. Résultats comparés à l'IPP, horizon 30 mois</h2>
+<p>L'<a href="https://www.ipp.eu/note-ipp-n32-qui-a-beneficie-de-la-baisse-de-la-tva-dans-la-restauration-en-2009/">IPP (Benzarti et Carloni, 2018)</a> estime une baisse des prix de <strong>1,9 %</strong> après trente mois dans la restauration à table. Les écarts ci-dessous sont des <strong>différences descriptives en points</strong>, non un score de biais causal du moteur macro EcoSim.</p>
+<div class="prov-scroll"><table><caption>Quatre conventions fixées sans lire les données observées dans le script de prédiction, puis confrontation à l'IPP (prix TTC en %, écarts en points de pourcentage)</caption>
+<thead><tr><th scope="col">Hypothèse</th><th scope="col">Calcul mécanique</th><th scope="col">IPP à 30 mois</th><th scope="col">Écart signé</th></tr></thead><tbody>'''+rows+'''</tbody></table></div>
+<p><strong>Autre étude :</strong> <a href="https://www.insee.fr/fr/statistiques/1381057">Insee (Sillard et Lafféter, 2014)</a> estime une baisse de <strong>2,4 % à long terme</strong> pour la classe plus large « restauration et cafés ». Son champ et son horizon ne sont pas strictement identiques à ceux de l'IPP ; le chiffre n'est pas mélangé au calcul d'écart principal.</p>
+<p><a href="validation/tva-540-comparaison.json">Télécharger les calculs et les références (JSON)</a> · <a href="validation/tva-540-comparaison.csv">CSV</a></p></section>
+<section><h2>4. Tests de non-régression sur le vrai moteur macro</h2>
+<p>Pour garantir que cette version documentaire ne modifie pas silencieusement les résultats économiques, <strong>'''+str(len(g['cases']))+''' scénarios</strong> ont été exécutés avec le moteur authentique de la <strong>5.3.1</strong> et gelés : <strong>'''+str(len(g['cases'])*30)+''' années-scénarios</strong>, chacune contrôlée sur <strong>'''+str(len(g['fields']))+''' grandeurs</strong> (PIB, dette, déficit, inflation, chômage, ratios, etc.).</p>
+<p>La 5.4 les rejoue et compare numériquement chaque sortie au fichier gelé. Cela détecte les régressions de calcul, mais <strong>ne vérifie aucune précision économique dans le monde réel</strong>.</p>
+<div class="prov-scroll"><table><caption>Les six scénarios de référence gelés à partir de la 5.3.1</caption><thead><tr><th scope="col">Cas</th><th scope="col">Profil</th><th scope="col">Période</th></tr></thead><tbody>
+'''+''.join('<tr><th scope="row">'+html.escape(c['name'])+'</th><td>'+html.escape(c['model'])+'</td><td>2026–2055</td></tr>' for c in g['cases'])+'''</tbody></table></div>
+<p><a href="validation/golden-531-for-540.json">Consulter le jeu gelé (JSON)</a>. L'origine inclut l'identifiant de paquet de la 5.3.1 et les SHA-256 des fichiers centraux.</p></section>
+<section><h2>5. Ce que cette expérience ne valide pas</h2>
+<p>La comparaison est seulement <strong>partiellement comparable</strong> : le changement de taux et le calcul mécanique sont exacts pour une opération taxable éligible ; la composition des produits, les marges, les salaires, l'emploi et les autres politiques de 2009 ne sont pas reproduits. Il est donc impossible d'en inférer un multiplicateur PIB, un rendement budgétaire sectoriel ou une erreur de prédiction causale.</p>
+<p>Le bilan de la page 4.23 demeure : <strong>0 correspondance stricte</strong> entre les quatre chocs macro agrégés et leurs études. Cette étude 5.4 ne doit pas être comptée artificiellement comme une validation stricte supplémentaire du moteur.</p>
+<p>La prochaine étape exige des données et des estimations de transmission aux prix réalisées indépendamment, avec une discipline temporelle et un protocole vraiment hors échantillon.</p></section>
+<section><h2>6. Reproduire les étapes sans installation complexe</h2>
+<pre><code>node scripts/projeter-tva-540.mjs      # étape A, ne lit jamais les observations
+node scripts/confronter-tva-540.mjs   # étape B, comparaison à l'IPP
+node scripts/test-tva-540.mjs
+node scripts/test-golden-540.mjs
+bash scripts/run-tests-540.sh</code></pre>
+<p>Le générateur initial du « golden file » est livré à part. Ne le réexécutez pas pour effacer une régression : le jeu de comparaison doit rester figé.</p></section>
+</main><footer class="guide-footer"><span>EcoSim France · version <span data-ecosim-version>5.4.0</span> · paquet <code>PAQUET_A_REMPLACER</code></span>
+<a href="index.html">Simulateur</a><a href="audit.html">Audit</a><a href="contact-signalement.html">Signaler une erreur</a><a href="informations-legales.html">Informations légales</a></footer></body></html>
+'''
+(D/'validation-historique-540.html').write_text(page)
+# Jeu gelé consultable sans devoir télécharger l'archive de tests.
+(D/'validation/golden-531-for-540.json').write_text((root/'fixtures/golden-531-for-540.json').read_text())
+print('Page 5.4 générée :',len(page),'caractères, chiffres directement tirés des résultats')

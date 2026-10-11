@@ -1,0 +1,5 @@
+id;label;passThrough;pricePercent;observedPricePercent;errorSignedPp;errorAbsPp
+"aucun";"Aucune transmission";"0";"0";"-1.9";"1.9";"1.9"
+"quart";"Transmission conventionnelle 25 %";"0.25";"-2.9473244147157187";"-1.9";"-1.0473244147157188";"1.0473244147157188"
+"moitie";"Transmission conventionnelle 50 %";"0.5";"-5.894648829431437";"-1.9";"-3.9946488294314375";"3.9946488294314375"
+"integral";"Transmission intégrale à HT constant";"1";"-11.789297658862875";"-1.9";"-9.889297658862874";"9.889297658862874"

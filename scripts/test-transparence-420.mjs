@@ -10,9 +10,9 @@ const require=createRequire(import.meta.url);
 globalThis.window=globalThis;
 require(path.join(root,'dist/data.js'));
 const D=globalThis.ECOSIM_DATA;
-assert.equal(D.metadata.version,'5.3.1');
+assert.equal(D.metadata.version,'5.4.0');
 const reg=JSON.parse(file('validation/provenance-politique-420.json'));
-assert.equal(reg.version,'5.3.1');
+assert.equal(reg.version,'5.4.0');
 const expectedScenarios=Object.values(D.politicalScenarios).flat().length;
 assert.equal(reg.scenarios.length,expectedScenarios);
 assert.equal(reg.rows.length,reg.counts.total);
@@ -46,7 +46,7 @@ for (const f of ['index.html','audit.html','programmes-economiques-2027.html']) 
  assert.ok(html.includes('provenance-politique.html'),`Lien registre manquant : ${f}`);
 }
 const index=file('index.html');
-assert.ok(index.includes('Version <span data-ecosim-version>5.3.1</span>'));
+assert.ok(index.includes('Version <span data-ecosim-version>5.4.0</span>'));
 assert.ok(index.includes('benchmark-context')&&index.includes('+0,60 %')&&index.includes('+1,03 %'));
 assert.ok(index.includes('Les chiffres sont des hypothèses EcoSim') || index.includes('les chiffres sont des hypothèses EcoSim') || index.includes('les chiffres sont des hypothèses'));
 const audit=file('audit.html');

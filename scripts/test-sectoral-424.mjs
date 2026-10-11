@@ -13,7 +13,7 @@ let src=read('app.js');const stop='  loadInitialState();\n  initTheme();';
 assert.ok(src.includes(stop));src=src.slice(0,src.indexOf(stop))+'  window.__sectorTest={state,calculateProjection,serializableState,applySerialized};\n})();';
 vm.runInContext(src,ctx,{filename:'app.js'});
 const S=ctx.ECOSIM_SECTORAL,D=ctx.ECOSIM_DATA,{state,calculateProjection,serializableState,applySerialized}=ctx.__sectorTest;
-assert.equal(D.metadata.version,'5.3.1');assert.equal(Object.keys(S.sectors).length,16);
+assert.equal(D.metadata.version,'5.4.0');assert.equal(Object.keys(S.sectors).length,16);
 assert.equal(Object.keys(S.instruments).length,3);
 const base=calculateProjection();
 for(let i=0;i<30;i++) assert.equal(base.scenario[i].sectoral.revenueChange,0);

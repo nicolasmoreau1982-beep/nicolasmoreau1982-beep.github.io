@@ -1,0 +1,124 @@
+{
+  "version": "5.4.0",
+  "method": "Confrontation descriptive de prix TTC, pas un backtest causal du moteur macro",
+  "stageASeparated": true,
+  "protocol": {
+    "protocolVersion": "5.4.0",
+    "id": "restaurant-vat-july-2009",
+    "title": "TVA restauration 2009 : protocole mécanique publié séparément des observations",
+    "policy": {
+      "effectiveDate": "2009-07-01",
+      "oldVatRatePercent": 19.6,
+      "newVatRatePercent": 5.5,
+      "eligibleField": "Consommation sur place de produits de restauration concernés (hors alcool, hors emporter déjà au taux réduit)",
+      "source": "https://www.insee.fr/fr/statistiques/1381051"
+    },
+    "matchedOutcome": "Variation en % des prix à la consommation des restaurants avec service à table, après 30 mois, estimée causalement par IPP",
+    "horizonMonths": 30,
+    "exAnteConventions": [
+      {
+        "id": "aucun",
+        "label": "Aucune transmission",
+        "share": 0
+      },
+      {
+        "id": "quart",
+        "label": "Transmission conventionnelle 25 %",
+        "share": 0.25
+      },
+      {
+        "id": "moitie",
+        "label": "Transmission conventionnelle 50 %",
+        "share": 0.5
+      },
+      {
+        "id": "integral",
+        "label": "Transmission intégrale à HT constant",
+        "share": 1
+      }
+    ],
+    "referenceCaseId": "moitie",
+    "decisionRule": "Ne retenir aucune des hypothèses après lecture des observations ; publier toutes les quatre et leurs écarts de prix en points.",
+    "identificationLimit": "Il n'existe pas de module estimé du comportement des restaurateurs. Part des ventes effectivement éligibles, ajustements des marges, inflation contrefactuelle et dynamique jusqu'à 30 mois absents. Les écarts ne sont pas des erreurs causales attribuables au modèle macro EcoSim.",
+    "preRegistrationStatus": "Protocole figé à la génération 5.4 en 2026, donc rétrospectif : ce N'EST PAS un enregistrement avant 2009 ni une évaluation en aveugle. Le résultat IPP était déjà public.",
+    "observationForbiddenForProjection": true
+  },
+  "observations": {
+    "id": "restaurant-vat-july-2009",
+    "independentStudies": [
+      {
+        "id": "ipp-2018",
+        "institution": "Institut des politiques publiques",
+        "title": "Qui a bénéficié de la baisse de la TVA dans la restauration en 2009 ?",
+        "authors": "Youssef Benzarti, Dorian Carloni",
+        "publicationYear": 2018,
+        "url": "https://www.ipp.eu/note-ipp-n32-qui-a-beneficie-de-la-baisse-de-la-tva-dans-la-restauration-en-2009/",
+        "metric": "Variation estimée des prix à la consommation des restaurants avec service à table",
+        "horizonMonths": 30,
+        "valuePercent": -1.9,
+        "comparability": "partielle : variations de prix estimées comparables, mais couverture fiscale du panier et comportements pas reproduits"
+      },
+      {
+        "id": "insee-2014",
+        "institution": "Insee",
+        "title": "L’addition est-elle moins salée ? La réponse des prix à la baisse de TVA dans la restauration en France",
+        "authors": "Patrick Sillard, Quentin Lafféter",
+        "publicationYear": 2014,
+        "url": "https://www.insee.fr/fr/statistiques/1381057",
+        "metric": "Effet moyen de la baisse de TVA sur les prix, classe restauration et cafés",
+        "horizonMonths": null,
+        "valuePercent": -2.4,
+        "comparability": "non stricte : périmètre restauration et cafés et horizon de long terme différent ; contexte documentaire seulement"
+      }
+    ],
+    "notes": "Les valeurs sont des estimations publiées par les auteurs et non de nouvelles mesures EcoSim. Ne jamais injecter ces résultats dans le générateur de prédictions."
+  },
+  "rows": [
+    {
+      "id": "aucun",
+      "label": "Aucune transmission",
+      "passThrough": 0,
+      "pricePercent": 0,
+      "fullMechanicalPercent": -11.789297658862875,
+      "observedPricePercent": -1.9,
+      "errorSignedPp": 1.9,
+      "errorAbsPp": 1.9
+    },
+    {
+      "id": "quart",
+      "label": "Transmission conventionnelle 25 %",
+      "passThrough": 0.25,
+      "pricePercent": -2.9473244147157187,
+      "fullMechanicalPercent": -11.789297658862875,
+      "observedPricePercent": -1.9,
+      "errorSignedPp": -1.0473244147157188,
+      "errorAbsPp": 1.0473244147157188
+    },
+    {
+      "id": "moitie",
+      "label": "Transmission conventionnelle 50 %",
+      "passThrough": 0.5,
+      "pricePercent": -5.894648829431437,
+      "fullMechanicalPercent": -11.789297658862875,
+      "observedPricePercent": -1.9,
+      "errorSignedPp": -3.9946488294314375,
+      "errorAbsPp": 3.9946488294314375
+    },
+    {
+      "id": "integral",
+      "label": "Transmission intégrale à HT constant",
+      "passThrough": 1,
+      "pricePercent": -11.789297658862875,
+      "fullMechanicalPercent": -11.789297658862875,
+      "observedPricePercent": -1.9,
+      "errorSignedPp": -9.889297658862874,
+      "errorAbsPp": 9.889297658862874
+    }
+  ],
+  "conclusion": "Une hypothèse de répercussion NON estimée ne permet ni d’expliquer le comportement ni de prédire la réforme. L’écart n’est qu’un contrôle d’ordre de grandeur sur un mécanisme partiellement comparable.",
+  "prohibit": [
+    "Ajuster après-coup le taux de pass-through au -1,9 %",
+    "Proclamer que le modèle macro a validé la réforme",
+    "Déduire rendement TVA, PIB ou emploi à partir de ces seuls prix"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "version": "5.4.0",
+  "experimentId": "restaurant-vat-july-2009",
+  "horizonMonths": 30,
+  "protocolSha256": "e02fe878cfa2d52103ac1456e2b981e1fbaa3ffafc57b2e93b9d350c612cb626",
+  "chosenBeforeObservationFileRead": true,
+  "referenceCaseId": "moitie",
+  "predictions": [
+    {
+      "id": "aucun",
+      "label": "Aucune transmission",
+      "passThrough": 0,
+      "pricePercent": 0,
+      "fullMechanicalPercent": -11.789297658862875
+    },
+    {
+      "id": "quart",
+      "label": "Transmission conventionnelle 25 %",
+      "passThrough": 0.25,
+      "pricePercent": -2.9473244147157187,
+      "fullMechanicalPercent": -11.789297658862875
+    },
+    {
+      "id": "moitie",
+      "label": "Transmission conventionnelle 50 %",
+      "passThrough": 0.5,
+      "pricePercent": -5.894648829431437,
+      "fullMechanicalPercent": -11.789297658862875
+    },
+    {
+      "id": "integral",
+      "label": "Transmission intégrale à HT constant",
+      "passThrough": 1,
+      "pricePercent": -11.789297658862875,
+      "fullMechanicalPercent": -11.789297658862875
+    }
+  ],
+  "scopeNote": "Il n'existe pas de module estimé du comportement des restaurateurs. Part des ventes effectivement éligibles, ajustements des marges, inflation contrefactuelle et dynamique jusqu'à 30 mois absents. Les écarts ne sont pas des erreurs causales attribuables au modèle macro EcoSim."
+}

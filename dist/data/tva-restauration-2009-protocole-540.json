@@ -1,0 +1,25 @@
+{
+  "protocolVersion": "5.4.0",
+  "id": "restaurant-vat-july-2009",
+  "title": "TVA restauration 2009 : protocole mécanique publié séparément des observations",
+  "policy": {
+    "effectiveDate": "2009-07-01",
+    "oldVatRatePercent": 19.6,
+    "newVatRatePercent": 5.5,
+    "eligibleField": "Consommation sur place de produits de restauration concernés (hors alcool, hors emporter déjà au taux réduit)",
+    "source": "https://www.insee.fr/fr/statistiques/1381051"
+  },
+  "matchedOutcome": "Variation en % des prix à la consommation des restaurants avec service à table, après 30 mois, estimée causalement par IPP",
+  "horizonMonths": 30,
+  "exAnteConventions": [
+    {"id":"aucun","label":"Aucune transmission", "share":0},
+    {"id":"quart","label":"Transmission conventionnelle 25 %", "share":0.25},
+    {"id":"moitie","label":"Transmission conventionnelle 50 %", "share":0.5},
+    {"id":"integral","label":"Transmission intégrale à HT constant", "share":1}
+  ],
+  "referenceCaseId": "moitie",
+  "decisionRule": "Ne retenir aucune des hypothèses après lecture des observations ; publier toutes les quatre et leurs écarts de prix en points.",
+  "identificationLimit": "Il n'existe pas de module estimé du comportement des restaurateurs. Part des ventes effectivement éligibles, ajustements des marges, inflation contrefactuelle et dynamique jusqu'à 30 mois absents. Les écarts ne sont pas des erreurs causales attribuables au modèle macro EcoSim.",
+  "preRegistrationStatus": "Protocole figé à la génération 5.4 en 2026, donc rétrospectif : ce N'EST PAS un enregistrement avant 2009 ni une évaluation en aveugle. Le résultat IPP était déjà public.",
+  "observationForbiddenForProjection": true
+}

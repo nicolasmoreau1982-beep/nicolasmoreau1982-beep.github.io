@@ -19,7 +19,7 @@ for(const f of all.sort()){
  else h.update(fs.readFileSync(f));
 }
 const id=h.digest('hex').slice(0,12);
-fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\nwindow.ECOSIM_VERSION = "5.3.1";\n`);
+fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${id}";\nwindow.ECOSIM_VERSION = "5.4.0";\n`);
 for(const f of all.filter(f=>f.endsWith('.html'))){
  let s=fs.readFileSync(f,'utf8');
  s=s.replace(/(paquet <code[^>]*>)[a-f0-9]{12}/gi,(_m,p)=>p+id)
@@ -27,4 +27,4 @@ for(const f of all.filter(f=>f.endsWith('.html'))){
  .replaceAll('PAQUET_A_REMPLACER',id);
  fs.writeFileSync(f,s);
 }
-console.log('Version 5.3.1 — identifiant de paquet :',id);
+console.log('Version 5.4.0 — identifiant de paquet :',id);

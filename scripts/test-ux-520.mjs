@@ -31,8 +31,8 @@ for (const target of ['workspace','results','budget','structural','social','engi
 }
 for (const f of ['glossaire.html','glossary-520.js','data/glossary-520.json']) assert.ok(fs.statSync(path.join(dist,f)).size > 100);
 assert.ok(read('sitemap.xml').includes('https://nicolasmoreau1982-beep.github.io/glossaire.html'));
-assert.ok(read('data.js').includes('version: "5.3.1"'));
-assert.ok(html.includes('Version <span data-ecosim-version>5.3.1</span>'));
+assert.ok(read('data.js').includes('version: "5.4.0"'));
+assert.ok(html.includes('Version <span data-ecosim-version>5.4.0</span>'));
 const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]);
 for (const source of scripts) assert.ok(fs.existsSync(path.join(dist,source)), `Script inexistant ${source}`);
 const files = [...html.matchAll(/href="([^"#?]+\.html)(?:#[^"]*)?"/g)].map(m=>m[1]);
