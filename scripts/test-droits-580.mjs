@@ -26,7 +26,7 @@ for(const name of ['site-meta-531.js','distribution-ciblee-580.mjs','model-distr
  const js=read('dist/'+name);
  assert.ok(js.includes('https://github.com/nicolasmoreau1982-beep/nicolasmoreau1982-beep.github.io/blob/main/LICENSE'),name);
 }
-assert.equal(JSON.parse(read('dist/release-status-572.json')).deliveryLabel,'5.7.2.8');
+assert.equal(JSON.parse(read('dist/release-status-572.json')).deliveryLabel,'5.7.2.9');
 const pages=fs.readdirSync(dist).filter(x=>x.endsWith('.html')&&!x.startsWith('google'));
 for(const page of pages){
  const html=read('dist/'+page);

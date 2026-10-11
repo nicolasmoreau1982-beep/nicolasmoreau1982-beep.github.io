@@ -17,5 +17,7 @@ jobs:
           node-version: '22'
       - name: Versions publique / technique / commit et empreinte du paquet
         run: node scripts/check-release-572.mjs
+      - name: Régressions UX (parcours, énergie, droits)
+        run: node scripts/test-ux-sentinelle-584.mjs
       - name: Vérifier les fichiers contre le manifeste technique
         run: sha256sum -c manifest-integrite-572.sha256

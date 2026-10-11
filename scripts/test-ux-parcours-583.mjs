@@ -9,7 +9,7 @@ const h=read('index.html');
 const pages=JSON.parse(read('data/glossary-520.json'));
 const state=JSON.parse(read('release-status-572.json'));
 assert.equal(state.interfaceUXVersion,'5.8.3');
-assert.equal(state.deliveryLabel,'5.7.2.8');
+assert.equal(state.deliveryLabel,'5.7.2.9');
 assert.ok(h.indexOf('id="ux-reading-mode"')<0,'Pas de conteneur de formulaire redondant');
 assert.match(h,/id="ux-discovery" aria-pressed="true"/);
 assert.match(h,/id="ux-expert" aria-pressed="false"/);

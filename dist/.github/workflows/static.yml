@@ -42,6 +42,11 @@ jobs:
           cd "${{ steps.site.outputs.path }}"
           node scripts/check-release-572.mjs
           sha256sum -c manifest-integrite-572.sha256
+      - name: Bloquer les régressions UX avant publication
+        shell: bash
+        run: |
+          cd "${{ steps.site.outputs.path }}"
+          node scripts/test-ux-sentinelle-584.mjs
       - name: Configurer GitHub Pages
         uses: actions/configure-pages@v5
       - name: Préparer les fichiers du site
