@@ -5,7 +5,7 @@
 <meta property="og:type" content="article"><meta property="og:locale" content="fr_FR"><meta property="og:title" content="Atelier fiscal individuel 5.7 | EcoSim France"><meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css"><link rel="stylesheet" href="tables-mobile-585.css"><script src="theme.js"></script><script src="fiscal-individuel-570.js" defer></script><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script>
 <style>.tax570-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin:22px 0}.tax570-controls label{display:grid;gap:6px;font-weight:600}.tax570-controls input,.tax570-controls select{padding:10px;border:1px solid #99a6b5;border-radius:7px;font:inherit;width:100%;color:inherit;background:transparent}.tax570-output{padding:18px;border:1px solid #8b98a8;border-radius:10px;margin:18px 0}.tax570-output strong{font-size:1.5rem}#tax570-error{color:#aa2424} .tax570-hidden{display:none}</style>
-</head><body><a class="skip-link" href="#main">Aller au contenu</a>
+<link rel="stylesheet" href="accessibilite-ui.css" /></head><body><a class="skip-link" href="#main">Aller au contenu</a>
 <header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a><nav class="guide-nav" aria-label="Navigation principale"><a href="index.html">Simulateur</a><a href="audit.html">Audit</a><a href="validation-economique-421.html">Barèmes contrôlés</a><a href="contact-signalement.html">Signaler une erreur</a></nav></header>
 <main id="main" class="guide-main"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / Atelier fiscal individuel</p>
 <div class="guide-hero"><span class="guide-kicker">Atelier fiscal · barème et situations individuelles</span><h1>Impôt sur le revenu : vérifier les mécanismes, foyer par foyer</h1>
@@ -39,4 +39,4 @@ const result=window.ECOSIM_FISCAL_INDIVIDUEL_570.calculate({netTaxableIncome:Num
 const fmt=n=>n.toLocaleString('fr-FR',{maximumFractionDigits:2,minimumFractionDigits:2});
 out.textContent='';for(const [label,val] of [['Parts',String(result.parts)],['Impôt brut non plafonné',fmt(result.grossUncapped)+' €'],['Après plafond du quotient familial',fmt(result.grossAfterFamilyCap)+' €'],['Décote',fmt(result.decote)+' €'],['Impôt après décote (avant autres règles)',fmt(result.afterDecote)+' €']]){let p=document.createElement('p');let b=document.createElement('b');b.textContent=label+' : ';p.appendChild(b);p.appendChild(document.createTextNode(val));out.appendChild(p);}
 }catch(ex){err.textContent=ex.message;out.textContent='Aucun résultat calculé.';}});</script>
-</body></html>
+<script src="accessibilite-ui.js"></script></body></html>

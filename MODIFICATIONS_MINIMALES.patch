@@ -1,0 +1,58 @@
+--- a/dist/index.html
++++ b/dist/index.html
+@@ -26,5 +26,5 @@
+     <link rel="stylesheet" href="workforce-ux-582.css" />
+     <script src="theme.js"></script>
+-  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="site-meta-531.js" defer></script></head>
++  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="site-meta-531.js" defer></script><link rel="stylesheet" href="accessibilite-ui.css" /></head>
+   <body>
+     <a class="skip-link" href="#main">Aller au simulateur</a>
+@@ -841,4 +841,4 @@
+     <script src="glossary-520.js"></script>
+     <script src="nav-explorer.js"></script>
+-  </body>
++  <script src="accessibilite-ui.js"></script></body>
+ </html>
+--- a/dist/audit.html
++++ b/dist/audit.html
+@@ -12,5 +12,5 @@
+     <link rel="stylesheet" href="audit.css" />
+     <script src="theme.js"></script>
+-  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script></head>
++  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script><link rel="stylesheet" href="accessibilite-ui.css" /></head>
+   <body class="audit-page">
+     <a class="skip-link" href="#main">Aller à l’audit</a>
+@@ -515,4 +515,4 @@
+     <script src="audit.js"></script>
+     <script src="analytics.js"></script>
+-  </body>
++  <script src="accessibilite-ui.js"></script></body>
+ </html>
+--- a/dist/fiscal-individuel-570.html
++++ b/dist/fiscal-individuel-570.html
+@@ -6,5 +6,5 @@
+ <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css"><link rel="stylesheet" href="tables-mobile-585.css"><script src="theme.js"></script><script src="fiscal-individuel-570.js" defer></script><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script>
+ <style>.tax570-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin:22px 0}.tax570-controls label{display:grid;gap:6px;font-weight:600}.tax570-controls input,.tax570-controls select{padding:10px;border:1px solid #99a6b5;border-radius:7px;font:inherit;width:100%;color:inherit;background:transparent}.tax570-output{padding:18px;border:1px solid #8b98a8;border-radius:10px;margin:18px 0}.tax570-output strong{font-size:1.5rem}#tax570-error{color:#aa2424} .tax570-hidden{display:none}</style>
+-</head><body><a class="skip-link" href="#main">Aller au contenu</a>
++<link rel="stylesheet" href="accessibilite-ui.css" /></head><body><a class="skip-link" href="#main">Aller au contenu</a>
+ <header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a><nav class="guide-nav" aria-label="Navigation principale"><a href="index.html">Simulateur</a><a href="audit.html">Audit</a><a href="validation-economique-421.html">Barèmes contrôlés</a><a href="contact-signalement.html">Signaler une erreur</a></nav></header>
+ <main id="main" class="guide-main"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / Atelier fiscal individuel</p>
+@@ -40,3 +40,3 @@
+ out.textContent='';for(const [label,val] of [['Parts',String(result.parts)],['Impôt brut non plafonné',fmt(result.grossUncapped)+' €'],['Après plafond du quotient familial',fmt(result.grossAfterFamilyCap)+' €'],['Décote',fmt(result.decote)+' €'],['Impôt après décote (avant autres règles)',fmt(result.afterDecote)+' €']]){let p=document.createElement('p');let b=document.createElement('b');b.textContent=label+' : ';p.appendChild(b);p.appendChild(document.createTextNode(val));out.appendChild(p);}
+ }catch(ex){err.textContent=ex.message;out.textContent='Aucun résultat calculé.';}});</script>
+-</body></html>
++<script src="accessibilite-ui.js"></script></body></html>
+--- a/dist/distribution-ciblee-580.html
++++ b/dist/distribution-ciblee-580.html
+@@ -8,5 +8,5 @@
+ <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css"><link rel="stylesheet" href="tables-mobile-585.css"><link rel="stylesheet" href="distribution-ciblee-580.css">
+ <script src="theme.js"></script><script src="fiscal-individuel-570.js" defer></script><script src="build-info.js" defer></script><script src="site-meta-531.js" defer></script><script type="module" src="distribution-ciblee-580.mjs"></script>
+-</head><body><a class="skip-link" href="#main">Aller au contenu</a>
++<link rel="stylesheet" href="accessibilite-ui.css" /></head><body><a class="skip-link" href="#main">Aller au contenu</a>
+ <header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a><nav class="guide-nav" aria-label="Navigation principale"><a href="index.html">Simulateur</a><a href="fiscal-individuel-570.html">Atelier fiscal</a><a href="verification-openfisca-571.html">OpenFisca</a><a href="contact-signalement.html">Signaler une erreur</a></nav></header>
+ <main id="main" class="guide-main dist580"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / Atelier distributif expérimental 5.8.1</p>
+@@ -47,3 +47,3 @@
+ <p><strong>Sources :</strong> <a href="https://www.insee.fr/fr/statistiques/serie/000822484">Insee — série SMIC horaire, octobre 2026</a> · <a href="https://www.service-public.fr/particuliers/vosdroits/F2300">Service-Public — SMIC</a> · <a href="https://dares.travail-emploi.gouv.fr/publication/la-revalorisation-du-smic-au-1er-novembre-2024">Dares — revalorisation du SMIC</a> · <a href="https://www.impots.gouv.fr/particulier/pensions-retraites">DGFiP — pensions</a> · <a href="fiscal-individuel-570.html">EcoSim — calculateur IR 2026</a>.</p>
+ <p>Un import CSV, même pondéré, <strong>ne devient pas représentatif</strong> parce que l’utilisateur a saisi une source. L’export des données importées ne contient aucun enregistrement individuel, seulement les agrégats de ce fichier. Les statistiques par tranche sont descriptives, non extrapolables. Prérequis à toute estimation nationale : microdonnées représentatives de la distribution des salaires et des foyers, traitement des cotisations et exonérations, étalonnage, confrontation externe et calcul d'incertitudes.</p></section>
+-</main><footer class="guide-footer">EcoSim France · atelier expérimental 5.8.1 · moteur public <span data-ecosim-version>5.7.1</span> · aucun effet national affirmé · <a href="contact-signalement.html">Signalement via GitHub Issues</a> · <a href="informations-legales.html">Informations légales</a><small class="rights-notice">© 2026 EcoSim France — droits réservés sur les contributions originales protégeables. <a href="informations-legales.html#reutilisation">Conditions de réutilisation</a></small></footer></body></html>
++</main><footer class="guide-footer">EcoSim France · atelier expérimental 5.8.1 · moteur public <span data-ecosim-version>5.7.1</span> · aucun effet national affirmé · <a href="contact-signalement.html">Signalement via GitHub Issues</a> · <a href="informations-legales.html">Informations légales</a><small class="rights-notice">© 2026 EcoSim France — droits réservés sur les contributions originales protégeables. <a href="informations-legales.html#reutilisation">Conditions de réutilisation</a></small></footer><script src="accessibilite-ui.js"></script></body></html>

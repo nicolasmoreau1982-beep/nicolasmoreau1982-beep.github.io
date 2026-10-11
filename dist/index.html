@@ -21,10 +21,11 @@
     <title>Simulateur du budget et de la dette de la France | EcoSim France</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="ux-parcours-583.css" />
+    <link rel="stylesheet" href="nav-explorer.css" />
     <link rel="stylesheet" href="energy-ux-584.css" />
     <link rel="stylesheet" href="workforce-ux-582.css" />
     <script src="theme.js"></script>
-  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="site-meta-531.js" defer></script></head>
+  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="site-meta-531.js" defer></script><link rel="stylesheet" href="accessibilite-ui.css" /></head>
   <body>
     <a class="skip-link" href="#main">Aller au simulateur</a>
     <noscript><p class="no-js-message">Le simulateur interactif nécessite JavaScript. Les <a href="comprendre-budget-france.html">guides</a> et l’<a href="audit.html">audit</a> restent consultables sans JavaScript.</p></noscript>
@@ -38,13 +39,18 @@
         <a class="nav-link is-active" href="#simulator" data-scroll="simulator">Simulateur</a>
         <a class="nav-link" href="#politics" data-scroll="politics">Programmes</a>
         <a class="nav-link" href="#methodology" data-scroll="methodology">Méthode</a>
-        <a class="nav-link" href="#sources" data-scroll="sources">Sources</a>
-        <a class="nav-link" href="#fiscal" data-scroll="fiscal">Fiscalité</a>
-        <a class="nav-link" href="#sectoral-fiscal" data-scroll="sectoral-fiscal">Secteurs</a>
-        <a class="nav-link" href="#qualite-500" data-scroll="qualite-500">Qualité</a>
-        <a class="nav-link" href="glossaire.html">Glossaire</a>
-        <a class="nav-link" href="audit.html">Audit complet</a>
-        <a class="nav-link" href="evaluations-empiriques-423.html">Études indépendantes</a>
+        <details class="nav-explorer" id="nav-explorer">
+          <summary class="nav-link">Explorer <span aria-hidden="true">▾</span></summary>
+          <div class="nav-explorer-menu" aria-label="Autres rubriques et ressources">
+            <a href="#sources" data-scroll="sources">Sources et données</a>
+            <a href="#fiscal" data-scroll="fiscal">Fiscalité</a>
+            <a href="#sectoral-fiscal" data-scroll="sectoral-fiscal">Secteurs</a>
+            <a href="#qualite-500" data-scroll="qualite-500">Qualité du modèle</a>
+            <a href="glossaire.html">Glossaire</a>
+            <a href="audit.html">Audit complet</a>
+            <a href="evaluations-empiriques-423.html">Études indépendantes</a>
+          </div>
+        </details>
         <button type="button" class="nav-link mobile-nav-action" id="mobile-export-button">Exporter le scénario</button>
         <button type="button" class="nav-link mobile-nav-action" id="mobile-theme-toggle">Changer de thème</button>
       </nav>
@@ -159,6 +165,7 @@
             <div class="saved-scenarios">
               <label class="field-label" for="saved-scenarios">Scénarios enregistrés dans ce navigateur</label>
               <div><select id="saved-scenarios"><option value="">Aucun scénario enregistré</option></select><button type="button" id="load-scenario" disabled>Charger</button><button type="button" id="delete-scenario" disabled>Supprimer</button></div>
+              <p class="scenario-local-note">Sauvegarde sur cet appareil uniquement : pour retrouver ce scénario sur un autre navigateur ou éviter de le perdre, utilisez <strong>Exporter → JSON complet</strong>.</p>
               <button type="button" class="text-button import-scenario-button" id="import-scenario">Importer un scénario JSON…</button>
               <input id="import-scenario-file" class="visually-hidden" type="file" accept=".json,application/json" aria-label="Choisir un scénario EcoSim au format JSON" />
               <div class="saved-comparison" id="saved-comparison" hidden></div>
@@ -832,5 +839,6 @@
     <script src="analytics.js"></script>
     <script src="ux-parcours-583.js"></script>
     <script src="glossary-520.js"></script>
-  </body>
+    <script src="nav-explorer.js"></script>
+  <script src="accessibilite-ui.js"></script></body>
 </html>

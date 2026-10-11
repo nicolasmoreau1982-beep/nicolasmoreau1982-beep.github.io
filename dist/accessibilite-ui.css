@@ -1,0 +1,18 @@
+/* EcoSim — repères de clavier, contraste et préférences de mouvement. */
+:where(a[href], button, summary, input, select, textarea, [role="tab"], [tabindex="0"]):focus-visible {
+  outline: 3px solid #07588c;
+  outline-offset: 3px;
+}
+[data-theme="dark"] :where(a[href], button, summary, input, select, textarea, [role="tab"], [tabindex="0"]):focus-visible {
+  outline-color: #b2ddff;
+}
+.audit-table-wrap[tabindex="0"] { max-width: 100%; overscroll-behavior-x: contain; scrollbar-gutter: stable; }
+.audit-table-wrap[tabindex="0"]:focus-visible { outline-offset: -3px; }
+/* Étiquette ocre insuffisamment contrastée en thème clair dans audit.css. */
+.audit-page .tag.assumed { color: #80510d; }
+[data-theme="dark"] .audit-page .tag.assumed { color: #f0c678; }
+/* Afficher les détails denses sans animation aux visiteurs qui le demandent. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
