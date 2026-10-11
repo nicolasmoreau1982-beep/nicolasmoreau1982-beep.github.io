@@ -1,3 +1,5 @@
+/* EcoSim France — droits réservés sur les contributions originales protégeables.
+   Droits de tiers et exceptions légales préservés ; voir https://github.com/nicolasmoreau1982-beep/nicolasmoreau1982-beep.github.io/blob/main/LICENSE. */
 /* 5.3.1 : version affichée, distincte de la date d'une page d'audit. */
 (() => {
   'use strict';

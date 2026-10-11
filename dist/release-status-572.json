@@ -5,5 +5,9 @@
   "publicScope": "Interface publique et résultats fiscaux EcoSim",
   "technicalScope": "Contrôle externe OpenFisca et correction du traitement des pondérations",
   "openFiscaIndependentExecution": "not_executed_in_release",
-  "versionPolicy": "Une livraison technique ne change pas automatiquement la version des résultats du simulateur. Les deux versions sont contrôlées et publiées séparément."
+  "versionPolicy": "Une livraison technique ne change pas automatiquement la version des résultats du simulateur. Les deux versions sont contrôlées et publiées séparément.",
+  "deliveryLabel": "5.7.2.5",
+  "deliveryPolicy": "Correctif d’information publique : mention de droits dans les pieds de page, lien direct vers le seul fichier LICENSE du dépôt GitHub ; aucun changement du modèle économique ou fiscal.",
+  "distributionModuleVersion": "5.8.0",
+  "distributionScope": "Atelier expérimental SMIC et abattement pension 10% : population librement saisie, non représentative, aucun agrégat APU."
 }

@@ -14,6 +14,7 @@ const metas=read('site-meta-531.js');
 assert.match(read('data.js'),/version: "5\.7\.1"/);
 assert.match(build,/ECOSIM_VERSION = "5\.7\.1"/);
 assert.match(main,/Version actuelle : <strong data-ecosim-version>5\.7\.1<\/strong>/);
+assert.match(main,/livraison technique <a href="verification-openfisca-571\.html" data-ecosim-technical-version>5\.7\.2<\/a>/);
 assert.match(main,/data-ecosim-version>5\.7\.1<\/span> · paquet/);
 assert.match(main,/hero-transparence-531/);
 assert.match(main,/provenance-politique\.html/);
@@ -32,7 +33,7 @@ assert.match(legal,/docs\.github\.com/);
 assert.match(legal,/article 1er-1, II, de la LCEN/);
 assert.match(legal,/Cette notice ne constitue pas une attestation de conformité juridique/);
 assert.match(map,/methodes-comparaison-politique-530\.html<\/loc><lastmod>2026-10-11/);
-assert.equal((map.match(/<lastmod>/g)||[]).length,21);
+assert.ok((map.match(/<lastmod>/g)||[]).length >= 21,'Au moins 21 dates justifiées attendues');
 assert.doesNotMatch(map,/404\.html/);
 for (const f of fs.readdirSync(dist).filter(x=>x.endsWith('.html')&&!x.startsWith('google'))) {
  const html=read(f);

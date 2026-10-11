@@ -37,5 +37,5 @@ for(const page of ['/','/audit.html','/provenance-politique.html','/validation-e
  const loc=`https://nicolasmoreau1982-beep.github.io${page}`;
  assert.ok(sitemap.includes(`<loc>${loc}</loc><lastmod>2026-10-11</lastmod>`));
 }
-assert.equal((sitemap.match(/<lastmod>/g)||[]).length,21);
+assert.equal((sitemap.match(/<lastmod>/g)||[]).length,22);
 console.log('PRÉSENTATION 4.21.1 OK : provenance, limites de sensibilité, captions, versions, métadonnées et sitemap.');

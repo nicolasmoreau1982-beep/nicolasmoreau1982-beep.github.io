@@ -17,6 +17,10 @@ for (const key of ['publicVersion','technicalVersion']) {
   assert.match(versions[key], /^\d+\.\d+\.\d+$/, `Version invalide: ${key}`);
 }
 assert.equal(versions.schemaVersion, versions.technicalVersion, 'Version du schéma différente de la version technique');
+assert.match(versions.deliveryLabel, /^\d+\.\d+\.\d+(?:\.\d+)?$/, 'Étiquette de livraison invalide');
+assert.ok(versions.deliveryLabel === versions.technicalVersion ||
+  versions.deliveryLabel.startsWith(versions.technicalVersion + '.'),
+  'Étiquette de livraison hors de la version technique');
 const build = read('build-info.js');
 const value = (key) => {
   const m = build.match(new RegExp(`^window\\.${key} = "([^"]+)";`, 'm'));
@@ -53,7 +57,9 @@ for(const f of all.sort()){
 }
 assert.equal(value('ECOSIM_BUILD_ID'), h.digest('hex').slice(0,12),'Empreinte de distribution incorrecte : relancer stamp-build avant livraison');
 const map=read('sitemap.xml');
-assert.equal((map.match(/<loc>/g)||[]).length,27,'Nombre de pages du sitemap modifié, vérifier manuellement');
+assert.equal((map.match(/<loc>/g)||[]).length,28,'28 pages du sitemap attendues, vérifier manuellement');
+assert.equal(versions.distributionModuleVersion,'5.8.0','Version atelier distributif non déclarée');
+assert.match(read('distribution-ciblee-580.html'),/module-dist-introuvable|Atelier distributif expérimental 5\.8|Module expérimental 5\.8/, 'Module distributif 5.8 absent');
 assert.ok(!map.includes('<lastmod>2026-10-12</lastmod>'),'Dernière modification future : données douteuses');
 const argv=process.argv;
 let subject;
@@ -64,10 +70,17 @@ if(argv.includes('--commit-subject')){
  try {subject=execFileSync('git',['log','-1','--format=%s'],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();}
  catch {subject=null;}
 }
-if(subject){
- // Seuls les commits de livraison déclarés sont comparables aux versions.
- // Les commits de maintenance (ex. « Corriger le sitemap ») ne sont pas des releases.
- const m=subject.match(/^(?:release\s+)?v?(\d+\.\d+\.\d+)(?=\b|\s|$)/i);
- if(m)assert.equal(m[1],versions.technicalVersion,`Commit de livraison « ${subject} » incohérent avec la version technique`);
+if (subject) {
+ // Accepte une étiquette de release 3 ou 4 chiffres, mais ne valide jamais
+ // seulement le préfixe "5.7.2" du sujet "5.7.2.999".
+ // Les commits de maintenance sans numéro explicite restent autorisés.
+ const match = subject.match(/^(?:(?:release|livraison)\s+)?v?(\d+\.\d+\.\d+(?:\.\d+)?)(?=$|[\s:;—–-])/i);
+ if (match) {
+   assert.equal(match[1], versions.deliveryLabel,
+     `Commit de livraison « ${subject} » ≠ étiquette déclarée ${versions.deliveryLabel}`);
+   assert.equal(match[1].split('.').slice(0, 3).join('.'), versions.technicalVersion,
+     'Commit de livraison hors de la version technique');
+ }
 }
-console.log(`Livraison OK — publique ${versions.publicVersion} · technique ${versions.technicalVersion} · paquet ${value('ECOSIM_BUILD_ID')}${subject?' · commit '+subject:''}`);
+
+console.log(`Livraison OK — publique ${versions.publicVersion} · technique ${versions.technicalVersion} · révision ${versions.deliveryLabel} · paquet ${value('ECOSIM_BUILD_ID')}${subject?' · commit '+subject:''}`);

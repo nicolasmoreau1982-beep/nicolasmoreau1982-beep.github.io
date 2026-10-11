@@ -1,0 +1,3 @@
+CHROMIUM 5.8 OK : 1365 px, salaires/pensions, paramètres et erreurs
+CHROMIUM 5.8 OK : 375 px, salaires/pensions, paramètres et erreurs
+INTÉGRATION 5.8 OK : lien accueil et moteur ancien inchangé

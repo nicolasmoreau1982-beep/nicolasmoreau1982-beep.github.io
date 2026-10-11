@@ -1,0 +1,339 @@
+{
+  "status": "DEMONSTRATION_NON_REPRESENTATIVE",
+  "smicLegal": {
+    "kind": "simulation_smic_ciblee",
+    "currentSmicHourly": 12.02,
+    "newSmicHourly": 13.222000000000001,
+    "risePercent": 10,
+    "scenario": {
+      "spilloverStrength": 0,
+      "spilloverDecay": 0.5
+    },
+    "rows": [
+      {
+        "id": "S1",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 12.02,
+        "hourlyAfter": 13.222000000000001,
+        "mandatoryIncreaseHourly": 1.2020000000000017,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 19316.14,
+        "annualAfter": 21247.754,
+        "annualGrossDelta": 1931.6140000000014
+      },
+      {
+        "id": "S2",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 12.621,
+        "hourlyAfter": 13.222000000000001,
+        "mandatoryIncreaseHourly": 0.6010000000000009,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 20281.947,
+        "annualAfter": 21247.754,
+        "annualGrossDelta": 965.8070000000007
+      },
+      {
+        "id": "S3",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 14.424,
+        "hourlyAfter": 14.424,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 23179.368,
+        "annualAfter": 23179.368,
+        "annualGrossDelta": 0
+      },
+      {
+        "id": "S4",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 18.03,
+        "hourlyAfter": 18.03,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 28974.210000000003,
+        "annualAfter": 28974.210000000003,
+        "annualGrossDelta": 0
+      },
+      {
+        "id": "S5",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 24.04,
+        "hourlyAfter": 24.04,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 38632.28,
+        "annualAfter": 38632.28,
+        "annualGrossDelta": 0
+      },
+      {
+        "id": "S6",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 36.06,
+        "hourlyAfter": 36.06,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 57948.420000000006,
+        "annualAfter": 57948.420000000006,
+        "annualGrossDelta": 0
+      }
+    ],
+    "totals": {
+      "weightedWorkers": 6,
+      "mandatoryAffected": 2,
+      "spilloverAffected": 0,
+      "annualGrossPayBefore": 188332.36500000002,
+      "annualGrossPayAfter": 191229.78600000002,
+      "annualGrossPayDelta": 2897.421000000002,
+      "annualGrossPayVariationPercent": 1.5384615384615394
+    },
+    "limitations": "Population fournie non représentative; hausse brute sans cotisations patronales/nettes, productivité, marges, emploi ou élasticités. Diffusion facultative purement hypothétique; aucun effet macro automatiquement déduit."
+  },
+  "smicWithAssumedSpillover": {
+    "kind": "simulation_smic_ciblee",
+    "currentSmicHourly": 12.02,
+    "newSmicHourly": 13.222000000000001,
+    "risePercent": 10,
+    "scenario": {
+      "spilloverStrength": 0.35,
+      "spilloverDecay": 0.5
+    },
+    "rows": [
+      {
+        "id": "S1",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 12.02,
+        "hourlyAfter": 13.222000000000001,
+        "mandatoryIncreaseHourly": 1.2020000000000017,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 19316.14,
+        "annualAfter": 21247.754,
+        "annualGrossDelta": 1931.6140000000014
+      },
+      {
+        "id": "S2",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 12.621,
+        "hourlyAfter": 13.222000000000001,
+        "mandatoryIncreaseHourly": 0.6010000000000009,
+        "indirectIncreaseHourly": 0,
+        "annualBefore": 20281.947,
+        "annualAfter": 21247.754,
+        "annualGrossDelta": 965.8070000000007
+      },
+      {
+        "id": "S3",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 14.424,
+        "hourlyAfter": 14.762404372040631,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0.33840437204063223,
+        "annualBefore": 23179.368,
+        "annualAfter": 23723.183825869295,
+        "annualGrossDelta": 543.8158258692965
+      },
+      {
+        "id": "S4",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 18.03,
+        "hourlyAfter": 18.26215032135124,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0.2321503213512386,
+        "annualBefore": 28974.210000000003,
+        "annualAfter": 29347.27556641144,
+        "annualGrossDelta": 373.06556641143834
+      },
+      {
+        "id": "S5",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 24.04,
+        "hourlyAfter": 24.153871107315286,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0.11387110731528592,
+        "annualBefore": 38632.28,
+        "annualAfter": 38815.270869455664,
+        "annualGrossDelta": 182.99086945566523
+      },
+      {
+        "id": "S6",
+        "eligible": true,
+        "weight": 1,
+        "hourlyBefore": 36.06,
+        "hourlyAfter": 36.083116167841474,
+        "mandatoryIncreaseHourly": 0,
+        "indirectIncreaseHourly": 0.02311616784147139,
+        "annualBefore": 57948.420000000006,
+        "annualAfter": 57985.56768172125,
+        "annualGrossDelta": 37.147681721246045
+      }
+    ],
+    "totals": {
+      "weightedWorkers": 6,
+      "mandatoryAffected": 2,
+      "spilloverAffected": 4,
+      "annualGrossPayBefore": 188332.36500000002,
+      "annualGrossPayAfter": 192366.80594345764,
+      "annualGrossPayDelta": 4034.440943457623,
+      "annualGrossPayVariationPercent": 2.14219204620386
+    },
+    "limitations": "Population fournie non représentative; hausse brute sans cotisations patronales/nettes, productivité, marges, emploi ou élasticités. Diffusion facultative purement hypothétique; aucun effet macro automatiquement déduit."
+  },
+  "pensionTargeted": {
+    "kind": "simulation_abattement_pensions",
+    "reform": {
+      "type": "phase_out_above_rfr",
+      "rfrThreshold": 55000,
+      "phaseOutWidth": 25000
+    },
+    "rows": [
+      {
+        "id": "petite-pension",
+        "weight": 1,
+        "referenceTaxIncome": 14000,
+        "pensionDeclaredTotal": 15000,
+        "allowanceBefore": 1500,
+        "allowanceAfter": 1500,
+        "netTaxableIncomeBefore": 13500,
+        "netTaxableIncomeAfter": 13500,
+        "taxBefore": 0,
+        "taxAfter": 0,
+        "taxDelta": 0,
+        "selectedFraction": 0
+      },
+      {
+        "id": "pension-moyenne",
+        "weight": 1,
+        "referenceTaxIncome": 28500,
+        "pensionDeclaredTotal": 30000,
+        "allowanceBefore": 3000,
+        "allowanceAfter": 3000,
+        "netTaxableIncomeBefore": 27000,
+        "netTaxableIncomeAfter": 27000,
+        "taxBefore": 1563.5349999999999,
+        "taxAfter": 1563.5349999999999,
+        "taxDelta": 0,
+        "selectedFraction": 0
+      },
+      {
+        "id": "forte-pension",
+        "weight": 1,
+        "referenceTaxIncome": 70000,
+        "pensionDeclaredTotal": 65000,
+        "allowanceBefore": 4439,
+        "allowanceAfter": 1775.6000000000001,
+        "netTaxableIncomeBefore": 60561,
+        "netTaxableIncomeAfter": 63224.4,
+        "taxBefore": 11272.29,
+        "taxAfter": 12071.310000000001,
+        "taxDelta": 799.0200000000004,
+        "selectedFraction": 0.6
+      },
+      {
+        "id": "couple-mixte",
+        "weight": 1,
+        "referenceTaxIncome": 90000,
+        "pensionDeclaredTotal": 18000,
+        "allowanceBefore": 1800,
+        "allowanceAfter": 0,
+        "netTaxableIncomeBefore": 85000,
+        "netTaxableIncomeAfter": 86800,
+        "taxBefore": 11707.98,
+        "taxAfter": 12247.98,
+        "taxDelta": 540,
+        "selectedFraction": 1
+      }
+    ],
+    "totals": {
+      "weightedHouseholds": 4,
+      "impotAvant": 24543.805,
+      "impotApres": 25882.825,
+      "differenceImpot": 1339.0200000000004,
+      "foyersAvecAbattementReduit": 2
+    },
+    "limitations": "Foyers fictifs, poids non représentatifs. Sous-périmètre des pensions éligibles ordinaires, RFR exogène, calcul IR 5.7 simplifié (hors crédits, seuil de recouvrement et revenus spéciaux). Ni rendement national ni prélèvements sociaux."
+  },
+  "pensionCapProposal": {
+    "kind": "simulation_abattement_pensions",
+    "reform": {
+      "type": "cap_above_rfr",
+      "rfrThreshold": 55000,
+      "newCap": 3000
+    },
+    "rows": [
+      {
+        "id": "petite-pension",
+        "weight": 1,
+        "referenceTaxIncome": 14000,
+        "pensionDeclaredTotal": 15000,
+        "allowanceBefore": 1500,
+        "allowanceAfter": 1500,
+        "netTaxableIncomeBefore": 13500,
+        "netTaxableIncomeAfter": 13500,
+        "taxBefore": 0,
+        "taxAfter": 0,
+        "taxDelta": 0,
+        "selectedFraction": 0
+      },
+      {
+        "id": "pension-moyenne",
+        "weight": 1,
+        "referenceTaxIncome": 28500,
+        "pensionDeclaredTotal": 30000,
+        "allowanceBefore": 3000,
+        "allowanceAfter": 3000,
+        "netTaxableIncomeBefore": 27000,
+        "netTaxableIncomeAfter": 27000,
+        "taxBefore": 1563.5349999999999,
+        "taxAfter": 1563.5349999999999,
+        "taxDelta": 0,
+        "selectedFraction": 0
+      },
+      {
+        "id": "forte-pension",
+        "weight": 1,
+        "referenceTaxIncome": 70000,
+        "pensionDeclaredTotal": 65000,
+        "allowanceBefore": 4439,
+        "allowanceAfter": 3000,
+        "netTaxableIncomeBefore": 60561,
+        "netTaxableIncomeAfter": 62000,
+        "taxBefore": 11272.29,
+        "taxAfter": 11703.99,
+        "taxDelta": 431.6999999999989,
+        "selectedFraction": 1
+      },
+      {
+        "id": "couple-mixte",
+        "weight": 1,
+        "referenceTaxIncome": 90000,
+        "pensionDeclaredTotal": 18000,
+        "allowanceBefore": 1800,
+        "allowanceAfter": 1800,
+        "netTaxableIncomeBefore": 85000,
+        "netTaxableIncomeAfter": 85000,
+        "taxBefore": 11707.98,
+        "taxAfter": 11707.98,
+        "taxDelta": 0,
+        "selectedFraction": 1
+      }
+    ],
+    "totals": {
+      "weightedHouseholds": 4,
+      "impotAvant": 24543.805,
+      "impotApres": 24975.504999999997,
+      "differenceImpot": 431.6999999999989,
+      "foyersAvecAbattementReduit": 1
+    },
+    "limitations": "Foyers fictifs, poids non représentatifs. Sous-périmètre des pensions éligibles ordinaires, RFR exogène, calcul IR 5.7 simplifié (hors crédits, seuil de recouvrement et revenus spéciaux). Ni rendement national ni prélèvements sociaux."
+  }
+}
