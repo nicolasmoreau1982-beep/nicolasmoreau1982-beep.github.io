@@ -708,3 +708,31 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 .fiscal-example-note { color: var(--ink-2); font-size: 13px; line-height: 1.6; }
 .social-cards strong { overflow-wrap: anywhere; }
 .social-matrix td { font-size: 13px; }
+
+/* EcoSim 4.20 — pédagogie des comparaisons et traçabilité documentaire */
+.benchmark-context { margin: 12px 0 17px; border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 9px; background: var(--card); }
+.benchmark-context summary { cursor: pointer; padding: 12px 15px; color: var(--ink); font-size: 14px; font-weight: 700; }
+.benchmark-context-content { border-top: 1px solid var(--line); padding: 12px 15px; }
+.benchmark-context-content p { margin: 0 0 8px; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.benchmark-context-content p:last-child { margin-bottom: 0; }
+.benchmark-context a, .politics-scope-warning a, .politics-provenance-intro a { color: var(--blue); text-underline-offset: 3px; }
+.politics-provenance-intro { margin: 16px 0 12px; border-left: 3px solid var(--gold); padding: 12px 15px; background: color-mix(in srgb, var(--gold) 8%, var(--card)); color: var(--ink-2); font-size: 14px; line-height: 1.6; }
+.politics-scope-warning { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.politics-benchmark-context { margin-top: 16px; }
+.prov-downloads { display: flex; gap: 12px; flex-wrap: wrap; }
+.prov-downloads .button { display: inline-block; text-decoration: none; }
+.prov-help { margin-bottom: 30px; }
+.provenance-scenario { margin: 15px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); overflow: hidden; }
+.provenance-scenario summary { padding: 15px; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; cursor: pointer; }
+.provenance-scenario summary strong { color: var(--ink); font-size: 16px; }
+.provenance-scenario summary span { color: var(--ink-2); font-size: 13px; }
+.provenance-scenario .prov-meta { margin: 0; padding: 10px 15px; font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+.prov-scroll { overflow-x: auto; margin: 0 15px 18px; }
+.prov-scroll table { border-collapse: collapse; width: 100%; min-width: 850px; font-size: 13px; line-height: 1.5; }
+.prov-scroll th, .prov-scroll td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.prov-scroll thead th { background: var(--paper-2); }
+.prov-scroll tbody th { width: 27%; font-weight: 600; }
+.prov-scroll tbody th code { font-size: 12px; color: var(--ink-2); }
+.prov-scroll a { color: var(--blue); }
+.prov-last { color: var(--ink-2); font-size: 13px; }
+@media (max-width: 700px) { .provenance-scenario summary { display: block; } .provenance-scenario summary span { display: block; margin-top: 5px; } }

@@ -11,7 +11,7 @@ for (const f of ['app.js','data.js','fiscal.js','styles.css']) {
 }
 const build=h.digest('hex').slice(0,12);
 fs.writeFileSync(path.join(dist,'build-info.js'),`/* Empreinte locale du paquet, pas un commit Git. */\nwindow.ECOSIM_BUILD_ID = "${build}";\n`);
-for (const file of ['index.html','audit.html']) {
+for (const file of ['index.html','audit.html','provenance-politique.html']) {
  const p=path.join(dist,file);
  let s=fs.readFileSync(p,'utf8');
  s=s.replaceAll('PAQUET_A_REMPLACER',build)

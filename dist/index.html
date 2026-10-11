@@ -219,6 +219,13 @@
             <div><small>Scénario actif</small><strong id="active-scenario-name">Référence · aucune réforme</strong><p id="active-scenario-measures">Aucune mesure appliquée.</p></div>
             <div class="active-scenario-actions"><button type="button" data-scroll="simulator">Modifier</button><button type="button" id="results-undo-button" disabled>Annuler la dernière modification</button></div>
           </div>
+          <details class="benchmark-context" id="benchmark-context">
+            <summary>Lire les résultats avec un point de comparaison externe (Mésange)</summary>
+            <div class="benchmark-context-content">
+              <p><strong>Exemple documenté, indépendant de votre scénario :</strong> une hausse composite permanente des dépenses publiques équivalente à 1 point de PIB conduit à <strong>+0,60 %</strong> de PIB à 3 ans dans le panier proxy EcoSim, contre <strong>+1,03 %</strong> dans Mésange 2017. Il existe un écart d’environ <strong>0,43 point de PIB</strong> entre les résultats.</p>
+              <p><strong>Ce n’est pas une comparaison strictement équivalente :</strong> EcoSim utilise des fonctions COFOG pour approcher des natures de dépenses distinctes dans Mésange. Cet écart ne prouve pas une sous-estimation générale, et <strong>ne doit pas servir de correction automatique</strong> des chiffres de votre réforme. La réponse TVA est calibrée sur Mésange par construction, pas validée indépendamment. <a href="audit.html#benchmark-419">Méthode, hypothèses et résultats détaillés ↗</a></p>
+            </div>
+          </details>
           <p class="result-status"><strong>Observé</strong> : comptes de départ 2025 · <strong>Modélisé</strong> : trajectoire et écarts ci-dessous · <strong>Exploratoire</strong> : fourchettes, effets sociaux et horizons lointains. <a href="audit.html#incertitude">Méthode et limites ↗</a></p>
           <p class="long-run-note" id="long-run-note" hidden>Horizon structurel : au-delà de 2035, l’écart d’incertitude compte davantage que le point central.</p>
 
@@ -453,6 +460,7 @@
           </div>
         </div>
         <p class="politics-model-note" id="politics-model-note">Le même profil est appliqué à tous les scénarios. Les écarts entre profils testent des hypothèses, pas la probabilité d’un résultat.</p>
+        <p class="politics-provenance-intro"><strong>Traçabilité 4.20 :</strong> les chiffres sont des hypothèses EcoSim lorsqu’aucune correspondance exacte, datée et localisée n’est documentée. <a href="provenance-politique.html">Consulter le registre public de tous les réglages ↗</a>. Une source générale d’une formation ne justifie pas individuellement chaque valeur.</p>
         <div class="politics-grid">
           <div>
             <div class="politics-list" id="politics-list"></div>
@@ -467,6 +475,10 @@
           </div>
           <div class="politics-comparison-scroll"><div id="politics-comparison"></div></div>
         </article>
+        <details class="benchmark-context politics-benchmark-context">
+          <summary>Pourquoi les projections ne sont-elles pas des prévisions validées ?</summary>
+          <div class="benchmark-context-content"><p>Exemple de sensibilité : pour un panier de dépenses construit avec des proxys fonctionnels, EcoSim obtient +0,60 % de PIB à 3 ans, Mésange 2017 +1,03 %. Les chocs ne sont pas identiques : ces chiffres ne sont pas une correction automatique des scénarios politiques, ni la preuve qu’une formation aurait raison ou tort. <a href="audit.html#benchmark-419">Lire le benchmark ↗</a>.</p></div>
+        </details>
         <div class="politics-warning">
           <strong>Règle de lecture</strong>
           <p>Un programme incomplet ou contradictoire n’est pas « complété » silencieusement : la convention EcoSim est affichée et la confiance abaissée. Sur vingt ans, les promesses incompatibles sont exclues. À 20–30 ans, la bande d’incertitude prime sur le chiffre central.</p>
@@ -636,7 +648,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.19 · paquet <code title="Empreinte du code de distribution, pas un commit Git">3ebe6e049323</code></span>
+      <span class="footer-version">Version 4.20 · paquet <code title="Empreinte du code de distribution, pas un commit Git">6944484be75f</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

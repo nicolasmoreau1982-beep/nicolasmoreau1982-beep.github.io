@@ -1,76 +1,77 @@
-# EcoSim France — 4.19.0 — Modifications et limites
+# EcoSim France — livraison 4.20.0
 
 ## Objet
 
-Fiabiliser l'ancrage comptable, publier une comparaison externe non calibrée des dépenses et rendre testables trois coefficients de rétroaction. **Pas de prétention à une validation causale.** Aucun multiplicateur de politique n'a été modifié pour mieux coller à une cible institutionnelle.
+La 4.20 privilégie deux améliorations de **transparence pédagogique** sans changer les valeurs des multiplicateurs, les coefficients fiscaux, les résultats des scénarios ou les règles de la 4.19 :
 
-## Comptes 2025
+1. **Traçabilité mesure par mesure** dans le comparateur politique, consultable sans JavaScript et exportable.
+2. **Contexte économique de référence** près des résultats, avec le benchmark Mésange 2017 et ses limites explicites.
 
-La 4.18 utilisait **déjà** les chiffres du tableau Insee 3.201 actualisé le **28 août 2026**, soit **1 714,1117 Md€** de dépenses, **1 562,5197 Md€** de recettes et **151,592 Md€** de déficit. Ils sont conservés. Le ratio initial de dette passe de **115,6 %** à **115,7 %**, calculé sur 3 460,5 Md€ de dette / 2 991,1 Md€ de PIB.
+Cette livraison n'apporte **aucune validation scientifique ou officielle des programmes politiques**. Les sources générales d'un parti ne sont pas présentées comme la justification exacte des montants EcoSim.
 
-La série historique `history.js` conserve son **115,6 % Eurostat** distinct. On ne mélange pas avec la publication Insee Première du 29 mai (1 714,2 / 1 561,7 / 152,5 Md€), dont le champ et le millésime sont différents. Cette réconciliation est décrite dans l'audit.
+## 1. Provenance des scénarios
 
-La règle simplifiée `dette_t = dette_(t−1) + déficit_t` est maintenue ; les ajustements stock-flux réels ne sont pas simulés. Le rapprochement mai 2026 fait état d'un écart de 1,9 Md€ en 2025 (augmentation brute de dette de 154,4 Md€ pour déficit de 152,5 Md€).
+Le fichier `scripts/export-provenance-420.mjs` construit automatiquement à partir de `dist/data.js` :
 
-## Comparaison Mésange
+- `dist/provenance-politique.html` : liste accessible, par scénario, avec chaque réglage, sa valeur, son statut documentaire et le lien précis vers une source **uniquement lorsqu'une correspondance a été déclarée** ;
+- `dist/validation/provenance-politique-420.csv` : registre sous forme tabulaire ;
+- `dist/validation/provenance-politique-420.json` : même registre avec métadonnées et sources générales séparées des preuves ligne à ligne.
 
-Le benchmark simule en 2026 un choc **permanent non financé de 1 point du PIB de référence**, converti en euros 2025 pour les curseurs. Le panier reproduit les poids de la variante Mésange 2017 : **8 %** investissement, **25 %** rémunérations, **9 %** prestations en nature, **12 %** consommations intermédiaires, **46 %** prestations en espèces (dont **3,5 % du choc total** au chômage). Les postes disponibles dans EcoSim sont toutefois classés par **fonction COFOG** ; transports / enseignement primaire / hôpitaux / services généraux / retraites / chômage ne constituent **pas** une répartition exactement équivalente par nature économique. C'est un panier proxy, non une reproduction de l'expérience Mésange.
+**Constat dans la base 4.20 : 19 scénarios, 357 réglages (y compris quelques paramètres non monétaires), 0 correspondances exactes enregistrées, 1 proposition localisée mais non équivalente, 356 valeurs non vérifiées individuellement.** Cela décrit la couverture documentaire du code, non l'existence ou non de propositions publiques. Le moteur ne convertit pas une source générale en preuve individuelle, et le registre n'invente pas de localisation ou de date.
 
-| Scénario | PIB 1 an | PIB 3 ans | PIB 5 ans | PIB 10 ans |
-|---|---:|---:|---:|---:|
-| Panier composite EcoSim (proxy COFOG) | +0,595 % | +0,597 % | +0,535 % | +0,472 % |
-| Mésange 2017 (référence publiée) | +0,780 % | +1,030 % | +0,860 % | +0,530 % |
-| TVA +1 point de PIB de recettes | -0,320 % | -0,705 % | -0,775 % | -0,708 % |
-| IR +1 point de PIB de recettes | -0,567 % | -0,481 % | -0,424 % | -0,368 % |
-| Cotisations globales −1 point de PIB | +0,681 % | +0,596 % | +0,538 % | +0,479 % |
+Les tests refusent une source individuelle orpheline, mal localisée ou liée à une option inexistante. La page 2027, l'audit, le sitemap et la fiche détaillée de chaque scénario renvoient au registre.
 
-L'effet affiché est l'indicateur `outputGap` d'EcoSim, approximation d'un écart de niveau de PIB réel ; ce n'est pas une série de volumes chaînés. L'effet TVA est inspiré de Mésange par construction : **une proximité ne constitue pas une validation indépendante**. Le choc de cotisations porte sur toutes les cotisations `R_SOCIAL` et non uniquement sur celles des employeurs ; il **n'est pas strictement comparable** au choc de la DG Trésor.
+### Conséquence importante
 
-## Trois hypothèses auditables
+Les scénarios politiques demeurent des **constructions pédagogiques d'EcoSim**, non des chiffrages officiels ou des versions complètes des programmes. Leur niveau de confiance éditorial (« élevé », « moyen » ou « faible ») ne signifie **pas** que leurs valeurs numériques sont vérifiées à la source.
 
-`data.js` expose désormais `macroCoefficients` :
-- `unemploymentPpPerOutputGapPoint = 0.35` (chômage selon l'écart de production),
-- `revenueBnPerNominalGdpBn = 0.48` (recettes indirectes par euro de PIB nominal),
-- `cyclicalSpendingBnPerUnemploymentPoint = 3.1` (dépenses conjoncturelles par point de chômage).
+Pour enrichir les sources, renseigner `scenario.evidence["changes.GF..."]` ou la clé du moteur concerné **après contrôle humain** de la source primaire : `status` (`exact` ou `related`), `url`, `sourceTitle`, `locator` et `note`. Le statut `exact` exige également le chiffre et son unité, et une correspondance réellement équivalente. Régénérer et contrôler le registre.
 
-Leur valeur centrale n'a pas changé. Le benchmark modifie **chaque coefficient isolément de −20 % à +20 %**, compare plusieurs réformes et restaure la valeur d'origine. Ces limites sont choisies pour illustrer la sensibilité du modèle ; elles ne sont **pas des intervalles de confiance** et n'impliquent pas que les paramètres aient été estimés économétriquement.
+## 2. Benchmark économique présenté dans l'interface
 
-## Commandes pour reproduire
+Une note dépliable est disponible à proximité des quatre résultats principaux ; une autre est placée dans le comparateur politique. Elle rappelle, à **3 ans**, pour un choc composite de dépenses d'environ 1 point de PIB :
 
-Depuis la racine du code complet, avec Node.js :
+| | Effet sur le PIB de référence |
+|---|---:|
+| Panier proxy COFOG d'EcoSim 4.19 repris dans la 4.20 | +0,60 % |
+| Mésange 2017, variante publiée | +1,03 % |
+| Différence numérique entre ces sorties | 0,43 point de PIB |
+
+**Les chocs ne sont pas strictement équivalents** : EcoSim utilise des catégories fonctionnelles comme proxys de natures de dépenses Mésange. Cette différence **ne prouve pas** que toutes les dépenses sont sous-estimées et **n'est pas** un facteur correctif automatique appliqué au scénario de l'utilisateur. La TVA reprend une variante Mésange par construction ; sa proximité n'est pas une validation indépendante.
+
+Le benchmark `validation/benchmark-419.*` est **conservé sans modification** pour garantir la comparabilité avec la 4.19.
+
+Source Mésange : DG Trésor / Insee, *Le modèle macroéconométrique Mésange : réestimation et nouveautés* (2017), section 4.1.2 : https://www.insee.fr/fr/statistiques/2848300
+
+## 3. Tests et reproduction
+
+Exécuter depuis la racine de l'archive complète :
 
 ```sh
-node scripts/benchmark-economique-419.mjs
+node scripts/export-provenance-420.mjs
+node scripts/test-transparence-420.mjs
+node scripts/test-regressions.mjs
 node scripts/test-economique-419.mjs
 node scripts/test-fiscal-419.mjs
-node scripts/test-regressions.mjs
 node scripts/test-mathematical.mjs
 node scripts/stamp-build.mjs
 ```
 
-Les sorties du benchmark sont publiées dans `dist/validation/benchmark-419.csv` et `.json`. La table de résultats est pré-générée dans `dist/audit.html` et lisible sans JavaScript.
+Le test 4.20 confronte chaque réglage du registre aux objets réellement présents dans `data.js`, vérifie l'unicité de chaque clé, le statut des sources, la présence des liens dans les trois pages et la concordance des chiffres du benchmark avec `benchmark-419.json`.
 
-## Fichiers modifiés
+### Ce qui n'a pas été testé
 
-- `dist/data.js` : millésime comptable, ratio, coefficients centralisés, version.
-- `dist/app.js` : récupération des trois coefficients dans les données (aucun changement de valeur).
-- `dist/index.html` : version et ratio harmonisés.
-- `dist/audit.html` : nouveau chapitre de benchmark, sources et clarification des millésimes.
-- `dist/build-info.js` : empreinte du paquet recalculée.
-- `scripts/benchmark-economique-419.mjs` : 25 observations centrales/référence et 120 tests de sensibilité.
-- `scripts/test-economique-419.mjs` : assertions comptables et vérification du benchmark.
-- `scripts/test-fiscal-419.mjs` : 66 contrôles ciblés sur la fiscalité simplifiée.
-- `dist/validation/` : résultats bruts reproductibles.
+- Mesure Lighthouse ou audit manuel clavier/lecteur d'écran/mobile réel.
+- Recalibrage macroéconomique ou validation causale indépendante.
+- Vérification documentaire primaire de toutes les propositions politiques : **il reste beaucoup de travail avant de prétendre attribuer ces montants aux formations**.
+- Mesure du consentement aux outils d'audience : aucune modification GoatCounter dans cette version.
 
-## Limites
+## Fichiers
 
-- Les élasticités ne sont pas estimées causalement ; les chocs Mésange et EcoSim ne sont pas identiques au sens de la comptabilité par nature.
-- Le modèle fiscal fonctionne sur 16 foyers-types synthétiques, sans échantillon national représentatif.
-- Aucun backtest historique indépendant ou test de l'expérience sur navigateur mobile n'est ajouté à cette livraison.
-- Les séries historiques Eurostat et le compte d'août ne sont pas recalibrés artificiellement pour afficher la même valeur sur tous les indicateurs.
+- **Modifiés** : `dist/data.js` (version seulement), `dist/index.html`, `dist/app.js`, `dist/audit.html`, `dist/styles.css`, `dist/programmes-economiques-2027.html`, `dist/sitemap.xml`, `dist/build-info.js`, `scripts/stamp-build.mjs`.
+- **Ajoutés** : `dist/provenance-politique.html`, `dist/validation/provenance-politique-420.csv`, `dist/validation/provenance-politique-420.json`, `scripts/export-provenance-420.mjs`, `scripts/test-transparence-420.mjs`.
+- **Inchangés** : calcul macro/fiscal et benchmark 4.19, données observées, autres moteurs.
 
-## Sources primaires
+## Publication GitHub Pages
 
-- https://www.insee.fr/fr/statistiques/8988845 (tableau 3.201, août 2026)
-- https://www.insee.fr/fr/statistiques/8997691 (Insee Première, mai 2026)
-- https://www.tresor.economie.gouv.fr/Articles/88381f48-797c-4e76-8f03-ef78d0bff99e/files/1c29ff21-585d-488b-8f4b-497540e9fc62 (Mésange 2017, sections 4.1.2 et 4.1.3)
+Utiliser le ZIP `EcoSim_4.20_site_GitHubPages.zip` en remplaçant les fichiers publiés à la racine du dépôt (ou du répertoire GitHub Pages configuré). Vérifier que le pied de page mentionne **Version 4.20**, et que `provenance-politique.html` est consultable. Le second ZIP contient en outre les scripts de génération et de test. Le numéro de paquet est une empreinte de distribution et ne prétend pas être un hash de commit Git.

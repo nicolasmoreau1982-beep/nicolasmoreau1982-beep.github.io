@@ -32,17 +32,18 @@
           <a href="#methode">03 · Mécanismes</a>
           <a href="#histoire">04 · Tests historiques</a>
           <a href="#benchmark-419">04a · Benchmark 4.19</a>
+          <a href="#provenance-420">04b · Provenance politique 4.20</a>
           <a href="#recherche">05 · Modèles de recherche</a>
           <a href="#incertitude">06 · Incertitude</a>
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>3ebe6e049323</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>6944484be75f</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 4.19.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 4.20.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -156,6 +157,18 @@
           <p>Les observations <a href="https://www.insee.fr/fr/statistiques/8988845">Insee 3.217</a> 2018–2025 (IR avant crédits, crédits utilisés et remboursés, IFI/ISF, successions) sont archivées dans <code>research/fiscal-history.json</code>. Elles mesurent des années civiles comptables et ne doivent pas être substituées aux avis DGFiP : les deux séries diffèrent par calendrier, périmètre et traitement des crédits. Pour les successions, aucune distribution historique des parts transmises et des liens de parenté n’a été reconstituée ; l’écart de niveau reste un diagnostic, <strong>pas un rétrotest</strong>. Les fichiers et calculs sont vérifiables avec <code>python3 scripts/verify-fiscal-source.py</code> et <code>node scripts/fiscal-backtest.mjs</code>.</p>
           <p>Le seuil de 100 M€ et le plancher de 2 % de la <a href="https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html">proposition dite Zucman</a> sont illustrés par une contribution <code>max(0, 2 % × patrimoine net − IR − IFI − autres impôts couverts supposés)</code>. L’assiette, les impôts imputables, les valorisations et l’exil fiscal ne sont pas entièrement reproduits. Les 1 800 foyers au-dessus de 100 M€ dans le jeu synthétique sont une <strong>hypothèse de scénario</strong>, pas un fichier fiscal observé. Un rendement précis exigerait des données confidentielles ou une méthode indépendante validée.</p>
           <div class="audit-equation"><span>Identités comptables</span><code>solde = recettes − dépenses ; dette(t+1) ≈ dette(t) − solde(t+1) + ajustements stock-flux</code><p>Le moteur ne prédit pas entièrement les ajustements stock-flux et impose une partie de la trajectoire de déficit de référence. Les postes détaillés ne constituent pas une réconciliation complète de ces identités dans le futur.</p></div>
+        </section>
+
+        <section class="audit-section" id="provenance-420" aria-labelledby="provenance-420-title">
+          <div class="audit-section-heading"><span>04b</span><h2 id="provenance-420-title">Provenance des scénarios politiques · version 4.20</h2></div>
+          <p>La version 4.20 publie un <a href="provenance-politique.html">registre vérifiable de chaque réglage</a> reconstruit automatiquement depuis <code>data.js</code>. Pour chaque valeur, il distingue une correspondance exactement documentée, une proposition liée mais non équivalente et une hypothèse chiffrée EcoSim sans preuve localisée. Il ne crée aucune source fictive pour compléter des cases manquantes.</p>
+          <div class="audit-table-wrap"><table><caption>Couverture documentaire des 19 scénarios et noyaux historiques (4.20)</caption><thead><tr><th>Statut</th><th>Nombre de réglages</th><th>Interprétation</th></tr></thead><tbody>
+            <tr><th scope="row">Valeur exacte, localisée</th><td>0</td><td>Aucune correspondance à l’identique enregistrée à ce stade.</td></tr>
+            <tr><th scope="row">Proposition reliée à un passage</th><td>1</td><td>Le montant ou l’unité du modèle n’est pas équivalent à celui de la source.</td></tr>
+            <tr><th scope="row">Hypothèse EcoSim non vérifiée individuellement</th><td>356</td><td>Pas de justification localisée pour la valeur numérique ; la source générale du scénario ne suffit pas.</td></tr>
+          </tbody></table></div>
+          <div class="audit-warning"><strong>Attention aux étiquettes politiques.</strong><p>Ces 357 réglages sont des choix de simulation attribués à des scénarios inspirés de formations ou d’archives, <strong>pas des chiffrages officiels</strong>. Un niveau de confiance « élevé » pour l’interprétation générale ne signifie pas « montant vérifié ». Une mesure absente n’est pas supposée nulle. Les conclusions d’EcoSim ne sauraient départager des programmes complets.</p></div>
+          <p class="audit-caption">Données reproductibles : <a href="validation/provenance-politique-420.csv">CSV des valeurs</a> · <a href="validation/provenance-politique-420.json">JSON complet</a> · générateur <code>scripts/export-provenance-420.mjs</code>. La couverture des sources peut être enrichie uniquement après vérification documentaire explicite.</p>
         </section>
 
         <section class="audit-section" id="benchmark-419" aria-labelledby="benchmark-419-title">
