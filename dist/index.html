@@ -37,6 +37,7 @@
         <a class="nav-link" href="#methodology" data-scroll="methodology">Méthode</a>
         <a class="nav-link" href="#sources" data-scroll="sources">Sources</a>
         <a class="nav-link" href="#fiscal" data-scroll="fiscal">Fiscalité</a>
+        <a class="nav-link" href="#sectoral-fiscal" data-scroll="sectoral-fiscal">Secteurs</a>
         <a class="nav-link" href="audit.html">Audit complet</a>
         <a class="nav-link" href="evaluations-empiriques-423.html">Études indépendantes</a>
         <button type="button" class="nav-link mobile-nav-action" id="mobile-export-button">Exporter le scénario</button>
@@ -581,6 +582,28 @@
         <p class="fiscal-sources"><strong>Tests fiscaux indépendants ciblés :</strong> <a href="validation-economique-421.html">9 exemples officiels vérifiés, hypothèses et limites ↗</a>. Sources des règles : <a href="https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407">IR</a>, <a href="https://www.impots.gouv.fr/particulier/calcul-de-lifi">IFI</a>, <a href="https://www.impots.gouv.fr/particulier/questions/comment-dois-je-calculer-les-droits-de-succession">successions</a> et <a href="https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html">proposition d’impôt plancher</a>. Celle-ci n’est pas incluse dans le droit de référence. <a href="audit.html#fiscalite">Périmètre et limites ↗</a></p>
       </section>
 
+      <section class="sectoral-section" id="sectoral-fiscal" aria-labelledby="sectoral-title">
+        <div class="section-intro"><div><span class="section-number">Fiscalité sectorielle · expérimental</span>
+          <h2 id="sectoral-title">Cibler une filière, pas toute l’économie</h2>
+          <p>Crédits d’impôt, prélèvements et subventions par filière. Le montant saisi est un <strong>flux budgétaire annuel supposé</strong>, pas un rendement fiscal déduit d’entreprises réelles.</p></div>
+          <a href="fiscalite-sectorielle-424.html">Méthode, secteurs et limites ↗</a></div>
+        <div class="sectoral-card">
+          <div class="sectoral-fields">
+            <label for="sectoral-sector">Filière <select id="sectoral-sector"></select></label>
+            <label for="sectoral-instrument">Mesure <select id="sectoral-instrument"></select></label>
+            <label for="sectoral-amount">Montant annuel (Md€) <input type="number" id="sectoral-amount" min="0.1" max="10" step="0.1" value="2"/></label>
+            <label for="sectoral-start">Début <input type="number" id="sectoral-start" min="2026" max="2035" step="1" value="2026"/></label>
+            <label for="sectoral-duration">Durée (années) <input type="number" id="sectoral-duration" min="1" max="15" step="1" value="5"/></label>
+            <label for="sectoral-response">Modélisation <select id="sectoral-response"><option value="accounting">Flux comptable uniquement</option><option value="exploratory">+ Effet PIB exploratoire</option></select></label>
+          </div>
+          <div class="sectoral-actions"><button id="sectoral-add" class="button button-dark" type="button">Ajouter la mesure</button><span id="sectoral-count" aria-live="polite">0 / 8 mesures</span></div>
+          <ul id="sectoral-measures" class="sectoral-measures" aria-label="Mesures sectorielles du scénario"><li>Aucune mesure sectorielle</li></ul>
+          <div class="sectoral-outcome" role="status" aria-live="polite" id="sectoral-result">Les résultats apparaîtront ici.</div>
+          <p class="sectoral-warning" id="sectoral-overlap" hidden></p>
+          <p class="fiscal-example-note"><strong>Limites :</strong> maximum 8 mesures, 10 Md€/an chacune et 30 Md€/an cumulés. Ni assiette fiscale sectorielle observée, ni effet direct sur les GW, l’emploi ou les émissions. Les regroupements de filières peuvent se chevaucher : vérifiez qu’une même enveloppe n’est pas inscrite ailleurs. Toute aide ou taxation réelle exigerait aussi une analyse juridique.</p>
+        </div>
+      </section>
+
       <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
         <div class="section-intro">
           <div>
@@ -674,7 +697,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.23 · paquet <code title="Empreinte du code de distribution, pas un commit Git">ffe81f652408</code></span>
+      <span class="footer-version">Version 4.24 · paquet <code title="Empreinte du code de distribution, pas un commit Git">42cbd08c2980</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -734,6 +757,7 @@
     <script src="history.js"></script>
     <script src="insee-projection.js"></script>
     <script src="fiscal.js"></script>
+    <script src="sectoral.js"></script>
     <script src="build-info.js"></script>
     <script src="app.js"></script>
     <script src="analytics.js"></script>

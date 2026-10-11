@@ -9,6 +9,8 @@
   const MAX_RISK_PREMIUM_PP = 5;
   const H = window.ECOSIM_HISTORY;
   const F = window.ECOSIM_FISCAL;
+  const S = window.ECOSIM_SECTORAL;
+  if (!S) throw new Error("Module sectoriel manquant");
   if (!F) throw new Error("Moteur fiscal manquant");
   const populationProjection = window.ECOSIM_INSEE_PROJECTION;
   if (!populationProjection?.rows?.length) throw new Error("Projection démographique Insee manquante");
@@ -32,6 +34,7 @@
     activeStructuralTab: "demography",
     engines: Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value])),
     fiscal: { ...F.defaults },
+    sectoral: [],
     activeEngine: "work",
     politicsView: "current",
     politicsModel: "consensus",
@@ -93,6 +96,7 @@
       structural: { ...state.structural },
       engines: { ...state.engines },
       fiscal: { ...state.fiscal },
+      sectoral: state.sectoral.map(item => ({...item})),
       changes: Object.fromEntries(Object.entries(state.changes).filter(([, value]) => Math.abs(value) > 0.0001))
     };
   }
@@ -108,8 +112,12 @@
   };
   function validateScenarioOptions(payload) {
     if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
-    return Object.entries(selectedOptions).every(([field, options]) =>
-      !Object.hasOwn(payload, field) || hasOwnOption(options, payload[field]));
+    if (!Object.entries(selectedOptions).every(([field, options]) =>
+      !Object.hasOwn(payload, field) || hasOwnOption(options, payload[field]))) return false;
+    if (Object.hasOwn(payload,"sectoral")) {
+      try { S.normalize(payload.sectoral); } catch { return false; }
+    }
+    return true;
   }
 
   function applySerialized(payload) {
@@ -143,6 +151,7 @@
         if (Number.isFinite(value)) state.engines[id] = clamp(value, control.min, control.max);
       });
     }
+    state.sectoral = S.normalize(payload.sectoral || []);
     state.fiscal = { ...F.defaults };
     if (payload.fiscal && typeof payload.fiscal === "object") {
       const candidate = { ...F.defaults };
@@ -170,7 +179,7 @@
   function parseScenarioImport(content) {
     const file = JSON.parse(content);
     const payload = file?.scenario && !Array.isArray(file.scenario) ? file.scenario : file;
-    const knownFields = ["changes", "structural", "engines", "fiscal", "model", "euMode", "cycle", "monetary", "confidence"];
+    const knownFields = ["changes", "structural", "engines", "fiscal", "model", "euMode", "cycle", "monetary", "confidence", "sectoral"];
     if (!payload || typeof payload !== "object" || Array.isArray(payload) ||
       !knownFields.some((key) => Object.hasOwn(payload, key))) {
       throw new Error("Ce fichier ne contient pas de scénario EcoSim.");
@@ -831,6 +840,7 @@
       const labor = allocateLaborMarket(structure, engine, index);
       const cohortizedHealth = engine.contributions.healthWorkforce || { fiscalCost: 0, demand: 0, supply: 0, gdpImpact: 0, jobs: 0 };
       const fiscal = F.simulate(state.fiscal, baseline[index].year, priceIndex);
+      const sectoral = S.calculate(state.sectoral, baseline[index].year, profile, factors);
 
       Object.entries(state.changes).forEach(([id, deltaValue]) => {
         const delta = Number(deltaValue);
@@ -890,6 +900,14 @@
       // Interface explicite pour les tests historiques de flux comptables
       // datés sans canal macro estimé (ex. baisse de cotisations 2019).
       // Le site n'en fournit aucun ; un flux ne devient pas une causalité PIB.
+      // Flux spécifiques : aucune création automatique de GW, de baisses
+      // d'émissions ni d'emplois. Une mesure sectorielle est comptée UNE fois,
+      // séparément de l'IR/IFI et des investissements des moteurs énergétiques.
+      spendingChange += sectoral.spendingChange;
+      revenueChange += sectoral.revenueChange;
+      demandContribution += sectoral.demand;
+      supplyContribution += sectoral.supply;
+      policyGdp += sectoral.gdpImpact;
       const directAccounting = directAccountingFlows?.[baseline[index].year];
       if (directAccounting) {
         const spending = directAccounting.spendingBn ?? 0;
@@ -976,6 +994,7 @@
         engines: engine,
         labor,
         fiscal,
+        sectoral,
         bands: {
           gdp: gdpBand,
           deficitRatio: deficitBand,
@@ -1079,7 +1098,8 @@
       policyStartQuarters: {},
       structural: Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, scenario.structural[id] ?? control.value])),
       engines: Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, scenario.engines[id] ?? control.value])),
-      fiscal: { ...F.defaults }
+      fiscal: { ...F.defaults },
+      sectoral: []
     };
   }
 
@@ -1098,7 +1118,7 @@
       policyStartQuarters: state.policyStartQuarters,
       structural: state.structural,
       engines: state.engines,
-      fiscal: state.fiscal
+      fiscal: state.fiscal, sectoral: state.sectoral
     };
     Object.assign(state, politicalScenarioInputs(scenario, modelKey));
     let projection;
@@ -1256,6 +1276,7 @@
     renderStructuralControls();
     renderEngineControls();
     renderFiscalControls();
+    renderSectoralEditor();
     refreshAll(true);
     showToast(`Scénario « ${scenario.name} » appliqué et modifiable`);
     $("#simulator").scrollIntoView({ behavior: "smooth" });
@@ -1314,7 +1335,8 @@
       policyStartQuarters: { ...state.policyStartQuarters },
       structural: { ...state.structural },
       engines: { ...state.engines },
-      fiscal: { ...state.fiscal }
+      fiscal: { ...state.fiscal },
+      sectoral: state.sectoral.map(item => ({...item}))
     });
     if (state.undoStack.length > 30) state.undoStack.shift();
     $("#undo-button").disabled = false;
@@ -1335,7 +1357,8 @@
         policyStartQuarters: { ...state.policyStartQuarters },
         structural: { ...state.structural },
         engines: { ...state.engines },
-        fiscal: { ...state.fiscal }
+        fiscal: { ...state.fiscal },
+        sectoral: state.sectoral.map(item => ({...item}))
       };
     }
   }
@@ -1378,6 +1401,7 @@
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([key, control]) => [key, control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([key, control]) => [key, control.value]));
     state.fiscal = { ...F.defaults };
+    state.sectoral = [];
     clearScenarioLink();
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
@@ -1391,12 +1415,14 @@
     renderStructuralControls();
     renderEngineControls();
     renderFiscalControls();
+    renderSectoralEditor();
     refreshAll(true);
     showToast(`Exemple « ${preset.label} » chargé seul. Annuler près des résultats pour revenir en arrière.`);
   }
 
   function refreshAll(refreshList = false) {
     state.projection = calculateProjection();
+    updateSectoralPanel();
     updateSummary();
     updateResults();
     renderChart();
@@ -1406,6 +1432,63 @@
     updateEngineRoom();
     updateFiscalPanel();
     if (refreshList) renderCategories();
+  }
+
+  function renderSectoralEditor() {
+    const sectorOptions = Object.entries(S.sectors).map(([id, item]) => `<option value="${id}">${escapeHtml(item.group)} · ${escapeHtml(item.label)}</option>`).join("");
+    const instrumentOptions = Object.entries(S.instruments).map(([id, item]) => `<option value="${id}">${escapeHtml(item.label)}</option>`).join("");
+    // Options issues de tables de référence fermées, aucune HTML utilisateur.
+    const sectorSelect = $("#sectoral-sector");
+    if (!sectorSelect.options.length) sectorSelect.innerHTML = sectorOptions;
+    const instrumentSelect = $("#sectoral-instrument");
+    if (!instrumentSelect.options.length) instrumentSelect.innerHTML = instrumentOptions;
+    $("#sectoral-measures").innerHTML = state.sectoral.length
+      ? state.sectoral.map((item, index) => `<li class="sectoral-measure">
+          <div><strong>${escapeHtml(S.sectors[item.sector].label)}</strong> — ${escapeHtml(S.instruments[item.instrument].label)}
+          <small>${fmt1.format(item.amountBn)} Md€/an · ${item.startYear}–${item.startYear+item.durationYears-1} · ${item.response==="accounting"?"Comptable uniquement":"Effet macro exploratoire"}</small></div>
+          <button class="button button-ghost" type="button" data-sector-remove="${index}" aria-label="Retirer : ${escapeHtml(S.sectors[item.sector].label)}">Retirer</button>
+        </li>`).join("")
+      : "<li>Aucune mesure sectorielle : scénario de référence inchangé.</li>";
+    $("#sectoral-count").textContent = `${state.sectoral.length} / ${S.MAX_MEASURES} mesures`;
+    $("#sectoral-add").disabled = state.sectoral.length >= S.MAX_MEASURES;
+  }
+
+  function updateSectoralPanel() {
+    const point = state.projection?.scenario?.[projectionIndex(state.horizon)];
+    const container = $("#sectoral-result");
+    if (!point) return;
+    const outcome = point.sectoral;
+    container.textContent = `En ${point.year} : recettes ${signed(outcome.revenueChange, " Md€")}, dépenses ${signed(outcome.spendingChange, " Md€")}, effet PIB exploratoire ${signed(outcome.gdpImpact, " Md€")}.`;
+    const warning = $("#sectoral-overlap");
+    const hasEnergy = state.sectoral.some(m => ["renewables","nuclear","fossil","grids"].includes(m.sector));
+    const otherLeversUsed = Object.values(state.changes).some(v => Math.abs(Number(v)) > 1e-6)
+      || Object.entries(D.policyEngines.controls).some(([id,control])=>Math.abs(state.engines[id]-control.value)>1e-6)
+      || Object.entries(D.structural.controls).some(([id,control])=>Math.abs(state.structural[id]-control.value)>1e-6);
+    const sectorRepeats = new Set(state.sectoral.map(m=>m.sector)).size < state.sectoral.length;
+    warning.hidden = !(state.sectoral.length && (hasEnergy || otherLeversUsed || sectorRepeats));
+    if (!warning.hidden) warning.textContent = "Vigilance doublons : les mesures sectorielles sont comptées séparément des postes budgétaires et moteurs déjà réglés. Ne saisissez pas la même enveloppe fiscale ou le même investissement deux fois.";
+  }
+
+  function bindSectoralEditor() {
+    $("#sectoral-add").addEventListener("click", () => {
+      const raw = {sector:$("#sectoral-sector").value, instrument:$("#sectoral-instrument").value,
+        amountBn:Number($("#sectoral-amount").value),startYear:Number($("#sectoral-start").value),
+        durationYears:Number($("#sectoral-duration").value),response:$("#sectoral-response").value};
+      try {
+        const next=S.normalize([...state.sectoral,raw]);
+        pushUndo();state.sectoral=next;
+        renderSectoralEditor();refreshAll(true);
+        showToast("Mesure sectorielle ajoutée ; les effets sont conditionnels.");
+      } catch(error) {showToast(error.message || "Mesure invalide",{error:true});}
+    });
+    $("#sectoral-measures").addEventListener("click", event => {
+      const rawIndex=event.target.closest("[data-sector-remove]")?.dataset.sectorRemove;
+      if(rawIndex===undefined)return;
+      const index=Number(rawIndex);
+      if(!Number.isInteger(index)||index<0||index>=state.sectoral.length)return;
+      pushUndo();state.sectoral=state.sectoral.filter((_,i)=>i!==index);
+      renderSectoralEditor();refreshAll(true);
+    });
   }
 
   function renderFiscalControls() {
@@ -1456,7 +1539,7 @@
       : balance < 0
         ? "Dégradation directe du solde avant effets macroéconomiques"
         : "Scénario inchangé par rapport à la référence";
-    const count = Object.values(state.changes).filter((value) => Math.abs(value) > 0.01).length;
+    const count = Object.values(state.changes).filter((value) => Math.abs(value) > 0.01).length + state.sectoral.length;
     $("#changed-count").textContent = `${count} poste${count > 1 ? "s" : ""} modifié${count > 1 ? "s" : ""}`;
   }
 
@@ -1857,6 +1940,7 @@
   }
 
   function updateResults() {
+    updateSectoralPanel();
     const index = projectionIndex(state.horizon);
     const item = state.projection.scenario[index];
     const baseline = state.projection.baseline[index];
@@ -2127,7 +2211,7 @@
     const structureUnchanged = Object.entries(D.structural.controls).every(([id, control]) => Math.abs(state.structural[id] - control.value) < 0.001);
     const enginesUnchanged = Object.entries(D.policyEngines.controls).every(([id, control]) => Math.abs(state.engines[id] - control.value) < 0.001);
     const fiscalUnchanged = Object.entries(F.defaults).every(([id, value]) => state.fiscal[id] === value);
-    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged && enginesUnchanged && fiscalUnchanged) {
+    if (!Object.keys(state.changes).length && state.euMode === "current" && structureUnchanged && enginesUnchanged && fiscalUnchanged && state.sectoral.length === 0) {
       $("#mechanism-status").textContent = "Scénario de référence";
       $("#mechanism-detail").textContent = "Aucune mesure n’est appliquée : la trajectoire centrale reproduit exactement la référence.";
     } else if (interest > demand && interest > supply) {
@@ -2316,6 +2400,7 @@
     state.structural = Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     state.fiscal = { ...F.defaults };
+    state.sectoral = [];
     clearScenarioLink();
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
@@ -2329,6 +2414,7 @@
     renderStructuralControls();
     renderEngineControls();
     renderFiscalControls();
+    renderSectoralEditor();
     refreshAll(true);
     showToast("Scénario réinitialisé");
   }
@@ -2349,6 +2435,7 @@
     state.structural = previous.structural ? { ...previous.structural } : Object.fromEntries(Object.entries(D.structural.controls).map(([id, control]) => [id, control.value]));
     state.engines = previous.engines ? { ...previous.engines } : Object.fromEntries(Object.entries(D.policyEngines.controls).map(([id, control]) => [id, control.value]));
     state.fiscal = previous.fiscal ? { ...previous.fiscal } : { ...F.defaults };
+    state.sectoral = S.normalize(previous.sectoral || []);
     $("#model-select").value = state.model;
     $("#eu-select").value = state.euMode;
     $("#cycle-select").value = state.cycle;
@@ -2362,6 +2449,7 @@
     renderStructuralControls();
     renderEngineControls();
     renderFiscalControls();
+    renderSectoralEditor();
     refreshAll(true);
   }
 
@@ -2397,7 +2485,7 @@
       cycle: state.cycle, monetary: state.monetary, confidence: state.confidence,
       policyStartQuarter: state.policyStartQuarter,
       policyStartQuarters: state.policyStartQuarters,
-      structural: state.structural, engines: state.engines, fiscal: state.fiscal
+      structural: state.structural, engines: state.engines, fiscal: state.fiscal, sectoral: state.sectoral
     };
     let savedPoint;
     try {
@@ -2459,6 +2547,7 @@
     renderStructuralControls();
     renderEngineControls();
     renderFiscalControls();
+    renderSectoralEditor();
     refreshAll(true);
   }
 
@@ -2553,6 +2642,9 @@
       taux_realisation_emploi_pct: round(item.labor.realizationRate * 100, 1),
       solde_fiscal_cohortes_milliards: round(item.structural.migrationNet, 2),
       reforme_fiscale_recettes_milliards: round(item.fiscal.totalBn, 2),
+      fiscalite_sectorielle_recettes_milliards: round(item.sectoral.revenueChange, 2),
+      aides_sectorielles_depenses_milliards: round(item.sectoral.spendingChange, 2),
+      fiscalite_sectorielle_effet_pib_exploratoire_milliards: round(item.sectoral.gdpImpact, 3),
       reforme_ir_milliards: round(item.fiscal.deltaByTax.ir, 2),
       reforme_ifi_milliards: round(item.fiscal.deltaByTax.ifi, 2),
       reforme_successions_milliards: round(item.fiscal.deltaByTax.inheritance, 2),
@@ -2650,6 +2742,7 @@
   }
 
   function bindEvents() {
+    bindSectoralEditor();
     $("#multiplier-analysis-details").addEventListener("toggle", (event) => {
       if (event.currentTarget.open && state.projection) renderMultiplierAnalysis422();
     });
@@ -3039,6 +3132,7 @@
   loadInitialState();
   initTheme();
   initializeControls();
+  renderSectoralEditor();
   initResponsiveUX();
   bindEvents();
   initHelpAndAlerts();

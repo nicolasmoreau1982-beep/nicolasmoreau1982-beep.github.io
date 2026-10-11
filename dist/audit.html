@@ -34,12 +34,13 @@
           <a href="#benchmark-419">04a · Benchmark 4.19</a>
           <a href="#provenance-420">04b · Provenance politique 4.20</a>
           <a href="#validation-421">04c · Validation fiscale et sensibilité 4.21</a>
+          <a href="#sectoriel-424">04f · Fiscalité sectorielle 4.24</a>
           <a href="#recherche">05 · Modèles de recherche</a>
           <a href="#incertitude">06 · Incertitude</a>
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>ffe81f652408</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>42cbd08c2980</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
@@ -385,6 +386,13 @@
             </tbody>
           </table></div>
           <p class="audit-caption">Ces quatre « millésimes » montrent le risque de choc imprévu — surtout 2020 — mais ne mesurent aucun écart de prévision d’EcoSim, qui n’existait pas à ces dates.</p>
+        </section>
+
+        <section class="audit-section" id="sectoriel-424" aria-labelledby="sectoriel-424-title">
+          <div class="audit-section-heading"><span>04f</span><h2 id="sectoriel-424-title">Fiscalité sectorielle exploratoire · version 4.24</h2></div>
+          <p>La 4.24 introduit seize filières pédagogiques — énergie, industrie, transport, bâtiment, agriculture, numérique, santé et économie circulaire — ainsi que trois instruments : crédit d'impôt, prélèvement sectoriel et subvention. Les montants en Md€/an sont des <strong>hypothèses décidées par l'utilisateur</strong> : EcoSim ne dispose pas d'assiettes fiscales nationales par secteur permettant de calculer les rendements effectifs.</p>
+          <p>Par défaut, le canal est <strong>comptable seulement</strong> : la mesure modifie directement les recettes ou dépenses pendant sa durée, puis cesse. Un canal économique facultatif ajoute un effet de PIB conventionnel à délai sectoriel, non validé par des données d'entreprises. Aucun effet direct sur capacités électriques, émissions, consommation de pétrole ou emplois ne lui est attribué. Une enveloppe saisie dans deux modules peut être comptée deux fois : un avertissement le signale, sans garantir une détection exhaustive.</p>
+          <p>Garde-fous : huit mesures au maximum, dix milliards annuels chacune, trente milliards annuels cumulés, années de début 2026–2035, durée 1–15 ans. Les identités budgétaires et les bornes sont testées. Ce module n'est pas une évaluation des effets causaux des aides ou des taxes sectorielles. <a href="fiscalite-sectorielle-424.html">Périmètre, nomenclature et limites ↗</a>.</p>
         </section>
 
         <section class="audit-section" id="recherche" aria-labelledby="recherche-title">

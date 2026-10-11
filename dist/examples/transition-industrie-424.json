@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "version": "4.24.0",
+    "note": "Exemple illustratif ; aucun rendement fiscal officiel sectoriel"
+  },
+  "scenario": {
+    "version": "4.24.0",
+    "name": "Industrie et décarbonation — démonstration",
+    "model": "consensus",
+    "euMode": "current",
+    "sectoral": [
+      {
+        "sector": "metals",
+        "instrument": "credit",
+        "amountBn": 2.5,
+        "startYear": 2026,
+        "durationYears": 6,
+        "response": "exploratory"
+      },
+      {
+        "sector": "circular",
+        "instrument": "grant",
+        "amountBn": 1.5,
+        "startYear": 2027,
+        "durationYears": 5,
+        "response": "accounting"
+      },
+      {
+        "sector": "fossil",
+        "instrument": "levy",
+        "amountBn": 1.5,
+        "startYear": 2026,
+        "durationYears": 6,
+        "response": "accounting"
+      }
+    ]
+  }
+}

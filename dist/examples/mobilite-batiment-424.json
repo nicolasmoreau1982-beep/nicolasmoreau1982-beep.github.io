@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "version": "4.24.0",
+    "note": "Exemple illustratif ; aucun rendement fiscal officiel sectoriel"
+  },
+  "scenario": {
+    "version": "4.24.0",
+    "name": "Mobilité et bâtiment — démonstration",
+    "model": "consensus",
+    "euMode": "current",
+    "sectoral": [
+      {
+        "sector": "automotive",
+        "instrument": "credit",
+        "amountBn": 1.5,
+        "startYear": 2026,
+        "durationYears": 5,
+        "response": "exploratory"
+      },
+      {
+        "sector": "building",
+        "instrument": "grant",
+        "amountBn": 2.0,
+        "startYear": 2026,
+        "durationYears": 5,
+        "response": "accounting"
+      },
+      {
+        "sector": "transit",
+        "instrument": "credit",
+        "amountBn": 1.0,
+        "startYear": 2027,
+        "durationYears": 6,
+        "response": "accounting"
+      }
+    ]
+  }
+}

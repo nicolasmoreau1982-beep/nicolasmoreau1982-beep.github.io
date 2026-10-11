@@ -755,3 +755,21 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 .multiplier-analysis-content h3 { margin:8px 0 0; font-size:17px; }
 .multiplier-export-actions { display:flex; gap:10px; flex-wrap:wrap; }
 @media (max-width:600px) { .multiplier-analysis-422 {padding:12px;} .multiplier-analysis-content table {font-size:13px;} }
+
+/* 4.24 : éditeur fiscalité sectorielle — tailles et contrastes accessibles */
+.sectoral-section{max-width:1320px;margin:0 auto;padding:3rem 2rem;scroll-margin-top:100px}
+.sectoral-card{border:1px solid var(--border, #ccd5d7);border-radius:18px;padding:1.5rem;background:var(--surface, #fff)}
+.sectoral-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.sectoral-fields label{font-size:14px;font-weight:650;display:flex;flex-direction:column;gap:.35rem}
+.sectoral-fields input,.sectoral-fields select{width:100%;max-width:100%;font-size:16px;padding:.6rem;border:1px solid #72838e;border-radius:8px;background:var(--surface, #fff);color:inherit}
+.sectoral-fields :focus-visible,.sectoral-section button:focus-visible{outline:3px solid #08776b;outline-offset:3px}
+.sectoral-actions{display:flex;gap:1rem;align-items:center;margin:1.25rem 0;font-size:14px}
+.sectoral-measures{list-style:none;margin:0 0 1rem;padding:0;display:grid;gap:.55rem;font-size:14px}
+.sectoral-measure{border:1px solid var(--border,#ccd5d7);border-radius:10px;padding:.7rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.sectoral-measure small{display:block;font-size:13px;margin-top:.3rem;color:var(--text-muted,#525f63)}
+.sectoral-measure button{flex-shrink:0}
+.sectoral-outcome{background:var(--surface-secondary,#f2f6f5);padding:1rem;border-radius:12px;font-weight:600;font-size:15px}
+.sectoral-warning{border-left:4px solid #9d501a;padding:.75rem 1rem;background:var(--surface-secondary,#f2f6f5);font-size:14px}
+.sectoral-warning[hidden]{display:none}
+@media(max-width:850px){.sectoral-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.sectoral-section{padding:1.5rem 1rem}.sectoral-fields{grid-template-columns:1fr}.sectoral-measure{align-items:flex-start;flex-direction:column}}

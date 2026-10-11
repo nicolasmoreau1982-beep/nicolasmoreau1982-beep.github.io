@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "version": "4.24.0",
+    "note": "Exemple illustratif ; aucun rendement fiscal officiel sectoriel"
+  },
+  "scenario": {
+    "version": "4.24.0",
+    "name": "Agriculture, santé et numérique — démonstration",
+    "model": "consensus",
+    "euMode": "current",
+    "sectoral": [
+      {
+        "sector": "agriculture",
+        "instrument": "credit",
+        "amountBn": 1.0,
+        "startYear": 2026,
+        "durationYears": 5,
+        "response": "accounting"
+      },
+      {
+        "sector": "health",
+        "instrument": "grant",
+        "amountBn": 1.5,
+        "startYear": 2027,
+        "durationYears": 5,
+        "response": "exploratory"
+      },
+      {
+        "sector": "digital",
+        "instrument": "levy",
+        "amountBn": 0.5,
+        "startYear": 2027,
+        "durationYears": 4,
+        "response": "accounting"
+      }
+    ]
+  }
+}

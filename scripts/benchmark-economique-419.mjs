@@ -14,7 +14,7 @@ const dist=path.join(root,'dist');
 const sandbox={console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean};
 sandbox.window=sandbox;
 const ctx=vm.createContext(sandbox);
-for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js'])
+for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js'])
   vm.runInContext(fs.readFileSync(path.join(dist,f),'utf8'),ctx,{filename:f});
 let app=fs.readFileSync(path.join(dist,'app.js'),'utf8');
 const stop='  loadInitialState();\n  initTheme();';
