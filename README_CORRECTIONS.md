@@ -1,3 +1,46 @@
+# EcoSim France 4.21.1 — Correctifs de transparence et de présentation
+
+**Version prête à publier sur GitHub Pages (correctif de la 4.21, sans changement des coefficients ni du moteur de calcul).**
+
+## Modifications
+
+1. **Comparateur politique :** un état de la provenance est affiché **dans la carte des résultats**, à côté du tableau de comparaison : 357 réglages, **0 correspondance exacte chiffrée**, **1 proposition localisée mais non équivalente**, **356 hypothèses non vérifiées individuellement**. Le compte provient du registre publié, et `scripts/sync-provenance-counter-4211.mjs` le synchronise au build. On ne présente pas une proposition liée comme un chiffrage officiel vérifié.
+2. **Sensibilité économique :** la page `validation-economique-421.html` indique directement, juste avant le tableau, que les trois coefficients stressés à ±20 % **n'incluent ni les multiplicateurs de dépenses/prélèvements, ni leurs délais, ni les effets directs sur le PIB**. La plage ne constitue ni un intervalle de confiance ni une borne de l'incertitude économique.
+3. **Provenance politique :** 18 tableaux enrichis d'un `<caption>` mentionnant le scénario ; en-tête et pied de page corrigés en version 4.21.1 dans **le générateur** `scripts/export-provenance-420.mjs` (les noms des exports 4.20 restent inchangés car leurs données n'ont pas changé).
+4. **Partage de liens :** aperçu visuel `og-ecosim.png` (1200 × 630) avec `og:image` et `twitter:image` pour l'accueil, l'audit et les deux pages pédagogiques concernées.
+5. **Sitemap :** `<lastmod>2026-10-11</lastmod>` uniquement pour les quatre pages réellement modifiées. Dates non inventées pour les guides non modifiés.
+6. **Traçabilité :** empreinte de distribution calculée aussi sur les quatre pages HTML concernées et l'image de partage. Le script `stamp-build.mjs` normalise l'ancienne empreinte avant le hachage : résultat reproductible. Pied de page : **Version 4.21.1 · paquet b177a044830c**. L'empreinte n'est pas un hash Git.
+
+## Validation
+
+Tous les tests conservés passent : `test-regressions`, `test-mathematical` (**466 projections ; 84 128 contrôles numériques**), `test-fiscal-419`, `test-economique-419`, `test-transparence-420`, `test-validation-421`, `test-economie-inchangee-421` (**60 résultats économiques inchangés**). Le nouveau `test-presentation-4211.mjs` vérifie les compteurs, les légendes des tableaux, l'image de partage, le texte sur la sensibilité, les versions et les dates `lastmod`.
+
+## Régénération des pages de présentation
+
+```bash
+node scripts/export-provenance-420.mjs
+node scripts/preparer-validation-421.mjs
+node scripts/sync-provenance-counter-4211.mjs
+node scripts/stamp-build.mjs
+node scripts/test-presentation-4211.mjs
+```
+
+**Attention :** la régénération du registre conserve le millésime de ses exportations (`provenance-politique-420`), parce que la liste des réglages et leur niveau de preuve sont inchangés. Le moteur reste `data.js` version `4.21.0` ; `4.21.1` est une révision de présentation/publication.
+
+## Travail restant à faire
+
+- Vérifier manuellement les propositions primaires attribuées aux formations, mesure par mesure, avec le passage exact, l'unité, le calendrier et les hypothèses d'extrapolation. **Aucune nouvelle source politique n'a été inventée** dans ce correctif.
+- La plage de sensibilité économique reste partielle. Une future analyse devrait faire varier les multiplicateurs et d'autres hypothèses conjointement ; le présent correctif en expose simplement la limite.
+- Un contrôle visuel mobile, au clavier et avec lecteur d'écran reste nécessaire après publication. Le correctif ne prouve pas la validité causale du modèle.
+
+## Publication
+
+Décompresser l'archive « site » à la racine du dossier GitHub Pages, en conservant les sous-dossiers `validation/`. Vérifier `Version 4.21.1` et `paquet b177a044830c` dans le pied de page, ainsi que l'adresse `/og-ecosim.png`.
+
+---
+
+# Historique de la base 4.21
+
 # EcoSim France 4.21.0 — Validation fiscale ciblée et sensibilité économique
 
 **Statut : prêt à publier sur GitHub Pages après contrôle visuel.**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://nicolasmoreau1982-beep.github.io/</loc></url>
-  <url><loc>https://nicolasmoreau1982-beep.github.io/audit.html</loc></url>
+  <url><loc>https://nicolasmoreau1982-beep.github.io/</loc><lastmod>2026-10-11</lastmod></url>
+  <url><loc>https://nicolasmoreau1982-beep.github.io/audit.html</loc><lastmod>2026-10-11</lastmod></url>
   <url><loc>https://nicolasmoreau1982-beep.github.io/confidentialite.html</loc></url>
   <url><loc>https://nicolasmoreau1982-beep.github.io/comprendre-budget-france.html</loc></url>
   <url><loc>https://nicolasmoreau1982-beep.github.io/reforme-retraites.html</loc></url>
@@ -9,6 +9,6 @@
   <url><loc>https://nicolasmoreau1982-beep.github.io/reduire-deficit-public.html</loc></url>
   <url><loc>https://nicolasmoreau1982-beep.github.io/dette-publique-france.html</loc></url>
   <url><loc>https://nicolasmoreau1982-beep.github.io/a-propos.html</loc></url>
-  <url><loc>https://nicolasmoreau1982-beep.github.io/provenance-politique.html</loc></url>
-  <url><loc>https://nicolasmoreau1982-beep.github.io/validation-economique-421.html</loc></url>
+  <url><loc>https://nicolasmoreau1982-beep.github.io/provenance-politique.html</loc><lastmod>2026-10-11</lastmod></url>
+  <url><loc>https://nicolasmoreau1982-beep.github.io/validation-economique-421.html</loc><lastmod>2026-10-11</lastmod></url>
 </urlset>

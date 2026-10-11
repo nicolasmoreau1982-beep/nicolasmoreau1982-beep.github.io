@@ -736,3 +736,8 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 .prov-scroll a { color: var(--blue); }
 .prov-last { color: var(--ink-2); font-size: 13px; }
 @media (max-width: 700px) { .provenance-scenario summary { display: block; } .provenance-scenario summary span { display: block; margin-top: 5px; } }
+
+/* V4.21.1 : provenance visible au contact des résultats comparés. */
+.politics-provenance-status{font-size:14px;line-height:1.55;color:inherit;margin:12px 0 16px;padding:0 2px;}
+.politics-provenance-status strong{font-weight:750;}
+.politics-provenance-status a{text-decoration:underline;text-underline-offset:2px;}

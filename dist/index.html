@@ -16,12 +16,12 @@
     <meta property="og:title" content="Simulateur du budget et de la dette de la France — EcoSim" />
     <meta property="og:description" content="Testez l’effet de réformes sur les finances publiques et comparez des orientations de groupes politiques. Les programmes individuels des candidats ne sont pas encore modélisés." />
     <meta property="og:url" content="https://nicolasmoreau1982-beep.github.io/" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"EcoSim France","applicationCategory":"EducationalApplication","operatingSystem":"Tout navigateur récent","url":"https://nicolasmoreau1982-beep.github.io/","description":"Simulation pédagogique conditionnelle du budget et de la dette publique français."}</script>
     <title>Simulateur du budget et de la dette de la France — EcoSim</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="theme.js"></script>
-  </head>
+  <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"></head>
   <body>
     <a class="skip-link" href="#main">Aller au simulateur</a>
     <noscript><p class="no-js-message">Le simulateur interactif nécessite JavaScript. Les <a href="comprendre-budget-france.html">guides</a> et l’<a href="audit.html">audit</a> restent consultables sans JavaScript.</p></noscript>
@@ -460,7 +460,7 @@
           </div>
         </div>
         <p class="politics-model-note" id="politics-model-note">Le même profil est appliqué à tous les scénarios. Les écarts entre profils testent des hypothèses, pas la probabilité d’un résultat.</p>
-        <p class="politics-provenance-intro"><strong>Traçabilité 4.20 :</strong> les chiffres sont des hypothèses EcoSim lorsqu’aucune correspondance exacte, datée et localisée n’est documentée. <a href="provenance-politique.html">Consulter le registre public de tous les réglages ↗</a>. Une source générale d’une formation ne justifie pas individuellement chaque valeur.</p>
+        <p class="politics-provenance-intro"><strong>Traçabilité documentaire :</strong> les chiffres sont des hypothèses EcoSim lorsqu’aucune correspondance exacte, datée et localisée n’est documentée. <a href="provenance-politique.html">Consulter le registre public de tous les réglages ↗</a>. Une source générale d’une formation ne justifie pas individuellement chaque valeur.</p>
         <div class="politics-grid">
           <div>
             <div class="politics-list" id="politics-list"></div>
@@ -473,6 +473,9 @@
             <div><small>Résultats du moteur EcoSim</small><h3 id="politics-comparison-title">Comparaison à 3 ans</h3></div>
             <span>écarts et niveaux simulés</span>
           </div>
+          <!-- provenance-counter:start -->
+          <p class="politics-provenance-status" role="note"><strong>Provenance des 357 réglages du comparateur : 1 sur 357 lié à une proposition localisée, mais aucun montant exact vérifié (0/357).</strong> 0 correspondances chiffrées exactes, 1 proposition reliée à une source localisée mais non équivalente, 356 hypothèses sans preuve individuelle. <a href="provenance-politique.html">Voir les sources et limites de chaque réglage ↗</a></p>
+          <!-- provenance-counter:end -->
           <div class="politics-comparison-scroll"><div id="politics-comparison"></div></div>
         </article>
         <details class="benchmark-context politics-benchmark-context">
@@ -648,7 +651,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.21 · paquet <code title="Empreinte du code de distribution, pas un commit Git">e0c581f46154</code></span>
+      <span class="footer-version">Version 4.21.1 · paquet <code title="Empreinte du code de distribution, pas un commit Git">b177a044830c</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
