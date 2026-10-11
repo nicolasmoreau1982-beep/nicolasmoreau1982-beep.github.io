@@ -17,6 +17,8 @@
   const populationProjection = window.ECOSIM_INSEE_PROJECTION;
   if (!populationProjection?.rows?.length) throw new Error("Projection démographique Insee manquante");
   const populationByYear = new Map(populationProjection.rows.map((row) => [row.year, row]));
+  const politicalProfiles530 = window.ECOSIM_POLITICAL_PROFILES_530;
+  if (!politicalProfiles530) throw new Error("Correspondances politiques 5.3 manquantes");
   const allCategories = [...D.spending, ...D.revenue];
   const byId = new Map(allCategories.map((item) => [item.id, item]));
   G.checkData(D);
@@ -41,6 +43,7 @@
     activeEngine: "work",
     politicsView: "current",
     politicsModel: "consensus",
+    politicsComparisonMode: "common",
     politicsHorizon: 3,
     selectedPolitics: "technical",
     horizon: 3,
@@ -1040,6 +1043,35 @@
     return politicalScenarioList().find((item) => item.id === id) || politicalScenarioList()[0];
   }
 
+  function politicalModelFor(scenario) {
+    return state.politicsComparisonMode === "doctrine"
+      ? politicalProfiles530.resolve(state.politicsView, scenario.id, "doctrine", state.politicsModel, D.models)
+      : state.politicsModel; // Robustesse : indicateur central + détail neuf profils ci-dessous.
+  }
+
+  function politicalDoctrineExplanation(scenario) {
+    const info = politicalProfiles530.get(state.politicsView, scenario.id);
+    const matched = info.model && Object.hasOwn(D.models, info.model);
+    const label = matched ? D.models[info.model].label : D.models.consensus.label;
+    const source = info.url && /^https:\/\//.test(info.url)
+      ? ` <a href="${escapeHtml(info.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(info.source || "Document consultable")} ↗</a>` : "";
+    return `<div class="politics-doctrine-note" role="note"><strong>Lecture doctrinale : ${escapeHtml(label)}</strong>
+       <p>${escapeHtml(info.reason)} ${matched ? "Association éditoriale non quantitative, et non profil officiel du groupe." : "Profil central de repli : pas d'attribution doctrinale chiffrée."}${source}</p>
+       <p>Le changement de profil modifie des hypothèses de calcul, pas les mesures du programme. Ce n’est pas une validation par le parti.</p></div>`;
+  }
+
+  function politicalRobustnessTable(scenario) {
+    if (state.politicsComparisonMode !== "robustness") return "";
+    const cells = Object.entries(D.models).map(([key, model]) => {
+      const { point, baseline } = politicalPoint(scenario, key);
+      return `<tr><th scope="row">${escapeHtml(model.label)}</th><td>${percent(point.deficitRatio)}</td><td>${percent(point.debtRatio)}</td><td>${signed((point.gdp/baseline.gdp-1)*100, " %")}</td><td>${percent(point.unemployment)}</td></tr>`;
+    }).join("");
+    return `<div class="politics-robustness"><h4>Les neuf lectures pour ce même programme</h4>
+      <div class="politics-robustness-scroll"><table><caption>Même ensemble de mesures ; seuls les coefficients du profil varient. Aucun profil n’a plus de probabilité qu’un autre.</caption>
+      <thead><tr><th scope="col">Profil</th><th scope="col">Déficit</th><th scope="col">Dette</th><th scope="col">PIB vs référence</th><th scope="col">Chômage</th></tr></thead><tbody>${cells}</tbody></table></div>
+      <p>Plages de sensibilité, ni prévisions électorales ni intervalles de confiance. Certains profils représentent une conjoncture, pas une idéologie.</p></div>`;
+  }
+
   function politicalScenarioInputs(scenario, modelKey = state.politicsModel) {
     return {
       changes: { ...scenario.changes },
@@ -1154,7 +1186,8 @@
   function renderPoliticsDetail() {
     const scenario = politicalScenarioById();
     if (!scenario) return;
-    const { point, baseline } = politicalPoint(scenario);
+    const selectedModel = politicalModelFor(scenario);
+    const { point, baseline } = politicalPoint(scenario, selectedModel);
     const sensitivity = politicalSensitivity(scenario);
     const emissions = point.structural.emissionsChange + point.engines.emissions;
     const poverty = 15.4 + point.engines.poverty;
@@ -1181,6 +1214,8 @@
         <div><small>Émissions</small><strong>${signed(emissions, " Mt")}</strong><span>écart CO₂e</span></div>
         <div><small>Pauvreté</small><strong>${percent(poverty)}</strong><span>${signed(point.engines.poverty, " pt")}</span></div>
       </div>
+      ${state.politicsComparisonMode === "doctrine" ? politicalDoctrineExplanation(scenario) : ""}
+      ${politicalRobustnessTable(scenario)}
       <div class="politics-sensitivity"><strong>Écart entre les neuf lectures économiques</strong><p>Déficit : ${percent(sensitivity.deficit[0])} à ${percent(sensitivity.deficit[1])} du PIB · Dette : ${percent(sensitivity.debt[0])} à ${percent(sensitivity.debt[1])} du PIB. Ce sont des résultats sous hypothèses alternatives, pas un intervalle de confiance.</p></div>
       <div class="politics-explanation"><strong>Pourquoi ce résultat reste incertain</strong><p>${scenario.why}${horizonCaveat}</p></div>
       <details class="politics-mapping"><summary>Vérifier les ${rows.length} réglages et leurs sources · ${verifiedCount} valeur exacte, ${relatedCount} proposition documentée</summary><div><p>Une source générale ne prouve pas chaque montant. « Valeur exacte » exige la même grandeur, la même valeur et une page précise ; « proposition documentée » signale un lien mais une traduction non équivalente. Les autres montants sont des hypothèses EcoSim. Aucun blanc n’est interprété comme un effet nul.</p>${rows.length ? rows.map((row) => politicalEvidenceRow(row, scenario.evidence?.[row.key])).join("") : "<span>Aucun réglage discrétionnaire : trajectoire de référence.</span>"}</div></details>
@@ -1192,15 +1227,31 @@
 
   function renderPoliticsComparison() {
     const scenarios = politicalScenarioList();
-    $("#politics-comparison-title").textContent = `Comparaison à ${state.politicsHorizon} an${state.politicsHorizon > 1 ? "s" : ""} · ${D.models[state.politicsModel].label}`;
+    const modeLabels = {
+      common: `Hypothèses communes · ${D.models[state.politicsModel].label}`,
+      doctrine: "Lectures doctrinales documentées · profils variables",
+      robustness: "Sensibilité aux neuf profils · plages non probabilistes"
+    };
+    $("#politics-comparison-title").textContent = `Comparaison à ${state.politicsHorizon} an${state.politicsHorizon > 1 ? "s" : ""} · ${modeLabels[state.politicsComparisonMode]}`;
     const header = `<div class="politics-compare-row is-head"><span>Scénario</span><span>Déficit</span><span>Dette</span><span>PIB vs réf.</span><span>Chômage</span><span>CO₂e</span></div>`;
     const body = scenarios.map((scenario) => {
-      const { point, baseline } = politicalPoint(scenario);
+      const model = politicalModelFor(scenario);
+      const { point, baseline } = politicalPoint(scenario, model);
       const gdpDelta = (point.gdp / baseline.gdp - 1) * 100;
       const emissions = point.structural.emissionsChange + point.engines.emissions;
+      const isRobustness = state.politicsComparisonMode === "robustness";
+      const nine = isRobustness ? Object.keys(D.models).map(key => politicalPoint(scenario, key)) : [];
+      const range = (numbers, suffix = " %") => `${fmt1.format(Math.min(...numbers))}–${fmt1.format(Math.max(...numbers))}${suffix}`;
+      const tag = state.politicsComparisonMode === "doctrine"
+        ? ` · ${politicalProfiles530.get(state.politicsView, scenario.id).model ? D.models[model].short : "Central (repli)"}`
+        : "";
+      const deficitCell = isRobustness ? range(nine.map(x=>x.point.deficitRatio)) : percent(point.deficitRatio);
+      const debtCell = isRobustness ? range(nine.map(x=>x.point.debtRatio)) : percent(point.debtRatio);
+      const gdpCell = isRobustness ? range(nine.map(x=>(x.point.gdp/x.baseline.gdp-1)*100)) : signed(gdpDelta, " %");
+      const unemploymentCell = isRobustness ? range(nine.map(x=>x.point.unemployment)) : percent(point.unemployment);
       return `<button class="politics-compare-row ${scenario.id === state.selectedPolitics ? "is-selected" : ""}" data-politics-id="${scenario.id}" style="--party-color:${scenario.color}">
-        <span><i></i><b>${scenario.short}</b><small>traduction ${scenario.confidence}</small></span>
-        <span>${percent(point.deficitRatio)}</span><span>${percent(point.debtRatio)}</span><span>${signed(gdpDelta, " %")}</span><span>${percent(point.unemployment)}</span><span>${signed(emissions, " Mt")}</span>
+        <span><i></i><b>${scenario.short}</b><small>traduction ${scenario.confidence}${tag}</small></span>
+        <span>${deficitCell}</span><span>${debtCell}</span><span>${gdpCell}</span><span>${unemploymentCell}</span><span>${signed(emissions, " Mt")}</span>
       </button>`;
     }).join("");
     $("#politics-comparison").innerHTML = header + body;
@@ -1216,7 +1267,7 @@
     const scenario = politicalScenarioById(id);
     if (!scenario) return;
     pushUndo();
-    Object.assign(state, politicalScenarioInputs(scenario));
+    Object.assign(state, politicalScenarioInputs(scenario, politicalModelFor(scenario)));
     state.name = scenario.name;
     $("#scenario-name").value = state.name;
     $("#model-select").value = state.model;
@@ -2952,6 +3003,23 @@
     $$('[data-politics-horizon]').forEach((button) => button.addEventListener("click", () => {
       state.politicsHorizon = Number(button.dataset.politicsHorizon);
       $$('[data-politics-horizon]').forEach((item) => item.classList.toggle("is-active", item === button));
+      renderPoliticsDetail();
+      renderPoliticsComparison();
+    }));
+    $$("[data-politics-comparison-mode]").forEach((button) => button.addEventListener("click", () => {
+      const value = button.dataset.politicsComparisonMode;
+      if (!["common", "doctrine", "robustness"].includes(value)) return;
+      state.politicsComparisonMode = value;
+      $$("[data-politics-comparison-mode]").forEach(item => {
+        item.classList.toggle("is-active", item.dataset.politicsComparisonMode === value);
+        item.setAttribute("aria-pressed", String(item.dataset.politicsComparisonMode === value));
+      });
+      $("#politics-model-select").disabled = value !== "common";
+      $("#politics-mode-description").textContent = {
+        common: "Même modèle macroéconomique pour chaque programme : cette lecture isole les mesures.",
+        doctrine: "Correspondances éditoriales sourcées, non officielles ; en l’absence de rattachement défendable, profil central de repli. Comparaison non homogène.",
+        robustness: "Chaque programme passe dans les neuf profils. Les plages ne sont ni des probabilités ni des classements."
+      }[value];
       renderPoliticsDetail();
       renderPoliticsComparison();
     }));

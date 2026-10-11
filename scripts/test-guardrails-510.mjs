@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=f=>fs.readFileSync(path.join(root,'dist',f),'utf8');
 const c=vm.createContext({console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean});c.window=c;
 for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js',
- 'sectoral-observations.js','sectoral.js','guardrails-510.js'])vm.runInContext(read(f),c,{filename:f});
+ 'sectoral-observations.js','sectoral.js','guardrails-510.js','political-profiles-530.js'])vm.runInContext(read(f),c,{filename:f});
 let app=read('app.js');const stop='  loadInitialState();\n  initTheme();';
 assert.ok(app.includes(stop));app=app.slice(0,app.indexOf(stop))+
   '  window.__guardTest={state,applySerialized,parseScenarioImport,serializableState,calculateProjection};\n})();';
@@ -86,5 +86,5 @@ for(const model of Object.keys(D.models)){
  assert.equal(snapshot(),x,`${model} round trip`);checks++;
 }
 assert.ok(read('index.html').includes('src="guardrails-510.js"'));
-assert.equal(D.metadata.version,'5.2.1');
+assert.equal(D.metadata.version,'5.3.0');
 console.log(`DURCISSEMENT 5.1 OK : ${checks} contrôles ciblés, ${invalidScenarios.length} scénarios hostiles, invariants corrompus détectés et imports atomiques.`);

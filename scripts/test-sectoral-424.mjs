@@ -7,13 +7,13 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=f=>fs.readFileSync(path.join(root,'dist',f),'utf8');
 const ctx=vm.createContext({console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean});ctx.window=ctx;
-for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js'])
+for(const f of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js','political-profiles-530.js'])
  vm.runInContext(read(f),ctx,{filename:f});
 let src=read('app.js');const stop='  loadInitialState();\n  initTheme();';
 assert.ok(src.includes(stop));src=src.slice(0,src.indexOf(stop))+'  window.__sectorTest={state,calculateProjection,serializableState,applySerialized};\n})();';
 vm.runInContext(src,ctx,{filename:'app.js'});
 const S=ctx.ECOSIM_SECTORAL,D=ctx.ECOSIM_DATA,{state,calculateProjection,serializableState,applySerialized}=ctx.__sectorTest;
-assert.equal(D.metadata.version,'5.2.1');assert.equal(Object.keys(S.sectors).length,16);
+assert.equal(D.metadata.version,'5.3.0');assert.equal(Object.keys(S.sectors).length,16);
 assert.equal(Object.keys(S.instruments).length,3);
 const base=calculateProjection();
 for(let i=0;i<30;i++) assert.equal(base.scenario[i].sectoral.revenueChange,0);

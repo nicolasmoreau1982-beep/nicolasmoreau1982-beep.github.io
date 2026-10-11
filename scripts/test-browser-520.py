@@ -6,7 +6,7 @@ import asyncio, pathlib, re, time
 from playwright.async_api import async_playwright
 
 DIST=pathlib.Path(__file__).resolve().parent.parent/'dist'
-SCRIPTS=['theme.js','data.js','history.js','insee-projection.js','fiscal.js','sectoral-observations.js','sectoral.js','quality-500.js','build-info.js','guardrails-510.js','app.js','glossary-520.js']
+SCRIPTS=['theme.js','data.js','history.js','insee-projection.js','fiscal.js','sectoral-observations.js','sectoral.js','quality-500.js','build-info.js','guardrails-510.js','political-profiles-530.js','app.js','glossary-520.js']
 async def load_page(browser,width,height):
     page=await browser.new_page(viewport={'width':width,'height':height},device_scale_factor=1)
     errors=[]
@@ -29,7 +29,7 @@ async def main():
     await page.screenshot(path=str(DIST.parent/'capture-bureau-520.png'),full_page=False)
     try:
         assert await page.locator('#v52-summary').evaluate('(el)=>el.open')
-        assert await page.locator('footer').inner_text() and 'Version 5.2.1' in await page.locator('footer').inner_text()
+        assert await page.locator('footer').inner_text() and 'Version 5.3' in await page.locator('footer').inner_text()
         await page.locator('[data-glossary="projection"]').click()
         assert await page.locator('#v52-glossary-dialog').evaluate('(el)=>el.open')
         assert 'Projection conditionnelle' in await page.locator('#v52-glossary-title').inner_text()

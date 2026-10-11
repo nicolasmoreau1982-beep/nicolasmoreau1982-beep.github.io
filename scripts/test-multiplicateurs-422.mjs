@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
 const ctx=vm.createContext({console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean});ctx.window=ctx;
-for(const filename of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js'])
+for(const filename of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js','political-profiles-530.js'])
   vm.runInContext(fs.readFileSync(path.join(dist,filename),'utf8'),ctx,{filename});
 let src=fs.readFileSync(path.join(dist,'app.js'),'utf8');
 const stop='  loadInitialState();\n  initTheme();';
@@ -16,7 +16,7 @@ src=src.slice(0,src.indexOf(stop))+'  window.__test422={state,calculateProjectio
 vm.runInContext(src,ctx,{filename:'app.js'});
 const {state,calculateProjection}=ctx.__test422;
 const D=ctx.ECOSIM_DATA,F=ctx.ECOSIM_FISCAL;
-assert.equal(D.metadata.version,'5.2.1');
+assert.equal(D.metadata.version,'5.3.0');
 const cases=[
  {key:'education+10',label:'Éducation +10 Md€',changes:{GF0901:10}},
  {key:'pensions-10',label:'Pensions −10 Md€',changes:{GF1002:-10}},

@@ -4,7 +4,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');const
 const historical=JSON.parse(fs.readFileSync(path.join(dist,'validation/benchmark-419.json'),'utf8'));
 const sandbox={console,Math,Number,Object,Map,Set,Date,JSON,Intl,Array,String,Boolean};sandbox.window=sandbox;
 const ctx=vm.createContext(sandbox);
-for(const file of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js'])vm.runInContext(fs.readFileSync(path.join(dist,file),'utf8'),ctx,{filename:file});
+for(const file of ['data.js','historical-audit-data.js','history.js','insee-projection.js','fiscal.js','sectoral.js','guardrails-510.js','political-profiles-530.js'])vm.runInContext(fs.readFileSync(path.join(dist,file),'utf8'),ctx,{filename:file});
 let app=fs.readFileSync(path.join(dist,'app.js'),'utf8');const marker='  loadInitialState();\n  initTheme();';assert.ok(app.includes(marker));
 app=app.slice(0,app.indexOf(marker))+'  window.__oldBenchmark={state,calculateProjection};\n})();';vm.runInContext(app,ctx,{filename:'app.js'});
 const {state,calculateProjection}=ctx.__oldBenchmark;const D=ctx.ECOSIM_DATA,F=ctx.ECOSIM_FISCAL;

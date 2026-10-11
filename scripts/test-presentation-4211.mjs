@@ -18,8 +18,8 @@ assert.ok(index.includes(`aucun montant exact vérifié (${counts.exact}/${count
 assert.ok(index.includes(`${counts.unverified} hypothèses sans preuve individuelle`));
 assert.equal((prov.match(/<table>/g)||[]).length,18);
 assert.equal((prov.match(/<caption>/g)||[]).length,18);
-assert.ok(prov.includes('Version 5.2.1 · registre généré'));
-assert.ok(prov.includes('EcoSim France · v5.2.1 · paquet'));
+assert.ok(prov.includes('Version 5.3 · registre généré'));
+assert.ok(prov.includes('EcoSim France · v5.3 · paquet'));
 assert.ok(econ.includes('Les multiplicateurs de dépenses et de prélèvements'));
 assert.ok(econ.includes('exclus de cette plage'));
 assert.ok(econ.includes('Une plage étroite ne signifie donc pas une faible incertitude économique'));

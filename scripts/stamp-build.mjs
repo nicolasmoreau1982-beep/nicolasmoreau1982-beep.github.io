@@ -1,4 +1,4 @@
-/* Identifiant SHA-256 stable de la distribution 5.2.1. Pas un commit Git. */
+/* Identifiant SHA-256 stable de la distribution 5.3. Pas un commit Git. */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -27,4 +27,4 @@ for(const f of all.filter(f=>f.endsWith('.html'))){
  .replaceAll('PAQUET_A_REMPLACER',id);
  fs.writeFileSync(f,s);
 }
-console.log('Version 5.2.1 — identifiant de paquet :',id);
+console.log('Version 5.3 — identifiant de paquet :',id);

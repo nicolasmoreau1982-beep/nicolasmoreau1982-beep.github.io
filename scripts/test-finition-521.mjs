@@ -26,8 +26,8 @@ assert.match(read('informations-legales.html'),/responsable publiquement identif
 assert.match(read('informations-legales.html'),/non renseigné/i);
 assert.match(read('a-propos.html'),/assistance d’outils d’intelligence artificielle/);
 assert.match(read('index.html'),/<title>[^<]+ \| EcoSim France<\/title>/);
-assert.match(read('index.html'),/Version 5\.2\.1/);
-assert.match(read('data.js'),/version: "5\.2\.1"/);
+assert.match(read('index.html'),/Version 5\.3/);
+assert.match(read('data.js'),/version: "5\.3\.0"/);
 const sm=read('sitemap.xml');
 for(const p of ['informations-legales.html','contact-signalement.html'])assert.ok(sm.includes(p),p);
 assert.ok(!sm.includes('/404.html'));

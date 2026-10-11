@@ -477,7 +477,7 @@
             <span class="section-number">05</span>
             <h2 id="politics-title">Présidentielle 2027 : comparer les orientations</h2>
           </div>
-          <p>Mêmes données, mêmes équations, même horizon. Pour l’instant, ce module compare des groupes et familles politiques, pas les programmes individuels des candidats à la présidentielle 2027. Ce sont des traductions chiffrées d’EcoSim — ni des prévisions électorales, ni des chiffrages officiels.</p>
+          <p>Même moteur et même horizon, avec soit un profil commun, soit des hypothèses doctrinales documentées, soit neuf profils de sensibilité. Pour l’instant, ce module compare des groupes et familles politiques, pas les programmes individuels des candidats à la présidentielle 2027. Ce sont des traductions chiffrées d’EcoSim — ni des prévisions électorales, ni des chiffrages officiels.</p>
         </div>
         <p class="politics-catalog">Comparez des scénarios inspirés des documents de groupes et formations français : Rassemblement National (RN), Renaissance et Ensemble pour la République, La France insoumise (LFI), Parti socialiste (PS), Les Républicains (LR), Les Écologistes, MoDem, Horizons, LIOT, Parti communiste français et GDR, et Union des droites pour la République (UDR). Ces traductions partielles sont celles d’EcoSim, pas les chiffrages officiels de ces organisations.</p>
         <div class="politics-toolbar">
@@ -485,8 +485,14 @@
             <button class="is-active" data-politics-view="current" role="tab" aria-selected="true">Groupes actuels</button>
             <button data-politics-view="historical" role="tab" aria-selected="false">Noyaux récurrents sur 20 ans</button>
           </div>
+          <div class="politics-mode-switch" role="group" aria-label="Méthode de comparaison économique">
+            <button type="button" class="is-active" aria-pressed="true" data-politics-comparison-mode="common">Hypothèses communes</button>
+            <button type="button" aria-pressed="false" data-politics-comparison-mode="doctrine">Lecture doctrinale</button>
+            <button type="button" aria-pressed="false" data-politics-comparison-mode="robustness">Neuf profils</button>
+          </div>
+          <p class="politics-mode-description" id="politics-mode-description" role="note">Même modèle macroéconomique pour chaque programme : cette lecture isole les mesures.</p>
           <label class="politics-model" for="politics-model-select">
-            <span>Lecture économique commune</span>
+            <span>Profil économique commun</span>
             <select id="politics-model-select" aria-describedby="politics-model-note"></select>
           </label>
           <div class="politics-horizon" role="group" aria-label="Horizon de comparaison politique">
@@ -499,7 +505,8 @@
             <button data-politics-horizon="30">30 ans</button>
           </div>
         </div>
-        <p class="politics-model-note" id="politics-model-note">Le même profil est appliqué à tous les scénarios. Les écarts entre profils testent des hypothèses, pas la probabilité d’un résultat.</p>
+        <p class="politics-model-note" id="politics-model-note">Ce sélecteur n’agit qu’en mode « Hypothèses communes ». Les autres modes sont explicités dans la page de méthode.</p>
+        <p class="politics-provenance-intro"><strong>Trois méthodes de comparaison :</strong> la vue commune garde les coefficients identiques, la vue doctrinale propose des rapprochements éditoriaux sourcés (aucun coefficient officiel), et la vue à neuf profils teste la sensibilité de chaque programme. <a href="methodes-comparaison-politique-530.html">Lire la méthode et les correspondances ↗</a></p>
         <p class="politics-provenance-intro"><strong>Traçabilité documentaire :</strong> les chiffres sont des hypothèses EcoSim lorsqu’aucune correspondance exacte, datée et localisée n’est documentée. <a href="provenance-politique.html">Consulter le registre public de tous les réglages ↗</a>. Une source générale d’une formation ne justifie pas individuellement chaque valeur.</p>
         <div class="politics-grid">
           <div>
@@ -727,7 +734,7 @@
       <a href="glossaire.html">Glossaire</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 5.2.1 · paquet <code title="Empreinte du code de distribution, pas un commit Git">4a83f82175e9</code></span>
+      <span class="footer-version">Version 5.3 · paquet <code title="Empreinte du code de distribution, pas un commit Git">bfb97652ff8e</code></span>
     <a href="contact-signalement.html">Signaler une erreur</a> <a href="informations-legales.html">Informations légales</a></footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -768,7 +775,7 @@
           <h3>9. Moteurs de politiques publiques</h3>
           <p>Travail, retraites, santé, éducation, logement, industrie, climat, défense, administration, solidarités, innovation et finance sont représentés par des chaînes causales explicites. Chaque levier combine coût ou recette directe, demande à court terme, capacité productive retardée, emploi, prix, commerce extérieur, émissions et pauvreté lorsque ces canaux sont pertinents. Les effets sont additionnels aux postes budgétaires détaillés.</p>
           <h3>10. Programmes politiques</h3>
-          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Un profil économique commun, sélectionnable parmi neuf lectures, s’applique à tous les programmes ; la plage affichée sur le déficit et la dette montre la sensibilité à ces lectures, sans constituer un intervalle de confiance. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
+          <p>Chaque programme est traduit en variations de postes et de leviers visibles, puis passé dans le même moteur. Trois lectures sont proposées : hypothèses communes (référence homogène), correspondances doctrinales facultatives sourcées et ambiguïtés signalées, ou neuf profils économiques appliqués à chaque programme. La dispersion des résultats n’est pas un intervalle de confiance ; une doctrine ne valide pas les coefficients qui semblent la servir. Les montants traduits restent des choix de modélisation et doivent être vérifiés dans les documents cités. Le module historique présente des noyaux thématiques récurrents, pas chaque programme électoral individuel. Le « gouvernement technique » est une convention qui suit une trajectoire de référence dont l’ajustement budgétaire est exogène.</p>
           <h3>11. Moteur fiscal expérimental</h3>
           <p>Un module séparé applique des barèmes IR, IFI et succession simplifiés à des foyers-types pondérés selon revenu et patrimoine ; il peut aussi tester un impôt plancher proposé, désactivé par défaut. Ses écarts de recettes et les gains/pertes simulés alimentent le budget et une réponse de consommation hypothétique. Les foyers-types ne sont pas un échantillon représentatif, les recettes calculées ne sont pas réconciliées avec les comptes et les règles LFSS individuelles ne sont pas codées : ces résultats ne sont pas des prévisions fiscales.</p>
           <h3>12. Exposition sociale expérimentale</h3>
@@ -800,6 +807,7 @@
     <script src="quality-500.js"></script>
     <script src="build-info.js"></script>
     <script src="guardrails-510.js"></script>
+    <script src="political-profiles-530.js"></script>
     <script src="app.js"></script>
     <script src="analytics.js"></script>
     <script src="glossary-520.js"></script>

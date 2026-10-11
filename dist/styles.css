@@ -828,3 +828,22 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 @media(max-width:760px){.v52-quick-nav{margin:15px auto 26px;padding:0 18px}.v52-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px}.v52-quick-grid>div{padding:6px}.v52-quick-grid a{font-size:14px}.v52-summary-hint{display:block;margin:5px 0 0}.v52-glossary-index{grid-template-columns:1fr}.v52-help-trigger{min-width:34px;width:34px;height:34px}}
 @media(max-width:390px){.v52-quick-grid{grid-template-columns:1fr}.v52-glossary-dialog{padding:16px}}
 @media(prefers-reduced-motion:reduce){.v52-quick-nav *,.v52-glossary-dialog *{scroll-behavior:auto!important}}
+
+/* Version 5.3 : comparaison économique politique accessible et explicite */
+.politics-mode-switch { display: flex; flex-wrap: wrap; gap: .45rem; width: 100%; margin-block: .4rem; }
+.politics-mode-switch button { border: 1px solid var(--line, #a8b2bf); border-radius: .6rem; background: var(--surface, #fff); color: inherit; padding: .58rem .76rem; cursor: pointer; font: inherit; font-size: .88rem; }
+.politics-mode-switch button.is-active { border-width: 2px; border-color: currentColor; font-weight: 700; }
+.politics-mode-switch button:focus-visible { outline: 3px solid #156bc0; outline-offset: 3px; }
+.politics-mode-description { width: 100%; font-size: .9rem; margin: .15rem 0 .45rem; }
+.politics-doctrine-note, .politics-robustness { border: 1px solid var(--line, #b8c1cc); border-radius: .8rem; padding: .9rem 1rem; margin: 1rem 0; }
+.politics-doctrine-note p, .politics-robustness p { margin: .45rem 0; font-size: .91rem; }
+.politics-robustness-scroll { overflow-x: auto; max-width: 100%; }
+.politics-robustness table { border-collapse: collapse; width: 100%; min-width: 550px; font-variant-numeric: tabular-nums; }
+.politics-robustness th,.politics-robustness td { border-bottom: 1px solid var(--line, #b8c1cc); padding: .55rem; text-align: left; }
+.politics-robustness thead { position: relative; }
+.politics-compare-row small { overflow-wrap: anywhere; }
+@media(max-width:680px){ .politics-mode-switch { display: grid; grid-template-columns: 1fr; } .politics-mode-switch button { text-align: left; } }
+/* Contenir le tableau des neuf profils dans la carte sur écrans étroits. */
+.politics-grid > *, .politics-detail { min-width: 0; }
+.politics-robustness { min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box; }
+.politics-robustness-scroll { display: block; width: 100%; min-width: 0; max-width: 100%; overflow-x: auto; }

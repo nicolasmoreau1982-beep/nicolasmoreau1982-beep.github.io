@@ -1429,7 +1429,7 @@ window.ECOSIM_DATA = (() => {
       projectionEnd: 2055,
       projectionYears: 30,
       longRunStart: 2036,
-      version: "5.2.1"
+      version: "5.3.0"
     }
   };
 })();
