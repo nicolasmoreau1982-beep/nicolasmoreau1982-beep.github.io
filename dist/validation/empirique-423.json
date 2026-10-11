@@ -1,0 +1,282 @@
+{
+  "version": "4.23.0",
+  "date": "2026-10-11",
+  "baselineVintage": "insee-3.201-2026-08-28",
+  "sourcePolicy": "Liens directs vers résumés scientifiques officiels ; aucune estimation inventée.",
+  "decisionRule": "Aucun rapprochement ne permet un test causal point à point, faute de correspondance de choc et/ou de métrique.",
+  "shock2026ForOnePercentGdpBn": 30.721348811999995,
+  "shockInputBase2025Bn": 30.030644,
+  "studies": [
+    {
+      "id": "public-consumption-2013",
+      "theme": "Dépenses publiques en biens et services",
+      "publisher": "Insee",
+      "year": 2013,
+      "title": "Quelle taille et quelle évolution du multiplicateur de dépenses publiques en France (1980–2010) ?",
+      "authors": "G. Cléaud, M. Lemoine et P.-A. Pionnier",
+      "url": "https://www.insee.fr/fr/statistiques/1381077",
+      "method": "Estimation SVAR et tests de robustesse, 1980–2010",
+      "reported": "Multiplicateur statistiquement significatif, proche de 1 à l’impact ; non significatif après environ 3 ans.",
+      "observedQuantity": "multiplicateur de dépenses en biens et services à court terme",
+      "ecosimCase": "public-services-proxy",
+      "comparability": "partielle",
+      "limitation": "GF0103 est une catégorie fonctionnelle COFOG de services généraux : elle ne mesure pas exclusivement les achats de biens et services du champ empirique ; horizons, définition du PIB et contexte diffèrent.",
+      "quantitativeVerdict": "interdit",
+      "conclusion": "Confrontation d’ordre de grandeur et de persistance seulement. Aucune confirmation/invalidité statistique du moteur."
+    },
+    {
+      "id": "restaurant-vat-2009",
+      "theme": "TVA ciblée sur la restauration",
+      "publisher": "Institut des politiques publiques (IPP)",
+      "year": 2018,
+      "title": "Qui a bénéficié de la baisse de la TVA dans la restauration en 2009 ?",
+      "authors": "Y. Benzarti et D. Carloni",
+      "url": "https://www.ipp.eu/note-ipp-n32-qui-a-beneficie-de-la-baisse-de-la-tva-dans-la-restauration-en-2009/",
+      "method": "Évaluation ex post de la réforme sectorielle entrée en vigueur en juillet 2009",
+      "reported": "Prix consommateurs −1,9 % après 30 mois ; la baisse a surtout bénéficié aux entreprises propriétaires.",
+      "observedQuantity": "transmission de la TVA sectorielle aux prix, salaires et marges",
+      "ecosimCase": "nationwide-vat-illustration",
+      "comparability": "non équivalente",
+      "limitation": "EcoSim teste ici un supplément national de recettes TVA, pas une baisse ciblée du taux de restauration ; pas de module de transmission aux prix et marges sectoriels.",
+      "quantitativeVerdict": "interdit",
+      "conclusion": "Ne valide ni n’invalide le choc TVA national du moteur. Indique une hétérogénéité de transmission que le modèle ne capture pas."
+    },
+    {
+      "id": "retirement-2010",
+      "theme": "Relèvement de l’âge légal de retraite",
+      "publisher": "Insee",
+      "year": 2017,
+      "title": "Report de l’âge de la retraite et taux d’emploi des séniors : le cas de la réforme de 2010",
+      "authors": "Y. Dubois et M. Koubi",
+      "url": "https://www.insee.fr/fr/statistiques/2546882",
+      "method": "Comparaison quasi-expérimentale de générations concernées et de générations témoins",
+      "reported": "Pour les générations concernées, emploi à 60 ans : +17 points (hommes), +16 points (femmes) ; chômage : +7 et +6 points.",
+      "observedQuantity": "probabilité individuelle d’emploi et de chômage des 60 ans",
+      "ecosimCase": "pension-budget-illustration",
+      "comparability": "non équivalente",
+      "limitation": "Un retrait budgétaire de 10 Md€ n’équivaut pas à décaler un âge légal ; EcoSim n’est pas estimé par cohorte, carrière et droit à pension.",
+      "quantitativeVerdict": "interdit",
+      "conclusion": "Rappelle la nécessité de différencier emploi et chômage seniors, mécanismes que ce scénario agrégé ne peut pas reproduire."
+    },
+    {
+      "id": "cice-2013-2016",
+      "theme": "Crédit d’impôt compétitivité emploi",
+      "publisher": "France Stratégie",
+      "year": 2020,
+      "title": "Évaluation du CICE : synthèse des travaux d’approfondissement",
+      "authors": "France Stratégie, TEPP et OFCE",
+      "url": "https://www.strategie-plan.gouv.fr/publications/evaluation-credit-dimpot-competitivite-lemploi-synthese-travaux-dapprofondissement",
+      "method": "Microéconométrie d’entreprises et analyse macrosectorielle",
+      "reported": "Environ 100 000 emplois créés ou préservés selon l’évaluation micro ; 18 Md€ de coût annuel en 2016, forte incertitude.",
+      "observedQuantity": "emploi de firmes exposées à un crédit ciblé sur les bas salaires",
+      "ecosimCase": "contribution-illustration",
+      "comparability": "non équivalente",
+      "limitation": "Une baisse agrégée de recettes de cotisations n’est pas un crédit d’impôt ciblé sur la masse salariale sous 2,5 SMIC ; pas de firmes ni de dispositif temporel CICE.",
+      "quantitativeVerdict": "interdit",
+      "conclusion": "Met en évidence un ciblage et un financement qui doivent être modélisés avant un vrai benchmark."
+    }
+  ],
+  "cases": [
+    {
+      "id": "public-services-proxy",
+      "label": "Dépenses de services généraux +1 % du PIB (proxy COFOG)",
+      "changes": {
+        "GF0103": 30.030644
+      },
+      "unit": "1 point de PIB la 1re année, conversion en Md€ base 2025"
+    },
+    {
+      "id": "nationwide-vat-illustration",
+      "label": "Recettes nationales de TVA +10 Md€/an",
+      "changes": {
+        "R_TVA": 10
+      },
+      "unit": "10 Md€ base 2025 par an"
+    },
+    {
+      "id": "pension-budget-illustration",
+      "label": "Dépenses de pensions −10 Md€/an",
+      "changes": {
+        "GF1002": -10
+      },
+      "unit": "−10 Md€ base 2025 par an"
+    },
+    {
+      "id": "contribution-illustration",
+      "label": "Recettes de cotisations −18 Md€/an",
+      "changes": {
+        "R_SOCIAL": -18
+      },
+      "unit": "−18 Md€ base 2025 par an"
+    }
+  ],
+  "records": [
+    {
+      "caseId": "public-services-proxy",
+      "label": "Dépenses de services généraux +1 % du PIB (proxy COFOG)",
+      "horizon": 1,
+      "deltaGdpPct": 0.7152459897282526,
+      "deltaDeficitBn": 19.50661257546858,
+      "deltaDebtBn": 19.506612575468353,
+      "deltaUnemploymentPp": -0.2153360964048847,
+      "comparability": "partielle"
+    },
+    {
+      "caseId": "public-services-proxy",
+      "label": "Dépenses de services généraux +1 % du PIB (proxy COFOG)",
+      "horizon": 3,
+      "deltaGdpPct": 0.8043044319939074,
+      "deltaDeficitBn": 19.701892811913666,
+      "deltaDebtBn": 57.94898581412599,
+      "deltaUnemploymentPp": -0.20370695849782994,
+      "comparability": "partielle"
+    },
+    {
+      "caseId": "public-services-proxy",
+      "label": "Dépenses de services généraux +1 % du PIB (proxy COFOG)",
+      "horizon": 5,
+      "deltaGdpPct": 0.7916738707042237,
+      "deltaDeficitBn": 23.415585809531038,
+      "deltaDebtBn": 102.66856458902294,
+      "deltaUnemploymentPp": -0.1775942681629843,
+      "comparability": "partielle"
+    },
+    {
+      "caseId": "public-services-proxy",
+      "label": "Dépenses de services généraux +1 % du PIB (proxy COFOG)",
+      "horizon": 10,
+      "deltaGdpPct": 0.769293423715367,
+      "deltaDeficitBn": 36.00339001111584,
+      "deltaDebtBn": 256.25084189431254,
+      "deltaUnemploymentPp": -0.1515125496431633,
+      "comparability": "partielle"
+    },
+    {
+      "caseId": "nationwide-vat-illustration",
+      "label": "Recettes nationales de TVA +10 Md€/an",
+      "horizon": 1,
+      "deltaGdpPct": -0.1065578214040297,
+      "deltaDeficitBn": -8.543056763776633,
+      "deltaDebtBn": -8.543056763776804,
+      "deltaUnemploymentPp": 0.03729523749140995,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "nationwide-vat-illustration",
+      "label": "Recettes nationales de TVA +10 Md€/an",
+      "horizon": 3,
+      "deltaGdpPct": -0.23479896167600822,
+      "deltaDeficitBn": -7.019851416492486,
+      "deltaDebtBn": -22.64499861026161,
+      "deltaUnemploymentPp": 0.08217963658660388,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "nationwide-vat-illustration",
+      "label": "Recettes nationales de TVA +10 Md€/an",
+      "horizon": 5,
+      "deltaGdpPct": -0.2580490680157532,
+      "deltaDeficitBn": -7.096685427032696,
+      "deltaDebtBn": -36.79512800856355,
+      "deltaUnemploymentPp": 0.09031717380551374,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "nationwide-vat-illustration",
+      "label": "Recettes nationales de TVA +10 Md€/an",
+      "horizon": 10,
+      "deltaGdpPct": -0.23573038094623078,
+      "deltaDeficitBn": -8.82833661221639,
+      "deltaDebtBn": -77.39184426803695,
+      "deltaUnemploymentPp": 0.08250563333118155,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "pension-budget-illustration",
+      "label": "Dépenses de pensions −10 Md€/an",
+      "horizon": 1,
+      "deltaGdpPct": -0.1527141409288446,
+      "deltaDeficitBn": -7.8412484579880015,
+      "deltaDebtBn": -7.841248457988058,
+      "deltaUnemploymentPp": 0.044126139952243904,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "pension-budget-illustration",
+      "label": "Dépenses de pensions −10 Md€/an",
+      "horizon": 3,
+      "deltaGdpPct": -0.15886342250741592,
+      "deltaDeficitBn": -8.356791823259798,
+      "deltaDebtBn": -24.281610954016287,
+      "deltaUnemploymentPp": 0.03489551101917421,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "pension-budget-illustration",
+      "label": "Dépenses de pensions −10 Md€/an",
+      "horizon": 5,
+      "deltaGdpPct": -0.15905179235738975,
+      "deltaDeficitBn": -8.996331879854168,
+      "deltaDebtBn": -41.941079953680855,
+      "deltaUnemploymentPp": 0.029200134998627725,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "pension-budget-illustration",
+      "label": "Dépenses de pensions −10 Md€/an",
+      "horizon": 10,
+      "deltaGdpPct": -0.15709830816887926,
+      "deltaDeficitBn": -10.806156386078214,
+      "deltaDebtBn": -92.27395382535906,
+      "deltaUnemploymentPp": 0.023673749592546756,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "contribution-illustration",
+      "label": "Recettes de cotisations −18 Md€/an",
+      "horizon": 1,
+      "deltaGdpPct": 0.43816413022768064,
+      "deltaDeficitBn": 11.509832024707947,
+      "deltaDebtBn": 11.509832024707976,
+      "deltaUnemploymentPp": -0.1428681600352224,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "contribution-illustration",
+      "label": "Recettes de cotisations −18 Md€/an",
+      "horizon": 3,
+      "deltaGdpPct": 0.4239582165040279,
+      "deltaDeficitBn": 12.789448802730334,
+      "deltaDebtBn": 36.28527331082296,
+      "deltaUnemploymentPp": -0.12508095018380416,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "contribution-illustration",
+      "label": "Recettes de cotisations −18 Md€/an",
+      "horizon": 5,
+      "deltaGdpPct": 0.4073980322180315,
+      "deltaDeficitBn": 15.436822543621034,
+      "deltaDebtBn": 65.67708326574848,
+      "deltaUnemploymentPp": -0.11279471022427501,
+      "comparability": "non équivalente"
+    },
+    {
+      "caseId": "contribution-illustration",
+      "label": "Recettes de cotisations −18 Md€/an",
+      "horizon": 10,
+      "deltaGdpPct": 0.38762484781806883,
+      "deltaDeficitBn": 23.939523984345442,
+      "deltaDebtBn": 167.6428754027902,
+      "deltaUnemploymentPp": -0.1004167247523462,
+      "comparability": "non équivalente"
+    }
+  ],
+  "caveats": [
+    "Les séries étudiées sont historiques (1980–2016) et ne sont pas automatiquement transportables à 2026.",
+    "Les paramètres centraux ne sont pas modifiés ni calibrés sur les travaux cités.",
+    "GF0103 appartient à une classification fonctionnelle COFOG, non à un compte économique d’achats publics.",
+    "Aucune simulation nationale TVA, pension ou cotisation ne reconstitue la réforme microéconomique citée.",
+    "Les chiffres issus des études sont des estimations de leurs auteurs, pas des résultats EcoSim."
+  ]
+}

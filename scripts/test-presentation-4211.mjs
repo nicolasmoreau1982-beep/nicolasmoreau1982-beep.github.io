@@ -18,8 +18,8 @@ assert.ok(index.includes(`aucun montant exact vérifié (${counts.exact}/${count
 assert.ok(index.includes(`${counts.unverified} hypothèses sans preuve individuelle`));
 assert.equal((prov.match(/<table>/g)||[]).length,18);
 assert.equal((prov.match(/<caption>/g)||[]).length,18);
-assert.ok(prov.includes('Version 4.22 · registre généré'));
-assert.ok(prov.includes('EcoSim France · v4.22 · paquet'));
+assert.ok(prov.includes('Version 4.23 · registre généré'));
+assert.ok(prov.includes('EcoSim France · v4.23 · paquet'));
 assert.ok(econ.includes('Les multiplicateurs de dépenses et de prélèvements'));
 assert.ok(econ.includes('exclus de cette plage'));
 assert.ok(econ.includes('Une plage étroite ne signifie donc pas une faible incertitude économique'));
@@ -33,9 +33,9 @@ for (const f of ['index.html','audit.html','provenance-politique.html','validati
 }
 const img=fs.readFileSync(path.join(dist,'og-ecosim.png'));
 assert.ok(img.length>5000 && img[0]===0x89 && img.slice(1,4).toString()==='PNG');
-for(const page of ['/','/audit.html','/provenance-politique.html','/validation-economique-421.html','/sensibilite-multiplicateurs-422.html']) {
+for(const page of ['/','/audit.html','/provenance-politique.html','/validation-economique-421.html','/sensibilite-multiplicateurs-422.html','/evaluations-empiriques-423.html']) {
  const loc=`https://nicolasmoreau1982-beep.github.io${page}`;
  assert.ok(sitemap.includes(`<loc>${loc}</loc><lastmod>2026-10-11</lastmod>`));
 }
-assert.equal((sitemap.match(/<lastmod>/g)||[]).length,5);
+assert.equal((sitemap.match(/<lastmod>/g)||[]).length,6);
 console.log('PRÉSENTATION 4.21.1 OK : provenance, limites de sensibilité, captions, versions, métadonnées et sitemap.');

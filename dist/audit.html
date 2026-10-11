@@ -39,7 +39,7 @@
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>5d55b3b98dcc</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>ffe81f652408</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
@@ -171,6 +171,13 @@
           <div class="audit-warning"><strong>Attention aux étiquettes politiques.</strong><p>Ces 357 réglages sont des choix de simulation attribués à des scénarios inspirés de formations ou d’archives, <strong>pas des chiffrages officiels</strong>. Un niveau de confiance « élevé » pour l’interprétation générale ne signifie pas « montant vérifié ». Une mesure absente n’est pas supposée nulle. Les conclusions d’EcoSim ne sauraient départager des programmes complets.</p></div>
           <p class="audit-caption">Données reproductibles : <a href="validation/provenance-politique-420.csv">CSV des valeurs</a> · <a href="validation/provenance-politique-420.json">JSON complet</a> · générateur <code>scripts/export-provenance-420.mjs</code>. La couverture des sources peut être enrichie uniquement après vérification documentaire explicite.</p>
         </section>
+
+          <section class="audit-section" id="evaluations-423" aria-labelledby="evaluations-423-title">
+            <div class="audit-section-heading"><span>04e</span><h2 id="evaluations-423-title">Confrontation avec des études indépendantes · version 4.23</h2></div>
+            <p>Quatre études scientifiques françaises permettent d'examiner les mécanismes observés : multiplicateur des dépenses en biens et services (Insee), TVA restauration 2009 (IPP), âge légal de retraite (Insee) et CICE (France Stratégie). Leurs résultats sont externes à la construction du moteur ; ils n'ont pas servi à modifier ses coefficients.</p>
+            <p><strong>Couverture :</strong> une étude seulement partiellement comparable au proxy COFOG et trois réformes non équivalentes aux leviers d'EcoSim. Aucun résultat ne fournit encore une évaluation causale directement testable sur des chocs strictement alignés. Ne pas traiter un chiffre historique de TVA sectorielle ou d'emploi à 60 ans comme une validation d'un choc agrégé sur recettes ou pensions.</p>
+            <p><a href="evaluations-empiriques-423.html">Lire les études, les résultats calculés et les limites ↗</a> · <a href="validation/empirique-423.json">Données et provenance (JSON)</a> · <a href="validation/empirique-423.csv">Sorties EcoSim (CSV)</a>.</p>
+          </section>
 
           <section class="audit-section" id="sensibilite-422"><div class="audit-section-heading"><span>04d</span><h2>Transmission économique et explication · version 4.22</h2></div><p>La version 4.22 explore des variantes conventionnelles ×0,70 / ×1,00 / ×1,30 des canaux de transmission des dépenses et prélèvements. Les montants budgétaires saisis sont maintenus constants. Ce banc teste cinq scénarios simples, à 1, 3, 5 et 10 ans, et contrôle la somme des quatre contributions comptables à l’écart de déficit.</p><p>Ces facteurs ne sont ni des plages empiriques de multiplicateurs ni des intervalles de confiance, et ils ne remplacent pas une validation hors échantillon. Les moteurs structurels, sociaux et les hypothèses de comportement ne sont pas tous testés. <a href="sensibilite-multiplicateurs-422.html">Tableaux pré-rendus et exports du banc 4.22 ↗</a>. Le <a href="provenance-politique.html">registre de provenance</a> signale les rattachements à des propositions officielles tout en marquant leurs montants comme non équivalents lorsqu’ils ne sont pas vérifiés.</p></section>
 

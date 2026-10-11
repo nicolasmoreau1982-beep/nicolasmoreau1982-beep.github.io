@@ -16,7 +16,7 @@ src=src.slice(0,src.indexOf(stop))+'  window.__test422={state,calculateProjectio
 vm.runInContext(src,ctx,{filename:'app.js'});
 const {state,calculateProjection}=ctx.__test422;
 const D=ctx.ECOSIM_DATA,F=ctx.ECOSIM_FISCAL;
-assert.equal(D.metadata.version,'4.22.0');
+assert.equal(D.metadata.version,'4.23.0');
 const cases=[
  {key:'education+10',label:'Éducation +10 Md€',changes:{GF0901:10}},
  {key:'pensions-10',label:'Pensions −10 Md€',changes:{GF1002:-10}},
