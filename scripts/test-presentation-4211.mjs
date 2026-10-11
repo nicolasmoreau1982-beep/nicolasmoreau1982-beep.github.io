@@ -18,8 +18,8 @@ assert.ok(index.includes(`aucun montant exact vérifié (${counts.exact}/${count
 assert.ok(index.includes(`${counts.unverified} hypothèses sans preuve individuelle`));
 assert.equal((prov.match(/<table>/g)||[]).length,18);
 assert.equal((prov.match(/<caption>/g)||[]).length,18);
-assert.ok(prov.includes('Version 4.25 · registre généré'));
-assert.ok(prov.includes('EcoSim France · v4.25 · paquet'));
+assert.ok(prov.includes('Version 5.0 · registre généré'));
+assert.ok(prov.includes('EcoSim France · v5.0 · paquet'));
 assert.ok(econ.includes('Les multiplicateurs de dépenses et de prélèvements'));
 assert.ok(econ.includes('exclus de cette plage'));
 assert.ok(econ.includes('Une plage étroite ne signifie donc pas une faible incertitude économique'));
@@ -37,5 +37,5 @@ for(const page of ['/','/audit.html','/provenance-politique.html','/validation-e
  const loc=`https://nicolasmoreau1982-beep.github.io${page}`;
  assert.ok(sitemap.includes(`<loc>${loc}</loc><lastmod>2026-10-11</lastmod>`));
 }
-assert.equal((sitemap.match(/<lastmod>/g)||[]).length,8);
+assert.equal((sitemap.match(/<lastmod>/g)||[]).length,9);
 console.log('PRÉSENTATION 4.21.1 OK : provenance, limites de sensibilité, captions, versions, métadonnées et sitemap.');

@@ -38,6 +38,7 @@
         <a class="nav-link" href="#sources" data-scroll="sources">Sources</a>
         <a class="nav-link" href="#fiscal" data-scroll="fiscal">Fiscalité</a>
         <a class="nav-link" href="#sectoral-fiscal" data-scroll="sectoral-fiscal">Secteurs</a>
+        <a class="nav-link" href="#qualite-500" data-scroll="qualite-500">Qualité</a>
         <a class="nav-link" href="audit.html">Audit complet</a>
         <a class="nav-link" href="evaluations-empiriques-423.html">Études indépendantes</a>
         <button type="button" class="nav-link mobile-nav-action" id="mobile-export-button">Exporter le scénario</button>
@@ -84,6 +85,7 @@
               </a>
             </div>
             <a class="hero-audit-link" href="audit.html">Sources, méthode et incertitude : consulter l’audit ↗</a>
+            <p class="hero-reference-note"><a href="qualite-et-energie-500.html">Version 5.0 : contrôle des recouvrements et bilan physique énergétique ↗</a></p>
           </div>
           <div class="hero-stamp" aria-label="Périmètre de la simulation">
             <span>Périmètre</span>
@@ -606,6 +608,17 @@
         </div>
       </section>
 
+      <section class="sectoral-section v5-quality" id="qualite-500" aria-labelledby="qualite-500-title">
+        <div class="section-intro"><div><span class="section-number">5.0 · Vérifications transversales</span>
+          <h2 id="qualite-500-title">Ce scénario pourrait-il compter deux fois un même effet ?</h2></div>
+          <p>Contrôles indicatifs entre budget, mesures structurelles, moteurs publics et fiscalité sectorielle. Aucune correction automatique : une superposition peut être intentionnelle.</p></div>
+        <div class="sectoral-card">
+          <p id="qualite-500-status" role="status" aria-live="polite">Diagnostic en cours…</p>
+          <ul id="qualite-500-list" class="v5-alert-list" aria-label="Risques de recoupements du scénario"></ul>
+          <p class="fiscal-example-note">Un avertissement n'est pas une preuve de double comptage. Vérifiez les périmètres et le financement avant d'interpréter les résultats. <a href="qualite-et-energie-500.html">Méthode, limites et bilan physique pétrole/électricité ↗</a></p>
+        </div>
+      </section>
+
       <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
         <div class="section-intro">
           <div>
@@ -699,7 +712,7 @@
       <a href="comprendre-budget-france.html">Guides</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version 4.25 · paquet <code title="Empreinte du code de distribution, pas un commit Git">14f3c54ee942</code></span>
+      <span class="footer-version">Version 5.0 · paquet <code title="Empreinte du code de distribution, pas un commit Git">c01ea17d83a5</code></span>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -761,6 +774,7 @@
     <script src="fiscal.js"></script>
     <script src="sectoral-observations.js"></script>
     <script src="sectoral.js"></script>
+    <script src="quality-500.js"></script>
     <script src="build-info.js"></script>
     <script src="app.js"></script>
     <script src="analytics.js"></script>

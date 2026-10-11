@@ -1,0 +1,24 @@
+{
+  "dataset": "Bilan énergétique de la France, données définitives 2024",
+  "publisher": "SDES, ministère chargé de la transition écologique",
+  "year": 2024,
+  "published": "2026-01-26",
+  "perimeter": "France, consommation finale à usage énergétique sauf mention contraire",
+  "observed": {
+    "finalEnergyTWh": 1499,
+    "oilProductsIncludingBiofuelsTWh": 624.2,
+    "finalElectricityTWh": 398,
+    "shareOilProductsUsedByTransportApprox": 0.80
+  },
+  "sources": [
+    "https://www.statistiques.developpement-durable.gouv.fr/bilan-energetique-de-la-france-en-2024-synthese",
+    "https://portail.documentation.developpement-durable.gouv.fr/pub/MPDOUV00268844-bilan-energetique-france-pour-2024.html"
+  ],
+  "limitations": [
+    "Les produits pétroliers comprennent les biocarburants.",
+    "Ne pas confondre consommation finale d'électricité et production électrique RTE.",
+    "Les données 2024 ne sont pas la référence macroéconomique 2025 du simulateur.",
+    "Le taux de remplacement et le rapport d'électricité supplémentaire sont des hypothèses saisies par l'utilisateur, pas des coefficients de causalité estimés.",
+    "Aucune traduction automatique en coût, émission, emploi, PIB ou financement public."
+  ]
+}

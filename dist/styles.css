@@ -773,3 +773,22 @@ footer { max-width: 1440px; margin: 0 auto; padding: 28px 5vw 42px; border-top: 
 .sectoral-warning[hidden]{display:none}
 @media(max-width:850px){.sectoral-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.sectoral-section{padding:1.5rem 1rem}.sectoral-fields{grid-template-columns:1fr}.sectoral-measure{align-items:flex-start;flex-direction:column}}
+
+/* EcoSim 5.0 : contrôle des doublons, affichage petit écran. */
+.v5-quality {scroll-margin-top:90px}
+.v5-alert-list {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;list-style:none;margin:16px 0;padding:0}
+.v5-alert-list li {border:1px solid var(--line, #d5d5d5);border-radius:12px;padding:16px;background:var(--panel, #fff)}
+.v5-alert-list li p {font-size:14px;line-height:1.55;margin:6px 0 0}
+.v5-guide {max-width:950px;margin:auto;padding:40px 22px 90px;line-height:1.65}
+.v5-guide h1{font-size:clamp(30px,4vw,48px);line-height:1.18}
+.v5-guide section {margin-top:35px;border:1px solid var(--line,#ccc);border-radius:16px;padding:clamp(18px,3vw,30px);background:var(--panel,#fff)}
+.v5-guide label {display:block;font-size:16px;font-weight:600;margin-top:15px}
+.v5-guide input[type=range]{display:block;width:100%;max-width:580px;margin:14px 0 22px;accent-color:#08776b}
+.v5-energy-metrics {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0}
+.v5-energy-metrics>div {background:var(--bg,#f4f1ea);border:1px solid var(--line,#ddd);border-radius:10px;padding:16px}
+.v5-energy-metrics small{display:block;font-size:13px}.v5-energy-metrics strong{display:block;font-size:24px;margin-top:4px}
+.v5-method-warning {font-size:14px;border-left:4px solid #08776b;padding-left:12px}
+.v5-guide table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}
+.v5-guide caption{text-align:left;font-size:14px;margin-bottom:10px}
+.v5-guide th,.v5-guide td{padding:12px;border-bottom:1px solid #aaa;text-align:left;min-width:130px;font-size:14px}
+@media(max-width:760px){.v5-guide{padding:24px 12px}.v5-quality{scroll-margin-top:50px}.v5-guide section{padding:16px}}

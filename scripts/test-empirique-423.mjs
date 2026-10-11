@@ -24,9 +24,9 @@ for(const r of doc.records){
  for(const k of ['deltaGdpPct','deltaDeficitBn','deltaDebtBn','deltaUnemploymentPp'])assert.ok(Number.isFinite(r[k]));
 }
 for(const f of [index,audit,sitemap])assert.ok(f.includes('evaluations-empiriques-423.html'));
-assert.ok(index.includes('Version 4.25'));
+assert.ok(index.includes('Version 5.0'));
 const build=file('build-info.js').match(/\b[a-f0-9]{12}\b/)?.[0];
 assert.ok(build);
 assert.ok(html.includes('paquet <code>'+build+'</code>'));
-assert.ok(file('provenance-politique.html').includes('v4.25'));
+assert.ok(file('provenance-politique.html').includes('v5.0'));
 console.log('ÉVALUATION 4.23 OK : 4 études indépendantes, 0 correspondance stricte, 16 résultats calculés, sources, page et exports cohérents.');

@@ -1,0 +1,22 @@
+/** EcoSim 5.0 — bilan physique observé et substitution indicative, indépendant du moteur. */
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+import path from 'node:path';import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const ctx=vm.createContext({Math,Number,Object,Array,JSON});ctx.window=ctx;
+vm.runInContext(fs.readFileSync(path.join(root,'dist/energy-balance-500.js'),'utf8'),ctx);
+const E=ctx.ECOSIM_ENERGY_500;
+const reference=JSON.parse(fs.readFileSync(path.join(root,'dist/data/energy-reference-2024.json'),'utf8'));
+assert.equal(E.BASE.oilProductsTWh,reference.observed.oilProductsIncludingBiofuelsTWh);
+assert.equal(E.BASE.finalEnergyTWh,reference.observed.finalEnergyTWh);
+assert.equal(E.BASE.electricityFinalTWh,reference.observed.finalElectricityTWh);
+assert.equal(E.BASE.transportOilShare,reference.observed.shareOilProductsUsedByTransportApprox);
+assert.equal(E.BASE.year,2024);assert.equal(E.BASE.oilProductsTWh,624.2);assert.equal(E.BASE.electricityFinalTWh,398);
+const zero=E.calculate();assert.equal(zero.oilAvoidedTWh,0);assert.equal(zero.electricityExtraTWh,0);assert.equal(zero.oilRemainingTWh,624.2);
+const ten=E.calculate({transportPercent:10,otherPercent:0,electricRatio:0.3});
+assert.ok(Math.abs(ten.oilAvoidedTWh-49.936)<1e-9);assert.ok(Math.abs(ten.electricityExtraTWh-14.9808)<1e-9);assert.ok(Math.abs(ten.oilRemainingTWh-574.264)<1e-9);
+const all=E.calculate({transportPercent:100,otherPercent:100,electricRatio:1});assert.ok(Math.abs(all.oilRemainingTWh)<1e-9);
+for(const bad of [{transportPercent:101},{otherPercent:-1},{electricRatio:0},{electricRatio:Infinity},{transportPercent:NaN}])assert.throws(()=>E.calculate(bad),{name:'RangeError'});
+const html=fs.readFileSync(path.join(root,'dist/qualite-et-energie-500.html'),'utf8');
+for(const val of ['624,2','1 499','398','id="oil-avoided"','energy-balance-500.js','n\'est pas injecté']) assert.ok(html.includes(val),val);
+assert.ok(!fs.readFileSync(path.join(root,'dist/app.js'),'utf8').includes('ECOSIM_ENERGY_500'),'Les exercices physiques ne doivent pas recalibrer le moteur');
+console.log('ÉNERGIE 5.0 OK : référentiel SDES 2024, 3 scénarios, limites d\'entrée et séparation du moteur macroéconomique.');

@@ -1420,9 +1420,31 @@
     showToast(`Exemple « ${preset.label} » chargé seul. Annuler près des résultats pour revenir en arrière.`);
   }
 
+  function renderCrossModuleQuality500() {
+    const module = window.ECOSIM_QUALITY;
+    const message = $("#qualite-500-status");
+    const list = $("#qualite-500-list");
+    if (!module || !message || !list) return;
+    const inspected = module.inspect(state, { ...D, sectoral: S });
+    message.textContent = inspected.count === 0
+      ? "Aucun recouvrement connu détecté entre les leviers actifs. Cela ne garantit pas l'absence de double compte."
+      : `${inspected.count} risque${inspected.count > 1 ? "s" : ""} de recouvrement à examiner ; aucune correction automatique.`;
+    list.replaceChildren();
+    for (const warning of inspected.alerts) {
+      const li = document.createElement("li");
+      const strong = document.createElement("strong");
+      const detail = document.createElement("p");
+      strong.textContent = warning.title;
+      detail.textContent = warning.reason;
+      li.append(strong, detail);
+      list.append(li);
+    }
+  }
+
   function refreshAll(refreshList = false) {
     state.projection = calculateProjection();
     updateSectoralPanel();
+    renderCrossModuleQuality500();
     updateSummary();
     updateResults();
     renderChart();

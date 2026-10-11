@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="EcoSim 5.0 : qualité du modèle, risques de double comptabilisation et bilan physique illustratif des énergies fossiles en France.">
+<link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/qualite-et-energie-500.html">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css">
+<title>Qualité des simulations et bilan énergétique — EcoSim 5.0</title></head><body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+<header class="topbar"><a class="brand" href="index.html">EcoSim <b>France</b></a><a class="button button-ghost" href="index.html">← Retour au simulateur</a></header>
+<main id="main" class="v5-guide"><p class="eyebrow">EcoSim 5.0 · Consolidation du modèle</p>
+<h1>Vérifier les interactions et comprendre le pétrole</h1>
+<p>Cette version ajoute des <strong>alertes sur les recouvrements possibles</strong> entre mesures. Elles ne corrigent pas automatiquement les montants, puisqu'une combinaison peut être légitime. Elle propose aussi un <strong>exercice physique indépendant</strong> pour comprendre la différence entre produire davantage d'électricité et remplacer du pétrole dans les usages.</p>
+<section aria-labelledby="physique"><h2 id="physique">1. Remplacer des usages pétroliers : exercice illustratif</h2>
+<p>Observations SDES 2024 : consommation finale d'énergie à usage énergétique <strong>1 499 TWh</strong>, produits pétroliers (biocarburants compris) <strong>624,2 TWh</strong>, électricité finale <strong>398 TWh</strong>. Environ 80 % de la consommation énergétique de produits pétroliers concerne les transports. Ces valeurs n'ont pas toutes les mêmes frontières comptables : ne pas additionner directement les agrégats.</p>
+<p><label for="oil-transport">Part du pétrole des transports remplacée : <output id="oil-transport-out">10 %</output></label>
+<input id="oil-transport" type="range" min="0" max="60" step="5" value="10"></p>
+<p><label for="oil-other">Part des autres usages pétroliers remplacée : <output id="oil-other-out">0 %</output></label>
+<input id="oil-other" type="range" min="0" max="60" step="5" value="0"></p>
+<p><label for="oil-ratio">Besoin électrique par kWh pétrolier remplacé : <output id="oil-ratio-out">0,30 kWh</output></label>
+<input id="oil-ratio" type="range" min="0.1" max="1" step="0.05" value="0.3"></p>
+<div class="v5-energy-metrics" role="status" aria-live="polite">
+<div><small>Pétrole évité (illustration)</small><strong id="oil-avoided">49,9 TWh</strong></div>
+<div><small>Électricité supplémentaire (illustration)</small><strong id="electric-extra">15,0 TWh</strong></div>
+<div><small>Pétrole restant dans l'exercice</small><strong id="oil-remaining">574,3 TWh</strong></div></div>
+<p id="oil-method-warning" class="v5-method-warning">Le facteur 0,30 est choisi par l’utilisateur pour l’exercice, pas estimé pour l’ensemble de l'économie. Le calcul n'évalue ni coûts, ni production électrique nécessaire, ni émissions, ni emplois. Il n'est pas injecté dans la projection EcoSim.</p>
+<p><strong>Sources :</strong> <a href="https://www.statistiques.developpement-durable.gouv.fr/bilan-energetique-de-la-france-en-2024-synthese">SDES, bilan énergétique définitif 2024</a> et <a href="https://portail.documentation.developpement-durable.gouv.fr/pub/MPDOUV00268844-bilan-energetique-france-pour-2024.html">bilan détaillé, consommation finale de produits pétroliers</a>. La production électrique de RTE est un autre périmètre ; elle ne doit pas être substituée à la consommation finale d'électricité. <a href="data/energy-reference-2024.json">Télécharger la provenance structurée (JSON)</a>.</p></section>
+<section><h2>2. Les contrôles transversaux</h2><p>Dans le simulateur, un panneau analyse les mesures actives : même filière soutenue plusieurs fois, aides énergétiques combinées à des capacités structurelles, IS général combiné à une mesure sectorielle, transports, bâtiment, petite enfance et santé. Les alertes signalent un <strong>risque de recouvrement à examiner</strong>, pas un double compte démontré.</p><p><a href="index.html#qualite-500">Afficher le diagnostic de votre scénario →</a></p></section>
+<section><h2>3. État de validation du modèle</h2>
+<table><caption>Ce qui est effectivement établi ou non en version 5.0</caption><thead><tr><th>Dimension</th><th>État</th><th>Ce qui manque</th></tr></thead><tbody>
+<tr><td>Identités budgétaires</td><td>Testées sur scénarios automatisés</td><td>Révisions de comptes et ajustements stock-flux réels</td></tr>
+<tr><td>Règles fiscales par foyers-types</td><td>Neuf cas officiels ciblés</td><td>Règles exhaustives et données représentatives</td></tr>
+<tr><td>Réactions d'entreprises</td><td>Exploratoires, contextualisées par Ésane 2023</td><td>Évaluations causales par filière et dispositif</td></tr>
+<tr><td>Projections macroéconomiques</td><td>Conditionnelles, tests de cohérence et sensibilités</td><td>Validations causales indépendantes des réformes</td></tr>
+<tr><td>Pétrole / électrification</td><td>Bilan SDES observé et exercice séparé</td><td>Modèle physique sectoriel, technologies, calendriers et réseau</td></tr>
+<tr><td>Gagnants / perdants nationaux</td><td>Foyers-types illustratifs</td><td>Microsimulation représentative</td></tr>
+<tr><td>Programmes politiques</td><td>Propositions rapprochées de sources, montants non officiels</td><td>Chiffrage exact et localisé mesure par mesure</td></tr>
+</tbody></table>
+<p>Les études empiriques disponibles sont recensées sur la <a href="evaluations-empiriques-423.html">page des évaluations historiques</a>, avec leur niveau de comparabilité. Aucun test de qualité logicielle ne saurait être interprété comme une validation causale.</p></section>
+</main><footer><p>Version 5.0 · contrôle de qualité et démonstration énergétique séparés du moteur macroéconomique.</p><a href="audit.html">Audit complet</a> · <a href="index.html">Simulateur</a></footer>
+<script src="energy-balance-500.js"></script><script>
+(()=>{"use strict";const E=window.ECOSIM_ENERGY_500;
+const ids=["oil-transport","oil-other","oil-ratio"];
+const update=()=>{const [t,o,r]=ids.map(id=>Number(document.getElementById(id).value));const result=E.calculate({transportPercent:t,otherPercent:o,electricRatio:r});
+const fmt=x=>x.toLocaleString("fr-FR",{maximumFractionDigits:1,minimumFractionDigits:1})+" TWh";
+document.getElementById("oil-transport-out").textContent=t+" %";document.getElementById("oil-other-out").textContent=o+" %";document.getElementById("oil-ratio-out").textContent=r.toFixed(2).replace(".",",")+" kWh";
+document.getElementById("oil-avoided").textContent=fmt(result.oilAvoidedTWh);document.getElementById("electric-extra").textContent=fmt(result.electricityExtraTWh);document.getElementById("oil-remaining").textContent=fmt(result.oilRemainingTWh);};
+ids.forEach(id=>document.getElementById(id).addEventListener("input",update));update();})();
+</script></body></html>

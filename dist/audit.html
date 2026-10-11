@@ -36,17 +36,18 @@
           <a href="#validation-421">04c · Validation fiscale et sensibilité 4.21</a>
           <a href="#sectoriel-424">04f · Fiscalité sectorielle 4.24</a>
           <a href="#observations-sectorielles-425">04g · Données sectorielles 4.25</a>
+          <a href="#consolidation-500">04h · Consolidation 5.0</a>
           <a href="#recherche">05 · Modèles de recherche</a>
           <a href="#incertitude">06 · Incertitude</a>
           <a href="#reproduire">07 · Reproduire</a>
           <a href="#limites">08 · Limites du modèle</a>
         </nav>
-        <div class="audit-sidebar-note">Paquet : <code>14f3c54ee942</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
+        <div class="audit-sidebar-note">Paquet : <code>c01ea17d83a5</code> (empreinte de distribution, non Git)<br />Référence figée : <strong>10 octobre 2026</strong><br />Périmètre : France, toutes administrations publiques.</div>
       </aside>
 
       <div class="audit-content">
         <div class="audit-hero">
-          <span class="audit-kicker">Documentation publique · moteur 4.21.0 · données figées au 10 octobre 2026</span>
+          <span class="audit-kicker">Documentation publique · moteur 5.0.0 · données figées au 10 octobre 2026</span>
           <h1>Comment EcoSim calcule<br /><em>et ce que ses résultats valent.</em></h1>
           <p>Cette annexe distingue les données observées, les projections de référence, les coefficients choisis pour explorer des scénarios et les résultats des contrôles historiques. Les chiffres, sources, écarts et limites sont exposés pour permettre une lecture critique du simulateur.</p>
           <div class="audit-status-row" aria-label="Statut des éléments du modèle">
@@ -401,6 +402,13 @@
           <p>Les données <strong>Insee Ésane 2023</strong> ont été associées aux seize filières pédagogiques pour afficher une valeur ajoutée et des investissements corporels observés lorsque le champ statistique le permet. Les catégories sont parfois plus larges que les filières et se chevauchent. L'agriculture n'est pas couverte par le champ Ésane non agricole ; le raffinage ne dispose pas de valeur d'investissement publiée en clair.</p>
           <p>Un troisième mode de réaction, <strong>« Exploratoire encadré »</strong>, reprend le coefficient conventionnel de la 4.24, le multiplie par un facteur calculé à partir de l'intensité d'investissement historique et plafonné entre 0,75 et 1,25, puis limite l'amplitude à 15 % de l'investissement corporel 2023 du proxy. <strong>Ces bornes sont des conventions, non des élasticités ou intervalles de confiance estimés.</strong> Sans proxy d'investissement, le mode devient comptable uniquement. Les deux modes existants et leurs résultats sont inchangés.</p>
           <p>La valeur ajoutée et l'investissement d'une branche en 2023 <strong>ne suffisent pas à calibrer la réponse causale</strong> à un dispositif fiscal. Le montant des aides, leurs bénéficiaires, un groupe témoin et les réponses observées seraient nécessaires. <a href="donnees-sectorielles-425.html">Registre complet des chiffres, proxys, doublons et sources ↗</a> ; <a href="data/sectoral-observations-2023.json">données JSON</a>.</p>
+        </section>
+
+        <section class="audit-section" id="consolidation-500" aria-labelledby="consolidation-title">
+          <div class="audit-section-heading"><span>04h</span><h2 id="consolidation-title">Version 5.0 : contrôles inter-moteurs et énergie physique</h2></div>
+          <p>Un diagnostic compare les réglages budgétaires, structurels, sectoriels et ceux des moteurs publics pour signaler des <strong>recouvrements plausibles</strong>. Il ne prouve pas qu'une enveloppe a été comptabilisée deux fois et ne modifie jamais la projection. L'absence d'alerte ne constitue pas une garantie.</p>
+          <p>Le bilan physique séparé s'appuie sur le <strong>SDES 2024</strong> (1 499 TWh d'énergie finale à usage énergétique ; 624,2 TWh de produits pétroliers, y compris biocarburants ; 398 TWh d'électricité finale). Les coefficients de substitution pétrole/électricité sont choisis par le visiteur et <strong>n'alimentent pas le moteur économique</strong>. <a href="qualite-et-energie-500.html">Voir le bilan, ses sources et la matrice de validation ↗</a>.</p>
+          <p>La fiscalité des ménages, les élasticités sectorielles et les effets historiques restent respectivement illustratifs, non estimés causalement ou non comparables au sens strict. Les tests renforcent la fiabilité logicielle et l'auditabilité, pas la précision des prévisions.</p>
         </section>
 
         <section class="audit-section" id="recherche" aria-labelledby="recherche-title">
