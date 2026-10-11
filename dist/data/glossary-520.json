@@ -88,5 +88,20 @@
     "title": "Euros constants et courants",
     "definition": "Les euros courants suivent les prix de l’année ; les euros constants neutralisent l’effet de l’inflation, par rapport à une année de référence.",
     "example": "Un budget qui augmente de 2 % en euros courants avec 2 % d’inflation est globalement stable en termes réels."
+  },
+  "millesime": {
+    "title": "Millésime statistique",
+    "definition": "Année ou période à laquelle se rapporte une donnée publiée. Des données de plusieurs millésimes ne décrivent pas forcément une situation observée au même moment.",
+    "example": "Les effectifs de 2024 et la population de 2026 proviennent de millésimes différents."
+  },
+  "soldes-recales": {
+    "title": "Soldes recalés",
+    "definition": "Écarts ou soldes ajustés pour rendre cohérentes plusieurs sources ou périmètres statistiques. Le recalage est une opération de modèle, pas une nouvelle observation directe.",
+    "example": "Un total national recalé peut différer de la somme brute des sous-catégories disponibles."
+  },
+  "titulaires-flux": {
+    "title": "Titulaires dans les flux",
+    "definition": "Part supposée de personnels titulaires parmi les nouveaux recrutements annuels simulés. Ce pourcentage décrit les embauches additionnelles, pas la composition totale du stock d’agents.",
+    "example": "88 % de titulaires dans les flux de recrutement ne signifie pas que 88 % de tous les policiers en activité ont ce statut."
   }
 }

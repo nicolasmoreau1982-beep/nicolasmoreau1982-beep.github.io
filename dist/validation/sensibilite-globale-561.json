@@ -5,7 +5,7 @@
   "n": 128,
   "replicates": 96,
   "prng": "xoshiro128** (splitmix32 initialisation, 2 flux distincts)",
-  "buildId": "4a9e09ed1e06",
+  "buildId": "37ce54354aff",
   "simulationsParScenario": 896,
   "projectionsTotales": 2688,
   "tempsSecondes": 34.103,

@@ -20,6 +20,7 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"EcoSim France","applicationCategory":"EducationalApplication","operatingSystem":"Tout navigateur récent","url":"https://nicolasmoreau1982-beep.github.io/","description":"Simulation pédagogique conditionnelle du budget et de la dette publique français."}</script>
     <title>Simulateur du budget et de la dette de la France | EcoSim France</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="ux-parcours-583.css" />
     <link rel="stylesheet" href="workforce-ux-582.css" />
     <script src="theme.js"></script>
   <meta property="og:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EcoSim France — Comprendre le budget public"><meta name="twitter:image" content="https://nicolasmoreau1982-beep.github.io/og-ecosim.png"><script src="site-meta-531.js" defer></script></head>
@@ -57,13 +58,17 @@
     </header>
 
     <div class="journey-bar" aria-label="Parcours rapide">
-      <div class="journey-inner">
-        <span class="journey-label">Votre parcours</span>
-        <button data-scroll="workspace"><i>1</i><span>Choisir</span></button>
-        <button data-scroll="structural"><i>2</i><span>Affiner</span></button>
-        <button data-scroll="politics"><i>3</i><span>Comparer</span></button>
-        <button data-scroll="budget"><i>4</i><span>Détailler</span></button>
-        <span class="journey-status" id="journey-status">Mon scénario · 3 ans</span>
+      <div class="journey-inner" aria-label="Parcours et accès direct aux rubriques">
+        <span class="journey-label">Aller à</span>
+        <button type="button" data-scroll="workspace"><span>Essayer une mesure</span></button>
+        <button type="button" data-scroll="results"><span>Voir la trajectoire</span></button>
+        <button type="button" data-scroll="politics"><span>Comparer pour 2027</span></button>
+        <button type="button" data-scroll="structural"><span>Population et énergie</span></button>
+        <button type="button" data-scroll="budget"><span>Modifier le budget</span></button>
+        <button type="button" data-scroll="fiscal"><span>Fiscalité</span></button>
+        <button type="button" data-scroll="methodology"><span>Comprendre la méthode</span></button>
+        <a class="ux-journey-link" href="glossaire.html"><span>Glossaire</span></a>
+        <span id="journey-status" class="visually-hidden" aria-hidden="true">Mon scénario · 3 ans</span>
       </div>
     </div>
 
@@ -74,7 +79,6 @@
           <div>
             <h1>Et si vous simuliez<br /><em>le budget de la France&nbsp;?</em></h1>
             <p class="hero-copy">Choisissez une mesure ou une orientation politique, puis voyez ce qu’EcoSim calcule pour le déficit, la dette et l’emploi. Vous pouvez ensuite affiner le budget, la population et l’énergie.</p>
-            <p class="current-version-531">Version actuelle : <strong data-ecosim-version>5.7.1</strong> <span class="technical-release-note">· livraison technique <a href="verification-openfisca-571.html" data-ecosim-technical-version>5.7.2</a></span></p>
             <p class="hero-reference-note">La base observée est 2025 ; les résultats pour 2026 et les années suivantes sont des simulations, pas des comptes publics constatés.</p>
             <div class="discovery-paths" aria-label="Choisir un point de départ">
               <button type="button" class="discovery-path" id="quick-example" data-quick-preset="investment">
@@ -84,12 +88,12 @@
                 <span>02 · Comparaison</span><strong>Voir les orientations politiques</strong><small>Comparer les groupes dans le même modèle →</small>
               </button>
               <a class="discovery-path" href="comprendre-budget-france.html">
-                <span>03 · Découverte</span><strong>Comprendre les bases</strong><small>Budget, déficit et dette en deux minutes →</small>
+                <span>Guide</span><strong>Comprendre les bases</strong><small>Budget, déficit et dette en deux minutes →</small>
               </a>
             </div>
             <a class="hero-audit-link" href="audit.html">Sources, méthode et incertitude : consulter l’audit ↗</a>
-            <p class="hero-transparence-531"><strong>Transparence du modèle :</strong> <a href="provenance-politique.html">357 réglages documentés</a> · <a href="evaluations-empiriques-423.html">Études indépendantes et limites</a> · <a href="methodes-comparaison-politique-530.html">Méthodes de comparaison</a> · <a href="validation-historique-540.html">Confrontation historique 5.4</a> · <a href="retraites-cohortes-550.html">Retraites par cohortes 5.5</a> · <a href="sensibilite-globale-561.html">Sensibilité globale 5.6.1</a> · <a href="fiscal-individuel-570.html">Fiscalité individuelle 5.7</a> · <a href="verification-openfisca-571.html">Protocole OpenFisca et données pondérées 5.7.1</a> · <a href="distribution-ciblee-580.html">Atelier distributif expérimental 5.8 (SMIC et pensions)</a>. Les résultats sont des simulations, pas des prévisions certifiées.</p>
-            <p class="hero-reference-note"><a href="qualite-et-energie-500.html">Qualité : recouvrements et bilan énergétique ↗</a> · <a href="integrite-moteur-510.html">Intégrité du moteur : contrôles 5.1 ↗</a></p>
+            <details class="ux-methodology-details"><summary>Consulter les sources et les validations du modèle</summary><p class="hero-transparence-531"><strong>Transparence du modèle :</strong> <a href="provenance-politique.html">357 réglages documentés</a> · <a href="evaluations-empiriques-423.html">Études indépendantes et limites</a> · <a href="methodes-comparaison-politique-530.html">Méthodes de comparaison</a> · <a href="validation-historique-540.html">Confrontation historique 5.4</a> · <a href="retraites-cohortes-550.html">Retraites par cohortes 5.5</a> · <a href="sensibilite-globale-561.html">Sensibilité globale 5.6.1</a> · <a href="fiscal-individuel-570.html">Fiscalité individuelle 5.7</a> · <a href="verification-openfisca-571.html">Protocole OpenFisca et données pondérées 5.7.1</a> · <a href="distribution-ciblee-580.html">Atelier distributif expérimental 5.8 (SMIC et pensions)</a>. Les résultats sont des simulations, pas des prévisions certifiées.</p>
+            <p class="hero-reference-note"><a href="qualite-et-energie-500.html">Qualité : recouvrements et bilan énergétique ↗</a> · <a href="integrite-moteur-510.html">Intégrité du moteur : contrôles 5.1 ↗</a></p></details>
           </div>
           <div class="hero-stamp" aria-label="Périmètre de la simulation">
             <span>Périmètre</span>
@@ -108,14 +112,20 @@
       </section>
 
 
+      <div class="ux-reading-mode" role="group" aria-label="Niveau de détail du simulateur">
+        <span class="ux-mode-label">Afficher le simulateur :</span>
+        <button type="button" id="ux-discovery" aria-pressed="true">Découverte</button>
+        <button type="button" id="ux-expert" aria-pressed="false">Expert · toutes les rubriques</button>
+        <span id="ux-mode-status" role="status" aria-live="polite">Les réglages avancés restent accessibles dans le mode Expert.</span>
+      </div>
       <nav class="v52-quick-nav" aria-label="Accès direct aux espaces du simulateur">
-        <details id="v52-summary" open>
-          <summary>Explorer EcoSim <span class="v52-summary-hint">Accéder directement à un outil, sans perdre le scénario</span></summary>
+        <details id="v52-summary">
+          <summary>Voir toutes les rubriques <span class="v52-summary-hint">Accès direct aux outils, sans perdre le scénario</span></summary>
           <div class="v52-quick-grid">
             <div><strong>Créer</strong><a href="#workspace">Choisir une mesure</a><a href="#results">Voir les résultats</a><a href="#budget">Modifier le budget</a></div>
             <div><strong>Approfondir</strong><a href="#structural">Population et énergie</a><a href="#social">Laboratoire social</a><a href="#engines">Moteurs publics</a></div>
             <div><strong>Comparer</strong><a href="#politics">Orientations politiques</a><a href="#fiscal">Fiscalité des ménages</a><a href="#sectoral-fiscal">Fiscalité sectorielle</a></div>
-            <div><strong>Comprendre</strong><a href="#qualite-500">Risques de double compte</a><a href="#methodology">Méthode</a><a href="glossaire.html">Glossaire · 18 notions</a></div>
+            <div><strong>Comprendre</strong><a href="#qualite-500">Risques de double compte</a><a href="#methodology">Méthode</a><a href="glossaire.html">Glossaire · 21 notions</a></div>
           </div>
         </details>
       </nav>
@@ -358,7 +368,7 @@
         </div>
       </section>
 
-      <section class="structural-lab" id="structural" aria-labelledby="structural-title">
+      <section class="structural-lab" id="structural" data-ux-advanced="true" aria-labelledby="structural-title">
         <div class="section-intro">
           <div>
             <span class="section-number">03</span>
@@ -413,9 +423,9 @@
         <div class="workforce-detail" id="workforce-detail" aria-label="Détail des emplois et viviers de main-d’œuvre"></div>
       </section>
 
-      <section class="social-lab" id="social" aria-labelledby="social-title">
+      <section class="social-lab" id="social" data-ux-advanced="true" aria-labelledby="social-title">
         <div class="section-intro">
-          <div><span class="section-number">04 bis</span><h2 id="social-title">Laboratoire social expérimental</h2><button type="button" class="v52-help-trigger" data-glossary="incertitude" aria-label="Comprendre les hypothèses et la sensibilité" title="Comprendre les incertitudes">?</button></div>
+          <div><span class="section-number">04</span><h2 id="social-title">Laboratoire social expérimental</h2><button type="button" class="v52-help-trigger" data-glossary="incertitude" aria-label="Comprendre les hypothèses et la sensibilité" title="Comprendre les incertitudes">?</button></div>
           <p>Indices illustratifs d’exposition par âge et situation. Leurs poids ne sont pas estimés sur microdonnées et ne permettent de prédire ni mobilisation ni vote.</p>
         </div>
         <div class="social-cards">
@@ -439,10 +449,10 @@
         <p class="social-caveat">Indices exploratoires non validés par des microdonnées. Une exposition économique simulée ne mesure ni le mécontentement ni une mobilisation effective. Les cellules ne sont pas pondérées par leur population ; un ex æquo ne départage pas artificiellement les groupes.</p>
       </section>
 
-      <section class="engine-room" id="engines" aria-labelledby="engine-title">
+      <section class="engine-room" id="engines" data-ux-advanced="true" aria-labelledby="engine-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">04</span>
+            <span class="section-number">05</span>
             <h2 id="engine-title">La salle des moteurs publics</h2>
           </div>
           <p>Douze systèmes reliés au budget. Le moteur sélectionné détaille ses leviers ; tous les réglages restent actifs simultanément.</p>
@@ -478,7 +488,7 @@
       <section class="politics-lab" id="politics" aria-labelledby="politics-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">05</span>
+            <span class="section-number">06</span>
             <h2 id="politics-title">Présidentielle 2027 : comparer les orientations</h2>
           </div>
           <p>Même moteur et même horizon, avec soit un profil commun, soit des hypothèses doctrinales documentées, soit neuf profils de sensibilité. Pour l’instant, ce module compare des groupes et familles politiques, pas les programmes individuels des candidats à la présidentielle 2027. Ce sont des traductions chiffrées d’EcoSim — ni des prévisions électorales, ni des chiffrages officiels.</p>
@@ -539,10 +549,10 @@
         </div>
       </section>
 
-      <section class="budget-editor" id="budget" aria-labelledby="budget-title">
+      <section class="budget-editor" id="budget" data-ux-advanced="true" aria-labelledby="budget-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">06</span>
+            <span class="section-number">07</span>
             <h2 id="budget-title">Réglez le budget</h2><button type="button" class="v52-help-trigger" data-glossary="cofog" aria-label="Définition : COFOG" title="Comprendre la classification COFOG">?</button>
             <p>Chaque variation est permanente à partir de 2026, en euros constants 2025. Les effets indirects sont calculés séparément.</p>
           </div>
@@ -575,10 +585,10 @@
         </div>
       </section>
 
-      <section class="fiscal-section" id="fiscal" aria-labelledby="fiscal-title">
+      <section class="fiscal-section" id="fiscal" data-ux-advanced="true" aria-labelledby="fiscal-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">Atelier fiscal · expérimental</span>
+            <span class="section-number">08 · Atelier fiscal · expérimental</span>
             <h2 id="fiscal-title">Qui paie une réforme fiscale ?</h2><button type="button" class="v52-help-trigger" data-glossary="assiette" aria-label="Définition : assiette fiscale" title="Comprendre l’assiette fiscale">?</button>
             <p>Changez une règle, pas une recette supposée. L’écart calculé remonte dans le budget et le moteur macro.</p>
           </div>
@@ -609,8 +619,8 @@
         <p class="fiscal-sources"><strong>Tests fiscaux indépendants ciblés :</strong> <a href="validation-economique-421.html">9 exemples officiels vérifiés, hypothèses et limites ↗</a> · <a href="fiscal-individuel-570.html">Nouvel atelier individuel 2026 : décote et quotient familial (5.7) ↗</a> · <a href="verification-openfisca-571.html">Vérification externe et pondérations (5.7.1) ↗</a>. Sources des règles : <a href="https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407">IR</a>, <a href="https://www.impots.gouv.fr/particulier/calcul-de-lifi">IFI</a>, <a href="https://www.impots.gouv.fr/particulier/questions/comment-dois-je-calculer-les-droits-de-succession">successions</a> et <a href="https://www.senat.fr/travaux-parlementaires/textes-legislatifs/la-loi-en-clair/proposition-de-loi-instaurant-un-impot-plancher-de-2-sur-le-patrimoine-des-ultrariches.html">proposition d’impôt plancher</a>. Celle-ci n’est pas incluse dans le droit de référence. <a href="audit.html#fiscalite">Périmètre et limites ↗</a></p>
       </section>
 
-      <section class="sectoral-section" id="sectoral-fiscal" aria-labelledby="sectoral-title">
-        <div class="section-intro"><div><span class="section-number">Fiscalité sectorielle · expérimental</span>
+      <section class="sectoral-section" id="sectoral-fiscal" data-ux-advanced="true" aria-labelledby="sectoral-title">
+        <div class="section-intro"><div><span class="section-number">09 · Fiscalité sectorielle · expérimental</span>
           <h2 id="sectoral-title">Cibler une filière, pas toute l’économie</h2><button type="button" class="v52-help-trigger" data-glossary="sectoriel" aria-label="Définition : mesure sectorielle" title="Comprendre les mesures sectorielles">?</button>
           <p>Crédits d’impôt, prélèvements et subventions par filière. Le montant saisi est un <strong>flux budgétaire annuel supposé</strong>, pas un rendement fiscal déduit d’entreprises réelles.</p></div>
           <a href="fiscalite-sectorielle-424.html">Méthode, secteurs et limites ↗</a></div>
@@ -633,8 +643,8 @@
         </div>
       </section>
 
-      <section class="sectoral-section v5-quality" id="qualite-500" aria-labelledby="qualite-500-title">
-        <div class="section-intro"><div><span class="section-number">5.0 · Vérifications transversales</span>
+      <section class="sectoral-section v5-quality" id="qualite-500" data-ux-advanced="true" aria-labelledby="qualite-500-title">
+        <div class="section-intro"><div><span class="section-number">10 · Vérifications transversales</span>
           <h2 id="qualite-500-title">Ce scénario pourrait-il compter deux fois un même effet ?</h2><button type="button" class="v52-help-trigger" data-glossary="doublecompte" aria-label="Définition : double comptabilisation" title="Comprendre les doubles comptes">?</button></div>
           <p>Contrôles indicatifs entre budget, mesures structurelles, moteurs publics et fiscalité sectorielle. Aucune correction automatique : une superposition peut être intentionnelle.</p></div>
         <div class="sectoral-card">
@@ -644,10 +654,10 @@
         </div>
       </section>
 
-      <section class="sectors-section" id="perimeters" aria-labelledby="sectors-title">
+      <section class="sectors-section" id="perimeters" data-ux-advanced="true" aria-labelledby="sectors-title">
         <div class="section-intro">
           <div>
-            <span class="section-number">07</span>
+            <span class="section-number">11</span>
             <h2 id="sectors-title">Qui porte les comptes publics&nbsp;?</h2>
           </div>
           <p>Le budget de l’État n’est qu’une partie des finances publiques. Voici les quatre sous-secteurs comptables observés en 2025.</p>
@@ -662,7 +672,7 @@
       <section class="methodology" id="methodology" aria-labelledby="method-title">
         <div class="method-heading">
           <div>
-            <span class="section-number light">08</span>
+            <span class="section-number light">12</span>
             <h2 id="method-title">Un modèle qui montre ses coutures.</h2><button type="button" class="v52-help-trigger" data-glossary="multiplicateur" aria-label="Définition : multiplicateur budgétaire" title="Comprendre les multiplicateurs">?</button>
           </div>
           <p>Nous ne choisissons pas une école économique à votre place. Neuf lectures sont calculées à partir des mêmes données et des mêmes contraintes comptables.</p>
@@ -711,7 +721,7 @@
 
       <section class="sources-section" id="sources" aria-labelledby="sources-title">
         <div class="section-intro">
-          <div><span class="section-number">09</span><h2 id="sources-title">Données & sources</h2><button type="button" class="v52-help-trigger" data-glossary="apu" aria-label="Définition : APU" title="Comprendre le périmètre public">?</button></div>
+          <div><span class="section-number">13</span><h2 id="sources-title">Données & sources</h2><button type="button" class="v52-help-trigger" data-glossary="apu" aria-label="Définition : APU" title="Comprendre le périmètre public">?</button></div>
           <p>Chaque chiffre a un millésime. Les observations, calibrages et hypothèses sont distingués.</p>
         </div>
         <div class="source-grid" id="source-grid"></div>
@@ -738,7 +748,8 @@
       <a href="glossaire.html">Glossaire</a>
       <a href="a-propos.html">À propos</a>
       <span class="visit-counter" id="visit-counter" hidden>Visites du site <strong id="visit-counter-count"></strong></span>
-      <span class="footer-version">Version <span data-ecosim-version>5.7.1</span> · paquet <code title="Empreinte du code de distribution, pas un commit Git">4a9e09ed1e06</code></span>
+      <p class="current-version-531">Version actuelle : <strong data-ecosim-version>5.7.1</strong> <span class="technical-release-note">· livraison technique <a href="verification-openfisca-571.html" data-ecosim-technical-version>5.7.2</a></span></p>
+      <span class="footer-version">Version <span data-ecosim-version>5.7.1</span> · paquet <code title="Empreinte du code de distribution, pas un commit Git">37ce54354aff</code></span>
     <a href="contact-signalement.html">Signaler une erreur</a> <a href="informations-legales.html">Informations légales</a><small class="rights-notice">© 2026 EcoSim France — droits réservés sur les contributions originales protégeables. <a href="informations-legales.html#reutilisation">Conditions de réutilisation</a></small></footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -816,6 +827,7 @@
     <script src="workforce-ux-582.js"></script>
     <script src="distribution-link-580.js"></script>
     <script src="analytics.js"></script>
+    <script src="ux-parcours-583.js"></script>
     <script src="glossary-520.js"></script>
   </body>
 </html>

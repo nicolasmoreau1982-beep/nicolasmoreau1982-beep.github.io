@@ -1,0 +1,28 @@
+/* EcoSim 5.8.3 — orientation et lisibilité, n'altère pas les visualisations économiques. */
+.journey-inner {gap: .28rem; scrollbar-width: thin; overscroll-behavior-x: contain;}
+.journey-inner > button, .journey-inner > .ux-journey-link {white-space:nowrap; flex: 0 0 auto; text-decoration:none; font-size: .78rem; min-height: 42px; border-radius: 7px;}
+.journey-inner .ux-journey-link {display:inline-flex; align-items:center; padding: 6px 10px; color:var(--ink-2); font-weight:700;}
+.journey-inner .ux-journey-link:hover, .journey-inner .ux-journey-link:focus-visible {background:var(--blue-soft);color:var(--blue);}
+.journey-inner button:focus-visible, .journey-inner .ux-journey-link:focus-visible,
+.ux-reading-mode button:focus-visible, .ux-glossary-link:focus-visible {outline:3px solid var(--blue);outline-offset:2px;}
+.ux-reading-mode {max-width:1440px; padding: 12px 5vw 0; margin: 0 auto; display:flex; align-items:center; flex-wrap:wrap; gap:.5rem;}
+.ux-reading-mode button {border:1px solid var(--line);color:var(--ink);background:var(--card);font:inherit;font-weight:700;font-size:.87rem;border-radius: 999px;cursor:pointer;padding:8px 14px;min-height:42px;}
+.ux-reading-mode button[aria-pressed="true"] {background:var(--blue-soft);border-color:var(--blue);color:var(--blue);}
+.ux-mode-label {font-size:.83rem;font-weight:700;color:var(--ink-2);}
+#ux-mode-status {flex-basis:100%;color:var(--ink-2);font-size:.83rem;line-height:1.4;}
+section[data-ux-advanced][hidden] {display:none!important;}
+.ux-methodology-details {max-width:82ch; margin:16px 0;}
+.ux-methodology-details > summary {cursor:pointer;font-weight:650;color:var(--ink-2);font-size:.86rem;}
+.ux-methodology-details > summary:focus-visible {outline:3px solid var(--blue);outline-offset:2px;}
+.ux-methodology-details .hero-transparence-531 {margin-top:10px;}
+.ux-glossary-link {text-underline-offset:3px; text-decoration: underline dotted; color: var(--blue);font-weight: 650;}
+#workspace,#results,#structural,#social,#engines,#politics,#budget,#fiscal,#sectoral-fiscal,#methodology,#sources,#qualite-500,#perimeters {scroll-margin-top: 145px;}
+.v52-quick-nav {margin-top: 6px;}
+@media(max-width:760px) {
+ .journey-inner {overflow-x:auto;padding:0 14px;gap:3px;}
+ .journey-inner > button,.journey-inner > .ux-journey-link {font-size:12px;min-height:42px;padding:6px 11px;flex:0 0 auto;}
+ .ux-reading-mode{padding:12px 18px 0;}
+ .ux-reading-mode button{font-size:.82rem;padding:7px 12px;}
+ #workspace,#results,#structural,#social,#engines,#politics,#budget,#fiscal,#sectoral-fiscal,#methodology,#sources,#qualite-500,#perimeters {scroll-margin-top: 130px;}
+}
+@media(prefers-reduced-motion:reduce){.ux-reading-mode *, .journey-inner * {scroll-behavior:auto!important;}}

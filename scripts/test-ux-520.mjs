@@ -10,7 +10,7 @@ const html = read('index.html');
 const glossary = read('glossaire.html');
 const data = JSON.parse(read('data/glossary-520.json'));
 const keys = Object.keys(data);
-assert.equal(keys.length, 18);
+assert.equal(keys.length, 21);
 assert.equal(new Set(keys).size, keys.length);
 assert.ok(/<html lang="fr">/.test(glossary));
 for (const [key, term] of Object.entries(data)) {

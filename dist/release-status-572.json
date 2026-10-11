@@ -6,10 +6,12 @@
   "technicalScope": "Contrôle externe OpenFisca et correction du traitement des pondérations",
   "openFiscaIndependentExecution": "not_executed_in_release",
   "versionPolicy": "Une livraison technique ne change pas automatiquement la version des résultats du simulateur. Les deux versions sont contrôlées et publiées séparément.",
-  "deliveryLabel": "5.7.2.7",
-  "deliveryPolicy": "Correctif de lisibilité 5.8.2 des effectifs publics : écarts nuls explicités, petits écarts arrondis identifiés, libellés de recrutements clarifiés et accessibilité des valeurs. Extension IHM uniquement ; moteur historique et atelier distributif 5.8.1 inchangés.",
+  "deliveryLabel": "5.7.2.8",
+  "deliveryPolicy": "Revue UX : navigation visible, options avancées accessibles, jargon documenté, versions conservées dans le pied de page et validation. Les résultats historiques restent inchangés.",
   "distributionModuleVersion": "5.8.1",
   "distributionScope": "Atelier expérimental SMIC/pensions : CSV locaux et fictifs, diagnostics Kish, tranches descriptives ; non calibré et sans agrégat APU.",
   "workforceUXVersion": "5.8.2",
-  "workforceUXScope": "Présentation des écarts d’effectifs publics, sans modification des flux, des effectifs, des coûts ou des projections."
+  "workforceUXScope": "Présentation des écarts d’effectifs publics, sans modification des flux, des effectifs, des coûts ou des projections.",
+  "interfaceUXVersion": "5.8.3",
+  "interfaceUXScope": "Parcours Découverte/Expert, sommaire sticky orienté actions, jargon lié au glossaire et dé-versionnage du premier écran ; aucun changement des calculs du moteur."
 }
