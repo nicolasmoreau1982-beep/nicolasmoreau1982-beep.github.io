@@ -1,0 +1,14 @@
+name: EcoSim - assets statiques references
+on:
+  push:
+  pull_request:
+jobs:
+  static-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verifier toutes les references CSS et JS locales publiees
+        run: node scripts/check-static-assets-591.mjs

@@ -1,0 +1,27 @@
+/* Navigation simplifiée ; règles supplémentaires non intrusives, sans modification du moteur. */
+#main-nav .nav-explorer { position: relative; display: flex; align-items: stretch; }
+#main-nav .nav-explorer summary { cursor: pointer; list-style: none; display: flex; gap: .4em; }
+#main-nav .nav-explorer summary::-webkit-details-marker { display: none; }
+#main-nav .nav-explorer summary::marker { content: ''; }
+#main-nav .nav-explorer[open] summary { color: var(--ink); }
+#main-nav .nav-explorer-menu {
+  position: absolute; top: calc(100% + 1px); left: 0; z-index: 50; min-width: 236px;
+  padding: 8px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 0 0 12px 12px; box-shadow: var(--shadow);
+  display: grid; gap: 2px; max-height: min(70vh, 440px); overflow-y: auto;
+}
+#main-nav .nav-explorer-menu a {
+  display: block; padding: 11px 12px; color: var(--ink-2); text-decoration: none;
+  font: 600 13px var(--sans); border-radius: 8px;
+}
+#main-nav .nav-explorer-menu a:hover, #main-nav .nav-explorer-menu a:focus-visible {
+  background: var(--blue-soft); color: var(--ink);
+}
+.scenario-local-note { margin: 9px 0 12px; color: var(--ink-2); font-size: 12px; line-height: 1.55; }
+@media (max-width: 760px) {
+  #main-nav .nav-explorer { grid-column: 1 / -1; display: block; }
+  #main-nav .nav-explorer summary { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; align-items: center; }
+  #main-nav .nav-explorer-menu { position: static; min-width: 0; margin: 6px 0; border-radius: 9px; box-shadow: none; max-height: 45vh; }
+  #main-nav .nav-explorer-menu a { min-height: 42px; display: flex; align-items: center; }
+  .topbar nav.is-open { max-height: calc(100dvh - 62px); overflow-y: auto; }
+}
