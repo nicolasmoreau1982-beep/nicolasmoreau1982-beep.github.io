@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "project": "EcoSim France",
+  "delivery": {
+    "label": "5.9.1",
+    "documentedOn": "2026-10-12",
+    "scope": "interface, navigation, accessibilite et documentation; moteur inchange",
+    "status": "declaration documentaire (la preuve de publication provient du depot / GitHub Pages)",
+    "publishedUrl": "https://nicolasmoreau1982-beep.github.io/versions-591.html"
+  },
+  "components": {
+    "site": "5.9.1",
+    "enginePublic": "5.7.1",
+    "fiscalTechnicalHistorical": "5.7.2"
+  },
+  "historicReleaseStatus": "release-status-572.json (conserve sans modification)",
+  "userFacingChanges": [
+    {
+      "feature": "navigation",
+      "description": "Regroupement dans Explorer; ressources nav-explorer.css et nav-explorer.js",
+      "evidence": "verification des ressources via CI"
+    },
+    {
+      "feature": "accessibilite",
+      "description": "Navigation clavier et repères de focus renforcés",
+      "evidence": "tests automatisés ciblés, sans certification RGAA"
+    },
+    {
+      "feature": "graphique permanent",
+      "description": "Disposition deux colonnes pour l’usage sur ordinateur lorsqu’elle est installée",
+      "evidence": "test desktop facultatif si ressource présente; vérifier sur le site publié"
+    }
+  ],
+  "fiscalExternalComparison": {
+    "status": "executed_limited_scope",
+    "executedAtUTC": "2026-10-11T19:47:24.315096+00:00",
+    "testSet": "56 foyers fictifs (8 configurations × 7 revenus), non representatifs",
+    "count": 56,
+    "provider": "OpenFisca-France",
+    "providerVersion": "176.1.2",
+    "referencePeriod": "2025 (convention fiscale EcoSim à confronter avec année déclaration)",
+    "maxAbsoluteDifferenceAfterDecoteEuro": 0.475,
+    "meanAbsoluteDifferenceAfterDecoteEuro": 0.056453,
+    "casesWithDifferenceAboveOneEuro": 0,
+    "inputReferenceSha256": "8e3122a86f64eff7d54462365f7e807eb2117205e907fbad87153f7335a1a8b5",
+    "methodLimit": "variables intermediaires fiscales injectees dans OpenFisca; ce n’est pas une evaluation fiscale de bout en bout",
+    "independentExecutionUrl": null,
+    "report": "validation/openfisca-2026-10-11/rapport-confrontation-openfisca-572.json",
+    "casesCsv": "validation/openfisca-2026-10-11/comparaison-56-foyers.csv",
+    "analysis": "validation/openfisca-2026-10-11/rapport-analyse-2026-10-11.md",
+    "readablePage": "verification-openfisca-591.html"
+  },
+  "checks": {
+    "staticAssets": "node scripts/check-static-assets-591.mjs",
+    "release": "node scripts/check-release-591.mjs",
+    "desktopChart": "node scripts/test-desktop-ux-591.mjs",
+    "historicalGolden": "use existing test-golden-540.mjs from repository (not duplicated)"
+  }
+}

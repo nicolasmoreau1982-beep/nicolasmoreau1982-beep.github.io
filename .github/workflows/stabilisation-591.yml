@@ -1,0 +1,20 @@
+name: EcoSim - Stabilisation 5.9.1
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  static-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Vérifier les ressources statiques HTML
+        run: node scripts/check-static-assets-591.mjs
+      - name: Vérifier le manifeste 5.9.1 et les preuves OpenFisca
+        run: node scripts/check-release-591.mjs
+      - name: Vérifier la structure du graphique permanent ordinateur
+        run: node scripts/test-desktop-ux-591.mjs

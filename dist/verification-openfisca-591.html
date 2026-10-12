@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="index,follow">
+<meta name="description" content="56 cas fiscaux vérifiés avec OpenFisca, résultats et limites de la comparaison."><link rel="canonical" href="https://nicolasmoreau1982-beep.github.io/verification-openfisca-591.html">
+<title>Confrontation OpenFisca — EcoSim France</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="guides.css"></head>
+<body><a class="skip-link" href="#main">Aller au contenu</a>
+<header class="guide-header"><a class="brand" href="index.html">EcoSim <b>France</b></a><nav class="guide-nav" aria-label="Navigation principale"><a href="index.html">Simulateur</a><a href="audit.html">Audit</a><a href="contact-signalement.html#suivre">Mises à jour</a></nav></header>
+<main id="main" class="guide-main"><p class="guide-breadcrumb"><a href="index.html">Accueil</a> / Confrontation OpenFisca</p><div class="guide-layout"><article class="guide-article"><section><h1>Confrontation fiscale avec OpenFisca</h1><p class="guide-lead">Première exécution du 11 octobre 2026 : 56 foyers fictifs comparés à OpenFisca-France 176.1.2.</p>
+<table><caption>Résultats sur les 56 cas</caption><thead><tr><th scope="col">Mesure</th><th scope="col">Résultat</th></tr></thead><tbody>
+<tr><th scope="row">Foyers comparés</th><td>56</td></tr><tr><th scope="row">Écart absolu maximal après décote</th><td>0,475 €</td></tr>
+<tr><th scope="row">Écart absolu moyen après décote</th><td>0,056453 €</td></tr>
+<tr><th scope="row">Cas avec écart supérieur à 1 €</th><td>0</td></tr>
+<tr><th scope="row">Écart absolu maximal avant décote (impôt brut)</th><td>moins de 0,001 €</td></tr>
+</tbody></table><p>Ces résultats décrivent la cohérence numérique observée <strong>sur le seul périmètre testé</strong> et ne constituent pas une certification fiscale.</p></section>
+<section><h2>Limites importantes</h2><p>Les variables fiscales intermédiaires ont été <strong>harmonisées et injectées</strong> dans OpenFisca, plutôt que calculées indépendamment à partir de déclarations complètes. L'analyse ne couvre ni crédits d'impôt, ni toutes les prestations, ni la représentativité statistique des foyers. Elle ne valide pas les effets macroéconomiques d'EcoSim.</p>
+<p>La période OpenFisca est 2025 ; la convention revenus 2025 / déclaration 2026 d'EcoSim nécessite une revue méthodologique complémentaire. Les écarts de décote observés sont compatibles avec des différences d'arrondi, sans que cette constatation établisse la règle réglementaire applicable.</p>
+<p>L'URL de l'exécution GitHub Actions et ses journaux complets ne figurent pas dans l'artifact remis. Cette limite de traçabilité est explicitement conservée.</p></section>
+<section><h2>Consulter les données et la méthode</h2><ul>
+<li><a href="validation/openfisca-2026-10-11/comparaison-56-foyers.csv">Tableau des 56 cas (CSV)</a></li>
+<li><a href="validation/openfisca-2026-10-11/rapport-confrontation-openfisca-572.json">Rapport détaillé (JSON)</a></li>
+<li><a href="validation/openfisca-2026-10-11/rapport-analyse-2026-10-11.md">Analyse et réserves (Markdown)</a></li>
+<li><a href="validation/openfisca-2026-10-11/versions-dependances-572.txt">Versions des dépendances</a></li></ul>
+<p><a href="versions-591.html">Retour au registre de livraison 5.9.1</a>.</p></section></article><aside class="guide-aside"><h2>Pour aller plus loin</h2><nav aria-label="Documentation complémentaire"><a href="versions-591.html">Livraison 5.9.1</a><a href="verification-openfisca-591.html">Résultats OpenFisca</a><a href="audit.html">Méthode et limites</a><a href="contact-signalement.html#suivre">Historique du dépôt</a></nav></aside></div></main>
+<footer class="guide-footer"><span>EcoSim France · projet personnel et pédagogique · Site 5.9.1 · moteur 5.7.1</span><a href="index.html">Accueil</a><a href="confidentialite.html">Confidentialité</a><a href="informations-legales.html">Informations légales</a></footer></body></html>
